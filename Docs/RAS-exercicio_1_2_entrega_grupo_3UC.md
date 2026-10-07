@@ -1,4 +1,4 @@
-# 📝 Exercício 1 e 2 — Casos de Uso e Requisitos Derivados
+# 📝 Exercício 1 — Casos de Uso e Requisitos Derivados
 ### Fase 1: Suporte a Vídeo no PictuRAS
 
 ---
@@ -8,7 +8,7 @@
 | **Campo** | **Valor** |
 |-----------|-----------|
 | **Grupo / Equipa** | [PREENCHER: nº do grupo] |
-| **Autores** | [PREENCHER: nome (nº mecanográfico) — UC-VID-001; nome (nº) — UC-VID-002; nome (nº) — UC-VID-003] |
+| **Autores** | [PREENCHER: nome (nº mecanográfico) — UC-VID-001; David Cruz (nº65403) — UC-VID-002; nome (nº) — UC-VID-003] |
 | **Data** | 2026-10-07 |
 | **Versão do documento** | v1.0 |
 | **Unidade Curricular** | Requisitos e Arquiteturas de Software — MEI, Universidade do Minho |
