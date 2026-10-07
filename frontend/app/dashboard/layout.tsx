@@ -3,6 +3,7 @@
 import DashboardSidebar from "@/components/dashboard-sidebar/dashboard-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
+import { VideoImportsIndicator } from "@/components/video-imports-indicator";
 
 export default function RootLayout({
   children,
@@ -22,6 +23,7 @@ export default function RootLayout({
             />
           )}
           {children}
+          <VideoImportsIndicator />
         </main>
       </div>
     </SidebarProvider>

@@ -28,6 +28,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import ProjectText from "./project-text";
 import { getAiErrorMessage } from "@/lib/error-messages"; 
 import { usePreview } from "@/providers/project-provider";
+import { ProjectVideoTiles } from "./project-video-tiles";
+import { useGetProjectVideos } from "@/lib/queries/videos";
 
 export function ProjectImageList({
   setCurrentImageId,
@@ -61,6 +63,17 @@ export function ProjectImageList({
 
   const qc = useQueryClient();
   const socket = useGetSocket(session.token);
+
+  // os vídeos aparecem na mesma grelha das imagens; a biblioteca de vídeo é só do dono
+  const showVideos =
+    mode === "edit" && !share && session.user.type !== "anonymous";
+  const videos = useGetProjectVideos(
+    session.user._id,
+    project._id,
+    session.token,
+    showVideos,
+  );
+  const hasVideos = showVideos && (videos.data?.videos.length ?? 0) > 0;
 
 
 useEffect(() => {
@@ -179,13 +192,17 @@ useEffect(() => {
         {view === "grid" || project.imgs.length <= 0 ? (
           // Grid view
           <div className="size-full flex flex-col items-center">
-            {(mode === "edit" && project.imgs.length > 0) ||
+            {(mode === "edit" && (project.imgs.length > 0 || hasVideos)) ||
             (mode === "results" &&
               (results.imgs.length > 0 || results.texts.length > 0)) ? (
               <>
                 {mode !== "results" && (
                   <div className="relative pt-4 pb-2 text-gray-500 text-sm after:h-2 after:bg-gradient-to-b after:from-background after:to-background/10 after:w-full after:absolute after:bottom-0 after:translate-y-2 after:z-50 w-full text-center flex flex-col">
-                    To start editing, select an image from the grid.
+                    {project.imgs.length > 0 &&
+                      "To start editing, select an image from the grid."}
+                    {project.imgs.length > 0 && hasVideos && " "}
+                    {hasVideos &&
+                      "Hover over a video to preview it, or click it to play."}
                   </div>
                 )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 p-2 overflow-scroll overflow-x-hidden h-fit">
@@ -214,6 +231,7 @@ useEffect(() => {
                       </button>
                     ),
                   )}
+                  {showVideos && <ProjectVideoTiles />}
                   {mode === "results" &&
                     results.texts.map((text, index) => (
                       <button
@@ -248,7 +266,7 @@ useEffect(() => {
                 <p className="text-gray-500 text-xl">
                   {mode === "results"
                     ? "No results found. Apply your changes and try again."
-                    : "Add some images to start."}
+                    : "Add some images or a video to start."}
                 </p>
               </div>
             )}

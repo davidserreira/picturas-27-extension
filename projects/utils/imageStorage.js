@@ -47,4 +47,18 @@ async function copy_image(userId, projectId, fromStage, toStage, fileName) {
   );
 }
 
-module.exports = { get_image_internal_url, get_image_public_url, post_image, delete_image, copy_image };
+// Streams a video file to storage. maxRedirects: 0 stops axios from buffering the body.
+async function post_video(user, project, fileName, stream, size, contentType) {
+  return await axios.put(
+    `${img_storage_ms}/video/${user}/${project}/${fileName}`,
+    stream,
+    {
+      headers: { "Content-Type": contentType, "Content-Length": size },
+      maxBodyLength: Infinity,
+      maxContentLength: Infinity,
+      maxRedirects: 0,
+    },
+  );
+}
+
+module.exports = { get_image_internal_url, get_image_public_url, post_image, delete_image, copy_image, post_video };

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Dialog,
   DialogTrigger,
@@ -29,10 +30,18 @@ export function AddImagesDialog() {
   const { _id: pid, version} = useProjectInfo();
   const session = useSession();
 
+  // same owner/share as the page uses to load the project, so that adding
+  // images refreshes that exact query
+  const searchParams = useSearchParams();
+  const ownerId = searchParams.get("owner") ?? session.user._id;
+  const shareId = searchParams.get("share") ?? undefined;
+
   const addImages = useAddProjectImages(
     session.user._id,
     pid as string,
     session.token,
+    ownerId,
+    shareId,
   );
 
   function onDrop(files: File[]) {

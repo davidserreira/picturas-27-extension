@@ -51,6 +51,7 @@ const {
 } = require("../middleware/shareAuth");
 
 const { requireProjectVersion } = require("../middleware/projectVersion");
+const { deleteProjectVideos } = require("../utils/videoImport");
 
 const storage = multer.memoryStorage();
 var upload = multer({ storage: storage });
@@ -509,6 +510,9 @@ async function deleteProjectAndResources(userId, projectId) {
     await delete_image(userId, projectId, "preview", p.img_key);
     await Preview.delete(p.user_id, p.project_id, p.img_id);
   }
+
+  // apagar vídeos
+  await deleteProjectVideos(userId, projectId);
 
   // apagar o próprio projeto
   await Project.delete(userId, projectId);
@@ -1755,6 +1759,12 @@ router.delete( "/:user/:project", checkSharePermission, requireEditPermission, e
       const fresh = await Project.getOne(req.params.user, req.params.project);
       return res.status(409).jsonp({ message: "Project version conflict", serverVersion: fresh?.version ?? null });
     }
+
+    // os vídeos do projeto deixam de ocupar espaço na biblioteca do utilizador
+    await deleteProjectVideos(req.params.user, req.params.project).catch((err) =>
+      console.error("Error deleting project videos:", err.message),
+    );
+
     return res.sendStatus(204);
   }
 );

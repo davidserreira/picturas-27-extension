@@ -3,13 +3,33 @@
 import { useToast } from "@/hooks/use-toast";
 import React, { useState } from "react";
 import Dropzone from "react-dropzone";
+import { VIDEO_UNSUPPORTED_FORMAT } from "@/lib/videos";
 
 interface CustomDropzoneProps {
   onDrop: (acceptedFiles: File[]) => void;
   children?: React.ReactNode;
+  acceptVideos?: boolean;
+  videosOnly?: boolean;
 }
 
-export default function AppDropzone({ onDrop, children }: CustomDropzoneProps) {
+const imageTypes = {
+  "image/png": [".png"],
+  "image/jpeg": [".jpeg"],
+  "image/jpg": [".jpg"],
+  "application/zip": [".zip"],
+};
+
+const videoTypes = {
+  "video/mp4": [".mp4"],
+  "video/quicktime": [".mov"],
+};
+
+export default function AppDropzone({
+  onDrop,
+  children,
+  acceptVideos = false,
+  videosOnly = false,
+}: CustomDropzoneProps) {
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const { toast } = useToast();
 
@@ -22,18 +42,23 @@ export default function AppDropzone({ onDrop, children }: CustomDropzoneProps) {
         onDropAccepted={() => setIsDragging(false)}
         onDropRejected={() => {
           setIsDragging(false);
-          toast({
-            title: "Invalid file type!",
-            description: "Please upload a .png, .jpeg, .jpg, or .zip file",
-            variant: "destructive",
-          });
+          toast(
+            videosOnly
+              ? { title: VIDEO_UNSUPPORTED_FORMAT, variant: "destructive" }
+              : {
+                  title: "Invalid file type!",
+                  description: acceptVideos
+                    ? "Please upload a .png, .jpeg, .jpg, .zip, .mp4 or .mov file"
+                    : "Please upload a .png, .jpeg, .jpg, or .zip file",
+                  variant: "destructive",
+                },
+          );
         }}
-        accept={{
-          "image/png": [".png"],
-          "image/jpeg": [".jpeg"],
-          "image/jpg": [".jpg"],
-          "application/zip": [".zip"],
-        }}
+        accept={
+          videosOnly
+            ? videoTypes
+            : { ...imageTypes, ...(acceptVideos && videoTypes) }
+        }
       >
         {({ getRootProps, getInputProps }) => (
           <div
