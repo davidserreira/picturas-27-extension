@@ -29,10 +29,27 @@ function isSupported(video) {
   return (video.format === "mp4" && video.codec === "h264") || video.format === "mov";
 }
 
-// "praia.mp4" -> "praia_recorte.mp4" (RN7, REQ-016)
-function trimmedName(name) {
+// "praia.mp4" -> "praia_recorte.mp4" (RN7, REQ-016). If that name is already
+// used in the project (by a video or by a request still running), a number is
+// added: "praia_recorte_2.mp4", "praia_recorte_3.mp4", ...
+function trimmedName(name, usedNames = new Set()) {
   const ext = path.extname(name);
-  return `${path.basename(name, ext)}_recorte${ext}`;
+  const base = `${path.basename(name, ext)}_recorte`;
+  let candidate = `${base}${ext}`;
+  for (let n = 2; usedNames.has(candidate.toLowerCase()); n++) {
+    candidate = `${base}_${n}${ext}`;
+  }
+  return candidate;
+}
+
+async function namesInUse(user, project) {
+  const videos = await Video.getAll(user, project);
+  const running = await VideoJob.getActiveByProject(user, project);
+  return new Set(
+    [...videos.map((v) => v.name), ...running.map((j) => j.result_name)].map((n) =>
+      n.toLowerCase(),
+    ),
+  );
 }
 
 // RN2 / REQ-002 / REQ-003: whole seconds, 0 <= start < end <= duration, >= 1 s.
@@ -135,7 +152,8 @@ router.post(
         video_id: video._id,
         tool: "trim",
         params: { start, end },
-        result_name: trimmedName(video.name),
+        // chosen inside the lock, so two requests never get the same name
+        result_name: trimmedName(video.name, await namesInUse(user, project)),
         max_duration: lim.maxDuration,
         quota_reserved: reserved,
       });

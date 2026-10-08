@@ -29,6 +29,10 @@ module.exports.updateIfState = async (job_id, states, update) =>
     { new: true },
   ).exec();
 
+// Active jobs of a project: their results will soon be videos of the library
+module.exports.getActiveByProject = async (user_id, project_id) =>
+  VideoJob.find({ user_id, project_id, state: { $in: ACTIVE_STATES } }).exec();
+
 module.exports.findStale = async (olderThan) =>
   VideoJob.find({ state: { $in: ACTIVE_STATES }, updatedAt: { $lt: olderThan } }).exec();
 

@@ -96,3 +96,52 @@ exceção E7 — "Espaço da biblioteca esgotado" (D18), que não estava previst
 - Recorte 10–40 s → pedido "Em fila" devolvido de imediato (REQ-009/010); concluído em ~6 s; criado `video_teste_recorte.mp4` na biblioteca (REQ-015/016).
 - Segundo pedido enquanto o primeiro estava ativo → rejeitado com `TOO_MANY_JOBS` (E6, REQ-008).
 - Primeira tentativa (antes da correção D20) → pedido "Falhado" com a mensagem prevista e sem vídeo criado (E5, REQ-019).
+
+---
+
+## Fase 3 — Tempo real
+
+Feita junto com a fase 2: o `projects` envia `video-job-update` para a `ws_queue` e o
+`wsGateway` emite-o para a sala do utilizador (o mesmo mecanismo já usado para o
+progresso do processamento de imagens).
+
+---
+
+## Fase 4 — Frontend
+
+**Ficheiros novos:** `frontend/lib/video-jobs.ts` (tipos, API, validação do intervalo,
+exportação), `frontend/lib/queries/video-jobs.ts` (React Query + eventos WebSocket),
+`frontend/components/project-page/video-tools-dialog.tsx` (diálogo com as abas "Ver" e
+"Ferramentas de vídeo").
+**Alterado:** `frontend/components/project-page/project-video-tiles.tsx`: o diálogo de
+reprodução passa a ser o novo diálogo com abas, e o menu de contexto do vídeo ganha
+"Ferramentas de vídeo" e "Exportar".
+
+| ID | Decisão | Alternativas consideradas | Porquê |
+|----|---------|---------------------------|--------|
+| D21 | A aba "Ferramentas de vídeo" fica no diálogo que já abre ao clicar num vídeo (abas "Ver" / "Ferramentas de vídeo"), e também é acessível pelo menu de contexto | Uma página nova; botões na barra de ferramentas de imagem | Segue o fluxo do UC (passos 1–2: selecionar o vídeo e abrir a aba); reutiliza o diálogo existente; o UC-VID-003 pode acrescentar a sua ferramenta na mesma aba |
+| D22 | Intervalo definido por um slider com dois marcadores e por campos `m:ss`, com o botão "Posição atual" para usar o instante do leitor | Só campos de texto | Mais fácil acertar o trecho; resolução de 1 s (RN2) |
+| D23 | Validação do intervalo também no browser (mesmas regras do backend), com o motivo visível e "Aplicar recorte" desativado | Validar só no servidor | REQ-003 / E4 pedem o motivo e o botão desativado; o backend continua a validar (o browser não é de confiança) |
+| D24 | "Pré-visualizar" reproduz só o intervalo no leitor, sem processamento nem quota | — | Permite confirmar o trecho antes de gastar uma operação |
+| D25 | Estado dos pedidos por WebSocket (`video-job-update`) e, enquanto houver um pedido ativo, também por consulta a cada 3 s | Só WebSocket; só consulta | Se o WebSocket falhar, o progresso continua a atualizar dentro dos 5 s da RN6 |
+| D26 | Exportar descarrega o ficheiro pelo URL assinado (via `fetch` + `Blob`), com o nome do vídeo | Abrir o URL num separador | Em domínios diferentes o browser ignora o atributo `download`; assim o ficheiro é guardado com o nome certo (REQ-021) |
+| D27 | Quando um pedido termina, a biblioteca e as operações restantes são atualizadas | — | O novo vídeo aparece sem recarregar a página e o contador de operações fica correto (REQ-018) |
+
+**Verificações automáticas antes do teste manual:** `tsc --noEmit` (0 erros) e
+`next lint` aos ficheiros novos e alterados (sem avisos).
+
+**Validação feita pelo aluno (teste no browser):** recorte com intervalo inválido (mensagem e botão desativado), pré-visualização, aplicar recorte com estado e progresso em tempo real, exportação do resultado e cancelamento durante o processamento: tudo funcionou.
+
+---
+
+## Alteração pedida após o teste — nomes repetidos
+
+**Problema detetado pelo aluno:** recortes sucessivos do mesmo vídeo ficavam todos com o
+nome "{nome}_recorte", e era impossível distingui-los na biblioteca.
+
+| ID | Decisão | Alternativas consideradas | Porquê |
+|----|---------|---------------------------|--------|
+| D28 | Se "{nome}_recorte" já existir no projeto (num vídeo ou num pedido ainda em curso), acrescenta-se o primeiro número livre: "_2", "_3", … O nome é escolhido dentro do bloqueio por utilizador (D13) | Pôr o intervalo no nome ("_recorte_0m05-0m15") | Escolha do aluno: mantém o formato do REQ-016 e só muda quando há colisão |
+
+**Impacto na documentação:** RN7 e REQ-VID-TRIM-016 atualizados no documento do grupo
+(`RAS-exercicio_1_2_entrega_grupo_3UC.md`), incluindo o "Como verificar".

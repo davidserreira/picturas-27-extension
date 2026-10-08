@@ -2,18 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Film, LoaderCircle, RotateCcw, Trash, X } from "lucide-react";
+import { Download, Film, RotateCcw, Scissors, Trash, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,6 +28,12 @@ import { useProjectInfo } from "@/providers/project-provider";
 import { useSession } from "@/providers/session-provider";
 import { useToast } from "@/hooks/use-toast";
 import { projectVideosKey, useGetProjectVideos } from "@/lib/queries/videos";
+import { useVideoJobUpdates } from "@/lib/queries/video-jobs";
+import {
+  useExportVideo,
+  VideoDialogTab,
+  VideoToolsDialog,
+} from "./video-tools-dialog";
 import {
   cancelVideoImportTask,
   dismissVideoImport,
@@ -88,51 +88,19 @@ function useVideoUrl(video: ProjectVideo | null) {
   });
 }
 
-function VideoPlayerDialog({
-  video,
-  onClose,
-}: {
-  video: ProjectVideo | null;
-  onClose: () => void;
-}) {
-  const url = useVideoUrl(video);
-
-  return (
-    <Dialog open={!!video} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-3xl">
-        <DialogHeader>
-          <DialogTitle className="truncate pr-6">{video?.name}</DialogTitle>
-        </DialogHeader>
-        <div className="flex justify-center items-center min-h-40">
-          {url.isLoading && <LoaderCircle className="size-6 animate-spin" />}
-          {url.isError && (
-            <p className="text-sm text-destructive">
-              {getVideoErrorMessage(url.error)}
-            </p>
-          )}
-          {url.data && (
-            <video
-              src={url.data}
-              controls
-              autoPlay
-              className="w-full max-h-[70vh] rounded-md bg-black"
-            />
-          )}
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
 // An available video: its first frame as thumbnail; plays muted, with a thin
 // progress bar, while the mouse is over it.
 function VideoTile({
   video,
   onOpen,
+  onTools,
+  onExport,
   onDelete,
 }: {
   video: ProjectVideo;
   onOpen: () => void;
+  onTools: () => void;
+  onExport: () => void;
   onDelete: () => void;
 }) {
   const url = useVideoUrl(video);
@@ -216,6 +184,14 @@ function VideoTile({
         </Card>
       </ContextMenuTrigger>
       <ContextMenuContent>
+        <ContextMenuItem className="flex justify-between gap-4" onClick={onTools}>
+          <span>Ferramentas de vídeo</span>
+          <Scissors className="size-4" />
+        </ContextMenuItem>
+        <ContextMenuItem className="flex justify-between gap-4" onClick={onExport}>
+          <span>Exportar</span>
+          <Download className="size-4" />
+        </ContextMenuItem>
         <ContextMenuItem className="flex justify-between" onClick={onDelete}>
           <span>Delete</span>
           <Trash className="size-4" />
@@ -321,6 +297,10 @@ export function ProjectVideoTiles() {
   const tasks = useVideoImports().filter((t) => t.pid === pid);
 
   const [playing, setPlaying] = useState<ProjectVideo | null>(null);
+  const [dialogTab, setDialogTab] = useState<VideoDialogTab>("view");
+  const { exportVideo } = useExportVideo();
+  // UC-VID-001: real-time state of the video tool requests
+  useVideoJobUpdates(uid, pid, token);
   const [toDelete, setToDelete] = useState<ProjectVideo | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const resumeInputRef = useRef<HTMLInputElement>(null);
@@ -442,7 +422,15 @@ export function ProjectVideoTiles() {
             {state === "available" ? (
               <VideoTile
                 video={video}
-                onOpen={() => setPlaying(video)}
+                onOpen={() => {
+                  setDialogTab("view");
+                  setPlaying(video);
+                }}
+                onTools={() => {
+                  setDialogTab("tools");
+                  setPlaying(video);
+                }}
+                onExport={() => exportVideo(video._id, video.name)}
                 onDelete={() => setToDelete(video)}
               />
             ) : (
@@ -468,7 +456,12 @@ export function ProjectVideoTiles() {
         onChange={handleResumeFile}
       />
 
-      <VideoPlayerDialog video={playing} onClose={() => setPlaying(null)} />
+      <VideoToolsDialog
+        video={playing}
+        tab={dialogTab}
+        onTabChange={setDialogTab}
+        onClose={() => setPlaying(null)}
+      />
 
       <AlertDialog
         open={!!toDelete}

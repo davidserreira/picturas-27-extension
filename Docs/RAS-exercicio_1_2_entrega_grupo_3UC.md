@@ -130,7 +130,7 @@ Reaproveita as ferramentas de imagem e o encadeamento que o PictuRAS já tem e r
 | RN4 | Registado: 5 operações/dia; premium: sem limite; anónimo: sem acesso. Um recorte conta 1 operação, só se "Concluído" |
 | RN5 | Pedidos ativos em simultâneo: 1 (registado) e 3 (premium), contando todas as ferramentas de vídeo |
 | RN6 | Receção do pedido confirmada em ≤ 2 s; progresso atualizado pelo menos a cada 5 s |
-| RN7 | O resultado é guardado como novo vídeo "{nome}_recorte"; o original nunca é alterado |
+| RN7 | O resultado é guardado como novo vídeo "{nome}_recorte"; se esse nome já existir no projeto, acrescenta-se um número ("{nome}_recorte_2", "_3", …); o original nunca é alterado |
 
 #### 2.7 Assunções
 
@@ -356,7 +356,7 @@ Reaproveita as ferramentas de imagem e o encadeamento que o PictuRAS já tem e r
 | REQ-VID-TRIM-013 | O sistema deve permitir ao utilizador cancelar um pedido "Em fila" ou "Em processamento". | F | Deveria ter | NOVO | FA2 | Cancelar um pedido em processamento e verificar o estado "Cancelado" |
 | REQ-VID-TRIM-014 | O sistema deve remover os ficheiros parciais e não criar vídeo quando um pedido é cancelado. | F | Deveria ter | NOVO | FA2, Garantia Mínima | Cancelar um pedido e verificar que não há ficheiros temporários nem vídeo novo |
 | REQ-VID-TRIM-015 | O sistema deve produzir um vídeo apenas com o intervalo escolhido, no mesmo formato e codec do original, com duração igual a (fim − início) ± 1 s. | F | Deve ter | NOVO | Passo 6, RN1, Garantia de Sucesso | Recortar 00:00:10–00:00:40 e verificar formato, codec e duração de 30 s ± 1 s |
-| REQ-VID-TRIM-016 | O sistema deve guardar o resultado na biblioteca como novo vídeo com o nome "{nome original}_recorte". | F | Deve ter | NOVO | Passo 6, RN7 | Recortar "praia.mp4" e verificar que a biblioteca contém "praia_recorte" |
+| REQ-VID-TRIM-016 | O sistema deve guardar o resultado na biblioteca como novo vídeo com o nome "{nome original}_recorte" e, se esse nome já existir no projeto, com o primeiro sufixo numérico livre ("_2", "_3", …). | F | Deve ter | NOVO | Passo 6, RN7 | Recortar "praia.mp4" duas vezes e verificar que a biblioteca contém "praia_recorte" e "praia_recorte_2" |
 | REQ-VID-TRIM-017 | O sistema deve manter o ficheiro do vídeo original inalterado após o recorte. | NF (Fiabilidade) | Deve ter | NOVO | Passo 7, RN7, Garantia de Sucesso | Comparar o resumo criptográfico do original antes e depois |
 | REQ-VID-TRIM-018 | O sistema deve descontar 1 operação da quota diária do utilizador registado apenas quando o pedido termina "Concluído". | F | Deve ter | ALT | Passo 6, RN4, Garantia de Sucesso | Concluir um recorte e verificar 1 operação usada; cancelar outro e verificar que continua 1 |
 | REQ-VID-TRIM-019 | O sistema deve marcar o pedido "Falhado" e apresentar *"Não foi possível recortar o vídeo. Tente novamente."* quando o processamento falha. | F | Deve ter | NOVO | E5 | Simular uma falha a meio e verificar o estado e a mensagem |
