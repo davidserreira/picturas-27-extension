@@ -495,3 +495,6 @@ router.delete("/:user/:project/videos/:video", requireOwner, wrap(async (req, re
 }));
 
 module.exports = router;
+
+// Shared with the video tools routes (routes/videoJobs.js, UC-VID-001)
+module.exports.helpers = { fail, wrap, requireOwner, loadProfile, withUserLock, premiumHint };

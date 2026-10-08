@@ -90,6 +90,13 @@ function process_msg() {
             io.to(user).emit("process-update", msg_id);
         }
 
+        // UC-VID-001: state/progress of a video tool request, to its owner
+        else if (msg_content.type === "video-job-update") {
+            if (user && msg_content.job) {
+                io.to(user).emit("video-job-update", msg_content.job);
+            }
+        }
+
         else if (msg_content.type === "project-op") {
             const projectId = msg_content.projectId;
             const op = msg_content.op;

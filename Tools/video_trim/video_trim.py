@@ -32,6 +32,7 @@ import json
 import os
 import subprocess
 import tempfile
+import threading
 import time
 
 import pika
@@ -154,32 +155,48 @@ class VideoTrimWorker:
         proc = subprocess.Popen(
             cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1
         )
-        os.set_blocking(proc.stdout.fileno(), False)
+
+        # ffmpeg's output is read by background threads, so the main loop never
+        # blocks on it and can keep serving RabbitMQ heartbeats, sending
+        # progress and checking for cancellation.
+        state = {"percent": 0}
+        errors = []
+
+        def read_progress():
+            for line in proc.stdout:
+                key, _, value = line.strip().partition("=")
+                if key in ("out_time_us", "out_time_ms"):
+                    try:
+                        done = int(value) / 1_000_000
+                        state["percent"] = max(
+                            state["percent"], min(99, int(done / length * 100))
+                        )
+                    except ValueError:
+                        pass
+
+        def read_errors():
+            for line in proc.stderr:
+                errors.append(line)
+                del errors[:-50]  # keep only the last lines
+
+        readers = [
+            threading.Thread(target=read_progress, daemon=True),
+            threading.Thread(target=read_errors, daemon=True),
+        ]
+        for t in readers:
+            t.start()
 
         started = time.monotonic()
         last_progress = last_cancel_check = 0.0
-        percent = 0
-        buffer = ""
         self._reply(job_id, "progress", progress=0)
 
         while proc.poll() is None:
             # keep RabbitMQ heartbeats flowing while ffmpeg works
             self._connection.process_data_events(time_limit=0.5)
 
-            chunk = proc.stdout.read() or ""
-            buffer += chunk
-            *lines, buffer = buffer.split("\n")
-            for line in lines:
-                if line.startswith("out_time_us=") or line.startswith("out_time_ms="):
-                    try:
-                        done = int(line.split("=", 1)[1]) / 1_000_000
-                        percent = max(percent, min(99, int(done / length * 100)))
-                    except ValueError:
-                        pass
-
             elapsed = time.monotonic() - started
             if elapsed - last_progress >= PROGRESS_INTERVAL:
-                self._reply(job_id, "progress", progress=percent)
+                self._reply(job_id, "progress", progress=state["percent"])
                 last_progress = elapsed
             if elapsed - last_cancel_check >= CANCEL_CHECK_INTERVAL:
                 last_cancel_check = elapsed
@@ -192,8 +209,10 @@ class VideoTrimWorker:
                 proc.wait()
                 raise JobFailed("timeout")
 
+        for t in readers:
+            t.join(timeout=5)
         if proc.returncode != 0:
-            print(f"[{job_id}] ffmpeg failed: {proc.stderr.read()[-2000:]}")
+            print(f"[{job_id}] ffmpeg failed: {''.join(errors)[-2000:]}")
             raise JobFailed("processing")
 
     @staticmethod
@@ -246,6 +265,9 @@ class VideoTrimWorker:
 
     def _process(self, job_id, params):
         self._validate(params)
+        # cancelled while still in the queue: do not even start
+        if self._was_cancelled(job_id):
+            raise JobCancelled()
         suffix = ".mov" if params.get("format") == "mov" else ".mp4"
         # the result only exists in a temp dir until it is complete, so a failed
         # or cancelled job never leaves partial files in storage (REQ-014/020)
