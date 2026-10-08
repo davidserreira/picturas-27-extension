@@ -145,3 +145,21 @@ nome "{nome}_recorte", e era impossível distingui-los na biblioteca.
 
 **Impacto na documentação:** RN7 e REQ-VID-TRIM-016 atualizados no documento do grupo
 (`RAS-exercicio_1_2_entrega_grupo_3UC.md`), incluindo o "Como verificar".
+
+---
+
+## Fase 5 — Verificação dos requisitos
+
+**Ficheiros:** `tests/uc-vid-001/test_trim_requirements.py` (testes automáticos ao
+backend, a correr contra o sistema em Docker), `tests/uc-vid-001/resultados.md`
+(relatório gerado) e `tests/uc-vid-001/checklist-manual.md` (testes de interface).
+
+| ID | Decisão | Alternativas consideradas | Porquê |
+|----|---------|---------------------------|--------|
+| D29 | Testes de aceitação "caixa negra" contra o sistema real em Docker, um por cada "Como verificar" da secção 4.1 | Testes unitários com mocks | Os requisitos descrevem comportamento do sistema completo (worker + RabbitMQ + armazenamento + quota); um teste com mocks não provaria, por exemplo, a duração real do vídeo (REQ-015) nem que o original fica intacto (REQ-017) |
+| D30 | Falhas e limites simulados com cópias temporárias do vídeo de teste na base de dados (ficheiro inexistente, formato AVI, 6 min, 250 MB) | Arranjar vídeos reais para cada caso | A importação já rejeita esses ficheiros, por isso não podiam chegar à biblioteca por outro caminho; as cópias são removidas no fim |
+| D31 | Quota esgotada simulada com os endpoints do `users` (reservar até ao limite e reembolsar no fim) | Alterar diretamente a base de dados | Usa a mesma interface que o sistema usa e deixa o utilizador como estava |
+
+**Resultado:** 23 de 23 testes passaram (ver `tests/uc-vid-001/resultados.md`),
+cobrindo REQ-003 a REQ-020. Os REQ-001, 002, 021 e 022 e o FA1 são verificados
+pela checklist manual.
