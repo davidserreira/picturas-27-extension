@@ -7,6 +7,8 @@ const mongoose = require("mongoose");
 
 const { router: projectsRouter, process_msg } = require("./routes/projects");
 const videosRouter = require("./routes/videos");
+const videoJobsRouter = require("./routes/videoJobs");
+const { startVideoJobs } = require("./utils/videoJobs");
 const { startImportMaintenance } = require("./utils/videoImport");
 
 // Run Docker
@@ -33,11 +35,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use("/", videoJobsRouter); // UC-VID-001: video tools (trim)
 app.use("/", videosRouter);
 app.use("/", projectsRouter);
 
 // Start the message processing
 process_msg();
+
+// Consume the video workers' replies (progress/result) and expire lost jobs
+startVideoJobs();
 
 // Recover pending video imports and keep expiring the interrupted ones
 startImportMaintenance().catch((err) =>

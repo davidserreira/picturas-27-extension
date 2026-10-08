@@ -8,12 +8,14 @@ const limits = {
     maxDuration: 5 * 60,
     storage: 1 * GB,
     maxActiveImports: 1,
+    maxActiveJobs: 1, // video tool requests at the same time (RN5)
   },
   premium: {
     maxSize: 2 * GB,
     maxDuration: 30 * 60,
     storage: 10 * GB,
     maxActiveImports: 3,
+    maxActiveJobs: 3,
   },
 };
 

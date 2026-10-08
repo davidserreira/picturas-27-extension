@@ -364,6 +364,25 @@ services:
     volumes:
       - image_data:/app/images
 
+  # UC-VID-001: trims videos (ffmpeg); see Tools/video_trim/video_trim.py
+  video_trim_tool:
+    build:
+      context: ./Tools
+      dockerfile: video_trim/Dockerfile
+    restart: on-failure
+    networks:
+      - elk
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: user
+      RABBITMQ_PASSWORD: password
+      IMG_STORAGE_URL: http://img_storage:11000
+      PROJECTS_URL: https://projects:9001
+
   saturation_tool:
     build:
       context: ./Tools

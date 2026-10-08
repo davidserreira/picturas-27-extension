@@ -136,4 +136,40 @@ router.delete("/:user/:project/videos/:video", auth.checkToken, function (req, r
   forward(req, res, "delete", videosPath(req, `/${req.params.video}`));
 });
 
+// ---------------------------------------------------------------------------
+// Video tools (UC-VID-001: Recortar um vídeo)
+
+/**
+ * Trim a video: creates a request "Em fila", processed in the background
+ * @body { "start": Number (s), "end": Number (s) }
+ * @returns 202 { "job": Job }
+ */
+router.post("/:user/:project/videos/:video/trim", auth.checkToken, function (req, res, next) {
+  forward(req, res, "post", videosPath(req, `/${req.params.video}/trim`), req.body);
+});
+
+/**
+ * Get the video tool requests of a project, most recent first
+ * @returns { "jobs": [Job] }
+ */
+router.get("/:user/:project/video-jobs", auth.checkToken, function (req, res, next) {
+  forward(req, res, "get", `${req.params.user}/${req.params.project}/video-jobs`);
+});
+
+/**
+ * Get a video tool request
+ * @returns { "job": Job }
+ */
+router.get("/:user/:project/video-jobs/:job", auth.checkToken, function (req, res, next) {
+  forward(req, res, "get", `${req.params.user}/${req.params.project}/video-jobs/${req.params.job}`);
+});
+
+/**
+ * Cancel a video tool request "Em fila" or "Em processamento"
+ * @returns { "job": Job }
+ */
+router.post("/:user/:project/video-jobs/:job/cancel", auth.checkToken, function (req, res, next) {
+  forward(req, res, "post", `${req.params.user}/${req.params.project}/video-jobs/${req.params.job}/cancel`);
+});
+
 module.exports = router;
