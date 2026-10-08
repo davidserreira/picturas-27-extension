@@ -330,6 +330,7 @@ Reaproveita as ferramentas de imagem e o encadeamento que o PictuRAS já tem e r
 | **Ferramenta / *skill*** | **Tarefa apoiada** | **Validação realizada pela equipa** |
 |--------------------------|--------------------|--------------------------------------|
 | Claude (Anthropic) | Primeira versão dos 3 casos de uso e das tabelas da secção 4, a partir do template, do enunciado, dos exemplos e do guia | [PREENCHER: o que o grupo reviu, alterou ou descartou] |
+| Claude (Anthropic) | UC-VID-001: análise da arquitetura existente, implementação do recorte (worker `video_trim`, backend, tempo real, interface) e dos testes automáticos dos requisitos | Revisão do código no VS Code; 23/23 testes automáticos e checklist manual da interface; bug encontrado no 1.º teste corrigido (D20); numeração dos nomes dos recortes pedida pelo aluno, com RN7 e REQ-016 atualizados (D28). Decisões e validação em `Docs/registo-ia-trim.md` |
 
 ---
 
