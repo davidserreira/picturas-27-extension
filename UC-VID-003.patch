@@ -1,0 +1,3189 @@
+diff --git a/.github/workflows/uc-vid-003.yml b/.github/workflows/uc-vid-003.yml
+new file mode 100644
+index 0000000..b339b9d
+--- /dev/null
++++ b/.github/workflows/uc-vid-003.yml
+@@ -0,0 +1,62 @@
++name: UC-VID-003
++
++on:
++  pull_request:
++    paths:
++      - 'Tools/**'
++      - 'projects/**'
++      - 'apiGateway/**'
++      - 'users/**'
++      - 'frontend/**'
++      - 'tests/uc-vid-003/**'
++      - '.github/workflows/uc-vid-003.yml'
++  push:
++    branches: ['feature/uc-vid-003-apply-tools']
++
++permissions:
++  contents: read
++
++jobs:
++  media:
++    runs-on: ubuntu-latest
++    steps:
++      - uses: actions/checkout@v4
++      - uses: actions/setup-python@v5
++        with:
++          python-version: '3.11'
++      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
++      - run: 'pip install --only-binary=:all: -r Tools/video_apply/requirements.txt'
++      - run: python -m unittest discover -s tests/uc-vid-003 -p 'test_*.py' -v
++  api-and-frontend:
++    runs-on: ubuntu-latest
++    services:
++      mongo:
++        image: mongo:4.4
++        ports: ['27017:27017']
++        options: >-
++          --health-cmd "mongo --quiet --eval 'db.adminCommand({ping:1})'"
++          --health-interval 5s --health-timeout 5s --health-retries 10
++    steps:
++      - uses: actions/checkout@v4
++      - uses: actions/setup-node@v4
++        with:
++          node-version: '20'
++      - run: npm install --ignore-scripts --no-audit --no-fund
++        working-directory: projects
++      - run: npm install --ignore-scripts --no-audit --no-fund
++        working-directory: apiGateway
++      - run: npm install --ignore-scripts --no-audit --no-fund
++        working-directory: users
++      - run: npm install --ignore-scripts --no-audit --no-fund
++        working-directory: frontend
++      - run: node --test tests/uc-vid-003/*.test.cjs
++        env:
++          MONGODB_TEST_URL: mongodb://127.0.0.1:27017
++      - run: npx tsc --noEmit --incremental false
++        working-directory: frontend
++      - run: npx eslint components/project-page/video-apply-panel.tsx components/project-page/video-tools-dialog.tsx lib/video-apply.ts lib/video-jobs.ts lib/queries/video-jobs.ts lib/videos.ts
++        working-directory: frontend
++      - run: npm run build
++        working-directory: frontend
++        env:
++          NEXT_TELEMETRY_DISABLED: '1'
+diff --git a/Docs/UC-VID-003-implementacao.md b/Docs/UC-VID-003-implementacao.md
+new file mode 100644
+index 0000000..5dab285
+--- /dev/null
++++ b/Docs/UC-VID-003-implementacao.md
+@@ -0,0 +1,94 @@
++# UC-VID-003 — Aplicar ferramentas a todos os fotogramas
++
++Implementação do MVP sobre `main` no commit `9cc2bc1`, com importação e recorte já integrados. Referência: UC-VID-003 e REQ-VID-APPLY-001 a 026 de [RAS-exercicio_1_2_entrega_grupo_3UC.md](RAS-exercicio_1_2_entrega_grupo_3UC.md). Esta alteração implementa o caso de uso; não altera a atribuição de autores na especificação.
++
++## Utilização
++
++1. Iniciar a aplicação com `docker compose up -d --build`, entrar numa conta gratuita ou Premium e importar um vídeo para um projeto.
++2. No vídeo disponível, abrir **Ferramentas de vídeo → Aplicar ferramentas**.
++3. Adicionar entre uma e três ferramentas, preencher os parâmetros e ordenar com as setas. A interface mostra a resolução final e impede parâmetros inválidos.
++4. Selecionar **Aplicar ferramentas**. O pedido fica **Em fila**; o progresso e os fotogramas processados aparecem em **Pedidos deste vídeo**.
++5. Quando estiver **Concluído**, abrir o novo vídeo na biblioteca ou selecionar **Exportar**. **Cancelar** está disponível enquanto o pedido estiver em fila ou em processamento.
++
++O resultado usa `{nome}_editado.ext`. Havendo colisões, são acrescentados `_2`, `_3`, etc. Os nomes de pedidos ativos também contam. O ficheiro original é apenas lido.
++
++| Regra de APPLY | Gratuito (`free`) | Premium |
++|---|---:|---:|
++| Duração máxima de entrada | 120 s | 600 s |
++| Tamanho máximo de entrada | 200 × 1024² bytes | 2 × 1024³ bytes |
++| Resolução final máxima | largura 1920, altura 1080 | largura 3840, altura 2160 |
++| Pedidos ativos de vídeo, incluindo TRIM | 1 | 3 |
++| Operações diárias | 5, partilhadas com imagem | Sem limite |
++
++A cadeia completa conta uma operação. A implementação reserva-a no envio e devolve-a se o pedido falhar ou for cancelado. O contador pode mostrar a reserva durante o processamento. A importação mantém os seus próprios limites, que são maiores; importar um vídeo não garante que possa ser editado com APPLY.
++
++Os limites de resolução são aplicados literalmente à largura e altura **finais**, conforme a especificação. Rodar um vídeo de 1920 × 1080 para 1080 × 1920 excede a altura gratuita; é possível acrescentar um redimensionamento para ficar dentro do limite. As ferramentas intermédias podem ter até 3840 px em cada dimensão.
++
++## Componentes e fluxo
++
++```mermaid
++flowchart TD
++  UI["Interface e gateway"] --> P["Projects: validar e criar pedido"]
++  P --> Q["video_apply_queue"]
++  Q --> W["Worker: transformar fotogramas"]
++  W --> S["img_storage e SeaweedFS"]
++  W --> R["video_job_queue"]
++  R --> P
++  P --> E["WebSocket e consulta periódica"]
++  E --> UI
++```
++
++- `frontend/components/project-page/video-apply-panel.tsx`: cadeia, parâmetros, ordenação, validação e envio. `video-tools-dialog.tsx` apresenta tanto TRIM como APPLY e os respetivos pedidos.
++- `frontend/lib/video-apply.ts`: tipos e regras da interface; `video-jobs.ts` distingue os parâmetros dos dois tipos de trabalho. A biblioteca e a quota são atualizadas também quando o estado final chega por consulta periódica, sem evento WebSocket.
++- `apiGateway/routes/videos.js`: nova rota, com o mesmo controlo JWT do restante vídeo.
++- `projects/utils/videoApply.js`: regras autoritativas de APPLY. `routes/videoJobs.js` mantém os contratos de TRIM e acrescenta o envio da cadeia.
++- `projects/utils/videoJobs.js`: publicação, progresso, resultados, cancelamento, falhas e quota partilhados. A publicação usa confirmação do broker; as respostas só recebem `ack` depois das escritas na base de dados.
++- `Tools/video_apply`: novo worker. O processo principal serve os heartbeats, envia progresso e consulta o estado a cada dois segundos; um processo filho faz download, transformação e upload. Assim, uma operação de vídeo ou rede demorada não ocupa o ciclo de comunicação.
++- `Tools/utils/image_operations.py`: funções Pillow extraídas das ferramentas de imagem existentes. Os workers de redimensionamento, binarização e rotação usam as mesmas funções que o vídeo.
++
++### Processamento
++
++O worker descodifica o primeiro fluxo de vídeo e transforma todos os fotogramas com Pillow, pela ordem da cadeia. Copia os tempos de apresentação e duração dos fotogramas; preserva o codec de vídeo e o contentor. As faixas de áudio são copiadas como pacotes comprimidos, sem passagem pelo codificador de áudio.
++
++H.264 usa `libx264`; HEVC usa `libx265`; ProRes usa `prores_ks`. Para outros codecs MOV é solicitado um codificador do mesmo codec. Se não existir, ou se o contentor não conseguir representar o resultado, o pedido falha com a mensagem prevista e devolução da reserva. A transformação de pixels implica recodificar vídeo; não implica igualdade binária da faixa de vídeo.
++
++Resultados H.264 com dimensões ímpares usam um formato de píxeis sem subamostragem que exija dimensões pares. A dimensão pedida é preservada, mas a reprodução de H.264 4:4:4 e de certos codecs MOV depende do browser. Preferir dimensões pares e MP4 H.264 para a demonstração; a compatibilidade de reprodução continua na checklist manual.
++
++O resultado é escrito num diretório temporário e só é enviado após conclusão e inspeção. Cancelamento ou falha termina o filho e remove o diretório. Se o ficheiro já foi enviado, o worker ou o serviço de resultados remove-o. Uma resposta repetida de um pedido concluído preserva o vídeo existente. O tamanho real é verificado ao guardar na biblioteca, porque a recodificação pode aumentar o ficheiro.
++
++### Quota e recuperação
++
++O contrato de devolução do serviço `users` passa a aceitar `{jobId, day}` para trabalhos de vídeo. O identificador impede devoluções repetidas; o dia permite devolver a operação ao dia da reserva, mesmo depois da meia-noite. A alteração do contador e o registo da devolução usam uma única atualização do documento do utilizador. O contrato de imagem com corpo vazio continua disponível.
++
++Trabalhos falhados/cancelados com uma devolução pendente são tentados novamente pela manutenção, de minuto a minuto. Pedidos sem atualizações durante 20 minutos falham; o worker tem um limite de 15 minutos, configurável em `VIDEO_APPLY_TIMEOUT`.
++
++O MVP usa uma única instância de `projects`: o bloqueio por utilizador é local ao processo. Escalar várias instâncias exige reservas/bloqueios persistentes. O serviço legado de quota ainda reserva por `GET` sem chave de idempotência e pode ter corridas com operações de imagem; uma falha de rede exatamente durante a reserva ou uma falha simultânea de criação do pedido e compensação precisam de tratamento adicional antes de produção. Estas limitações não são apresentadas como resolvidas pelos testes com adaptadores.
++
++## Contrato HTTP
++
++Via gateway, com `Authorization: Bearer <JWT do dono>`:
++
++```http
++POST /projects/:user/:project/videos/:video/apply
++Content-Type: application/json
++```
++
++```json
++{
++  "tools": [
++    { "type": "resize", "width": 1280, "height": 720 },
++    { "type": "binarization", "threshold": 128 },
++    { "type": "rotate", "degrees": 180 }
++  ]
++}
++```
++
++Resposta `202 {job}`. A cadeia é armazenada na ordem recebida em `job.params.tools`; o resultado previsto em `job.params.width/height`. `frames_processed` começa em zero e `frame_count` pode ser `null` até o contentor ou processamento permitir conhecer o total.
++
++Os pedidos reutilizam `GET /projects/:user/:project/video-jobs`, `GET /projects/:user/:project/video-jobs/:job` e `POST /projects/:user/:project/video-jobs/:job/cancel`. Os erros têm `{code, message}`. Valores fora das regras não chegam ao worker nem reservam quota.
++
++## Verificação e entrega
++
++Resultados executados pelo assistente: [resultados](../tests/uc-vid-003/resultados.md). Procedimento de verificação no ambiente completo: [checklist manual](../tests/uc-vid-003/checklist-manual.md). Registo de decisões e assistência: [registo-ia-apply.md](registo-ia-apply.md).
++
++Não se declara validação manual pelo aluno, execução do Compose, medições dos requisitos de tempo em ambiente completo, nem compatibilidade de reprodução em browsers. Essas verificações devem ser registadas após execução.
+diff --git a/Docs/registo-ia-apply.md b/Docs/registo-ia-apply.md
+new file mode 100644
+index 0000000..cdf1d6c
+--- /dev/null
++++ b/Docs/registo-ia-apply.md
+@@ -0,0 +1,49 @@
++# Registo de desenvolvimento assistido por IA — UC-VID-003
++
++Data: 2026-10-09. Ferramenta: ChatGPT/Codex. Branch: `feature/uc-vid-003-apply-tools`.
++
++Pedido do utilizador: analisar o repositório e desenvolver a sua parte, identificada na especificação como UC-VID-003 — aplicar ferramentas de imagem a todos os fotogramas. A IA leu a especificação e os caminhos de importação, recorte, imagem, quota, armazenamento e interface existentes.
++
++Este registo descreve trabalho e validação automática executados pelo assistente. **A revisão e validação pelo aluno ainda não foram registadas.** Não foram inventados nomes/números de alunos, medições do Compose ou testes manuais.
++
++## Decisões
++
++| ID | Decisão | Alternativa considerada | Motivo |
++|---|---|---|---|
++| D1 | Worker próprio e fila `video_apply_queue`, respostas comuns em `video_job_queue` | Processar na rota HTTP | Isola trabalho pesado e mantém o modelo de pedidos existente |
++| D2 | PyAV descodifica/codifica vídeo; funções Pillow partilhadas com os workers de imagem | Filtros FFmpeg independentes ou um pedido RabbitMQ por fotograma | Reutiliza exatamente os algoritmos de imagem e preserva a ordem sem criar milhares de trabalhos |
++| D3 | Copiar pacotes de áudio e tempos; manter codec/contentor | Recodificar áudio ou converter todos os MOV para H.264 | Respeita o contrato de áudio inalterado e formato/codec iguais |
++| D4 | Processo filho para download, frames e upload | Trabalho no ciclo principal do broker | Permite heartbeats/progresso e término de um processamento bloqueado |
++| D5 | Ficheiro temporário completo antes do upload, limpeza no cancelamento e replay | Publicar ficheiro enquanto se processa | Evita apresentar resultados incompletos |
++| D6 | Limites específicos APPLY, separados da importação/recorte | Usar os limites gerais de vídeo | A especificação tem 2/10 min e limites de resolução próprios |
++| D7 | Uma reserva por cadeia, devolução com chave do job e dia, manutenção de compensações pendentes | Devolução sem idempotência ou uma operação por ferramenta | Evita descontos por número de frames/ferramentas e devoluções repetidas |
++| D8 | Confirmação de publicação e ack após processamento da resposta | Publicação sem confirmação e ack antes das escritas | Permite tratar falhas do broker e reentregar respostas não persistidas |
++| D9 | Revalidar tamanho real antes de criar resultado | Assumir que resultado é menor que original | A recodificação pode aumentar o tamanho do vídeo |
++| D10 | Preservar resultado em sucesso repetido e recuperar por fingerprint | Criar outro resultado ou apagar por já ser estado final | Evita duplicação/perda do resultado após reentrega ou reinício |
++| D11 | Resolução final com limites literais de largura/altura | Trocar os limites para vídeos verticais | Mantém a interpretação expressa da especificação; alteração requer decisão do grupo |
++| D12 | Documentar codec sem codificador e reprodução de dimensões ímpares | Converter silenciosamente ou arredondar dimensões | Mantém o contrato e torna limitações verificáveis |
++
++## Validação executada pelo assistente
++
++Foram gerados vídeos sintéticos e executados testes de media, worker, HTTP, ciclo de vida e JWT, bem como tipos, lint e build frontend. Os resultados e o alcance dos adaptadores estão em [tests/uc-vid-003/resultados.md](../tests/uc-vid-003/resultados.md).
++
++Durante os testes foi detetado um caso em que o codificador ainda não tinha criado o ficheiro ao verificar o limite de tamanho, em vídeos sem áudio com atraso de frames. A verificação foi corrigida e os testes de cadência fracionária/tempos variáveis passaram. Foi também corrigido o comportamento comum de respostas repetidas que podia apagar um resultado concluído.
++
++Foi criada uma workflow de CI com testes de media, API, gateway, frontend e compensação idempotente num MongoDB 4.4 descartável. O teste MongoDB é ignorado localmente quando `MONGODB_TEST_URL` não está definido; não se declara que passou antes de consultar o resultado da CI.
++
++## Fontes técnicas consultadas
++
++- Código e documentação deste repositório, em especial a especificação UC-VID-003 e o contrato de jobs de TRIM.
++- [PyAV — remuxing](https://pyav.org/docs/stable/cookbook/basics.html): cópia de streams/pacotes sem recodificação.
++- [PyAV — containers](https://pyav.org/docs/stable/api/container.html): demux/decode/encode e streams. A API efetiva de `add_stream_from_template` foi confirmada no PyAV 16.1.0 instalado.
++- [MongoDB — updates com pipeline](https://www.mongodb.com/docs/manual/tutorial/update-documents-with-aggregation-pipeline/): atualização do contador e chave de devolução num documento.
++
++## Revisão pelo aluno — por preencher depois de executar
++
++- Data, identificação e ambiente: pendentes.
++- Código revisto, decisões aceites/alteradas e entendimento do processamento de frames: pendentes.
++- Checklist manual e testes com o Compose: pendentes.
++- Medições de receção, progresso e cenário A4: pendentes.
++- Comentários do grupo/docente e correções posteriores: pendentes.
++
++As limitações remanescentes de quota legada, bloqueio por processo e browsers constam de [UC-VID-003-implementacao.md](UC-VID-003-implementacao.md). Esta entrega é um MVP para revisão e verificação; não é uma declaração de preparação para produção.
+diff --git a/README.md b/README.md
+index 97dc670..97ad3a8 100644
+--- a/README.md
++++ b/README.md
+@@ -20,6 +20,7 @@ PictuRAS is a web-based image editing platform that combines traditional image p
+ - [Project Structure](#-project-structure)
+ - [Development Workflow](#-development-workflow)
+ - [Troubleshooting](#-troubleshooting)
++- [Video tools — UC-VID-003](#video-tools--uc-vid-003)
+ - [Authors](#-authors)
+ - [License](#-license)
+ - [Contributing](#-contributing)
+@@ -492,6 +493,42 @@ local data**, so use it deliberately.
+ 
+ ---
+ 
++## Video tools — UC-VID-003
++
++The video library supports importing, trimming and applying a chain of **Resize,
++Binarization and Rotate** to every frame. Open an available video → **Ferramentas
++de vídeo → Aplicar ferramentas**, add 1–3 tools and select **Aplicar ferramentas**.
++Jobs show progress and processed frames, can be cancelled, and save a new
++`{name}_editado` video. Audio packets and frame timestamps are preserved.
++
++APPLY limits are **2 min / 200 MiB / 1920 × 1080** for registered free users and
++**10 min / 2 GiB / 3840 × 2160** for Premium. Active jobs share the existing
++TRIM limit of one/three. A completed chain uses one daily operation; failed or
++cancelled jobs refund their reservation. Anonymous users must register first.
++
++Start or update the development stack with `docker compose up -d --build`.
++The `video_apply_tool` service and `video_apply_queue` are declared automatically;
++existing volumes do not need to be removed.
++
++Details, codec/browser limitations and architecture:
++[UC-VID-003 implementation](Docs/UC-VID-003-implementacao.md).
++[Automated results](tests/uc-vid-003/resultados.md),
++[manual checklist](tests/uc-vid-003/checklist-manual.md), and
++[AI development record](Docs/registo-ia-apply.md).
++
++Run the isolated tests from the repository root (Node dependencies installed
++in `projects`, `apiGateway`, `users` and `frontend`; `ffmpeg` on PATH):
++
++```bash
++python -m pip install -r Tools/video_apply/requirements.txt
++python -m unittest discover -s tests/uc-vid-003 -p 'test_*.py' -v
++node --test tests/uc-vid-003/*.test.cjs
++```
++
++`quota-mongo.test.cjs` additionally requires a disposable MongoDB and
++`MONGODB_TEST_URL`. GitHub Actions supplies MongoDB 4.4. Passing isolated tests
++does not replace the full-stack/browser checklist or performance measurements.
++
+ ## 👥 Authors
+ 
+ PictuRAS is a cumulative effort of several generations of students of _Requisitos e Arquitetura
+diff --git a/Tools/binarization/binarization.py b/Tools/binarization/binarization.py
+index a828b5c..5637393 100644
+--- a/Tools/binarization/binarization.py
++++ b/Tools/binarization/binarization.py
+@@ -1,3 +1,4 @@
++from utils import image_operations
+ import sys
+ import json
+ import datetime
+@@ -30,8 +31,7 @@ class Binarization:
+         img = self._img_handler.get_img(img_path)
+ 
+         # add binarization
+-        new_img = ImageOps.grayscale(img)
+-        new_img = new_img.point(lambda x: 0 if x < threshold else 255)
++        new_img = image_operations.binarize(img, threshold)
+ 
+         # save image
+         self._img_handler.store_img(new_img, output_path)
+@@ -79,4 +79,4 @@ class Binarization:
+ 
+ if __name__ == '__main__':
+     binarization = Binarization()
+-    binarization.exec(sys.argv)
+\ No newline at end of file
++    binarization.exec(sys.argv)
+diff --git a/Tools/resize/resize.py b/Tools/resize/resize.py
+index 9da533f..21dac69 100644
+--- a/Tools/resize/resize.py
++++ b/Tools/resize/resize.py
+@@ -1,3 +1,4 @@
++from utils import image_operations
+ import sys
+ import json
+ import datetime
+@@ -26,7 +27,7 @@ class Resize:
+     
+     def resize_image(self, img_path, store_img_path, dimensions):
+         img = self._img_handler.get_img(img_path)
+-        new_img = img.resize(dimensions)
++        new_img = image_operations.resize(img, dimensions)
+         self._img_handler.store_img(new_img, store_img_path)
+             
+     def resize_callback(self, ch, method, properties, body):
+diff --git a/Tools/rotate/rotate.py b/Tools/rotate/rotate.py
+index 264b399..ca5772a 100644
+--- a/Tools/rotate/rotate.py
++++ b/Tools/rotate/rotate.py
+@@ -1,3 +1,4 @@
++from utils import image_operations
+ import sys
+ import json
+ import datetime
+@@ -22,7 +23,7 @@ class Rotate:
+ 
+     def rotate_image(self, img_path, store_img_path, degrees, expand=True):
+         img = self._img_handler.get_img(img_path)
+-        new_img = img.rotate(degrees, expand=expand)
++        new_img = image_operations.rotate(img, degrees, expand=expand)
+         self._img_handler.store_img(new_img, store_img_path)
+ 
+     def rotate_callback(self, ch, method, properties, body):
+diff --git a/Tools/utils/image_operations.py b/Tools/utils/image_operations.py
+new file mode 100644
+index 0000000..59261a5
+--- /dev/null
++++ b/Tools/utils/image_operations.py
+@@ -0,0 +1,58 @@
++"""Pure Pillow operations shared by the image workers and UC-VID-003."""
++
++from PIL import ImageOps
++
++
++def resize(image, dimensions):
++    return image.resize(dimensions)
++
++
++def binarize(image, threshold):
++    return ImageOps.grayscale(image).point(lambda value: 0 if value < threshold else 255)
++
++
++def rotate(image, degrees, expand=True):
++    return image.rotate(degrees, expand=expand)
++
++
++def validate_chain(tools):
++    if not isinstance(tools, list) or not 1 <= len(tools) <= 3:
++        raise ValueError("Choose between one and three tools")
++    for tool in tools:
++        if not isinstance(tool, dict):
++            raise ValueError("Invalid tool")
++        kind = tool.get("type")
++        if kind == "resize":
++            for key in ("width", "height"):
++                if type(tool.get(key)) is not int or not 16 <= tool[key] <= 3840:
++                    raise ValueError("Dimensions must be integers between 16 and 3840")
++        elif kind == "binarization":
++            if type(tool.get("threshold")) is not int or not 0 <= tool["threshold"] <= 255:
++                raise ValueError("Threshold must be an integer between 0 and 255")
++        elif kind == "rotate":
++            if type(tool.get("degrees")) is not int or tool["degrees"] not in (90, 180, 270):
++                raise ValueError("Rotation must be 90, 180 or 270 degrees")
++        else:
++            raise ValueError("Unsupported tool")
++
++
++def chain_dimensions(width, height, tools):
++    for tool in tools:
++        if tool["type"] == "resize":
++            width, height = tool["width"], tool["height"]
++        elif tool["type"] == "rotate" and tool["degrees"] in (90, 270):
++            width, height = height, width
++    return width, height
++
++
++def apply_chain(image, tools):
++    for tool in tools:
++        if tool["type"] == "resize":
++            image = resize(image, (tool["width"], tool["height"]))
++        elif tool["type"] == "binarization":
++            image = binarize(image, tool["threshold"])
++        elif tool["type"] == "rotate":
++            image = rotate(image, tool["degrees"])
++        else:
++            raise ValueError("Unsupported tool")
++    return image
+diff --git a/Tools/video_apply/Dockerfile b/Tools/video_apply/Dockerfile
+new file mode 100644
+index 0000000..0ee93a3
+--- /dev/null
++++ b/Tools/video_apply/Dockerfile
+@@ -0,0 +1,9 @@
++FROM python:3.11-slim
++
++WORKDIR /app
++COPY ./video_apply/requirements.txt .
++RUN pip install --no-cache-dir -r requirements.txt
++COPY ./utils ./utils
++COPY ./video_apply .
++
++CMD ["python", "-u", "video_apply.py"]
+diff --git a/Tools/video_apply/processing.py b/Tools/video_apply/processing.py
+new file mode 100644
+index 0000000..21e8ea6
+--- /dev/null
++++ b/Tools/video_apply/processing.py
+@@ -0,0 +1,143 @@
++"""Apply shared Pillow tools to every frame; remux audio without re-encoding."""
++
++import os
++from fractions import Fraction
++
++import av
++
++from utils.image_operations import apply_chain, chain_dimensions, validate_chain
++
++
++class JobCancelled(Exception):
++    pass
++
++
++class ProcessingError(Exception):
++    pass
++
++
++ENCODERS = {"h264": "libx264", "hevc": "libx265", "prores": "prores_ks"}
++
++
++def pixel_format(encoder, source_format, width, height):
++    supported = [fmt.name for fmt in av.Codec(encoder, "w").video_formats or []]
++    # Chroma subsampling requires even dimensions. Use 4:4:4 for an odd
++    # H.264 output instead of silently cropping or padding the requested size.
++    preferences = ["yuv420p", source_format, "yuv444p", "rgb24", "yuv422p10le"]
++    for name in preferences + supported:
++        if name not in supported:
++            continue
++        if ("420" in name and (width % 2 or height % 2)) or ("422" in name and width % 2):
++            continue
++        return name
++    raise ProcessingError("No encoder pixel format for the requested dimensions")
++
++
++def process_video(input_path, output_path, tools, container_format, codec,
++                  should_cancel=lambda: False, on_progress=lambda *_: None,
++                  max_duration=600, max_output_bytes=10 * 1024**3):
++    validate_chain(tools)
++    if container_format not in ("mp4", "mov") or (container_format == "mp4" and codec != "h264"):
++        raise ProcessingError("Unsupported container/codec")
++    frames_processed = 0
++    try:
++        with av.open(input_path) as source:
++            if not source.streams.video:
++                raise ProcessingError("No video stream")
++            stream = source.streams.video[0]
++            if stream.codec_context.name != codec:
++                raise ProcessingError("Source codec does not match its metadata")
++            duration = float(source.duration / av.time_base) if source.duration else 0
++            if duration <= 0 or duration > max_duration + 0.001:
++                raise ProcessingError("Duration exceeds this job's limit")
++            width, height = chain_dimensions(stream.width, stream.height, tools)
++            rate = stream.average_rate or stream.guessed_rate
++            if not rate or not stream.time_base:
++                raise ProcessingError("Unknown frame rate or timestamps")
++            frame_count = stream.frames or None  # exact when the container supplies it
++            encoder = ENCODERS.get(codec, codec)
++            options = {"movflags": "+faststart"}
++            with av.open(output_path, "w", format=container_format, options=options) as output:
++                output.metadata.update(source.metadata)
++                video = output.add_stream(encoder, rate=rate)
++                video.width, video.height = width, height
++                video.pix_fmt = pixel_format(encoder, stream.codec_context.format.name, width, height)
++                video.time_base = video.codec_context.time_base = stream.time_base
++                video.codec_context.sample_aspect_ratio = Fraction(1, 1)
++                if codec == "h264":
++                    video.options = {"preset": "veryfast", "crf": "18"}
++                elif codec == "hevc":
++                    video.options = {"preset": "fast", "crf": "18"}
++                elif codec == "mpeg4":
++                    video.bit_rate = max(stream.bit_rate or 0, width * height * int(rate) // 4)
++                audio = {s.index: output.add_stream_from_template(s) for s in source.streams.audio}
++                durations = {}
++                first_pts = last_pts = None
++
++                def mux_encoded(packet):
++                    if packet.pts in durations:
++                        packet.duration = durations.pop(packet.pts)
++                    output.mux(packet)
++
++                for packet in source.demux(stream, *source.streams.audio):
++                    if should_cancel():
++                        raise JobCancelled()
++                    if packet.stream.index in audio:
++                        if packet.dts is not None:
++                            packet.stream = audio[packet.stream.index]
++                            output.mux(packet)
++                        continue
++                    for frame in packet.decode():
++                        if should_cancel():
++                            raise JobCancelled()
++                        if frame.is_corrupt or frame.pts is None or frame.time_base != stream.time_base:
++                            raise ProcessingError("Corrupt frame or missing timestamps")
++                        if first_pts is None:
++                            first_pts = frame.pts
++                        if last_pts is not None and frame.pts <= last_pts:
++                            raise ProcessingError("Non-monotonic frame timestamps")
++                        last_pts = frame.pts
++                        if (last_pts - first_pts) * stream.time_base > max_duration:
++                            raise ProcessingError("Decoded duration exceeds this job's limit")
++                        if (frame.width, frame.height) != (stream.width, stream.height):
++                            raise ProcessingError("Variable resolution is outside the MVP")
++                        with frame.to_image() as original:
++                            image = apply_chain(original, tools)
++                            try:
++                                edited = av.VideoFrame.from_image(image.convert("RGB"))
++                            finally:
++                                if image is not original:
++                                    image.close()
++                        edited.pts, edited.time_base, edited.duration = frame.pts, frame.time_base, frame.duration
++                        durations[frame.pts] = frame.duration
++                        for encoded in video.encode(edited):
++                            mux_encoded(encoded)
++                        frames_processed += 1
++                        percent = min(95, int(frames_processed / frame_count * 95)) if frame_count else min(95, int(float(frame.time) / duration * 95))
++                        on_progress(percent, frames_processed, frame_count)
++                        if os.path.exists(output_path) and os.path.getsize(output_path) > max_output_bytes:
++                            raise ProcessingError("Output exceeds the storage limit")
++                for encoded in video.encode():
++                    mux_encoded(encoded)
++            if frames_processed == 0 or (frame_count and frames_processed != frame_count):
++                raise ProcessingError("A frame was lost while decoding")
++            if should_cancel():
++                raise JobCancelled()
++            if os.path.getsize(output_path) > max_output_bytes:
++                raise ProcessingError("Output exceeds the storage limit")
++        # Reopen the complete container before making it visible in storage.
++        with av.open(output_path) as result:
++            result_stream = result.streams.video[0]
++            if result_stream.codec_context.name != codec or result_stream.average_rate != rate or (result_stream.frames and result_stream.frames != frames_processed):
++                raise ProcessingError("Result codec/frame count differs")
++            return {
++                "format": container_format, "codec": codec, "width": width, "height": height,
++                "duration": float(result.duration / av.time_base),
++                "frame_count": frames_processed, "fps": float(rate),
++                "size": os.path.getsize(output_path),
++            }
++    except Exception:
++        # A partial local file is never a usable result, including cancellation.
++        if os.path.exists(output_path):
++            os.remove(output_path)
++        raise
+diff --git a/Tools/video_apply/requirements.txt b/Tools/video_apply/requirements.txt
+new file mode 100644
+index 0000000..35f7b73
+--- /dev/null
++++ b/Tools/video_apply/requirements.txt
+@@ -0,0 +1,4 @@
++av==16.1.0
++pillow==11.0.0
++pika==1.3.2
++requests==2.32.3
+diff --git a/Tools/video_apply/video_apply.py b/Tools/video_apply/video_apply.py
+new file mode 100644
+index 0000000..8794f77
+--- /dev/null
++++ b/Tools/video_apply/video_apply.py
+@@ -0,0 +1,233 @@
++"""UC-VID-003 worker. A child process keeps processing off the broker thread."""
++
++import datetime
++import json
++import multiprocessing
++import os
++import queue
++import re
++import tempfile
++import time
++
++import pika
++import requests
++import urllib3
++
++if __package__:
++    from .processing import process_video
++else:
++    from processing import process_video
++from utils.image_operations import validate_chain
++
++urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
++EXCHANGE = "picturas"
++REQUEST_QUEUE = "video_apply_queue"
++REPLY_QUEUE = "video_job_queue"
++PROJECTS_URL = os.getenv("PROJECTS_URL", "https://projects:9001")
++STORAGE_URL = os.getenv("IMG_STORAGE_URL", "http://img_storage:11000")
++TIMEOUT = int(os.getenv("VIDEO_APPLY_TIMEOUT", "900"))
++FAILED_MESSAGE = "Não foi possível aplicar as ferramentas ao vídeo. Tente novamente."
++
++
++def storage_url(params):
++    return f"{STORAGE_URL}/video/{params['userId']}/{params['projectId']}/{params['outputFileName']}"
++
++
++def execute_job(params, directory, progress, frames, total, results):
++    """Spawn entry point. Only a complete file is uploaded; one frame in memory."""
++    try:
++        input_path = os.path.join(directory, "input." + params["format"])
++        output_path = os.path.join(directory, "output." + params["format"])
++        with requests.get(params["inputVideoURL"], stream=True, timeout=(5, 30)) as response:
++            response.raise_for_status()
++            with open(input_path, "wb") as target:
++                for chunk in response.iter_content(1024 * 1024):
++                    target.write(chunk)
++
++        def report(percent, done, count):
++            progress.value = percent
++            frames.value = done
++            total.value = count or 0
++
++        metadata = process_video(
++            input_path, output_path, params["tools"], params["format"], params["codec"],
++            on_progress=report, max_duration=params["maxDuration"],
++            max_output_bytes=params["maxOutputBytes"],
++        )
++        if (metadata["width"], metadata["height"]) != (params["width"], params["height"]):
++            raise ValueError("Result dimensions do not match the validated chain")
++        total.value = frames.value = metadata["frame_count"]
++        progress.value = 98
++        with open(output_path, "rb") as video:
++            response = requests.put(storage_url(params), data=video, timeout=(5, 60), headers={
++                "Content-Type": "video/quicktime" if params["format"] == "mov" else "video/mp4",
++                "Content-Length": str(metadata["size"]),
++            })
++        response.raise_for_status()
++        video_key = response.json()["data"]["videoKey"]
++        results.put({"type": "success", "output": {
++            **metadata, "videoKey": video_key, "fileName": params["outputFileName"],
++        }})
++    except Exception as error:
++        # Log the cause internally; do not expose paths or storage URLs to users.
++        print(f"[video-apply] processing failed: {type(error).__name__}: {error}", flush=True)
++        results.put({"type": "error", "error": {"code": "PROCESSING_FAILED", "message": FAILED_MESSAGE}})
++
++
++class VideoApplyWorker:
++    def __init__(self):
++        credentials = pika.PlainCredentials(os.getenv("RABBITMQ_USERNAME", "user"),
++                                            os.getenv("RABBITMQ_PASSWORD", "password"))
++        self.connection = pika.BlockingConnection(pika.ConnectionParameters(
++            os.getenv("RABBITMQ_HOST", "rabbitmq"), int(os.getenv("RABBITMQ_PORT", "5672")),
++            "/", credentials, heartbeat=60, blocked_connection_timeout=30,
++        ))
++        self.channel = self.connection.channel()
++        self.channel.exchange_declare(exchange=EXCHANGE, exchange_type="direct", durable=True)
++        for name in (REQUEST_QUEUE, REPLY_QUEUE):
++            self.channel.queue_declare(queue=name, durable=True)
++            self.channel.queue_bind(queue=name, exchange=EXCHANGE, routing_key=name)
++        self.channel.basic_qos(prefetch_count=1)
++        self.channel.confirm_delivery()
++
++    def reply(self, job_id, kind, **fields):
++        self.channel.basic_publish(exchange=EXCHANGE, routing_key=REPLY_QUEUE,
++            body=json.dumps({"jobId": job_id, "type": kind,
++                "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(), **fields}),
++            properties=pika.BasicProperties(delivery_mode=2, content_type="application/json"),
++            mandatory=True)
++
++    @staticmethod
++    def job_state(job_id):
++        response = requests.get(f"{PROJECTS_URL}/internal/video-jobs/{job_id}/state",
++                                timeout=2, verify=False)
++        if response.status_code == 404:
++            return "missing"
++        response.raise_for_status()
++        return response.json()["state"]
++
++    @staticmethod
++    def cleanup_storage(params):
++        response = requests.delete(
++            f"{STORAGE_URL}/delete/{params['userId']}/{params['projectId']}/video/{params['outputFileName']}",
++            timeout=5,
++        )
++        if response.status_code != 404:
++            response.raise_for_status()
++
++    def process(self, job_id, params):
++        validate_chain(params.get("tools"))
++        if params.get("format") not in ("mp4", "mov") or not params.get("codec"):
++            raise ValueError("Unsupported video")
++        if params.get("outputFileName") != f"{job_id}.{params['format']}":
++            raise ValueError("Invalid output name")
++        for key in ("inputVideoURL", "userId", "projectId", "maxDuration", "maxOutputBytes", "width", "height"):
++            if not params.get(key):
++                raise ValueError("Missing job parameter")
++        state = self.job_state(job_id)
++        if state not in ("queued", "processing"):
++            if state != "completed":
++                # Also clean on replay after a storage/network interruption.
++                self.cleanup_storage(params)
++            return {"type": "cancelled"} if state == "cancelled" else None
++        context = multiprocessing.get_context("spawn")
++        progress, frames, total = context.Value("i", 0), context.Value("q", 0), context.Value("q", 0)
++        results = context.Queue()
++        with tempfile.TemporaryDirectory(prefix="video-apply-") as directory:
++            child = context.Process(target=execute_job, args=(params, directory, progress, frames, total, results))
++            child.start()
++            started = last_report = last_check = time.monotonic()
++            terminal = None
++            try:
++                self.reply(job_id, "progress", progress=0, framesProcessed=0, frameCount=None)
++                while child.is_alive():
++                    # No decode, filter or upload can block heartbeats/progress.
++                    self.connection.process_data_events(time_limit=0.25)
++                    now = time.monotonic()
++                    if now - last_report >= 2:
++                        self.reply(job_id, "progress", progress=progress.value,
++                                   framesProcessed=frames.value, frameCount=total.value or None)
++                        last_report = now
++                    if now - last_check >= 2:
++                        state = self.job_state(job_id)
++                        last_check = now
++                        if state not in ("queued", "processing"):
++                            terminal = {"type": "ignored"} if state == "completed" else {"type": "cancelled"}
++                            break
++                    if now - started >= TIMEOUT:
++                        terminal = {"type": "error", "error": {"code": "TIMEOUT", "message": FAILED_MESSAGE}}
++                        break
++                if terminal:
++                    child.terminate()
++                child.join(timeout=5)
++                if child.is_alive():
++                    child.kill()
++                    child.join()
++                if not terminal:
++                    try:
++                        terminal = results.get(timeout=2)
++                    except queue.Empty:
++                        terminal = {"type": "error", "error": {"code": "WORKER_FAILED", "message": FAILED_MESSAGE}}
++                if terminal["type"] == "success":
++                    state = self.job_state(job_id)
++                    if state not in ("queued", "processing"):
++                        terminal = {"type": "ignored"} if state == "completed" else {"type": "cancelled"}
++                if terminal["type"] == "ignored":
++                    return None
++                if terminal["type"] != "success":
++                    self.cleanup_storage(params)
++                else:
++                    self.reply(job_id, "progress", progress=99, framesProcessed=frames.value, frameCount=total.value)
++                return terminal
++            finally:
++                if child.is_alive():
++                    child.terminate()
++                    child.join(timeout=5)
++                    if child.is_alive():
++                        child.kill()
++                        child.join()
++                results.close()
++
++    def on_message(self, channel, method, properties, body):
++        try:
++            message = json.loads(body)
++            if not isinstance(message, dict) or not isinstance(message.get("messageId"), str) or not re.fullmatch(r"[a-fA-F0-9]{24}", message["messageId"]):
++                raise ValueError("Invalid message")
++        except (ValueError, TypeError):
++            channel.basic_ack(method.delivery_tag)
++            return
++        job_id = message["messageId"]
++        try:
++            if message.get("procedure") != "video_apply":
++                terminal = {"type": "error", "error": {"code": "INVALID_PROCEDURE", "message": FAILED_MESSAGE}}
++            else:
++                terminal = self.process(job_id, message.get("parameters") or {})
++            if terminal:
++                kind = terminal.pop("type")
++                self.reply(job_id, kind, **terminal)
++        except (requests.RequestException, pika.exceptions.AMQPError):
++            # Network interruption: leave the request unacked for safe replay.
++            raise
++        except Exception as error:
++            print(f"[{job_id}] failed: {type(error).__name__}: {error}", flush=True)
++            self.reply(job_id, "error", error={"code": "PROCESSING_FAILED", "message": FAILED_MESSAGE})
++        channel.basic_ack(method.delivery_tag)
++
++    def run(self):
++        self.channel.basic_consume(queue=REQUEST_QUEUE, on_message_callback=self.on_message)
++        print("video_apply worker waiting for requests", flush=True)
++        self.channel.start_consuming()
++
++
++if __name__ == "__main__":
++    while True:
++        try:
++            worker = VideoApplyWorker()
++            try:
++                worker.run()
++            finally:
++                if worker.connection.is_open:
++                    worker.connection.close()
++        except (pika.exceptions.AMQPError, requests.RequestException) as error:
++            print(f"[video-apply] service unavailable: {type(error).__name__}; retry in 5 s", flush=True)
++            time.sleep(5)
+diff --git a/apiGateway/routes/videos.js b/apiGateway/routes/videos.js
+index 80c0189..3b21436 100644
+--- a/apiGateway/routes/videos.js
++++ b/apiGateway/routes/videos.js
+@@ -148,6 +148,11 @@ router.post("/:user/:project/videos/:video/trim", auth.checkToken, function (req
+   forward(req, res, "post", videosPath(req, `/${req.params.video}/trim`), req.body);
+ });
+ 
++// UC-VID-003: ordered chain of 1–3 image tools, applied to every frame.
++router.post("/:user/:project/videos/:video/apply", auth.checkToken, function (req, res) {
++  forward(req, res, "post", videosPath(req, `/${req.params.video}/apply`), req.body);
++});
++
+ /**
+  * Get the video tool requests of a project, most recent first
+  * @returns { "jobs": [Job] }
+diff --git a/docker-compose.yaml b/docker-compose.yaml
+index 0df1b7a..d3eed11 100644
+--- a/docker-compose.yaml
++++ b/docker-compose.yaml
+@@ -383,6 +383,25 @@ services:
+       IMG_STORAGE_URL: http://img_storage:11000
+       PROJECTS_URL: https://projects:9001
+ 
++  # UC-VID-003: shared image operations on every decoded frame
++  video_apply_tool:
++    build:
++      context: ./Tools
++      dockerfile: video_apply/Dockerfile
++    restart: on-failure
++    networks:
++      - elk
++    depends_on:
++      rabbitmq:
++        condition: service_healthy
++    environment:
++      RABBITMQ_HOST: rabbitmq
++      RABBITMQ_PORT: 5672
++      RABBITMQ_USERNAME: user
++      RABBITMQ_PASSWORD: password
++      IMG_STORAGE_URL: http://img_storage:11000
++      PROJECTS_URL: https://projects:9001
++
+   saturation_tool:
+     build:
+       context: ./Tools
+diff --git a/frontend/components/project-page/video-apply-panel.tsx b/frontend/components/project-page/video-apply-panel.tsx
+new file mode 100644
+index 0000000..835281d
+--- /dev/null
++++ b/frontend/components/project-page/video-apply-panel.tsx
+@@ -0,0 +1,145 @@
++"use client";
++
++import { useRef, useState } from "react";
++import { useQueryClient } from "@tanstack/react-query";
++import { ArrowDown, ArrowUp, LoaderCircle, SlidersHorizontal, Trash2 } from "lucide-react";
++import { Button } from "@/components/ui/button";
++import { Input } from "@/components/ui/input";
++import { Label } from "@/components/ui/label";
++import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
++import { useToast } from "@/hooks/use-toast";
++import { useProjectInfo } from "@/providers/project-provider";
++import { useSession } from "@/providers/session-provider";
++import { getVideoErrorMessage, ProjectVideo } from "@/lib/videos";
++import { applyVideoTools, VideoJob } from "@/lib/video-jobs";
++import { APPLY_TOOL_LABELS, applyDimensions, applyLimitsFor, applyToolsError, VideoApplyTool } from "@/lib/video-apply";
++import { videoJobsKey } from "@/lib/queries/video-jobs";
++import { useUpdateSession } from "@/lib/mutations/session";
++
++export function VideoApplyPanel({ video }: { video: ProjectVideo }) {
++  const { _id: pid } = useProjectInfo();
++  const session = useSession();
++  const qc = useQueryClient();
++  const { toast } = useToast();
++  const updateSession = useUpdateSession();
++  const sequence = useRef(0);
++  const [items, setItems] = useState<{ id: number; tool: VideoApplyTool }[]>([]);
++  const [submitting, setSubmitting] = useState(false);
++  const tools = items.map((item) => item.tool);
++  const limits = applyLimitsFor(session.user.type);
++  const invalid = applyToolsError(video, tools, session.user.type);
++  const dimensions = applyDimensions(video, tools);
++  const isFree = session.user.type === "free";
++  const remaining = session.user.remaining_operations;
++  const noOperations = isFree && remaining != null && remaining <= 0;
++
++  function add(type: VideoApplyTool["type"]) {
++    const tool: VideoApplyTool = type === "resize"
++      ? { type, width: Math.min(video.width || 1280, limits.maxWidth), height: Math.min(video.height || 720, limits.maxHeight) }
++      : type === "binarization" ? { type, threshold: 128 } : { type, degrees: 90 };
++    setItems((current) => current.length < 3 ? [...current, { id: sequence.current++, tool }] : current);
++  }
++
++  function edit(index: number, tool: VideoApplyTool) {
++    setItems((current) => current.map((item, i) => i === index ? { ...item, tool } : item));
++  }
++
++  function move(index: number, step: number) {
++    setItems((current) => {
++      const copy = [...current];
++      [copy[index], copy[index + step]] = [copy[index + step], copy[index]];
++      return copy;
++    });
++  }
++
++  async function apply() {
++    if (invalid || noOperations || submitting) return;
++    setSubmitting(true);
++    try {
++      const job = await applyVideoTools({ uid: session.user._id, pid, token: session.token, videoId: video._id, tools });
++      qc.setQueryData<VideoJob[]>(videoJobsKey(session.user._id, pid, session.token),
++        (jobs) => [job, ...(jobs ?? []).filter((other) => other._id !== job._id)]);
++      updateSession.mutate({ userId: session.user._id, token: session.token });
++      toast({ title: "Pedido em fila", description: "Pode acompanhar o progresso nos pedidos deste vídeo." });
++    } catch (error) {
++      toast({ title: "Não foi possível aplicar as ferramentas", description: getVideoErrorMessage(error), variant: "destructive" });
++    } finally { setSubmitting(false); }
++  }
++
++  return (
++    <section className="flex flex-col gap-4" aria-label="Aplicar ferramentas a todos os fotogramas">
++      <div>
++        <h3 className="text-sm font-semibold">Aplicar ferramentas a todos os fotogramas</h3>
++        <p className="mt-1 text-sm text-muted-foreground">
++          Escolha até 3 ferramentas e a ordem de aplicação. O áudio é preservado e o resultado é guardado como um novo vídeo.
++        </p>
++        <p className="mt-1 text-xs text-muted-foreground">
++          {isFree ? "Conta gratuita: até 2 min, 200 MB e 1920 × 1080 px." : "Premium: até 10 min, 2 GB e 3840 × 2160 px."}
++        </p>
++      </div>
++      <div className="flex flex-wrap gap-2">
++        {(["resize", "binarization", "rotate"] as const).map((type) => (
++          <Button key={type} type="button" size="sm" variant="outline" disabled={items.length >= 3 || submitting} onClick={() => add(type)}>
++            + {APPLY_TOOL_LABELS[type]}
++          </Button>
++        ))}
++      </div>
++      <ol className="flex flex-col gap-3" aria-label="Cadeia de ferramentas">
++        {items.map(({ id, tool }, index) => (
++          <li key={id} className="rounded-md border p-3">
++            <div className="mb-3 flex items-center justify-between gap-2">
++              <h4 className="text-sm font-medium">{index + 1}. {APPLY_TOOL_LABELS[tool.type]}</h4>
++              <div className="flex gap-1">
++                <Button size="icon" className="size-8" variant="ghost" disabled={index === 0 || submitting} aria-label={`Mover ferramenta ${index + 1} para cima`} onClick={() => move(index, -1)}><ArrowUp className="size-4" /></Button>
++                <Button size="icon" className="size-8" variant="ghost" disabled={index === items.length - 1 || submitting} aria-label={`Mover ferramenta ${index + 1} para baixo`} onClick={() => move(index, 1)}><ArrowDown className="size-4" /></Button>
++                <Button size="icon" className="size-8" variant="ghost" disabled={submitting} aria-label={`Remover ferramenta ${index + 1}`} onClick={() => setItems((current) => current.filter((item) => item.id !== id))}><Trash2 className="size-4" /></Button>
++              </div>
++            </div>
++            {tool.type === "resize" && (
++              <div className="grid grid-cols-2 gap-3">
++                {(["width", "height"] as const).map((key) => (
++                  <div key={key} className="flex flex-col gap-1">
++                    <Label htmlFor={`apply-${video._id}-${id}-${key}`}>{key === "width" ? "Largura" : "Altura"} (16–3840 px)</Label>
++                    <Input id={`apply-${video._id}-${id}-${key}`} type="number" min={16} max={3840} step={1} disabled={submitting}
++                      value={Number.isNaN(tool[key]) ? "" : tool[key]}
++                      onChange={(event) => edit(index, { ...tool, [key]: event.target.valueAsNumber })} />
++                  </div>
++                ))}
++              </div>
++            )}
++            {tool.type === "binarization" && (
++              <div className="flex flex-col gap-1">
++                <Label htmlFor={`apply-${video._id}-${id}-threshold`}>Limiar (0–255)</Label>
++                <Input id={`apply-${video._id}-${id}-threshold`} type="number" min={0} max={255} step={1} disabled={submitting}
++                  value={Number.isNaN(tool.threshold) ? "" : tool.threshold} onChange={(event) => edit(index, { ...tool, threshold: event.target.valueAsNumber })} />
++              </div>
++            )}
++            {tool.type === "rotate" && (
++              <div className="flex flex-col gap-1">
++                <Label htmlFor={`apply-${video._id}-${id}-degrees`}>Ângulo (sentido contrário ao dos ponteiros do relógio)</Label>
++                <Select value={String(tool.degrees)} disabled={submitting} onValueChange={(value) => edit(index, { ...tool, degrees: Number(value) as 90 | 180 | 270 })}>
++                  <SelectTrigger id={`apply-${video._id}-${id}-degrees`}><SelectValue /></SelectTrigger>
++                  <SelectContent>{[90, 180, 270].map((degrees) => <SelectItem key={degrees} value={String(degrees)}>{degrees}°</SelectItem>)}</SelectContent>
++                </Select>
++              </div>
++            )}
++          </li>
++        ))}
++      </ol>
++      <div aria-live="polite">
++        {items.length > 0 && <p className="text-sm">Resolução final: {Number.isFinite(dimensions.width) ? dimensions.width : "—"} × {Number.isFinite(dimensions.height) ? dimensions.height : "—"} px</p>}
++        {invalid && <p className="mt-1 text-sm text-destructive">{invalid}</p>}
++        {noOperations && <p className="text-sm text-destructive">Atingiu o limite diário de operações. Com o plano Premium não tem limite diário.</p>}
++      </div>
++      <div className="flex flex-wrap items-center justify-between gap-3">
++        <p className="text-xs text-muted-foreground">
++          {isFree ? `Operações diárias restantes: ${remaining ?? "—"}. A cadeia completa conta 1 operação, só se for concluída.` : "Plano Premium: sem limite diário de operações."}
++        </p>
++        <Button disabled={!!invalid || noOperations || submitting} onClick={apply}>
++          {submitting ? <LoaderCircle className="animate-spin" /> : <SlidersHorizontal />}
++          Aplicar ferramentas
++        </Button>
++      </div>
++    </section>
++  );
++}
+diff --git a/frontend/components/project-page/video-tools-dialog.tsx b/frontend/components/project-page/video-tools-dialog.tsx
+index 7f74358..0aeb205 100644
+--- a/frontend/components/project-page/video-tools-dialog.tsx
++++ b/frontend/components/project-page/video-tools-dialog.tsx
+@@ -1,8 +1,8 @@
+ "use client";
+ 
+-// UC-VID-001 — Recortar um vídeo e exportar o resultado.
++// UC-VID-001 / UC-VID-003 — Recortar, aplicar ferramentas e exportar.
+ // Dialog opened from a video of the library, with two tabs: "Ver" (player)
+-// and "Ferramentas de vídeo" (Recortar + the requests of this video).
++// and "Ferramentas de vídeo" (Trim / Apply + requests of this video).
+ 
+ import { useEffect, useMemo, useRef, useState } from "react";
+ import { useQuery } from "@tanstack/react-query";
+@@ -26,6 +26,8 @@ import { useSession } from "@/providers/session-provider";
+ import { useToast } from "@/hooks/use-toast";
+ import { useGetVideoJobs, videoJobsKey } from "@/lib/queries/video-jobs";
+ import { useQueryClient } from "@tanstack/react-query";
++import { VideoApplyPanel } from "./video-apply-panel";
++import { applyToolDescription } from "@/lib/video-apply";
+ import {
+   fetchProjectVideoUrl,
+   getVideoErrorMessage,
+@@ -321,7 +323,7 @@ function JobRow({ job }: { job: VideoJob }) {
+         videoJobsKey(session.user._id, pid, session.token),
+         (jobs) => jobs?.map((j) => (j._id === updated._id ? updated : j)),
+       );
+-      toast({ title: "Recorte cancelado", description: "Não foi criado nenhum vídeo." });
++      toast({ title: "Pedido cancelado", description: "Não foi criado nenhum vídeo." });
+     } catch (error) {
+       toast({
+         title: "Não foi possível cancelar",
+@@ -342,7 +344,9 @@ function JobRow({ job }: { job: VideoJob }) {
+         <div className="min-w-0">
+           <p className="truncate text-sm font-medium">{job.result_name}</p>
+           <p className="text-xs text-muted-foreground">
+-            Recorte {formatTimecode(job.params.start)} – {formatTimecode(job.params.end)}
++            {job.tool === "trim"
++              ? `Recorte ${formatTimecode(job.params.start)} – ${formatTimecode(job.params.end)}`
++              : job.params.tools.map(applyToolDescription).join(" → ")}
+           </p>
+         </div>
+         <Badge variant={variant}>{VIDEO_JOB_STATE_LABELS[job.state]}</Badge>
+@@ -358,6 +362,12 @@ function JobRow({ job }: { job: VideoJob }) {
+         </div>
+       )}
+ 
++      {job.tool === "apply" && job.state !== "queued" && (
++        <p className="text-xs text-muted-foreground" aria-live="polite">
++          Fotogramas processados: {job.frames_processed ?? 0}{job.frame_count != null ? ` / ${job.frame_count}` : ""}
++        </p>
++      )}
++
+       {job.state === "failed" && job.error && (
+         <p className="text-xs text-destructive">{job.error.message}</p>
+       )}
+@@ -458,12 +468,14 @@ export function VideoToolsDialog({
+           <TabsContent value="tools" className="flex flex-col gap-6">
+             {video && (
+               <>
+-                <section className="flex flex-col gap-3">
+-                  <h3 className="flex items-center gap-2 text-sm font-semibold">
+-                    <Scissors className="size-4" /> Recortar
+-                  </h3>
+-                  <TrimPanel key={video._id} video={video} />
+-                </section>
++                <Tabs key={video._id} defaultValue="trim">
++                  <TabsList className="h-auto flex-wrap">
++                    <TabsTrigger value="trim">Recortar</TabsTrigger>
++                    <TabsTrigger value="apply">Aplicar ferramentas</TabsTrigger>
++                  </TabsList>
++                  <TabsContent value="trim"><TrimPanel video={video} /></TabsContent>
++                  <TabsContent value="apply"><VideoApplyPanel video={video} /></TabsContent>
++                </Tabs>
+                 <JobsList video={video} />
+               </>
+             )}
+diff --git a/frontend/lib/queries/video-jobs.ts b/frontend/lib/queries/video-jobs.ts
+index 8755441..1283860 100644
+--- a/frontend/lib/queries/video-jobs.ts
++++ b/frontend/lib/queries/video-jobs.ts
+@@ -1,4 +1,4 @@
+-import { useEffect } from "react";
++import { useEffect, useRef } from "react";
+ import { useQuery, useQueryClient } from "@tanstack/react-query";
+ import { fetchVideoJobs, isActiveJob, VideoJob } from "../video-jobs";
+ import { projectVideosKey } from "./videos";
+@@ -18,7 +18,10 @@ export const useGetVideoJobs = (
+   token: string,
+   enabled: boolean = true,
+ ) => {
+-  return useQuery<VideoJob[]>({
++  const qc = useQueryClient();
++  const { mutate: refreshSession } = useUpdateSession();
++  const previous = useRef(new Map<string, string>());
++  const query = useQuery<VideoJob[]>({
+     queryKey: videoJobsKey(uid, pid, token),
+     queryFn: () => fetchVideoJobs({ uid, pid, token }),
+     enabled: enabled && !!uid && !!pid && !!token,
+@@ -27,6 +30,19 @@ export const useGetVideoJobs = (
+     refetchInterval: (query) =>
+       (query.state.data ?? []).some(isActiveJob) ? 3000 : false,
+   });
++  // Polling must refresh the library/quota too, when a socket event was lost.
++  useEffect(() => {
++    let finished = false;
++    for (const job of query.data ?? []) {
++      if (!isActiveJob(job) && previous.current.get(job._id) !== job.state) finished = true;
++      previous.current.set(job._id, job.state);
++    }
++    if (finished) {
++      qc.invalidateQueries({ queryKey: projectVideosKey(uid, pid, token) });
++      refreshSession({ userId: uid, token });
++    }
++  }, [query.data, qc, uid, pid, token, refreshSession]);
++  return query;
+ };
+ 
+ /**
+diff --git a/frontend/lib/video-apply.ts b/frontend/lib/video-apply.ts
+new file mode 100644
+index 0000000..c59d3be
+--- /dev/null
++++ b/frontend/lib/video-apply.ts
+@@ -0,0 +1,68 @@
++import type { ProjectVideo } from "./videos";
++
++export type VideoApplyTool =
++  | { type: "resize"; width: number; height: number }
++  | { type: "binarization"; threshold: number }
++  | { type: "rotate"; degrees: 90 | 180 | 270 };
++
++export const APPLY_TOOL_LABELS = {
++  resize: "Redimensionar",
++  binarization: "Binarizar",
++  rotate: "Rodar",
++};
++
++export function applyToolDescription(tool: VideoApplyTool) {
++  switch (tool.type) {
++    case "resize": return `Redimensionar para ${tool.width} × ${tool.height} px`;
++    case "binarization": return `Binarizar (limiar ${tool.threshold})`;
++    case "rotate": return `Rodar ${tool.degrees}°`;
++  }
++}
++
++export function applyLimitsFor(profile: string) {
++  return profile === "premium"
++    ? { maxDuration: 600, maxSize: 2 * 1024 ** 3, maxWidth: 3840, maxHeight: 2160 }
++    : { maxDuration: 120, maxSize: 200 * 1024 ** 2, maxWidth: 1920, maxHeight: 1080 };
++}
++
++export function applyDimensions(video: Pick<ProjectVideo, "width" | "height">, tools: VideoApplyTool[]) {
++  let width = video.width ?? 0;
++  let height = video.height ?? 0;
++  for (const tool of tools) {
++    if (tool.type === "resize") { width = tool.width; height = tool.height; }
++    if (tool.type === "rotate" && tool.degrees !== 180) [width, height] = [height, width];
++  }
++  return { width, height };
++}
++
++export function applyToolsError(video: ProjectVideo, tools: VideoApplyTool[], profile: string): string | null {
++  if (profile !== "free" && profile !== "premium") return "Crie uma conta para usar ferramentas de vídeo.";
++  if (video.state !== "available") return "Este vídeo ainda não está disponível.";
++  if (!(video.format === "mov" || (video.format === "mp4" && video.codec === "h264"))) {
++    return "Formato não suportado. Formatos aceites: MP4 (H.264) e MOV";
++  }
++  const limits = applyLimitsFor(profile);
++  const hint = profile === "free" ? " Com o plano Premium tem limites maiores." : "";
++  if (!video.duration || video.duration > limits.maxDuration) {
++    return `O seu perfil só permite editar vídeos até ${limits.maxDuration / 60} min.${hint}`;
++  }
++  if (video.size > limits.maxSize) return `O vídeo excede o limite de ${profile === "premium" ? "2 GB" : "200 MB"}.${hint}`;
++  if (tools.length < 1 || tools.length > 3) return "Escolha entre 1 e 3 ferramentas.";
++  for (const tool of tools) {
++    if (tool.type === "resize" && ![tool.width, tool.height].every((n) => Number.isInteger(n) && n >= 16 && n <= 3840)) {
++      return "A largura e a altura têm de ser inteiros entre 16 e 3840 px.";
++    }
++    if (tool.type === "binarization" && (!Number.isInteger(tool.threshold) || tool.threshold < 0 || tool.threshold > 255)) {
++      return "O limiar tem de ser um inteiro entre 0 e 255.";
++    }
++    if (tool.type === "rotate" && ![90, 180, 270].includes(tool.degrees)) return "A rotação tem de ser de 90, 180 ou 270 graus.";
++  }
++  const { width, height } = applyDimensions(video, tools);
++  if (!Number.isInteger(width) || !Number.isInteger(height) || width <= 0 || height <= 0) {
++    return "Não foi possível determinar a resolução do vídeo.";
++  }
++  if (width > limits.maxWidth || height > limits.maxHeight) {
++    return `A resolução final (${width} × ${height} px) excede o limite de ${limits.maxWidth} × ${limits.maxHeight} px do seu perfil.${hint}`;
++  }
++  return null;
++}
+diff --git a/frontend/lib/video-jobs.ts b/frontend/lib/video-jobs.ts
+index f9c7f0a..b3b048d 100644
+--- a/frontend/lib/video-jobs.ts
++++ b/frontend/lib/video-jobs.ts
+@@ -1,7 +1,8 @@
+-// Video tools (UC-VID-001: Recortar um vídeo). Requests are processed in the
++// Video tools (UC-VID-001 trim / UC-VID-003 apply). Requests are processed in the
+ // background; their state comes by WebSocket ("video-job-update") and polling.
+ 
+ import { api } from "./axios";
++import type { VideoApplyTool } from "./video-apply";
+ 
+ export type VideoJobState =
+   | "queued"
+@@ -10,14 +11,14 @@ export type VideoJobState =
+   | "failed"
+   | "cancelled";
+ 
+-export interface VideoJob {
++interface VideoJobBase {
+   _id: string;
+   project_id: string;
+   video_id: string;
+-  tool: "trim";
+-  params: { start: number; end: number };
+   state: VideoJobState;
+   progress: number;
++  frames_processed: number;
++  frame_count: number | null;
+   error: { code: string; message: string } | null;
+   result_name: string;
+   result_video_id: string | null;
+@@ -26,6 +27,11 @@ export interface VideoJob {
+   finished_at: string | null;
+ }
+ 
++export type VideoJob = VideoJobBase & (
++  | { tool: "trim"; params: { start: number; end: number } }
++  | { tool: "apply"; params: { tools: VideoApplyTool[]; width: number; height: number } }
++);
++
+ // REQ-011: the five states of a request, as shown to the user
+ export const VIDEO_JOB_STATE_LABELS: Record<VideoJobState, string> = {
+   queued: "Em fila",
+@@ -114,6 +120,15 @@ export const fetchVideoJobs = async ({ uid, pid, token }: JobsRequest) => {
+   return response.data.jobs;
+ };
+ 
++export const applyVideoTools = async ({ uid, pid, token, videoId, tools }:
++  JobsRequest & { videoId: string; tools: VideoApplyTool[] }) => {
++  const response = await api.post<{ job: VideoJob }>(
++    `/projects/${uid}/${pid}/videos/${videoId}/apply`, { tools },
++    { headers: authHeaders(token) },
++  );
++  return response.data.job;
++};
++
+ export const cancelVideoJob = async ({
+   uid,
+   pid,
+diff --git a/frontend/lib/videos.ts b/frontend/lib/videos.ts
+index c51e8ad..c4c8ac6 100644
+--- a/frontend/lib/videos.ts
++++ b/frontend/lib/videos.ts
+@@ -21,6 +21,8 @@ export interface ProjectVideo {
+   duration: number | null;
+   width: number | null;
+   height: number | null;
++  frame_count?: number | null;
++  fps?: number | null;
+   createdAt: string;
+   expiresAt: string | null;
+ }
+diff --git a/projects/controllers/video.js b/projects/controllers/video.js
+index 1085ed1..fbfa667 100644
+--- a/projects/controllers/video.js
++++ b/projects/controllers/video.js
+@@ -33,6 +33,9 @@ module.exports.create = async (video) => {
+   return await Video.create(video);
+ };
+ 
++module.exports.getByFingerprint = async (user_id, project_id, fingerprint) =>
++  Video.findOne({ user_id, project_id, fingerprint }).exec();
++
+ module.exports.delete = (video_id) => {
+   return Video.deleteOne({ _id: video_id });
+ };
+diff --git a/projects/controllers/videoJob.js b/projects/controllers/videoJob.js
+index 00b03c9..7e0d120 100644
+--- a/projects/controllers/videoJob.js
++++ b/projects/controllers/videoJob.js
+@@ -36,5 +36,9 @@ module.exports.getActiveByProject = async (user_id, project_id) =>
+ module.exports.findStale = async (olderThan) =>
+   VideoJob.find({ state: { $in: ACTIVE_STATES }, updatedAt: { $lt: olderThan } }).exec();
+ 
++module.exports.findRefundPending = async () =>
++  VideoJob.find({ state: { $in: ["failed", "cancelled"] }, quota_reserved: true,
++    quota_refunded: { $ne: true } }).exec();
++
+ module.exports.deleteByProject = async (user_id, project_id) =>
+   VideoJob.deleteMany({ user_id, project_id }).exec();
+diff --git a/projects/models/video.js b/projects/models/video.js
+index e3d8957..0265ccf 100644
+--- a/projects/models/video.js
++++ b/projects/models/video.js
+@@ -29,6 +29,8 @@ const videoSchema = new mongoose.Schema(
+     duration: { type: Number, default: null },
+     width: { type: Number, default: null },
+     height: { type: Number, default: null },
++    frame_count: { type: Number, default: null },
++    fps: { type: Number, default: null },
+     sha256: { type: String, default: null },
+   },
+   { timestamps: true },
+diff --git a/projects/models/videoJob.js b/projects/models/videoJob.js
+index faab64e..8d05da8 100644
+--- a/projects/models/videoJob.js
++++ b/projects/models/videoJob.js
+@@ -1,15 +1,13 @@
+ const mongoose = require("mongoose");
+ 
+-// A processing request on a video of the library (UC-VID-001: trim).
+-// Generic on purpose: other video tools (e.g. UC-VID-003) can reuse it with
+-// another `tool` and their own `params`.
++// A processing request on a video: UC-VID-001 trim / UC-VID-003 apply.
+ const videoJobSchema = new mongoose.Schema(
+   {
+     user_id: { type: mongoose.Schema.Types.ObjectId, required: true, index: true },
+     project_id: { type: mongoose.Schema.Types.ObjectId, required: true, index: true },
+     video_id: { type: mongoose.Schema.Types.ObjectId, required: true }, // source video
+-    tool: { type: String, enum: ["trim"], required: true },
+-    params: { type: mongoose.Schema.Types.Mixed, default: {} }, // trim: { start, end } (s)
++    tool: { type: String, enum: ["trim", "apply"], required: true },
++    params: { type: mongoose.Schema.Types.Mixed, default: {} }, // trim: {start,end}; apply: {tools,width,height}
+ 
+     // Em fila -> Em processamento -> Concluído | Falhado | Cancelado
+     state: {
+@@ -19,6 +17,8 @@ const videoJobSchema = new mongoose.Schema(
+       index: true,
+     },
+     progress: { type: Number, default: 0 }, // 0-100
++    frames_processed: { type: Number, default: 0 },
++    frame_count: { type: Number, default: null },
+     error: {
+       code: { type: String, default: null },
+       message: { type: String, default: null },
+@@ -29,10 +29,12 @@ const videoJobSchema = new mongoose.Schema(
+     result_video_id: { type: mongoose.Schema.Types.ObjectId, default: null },
+     // profile duration limit, copied to the resulting video
+     max_duration: { type: Number, required: true },
++    max_storage: { type: Number, default: null },
+ 
+     // 1 daily operation reserved at submission (registered profile only);
+     // refunded if the job does not end "completed" (RN4, REQ-018/020)
+     quota_reserved: { type: Boolean, default: false },
++    quota_refunded: { type: Boolean, default: false },
+ 
+     started_at: { type: Date, default: null },
+     finished_at: { type: Date, default: null },
+diff --git a/projects/routes/videoJobs.js b/projects/routes/videoJobs.js
+index 086a682..0aab8c1 100644
+--- a/projects/routes/videoJobs.js
++++ b/projects/routes/videoJobs.js
+@@ -1,8 +1,10 @@
+-// Video tools (UC-VID-001: Recortar um vídeo). Requests are processed
+-// asynchronously by the video_trim worker; see utils/videoJobs.js.
++// UC-VID-001 (trim) and UC-VID-003 (apply). Requests run asynchronously
++// in their workers and share the lifecycle in utils/videoJobs.js.
+ 
+ const express = require("express");
+ const path = require("path");
++const { Types } = require("mongoose");
++const { applyLimitsFor, validateTools } = require("../utils/videoApply");
+ 
+ const router = express.Router();
+ 
+@@ -13,6 +15,9 @@ const {
+   serializeJob,
+   reserveOperation,
+   publishTrim,
++  publishApply,
++  refundOperation,
++  failedMessage,
+   failJob,
+   cancelJob,
+ } = require("../utils/videoJobs");
+@@ -32,9 +37,9 @@ function isSupported(video) {
+ // "praia.mp4" -> "praia_recorte.mp4" (RN7, REQ-016). If that name is already
+ // used in the project (by a video or by a request still running), a number is
+ // added: "praia_recorte_2.mp4", "praia_recorte_3.mp4", ...
+-function trimmedName(name, usedNames = new Set()) {
++function resultName(name, suffix, usedNames = new Set()) {
+   const ext = path.extname(name);
+-  const base = `${path.basename(name, ext)}_recorte`;
++  const base = `${path.basename(name, ext)}_${suffix}`;
+   let candidate = `${base}${ext}`;
+   for (let n = 2; usedNames.has(candidate.toLowerCase()); n++) {
+     candidate = `${base}_${n}${ext}`;
+@@ -42,6 +47,9 @@ function trimmedName(name, usedNames = new Set()) {
+   return candidate;
+ }
+ 
++const trimmedName = (name, used) => resultName(name, "recorte", used);
++const editedName = (name, used) => resultName(name, "editado", used);
++
+ async function namesInUse(user, project) {
+   const videos = await Video.getAll(user, project);
+   const running = await VideoJob.getActiveByProject(user, project);
+@@ -76,65 +84,60 @@ router.get("/internal/video-jobs/:job/state", wrap(async (req, res) => {
+ }));
+ 
+ /**
+- * Trim a video of the library (UC-VID-001, passo 4)
+- * @body { "start": Number (s), "end": Number (s) }
++ * Submit a video tool: trim {start, end}, or apply {tools}.
+  * @returns 202 { "job": Job }
+  */
+-router.post(
+-  "/:user/:project/videos/:video/trim",
+-  requireOwner,
+-  loadProfile, // also rejects the anonymous profile (REQ-022)
+-  wrap(async (req, res) => {
++function submitTool(tool) {
++  return wrap(async (req, res) => {
+     const { user, project } = req.params;
+     const video = await Video.getOne(user, project, req.params.video);
+     if (!video) return fail(res, 404, "NOT_FOUND", "Vídeo não encontrado.");
+     if (video.state !== "available") {
+       return fail(res, 409, "NOT_AVAILABLE", "Este vídeo ainda não está disponível.");
+     }
+-
+-    // E1 / REQ-004
+     if (!isSupported(video)) {
+       return fail(res, 415, "UNSUPPORTED_FORMAT",
+         "Formato não suportado. Formatos aceites: MP4 (H.264) e MOV");
+     }
+-
+-    // E2 / REQ-005 / REQ-006: limits of the user's current profile
+-    const lim = req.videoLimits;
++    const lim = tool === "apply" ? applyLimitsFor(req.userType) : req.videoLimits;
++    const verb = tool === "apply" ? "editar" : "recortar";
+     const hint = req.userType === "free" ? UPGRADE_HINT : "";
+-    if (Math.floor(video.duration) > lim.maxDuration) {
++    if (!Number.isFinite(video.duration) || video.duration <= 0 || video.duration > lim.maxDuration) {
+       return fail(res, 413, "DURATION_LIMIT",
+-        `O seu perfil só permite recortar vídeos até ${formatMinutes(lim.maxDuration)}.${hint}`);
++        `O seu perfil só permite ${verb} vídeos até ${formatMinutes(lim.maxDuration)}.${hint}`);
+     }
+     if (video.size > lim.maxSize) {
+       return fail(res, 413, "SIZE_LIMIT",
+-        `O seu perfil só permite recortar vídeos até ${formatBytes(lim.maxSize)}.${hint}`);
++        `O seu perfil só permite ${verb} vídeos até ${formatBytes(lim.maxSize)}.${hint}`);
+     }
+ 
+-    // E4 / REQ-003
+-    const start = Number(req.body?.start);
+-    const end = Number(req.body?.end);
+-    const invalid = checkInterval(start, end, video.duration);
+-    if (invalid) return fail(res, 400, "INVALID_INTERVAL", invalid);
++    let params;
++    if (tool === "apply") {
++      const validated = validateTools(req.body?.tools, video.width, video.height, lim);
++      if (validated.error) return fail(res, 400, "INVALID_TOOLS", validated.error);
++      params = { tools: validated.tools, width: validated.width, height: validated.height };
++    } else {
++      const start = Number(req.body?.start);
++      const end = Number(req.body?.end);
++      const invalid = checkInterval(start, end, video.duration);
++      if (invalid) return fail(res, 400, "INVALID_INTERVAL", invalid);
++      params = { start, end };
++    }
+ 
+-    // Checks and reservation run one at a time per user, so two simultaneous
+-    // requests cannot both pass the active-jobs or quota checks.
+     const outcome = await withUserLock(user, async () => {
+-      // E6 / REQ-008
+       if ((await VideoJob.countActive(user)) >= lim.maxActiveJobs) {
+         return { error: [429, "TOO_MANY_JOBS",
+           `Já tem ${lim.maxActiveJobs} pedido(s) de vídeo em curso. ` +
+           "Aguarde que termine ou cancele-o antes de fazer outro."] };
+       }
+-
+-      // Library space: the result can be at most as big as the original
+       const used = await Video.usedStorage(user);
+-      if (used + video.size > lim.storage) {
++      // Encoding may enlarge a file. Check actual output size again at completion.
++      if (used >= lim.storage) {
+         return { error: [413, "STORAGE_FULL",
+           `Não há espaço na sua biblioteca de vídeos (${formatBytes(used)} de ${formatBytes(lim.storage)}).${hint}`] };
+       }
+-
+-      // E3 / REQ-007: 1 operation is reserved now and refunded if the job
+-      // does not end "completed" -> it only counts when completed (REQ-018)
++      const id = new Types.ObjectId();
++      const createdAt = new Date();
+       let reserved = false;
+       if (req.userType === "free") {
+         reserved = await reserveOperation(user);
+@@ -144,41 +147,37 @@ router.post(
+             " Com o plano Premium não tem limite diário."] };
+         }
+       }
+-
+-      // REQ-009: request created "Em fila"
+-      const job = await VideoJob.create({
+-        user_id: user,
+-        project_id: project,
+-        video_id: video._id,
+-        tool: "trim",
+-        params: { start, end },
+-        // chosen inside the lock, so two requests never get the same name
+-        result_name: trimmedName(video.name, await namesInUse(user, project)),
+-        max_duration: lim.maxDuration,
+-        quota_reserved: reserved,
+-      });
+-      return { job };
++      try {
++        const job = await VideoJob.create({
++          _id: id, user_id: user, project_id: project, video_id: video._id,
++          tool, params,
++          result_name: resultName(video.name, tool === "apply" ? "editado" : "recorte", await namesInUse(user, project)),
++          max_duration: lim.maxDuration, max_storage: lim.storage,
++          quota_reserved: reserved, createdAt,
++        });
++        return { job };
++      } catch (err) {
++        // Creating a request can fail after quota was reserved.
++        await refundOperation({ _id: id, user_id: user, createdAt, quota_reserved: reserved });
++        throw err;
++      }
+     });
+-
+     if (outcome.error) return fail(res, ...outcome.error);
+     const { job } = outcome;
+-
+     try {
+-      await publishTrim(job, video);
++      await (tool === "apply" ? publishApply : publishTrim)(job, video);
+     } catch (err) {
+-      console.error("[video-jobs] could not publish trim:", err.message);
+-      await failJob(job._id, {
+-        code: "PUBLISH_FAILED",
+-        message: "Não foi possível recortar o vídeo. Tente novamente.",
+-      });
++      console.error("[video-jobs] could not publish:", err.message);
++      await failJob(job._id, { code: "PUBLISH_FAILED", message: failedMessage(tool) });
+       return fail(res, 503, "SERVICE_UNAVAILABLE",
+         "O serviço de vídeo não está disponível. Tente novamente.");
+     }
+-
+-    // REQ-010: answered right away, the processing happens in the worker
+     res.status(202).jsonp({ job: serializeJob(job) });
+-  }),
+-);
++  });
++}
++
++router.post("/:user/:project/videos/:video/trim", requireOwner, loadProfile, submitTool("trim"));
++router.post("/:user/:project/videos/:video/apply", requireOwner, loadProfile, submitTool("apply"));
+ 
+ // List the video jobs of a project (most recent first)
+ router.get("/:user/:project/video-jobs", requireOwner, wrap(async (req, res) => {
+@@ -206,4 +205,4 @@ router.post("/:user/:project/video-jobs/:job/cancel", requireOwner, wrap(async (
+ }));
+ 
+ module.exports = router;
+-module.exports._test = { checkInterval, trimmedName, isSupported };
++module.exports._test = { checkInterval, trimmedName, editedName, isSupported };
+diff --git a/projects/routes/videos.js b/projects/routes/videos.js
+index dda4679..c765fd8 100644
+--- a/projects/routes/videos.js
++++ b/projects/routes/videos.js
+@@ -14,6 +14,7 @@ const { getCallerId } = require("../utils/caller");
+ const { httpsAgent } = require("../utils/httpsAgent");
+ const { get_image_public_url } = require("../utils/imageStorage");
+ const { limits, limitsFor, formatBytes } = require("../utils/videoLimits");
++const { withUserLock } = require("../utils/videoLocks");
+ const {
+   CHUNK_SIZE,
+   RETENTION_MS,
+@@ -67,6 +68,8 @@ function serialize(video) {
+     duration: video.duration,
+     width: video.width,
+     height: video.height,
++    frame_count: video.frame_count,
++    fps: video.fps,
+     createdAt: video.createdAt,
+     expiresAt:
+       video.state === "interrupted" && video.interrupted_at
+@@ -125,17 +128,6 @@ const loadProfile = wrap(async (req, res, next) => {
+ 
+ // Runs `fn` after any other pending call for the same user, so that the space
+ // and active-import checks of two simultaneous requests cannot both pass.
+-const userLocks = new Map();
+-function withUserLock(userId, fn) {
+-  const previous = userLocks.get(userId) || Promise.resolve();
+-  const result = previous.then(fn);
+-  const tail = result.catch(() => {});
+-  userLocks.set(userId, tail);
+-  tail.then(() => {
+-    if (userLocks.get(userId) === tail) userLocks.delete(userId);
+-  });
+-  return result;
+-}
+ 
+ function premiumHint(userType, premiumLimit) {
+   return userType === "free"
+diff --git a/projects/utils/videoApply.js b/projects/utils/videoApply.js
+new file mode 100644
+index 0000000..7dbc5a9
+--- /dev/null
++++ b/projects/utils/videoApply.js
+@@ -0,0 +1,60 @@
++// UC-VID-003: validation is authoritative here; the worker also validates.
++const { limitsFor } = require("./videoLimits");
++
++function applyLimitsFor(profile) {
++  const common = limitsFor(profile);
++  if (!common) return null;
++  return {
++    ...common,
++    maxDuration: profile === "premium" ? 600 : 120,
++    maxWidth: profile === "premium" ? 3840 : 1920,
++    maxHeight: profile === "premium" ? 2160 : 1080,
++  };
++}
++
++function validateTools(tools, width, height, limits) {
++  if (!Array.isArray(tools) || tools.length < 1 || tools.length > 3) {
++    return { error: "Escolha entre 1 e 3 ferramentas." };
++  }
++  const chain = [];
++  for (const tool of tools) {
++    if (!tool || typeof tool !== "object" || Array.isArray(tool)) {
++      return { error: "Ferramenta inválida." };
++    }
++    switch (tool.type) {
++      case "resize":
++        if (![tool.width, tool.height].every((n) => Number.isInteger(n) && n >= 16 && n <= 3840)) {
++          return { error: "A largura e a altura têm de ser inteiros entre 16 e 3840 px." };
++        }
++        chain.push({ type: "resize", width: tool.width, height: tool.height });
++        width = tool.width;
++        height = tool.height;
++        break;
++      case "binarization":
++        if (!Number.isInteger(tool.threshold) || tool.threshold < 0 || tool.threshold > 255) {
++          return { error: "O limiar tem de ser um inteiro entre 0 e 255." };
++        }
++        chain.push({ type: "binarization", threshold: tool.threshold });
++        break;
++      case "rotate":
++        if (![90, 180, 270].includes(tool.degrees)) {
++          return { error: "A rotação tem de ser de 90, 180 ou 270 graus." };
++        }
++        chain.push({ type: "rotate", degrees: tool.degrees });
++        if (tool.degrees !== 180) [width, height] = [height, width];
++        break;
++      default:
++        return { error: "Ferramenta não suportada. Escolha redimensionar, binarizar ou rodar." };
++    }
++  }
++  if (!Number.isInteger(width) || !Number.isInteger(height) || width <= 0 || height <= 0) {
++    return { error: "Não foi possível determinar a resolução do vídeo." };
++  }
++  if (width > limits.maxWidth || height > limits.maxHeight) {
++    return { error: `A resolução final (${width} × ${height} px) excede o limite de ${limits.maxWidth} × ${limits.maxHeight} px do seu perfil.` +
++      (limits.maxWidth === 1920 ? " Com o plano Premium tem limites maiores." : "") };
++  }
++  return { tools: chain, width, height };
++}
++
++module.exports = { applyLimitsFor, validateTools };
+diff --git a/projects/utils/videoBroker.js b/projects/utils/videoBroker.js
+new file mode 100644
+index 0000000..ed00e0c
+--- /dev/null
++++ b/projects/utils/videoBroker.js
+@@ -0,0 +1,75 @@
++// Video messages need publisher confirmation and an ack after MongoDB writes.
++// Other image tools keep their existing broker implementation.
++const amqp = require("amqplib");
++const EXCHANGE = "picturas";
++
++function connect() {
++  return amqp.connect({
++    hostname: process.env.RABBITMQ_HOST || "rabbitmq",
++    port: Number(process.env.RABBITMQ_PORT || 5672),
++    username: process.env.RABBITMQ_USER || "user",
++    password: process.env.RABBITMQ_PASS || "password",
++    heartbeat: 30,
++  }, { timeout: 1500 });
++}
++
++async function publish(queue, message) {
++  const connection = await connect();
++  connection.on("error", (err) => console.error("[video-broker]", err.message));
++  try {
++    const channel = await connection.createConfirmChannel();
++    await channel.assertExchange(EXCHANGE, "direct", { durable: true });
++    await channel.assertQueue(queue, { durable: true });
++    await channel.bindQueue(queue, EXCHANGE, queue);
++    await new Promise((resolve, reject) => {
++      const timer = setTimeout(() => reject(new Error("Publisher confirmation timed out")), 1500);
++      channel.publish(EXCHANGE, queue, Buffer.from(JSON.stringify(message)),
++        { persistent: true, contentType: "application/json" }, (err) => {
++          clearTimeout(timer);
++          if (err) reject(err); else resolve();
++        });
++    });
++  } finally {
++    await connection.close().catch(() => {});
++  }
++}
++
++function consume(queue, handler) {
++  async function start() {
++    let connection;
++    let retryScheduled = false;
++    function retry() {
++      if (retryScheduled) return;
++      retryScheduled = true;
++      setTimeout(start, 5000);
++    }
++    try {
++      connection = await connect();
++      connection.on("error", (err) => console.error("[video-broker]", err.message));
++      connection.once("close", retry);
++      const channel = await connection.createChannel();
++      await channel.assertExchange(EXCHANGE, "direct", { durable: true });
++      await channel.assertQueue(queue, { durable: true });
++      await channel.bindQueue(queue, EXCHANGE, queue);
++      await channel.prefetch(1);
++      await channel.consume(queue, async (message) => {
++        if (!message) return;
++        try {
++          await handler(message);
++          channel.ack(message);
++        } catch (err) {
++          console.error("[video-broker] reply will be retried:", err.message);
++          // Closing the channel returns unacknowledged replies to the queue.
++          await connection.close().catch(() => {});
++        }
++      });
++    } catch (err) {
++      console.error("[video-broker] could not consume:", err.message);
++      if (connection) await connection.close().catch(() => {});
++      retry();
++    }
++  }
++  void start();
++}
++
++module.exports = { publish, consume };
+diff --git a/projects/utils/videoJobs.js b/projects/utils/videoJobs.js
+index 6f46403..d7fbdbc 100644
+--- a/projects/utils/videoJobs.js
++++ b/projects/utils/videoJobs.js
+@@ -1,114 +1,90 @@
+-// Lifecycle of video processing jobs (UC-VID-001): publishing requests to the
+-// workers, consuming their replies, notifying the browser and keeping the
+-// daily quota consistent.
+-
++// Shared lifecycle for UC-VID-001 (trim) and UC-VID-003 (apply).
+ const axios = require("axios");
+-
+ const VideoJob = require("../controllers/videoJob");
+ const Video = require("../controllers/video");
+-const { send_rabbit_msg, read_rabbit_msg } = require("./rabbit_mq");
++const Project = require("../controllers/project");
++const broker = require("./videoBroker");
++const { withUserLock } = require("./videoLocks");
++const { limitsFor } = require("./videoLimits");
+ const { httpsAgent } = require("./httpsAgent");
+ const { get_image_internal_url, delete_image } = require("./imageStorage");
+ 
+-const users_ms = "https://users:10001/";
+-
+-const QUEUES = { trim: "video_trim_queue" };
+-const REPLY_QUEUE = "video_job_queue";
+-const WS_QUEUE = "ws_queue";
+-
+-// Worker gives up after 15 min (D9); a job with no news for longer than this
+-// is considered lost (e.g. worker container removed) and marked failed.
++const USERS = "https://users:10001/";
++const QUEUES = { trim: "video_trim_queue", apply: "video_apply_queue" };
+ const STALE_AFTER_MS = 20 * 60 * 1000;
+-
+-const FAILED_MESSAGE = "Não foi possível recortar o vídeo. Tente novamente.";
++const failedMessage = (tool) => tool === "apply"
++  ? "Não foi possível aplicar as ferramentas ao vídeo. Tente novamente."
++  : "Não foi possível recortar o vídeo. Tente novamente.";
+ 
+ function serializeJob(job) {
+   return {
+-    _id: job._id,
+-    project_id: job.project_id,
+-    video_id: job.video_id,
+-    tool: job.tool,
+-    params: job.params,
+-    state: job.state,
+-    progress: job.progress,
+-    error: job.error?.message ? job.error : null,
+-    result_name: job.result_name,
+-    result_video_id: job.result_video_id,
+-    createdAt: job.createdAt,
+-    updatedAt: job.updatedAt,
+-    finished_at: job.finished_at,
++    _id: job._id, project_id: job.project_id, video_id: job.video_id,
++    tool: job.tool, params: job.params, state: job.state, progress: job.progress,
++    frames_processed: job.frames_processed || 0, frame_count: job.frame_count ?? null,
++    error: job.error?.message ? job.error : null, result_name: job.result_name,
++    result_video_id: job.result_video_id, createdAt: job.createdAt,
++    updatedAt: job.updatedAt, finished_at: job.finished_at,
+   };
+ }
+ 
+-// Real-time update to the owner's browser, through wsGateway (REQ-011/012)
+ function notify(job) {
+-  try {
+-    send_rabbit_msg(
+-      { type: "video-job-update", user: String(job.user_id), job: serializeJob(job) },
+-      WS_QUEUE,
+-    );
+-  } catch (err) {
+-    console.error("[video-jobs] notify failed:", err.message);
+-  }
++  void broker.publish("ws_queue", {
++    type: "video-job-update", user: String(job.user_id), job: serializeJob(job),
++  }).catch((err) => console.error("[video-jobs] notify failed:", err.message));
+ }
+ 
+-// --------------------------------------------------------------------- quota
+-
+-// Reserves 1 daily operation in users-ms. Returns true if reserved,
+-// false if the daily limit is reached. Premium users are never limited there.
+ async function reserveOperation(userId) {
+   try {
+-    await axios.get(users_ms + `${userId}/process/1`, { httpsAgent });
++    await axios.get(USERS + `${userId}/process/1`, { httpsAgent, timeout: 1500 });
+     return true;
+   } catch (err) {
+-    if (err.response && /No more daily_operations/.test(String(err.response.data))) {
+-      return false;
+-    }
++    if (err.response && /No more daily_operations/.test(String(err.response.data))) return false;
+     throw err;
+   }
+ }
+ 
+ async function refundOperation(job) {
+-  if (!job.quota_reserved) return;
++  if (!job.quota_reserved || job.quota_refunded) return;
+   try {
+-    await axios.post(users_ms + `${job.user_id}/process/refund/1`, {}, { httpsAgent });
++    await axios.post(USERS + `${job.user_id}/process/refund/1`, {
++      jobId: String(job._id), day: new Date(job.createdAt).toISOString().slice(0, 10),
++    }, { httpsAgent, timeout: 1500 });
++    await VideoJob.updateIfState(job._id, ["failed", "cancelled"], { quota_refunded: true });
+   } catch (err) {
+-    console.error(`[video-jobs] refund failed for job ${job._id}:`, err.message);
++    // Persisted failed/cancelled jobs are retried by maintenance. The users
++    // endpoint handles lost HTTP replies without refunding the same job twice.
++    console.error(`[video-jobs] refund pending for ${job._id}:`, err.message);
+   }
+ }
+ 
+-// ------------------------------------------------------------------ requests
+-
+-async function publishTrim(job, video) {
++async function publishJob(job, video) {
+   const resp = await get_image_internal_url(job.user_id, job.project_id, "video", video.video_key);
+-
+-  send_rabbit_msg(
+-    {
+-      messageId: String(job._id),
+-      timestamp: new Date().toISOString(),
+-      procedure: "video_trim",
+-      parameters: {
+-        inputVideoURL: resp.data.url,
+-        start: job.params.start,
+-        // RN2 uses whole seconds; never ask for more than the real duration
+-        end: Math.min(job.params.end, video.duration),
+-        userId: String(job.user_id),
+-        projectId: String(job.project_id),
+-        outputFileName: `${job._id}.${video.format}`,
+-        format: video.format,
+-        codec: video.codec,
+-      },
+-    },
+-    QUEUES.trim,
+-  );
++  const parameters = {
++    inputVideoURL: resp.data.url,
++    userId: String(job.user_id), projectId: String(job.project_id),
++    outputFileName: `${job._id}.${video.format}`, format: video.format, codec: video.codec,
++  };
++  if (job.tool === "trim") {
++    parameters.start = job.params.start;
++    parameters.end = Math.min(job.params.end, video.duration);
++  } else {
++    parameters.tools = job.params.tools;
++    parameters.maxDuration = job.max_duration;
++    parameters.maxOutputBytes = job.max_storage;
++    parameters.width = job.params.width;
++    parameters.height = job.params.height;
++  }
++  await broker.publish(QUEUES[job.tool], {
++    messageId: String(job._id), timestamp: new Date().toISOString(),
++    procedure: `video_${job.tool}`, parameters,
++  });
+ }
++const publishTrim = publishJob;
++const publishApply = publishJob;
+ 
+-// Marks a job failed (if still active), refunds and notifies.
+ async function failJob(jobId, error) {
+   const job = await VideoJob.updateIfState(jobId, VideoJob.ACTIVE_STATES, {
+-    state: "failed",
+-    error: { code: error.code, message: error.message },
+-    finished_at: new Date(),
++    state: "failed", error: { code: error.code, message: error.message }, finished_at: new Date(),
+   });
+   if (!job) return null;
+   await refundOperation(job);
+@@ -116,11 +92,9 @@ async function failJob(jobId, error) {
+   return job;
+ }
+ 
+-// Cancels a job (FA2). The worker notices it and stops (decision D7).
+ async function cancelJob(jobId) {
+   const job = await VideoJob.updateIfState(jobId, VideoJob.ACTIVE_STATES, {
+-    state: "cancelled",
+-    finished_at: new Date(),
++    state: "cancelled", finished_at: new Date(),
+   });
+   if (!job) return null;
+   await refundOperation(job);
+@@ -128,13 +102,18 @@ async function cancelJob(jobId) {
+   return job;
+ }
+ 
+-// ------------------------------------------------------------------- replies
+-
+ async function onProgress(msg) {
+-  const job = await VideoJob.updateIfState(msg.jobId, VideoJob.ACTIVE_STATES, {
+-    state: "processing",
+-    progress: Math.max(0, Math.min(100, Number(msg.progress) || 0)),
+-  });
++  const update = {
++    $set: { state: "processing" },
++    $max: { progress: Math.max(0, Math.min(99, Number(msg.progress) || 0)) },
++  };
++  if (Number.isInteger(msg.framesProcessed) && msg.framesProcessed >= 0) {
++    update.$max.frames_processed = msg.framesProcessed;
++  }
++  if (Number.isInteger(msg.frameCount) && msg.frameCount > 0) {
++    update.$set.frame_count = msg.frameCount;
++  }
++  const job = await VideoJob.updateIfState(msg.jobId, VideoJob.ACTIVE_STATES, update);
+   if (!job) return;
+   if (!job.started_at) {
+     job.started_at = new Date();
+@@ -144,103 +123,99 @@ async function onProgress(msg) {
+ }
+ 
+ async function onSuccess(msg) {
+-  const current = await VideoJob.getById(msg.jobId);
+-  if (!current) return;
+-  const out = msg.output;
+-
+-  if (!VideoJob.ACTIVE_STATES.includes(current.state)) {
+-    // cancelled while the result was being stored: remove the orphan file
+-    await delete_image(current.user_id, current.project_id, "video", out.fileName).catch(() => {});
+-    return;
+-  }
+-
+-  // REQ-016: the result is a new video of the library; the original is untouched
+-  const video = await Video.create({
+-    user_id: current.user_id,
+-    project_id: current.project_id,
+-    name: current.result_name,
+-    size: out.size,
+-    received: out.size,
+-    fingerprint: `trim:${current._id}`,
+-    state: "available",
+-    max_duration: current.max_duration,
+-    video_key: out.fileName,
+-    format: out.format,
+-    codec: out.codec,
+-    duration: out.duration,
+-    width: out.width,
+-    height: out.height,
+-  });
+-
+-  const job = await VideoJob.updateIfState(current._id, VideoJob.ACTIVE_STATES, {
+-    state: "completed",
+-    progress: 100,
+-    result_video_id: video._id,
+-    finished_at: new Date(),
++  const first = await VideoJob.getById(msg.jobId);
++  if (!first) return;
++  return withUserLock(first.user_id, async () => {
++    const current = await VideoJob.getById(msg.jobId);
++    if (!current) return;
++    // A replay after completion must never delete the published result.
++    if (current.state === "completed") return;
++    const out = msg.output;
++    if (!out || !["mp4", "mov"].includes(out.format) ||
++        out.fileName !== `${current._id}.${out.format}`) {
++      return failJob(current._id, { code: "INVALID_RESULT", message: failedMessage(current.tool) });
++    }
++    const cleanup = () => delete_image(current.user_id, current.project_id, "video", out.fileName);
++    if (!VideoJob.ACTIVE_STATES.includes(current.state)) {
++      await cleanup();
++      return;
++    }
++    const fingerprint = `${current.tool}:${current._id}`;
++    // Recover a result inserted just before a projects process crashed.
++    let video = await Video.getByFingerprint(current.user_id, current.project_id, fingerprint);
++    const rejectResult = async (code) => {
++      if (video) await Video.delete(video._id);
++      await cleanup();
++      return failJob(current._id, { code, message: failedMessage(current.tool) });
++    };
++    if (!Number.isFinite(out.size) || out.size <= 0 || !Number.isFinite(out.duration) ||
++        out.duration <= 0 || !Number.isInteger(out.width) || !Number.isInteger(out.height) ||
++        (current.tool === "apply" && (out.width !== current.params.width || out.height !== current.params.height ||
++          !Number.isInteger(out.frame_count) || out.frame_count <= 0))) {
++      return rejectResult("INVALID_RESULT");
++    }
++    if (!(await Project.getOne(current.user_id, current.project_id))) return rejectResult("PROJECT_REMOVED");
++    const maximum = current.max_storage || limitsFor("free").storage;
++    const used = await Video.usedStorage(current.user_id);
++    if (used - (video?.size || 0) + out.size > maximum) return rejectResult("STORAGE_FULL");
++    if (!video) {
++      video = await Video.create({
++        user_id: current.user_id, project_id: current.project_id,
++        name: current.result_name, size: out.size, received: out.size,
++        fingerprint, state: "available", max_duration: current.max_duration,
++        video_key: out.fileName, format: out.format, codec: out.codec,
++        duration: out.duration, width: out.width, height: out.height,
++        frame_count: out.frame_count ?? null, fps: out.fps ?? null,
++      });
++    }
++    const job = await VideoJob.updateIfState(current._id, VideoJob.ACTIVE_STATES, {
++      state: "completed", progress: 100, result_video_id: video._id,
++      frames_processed: out.frame_count || current.frames_processed || 0,
++      frame_count: out.frame_count ?? current.frame_count, finished_at: new Date(),
++    });
++    if (!job) {
++      await Video.delete(video._id);
++      await cleanup();
++      return;
++    }
++    notify(job);
+   });
+-
+-  if (!job) {
+-    // cancelled at the very last moment: undo
+-    await Video.delete(video._id);
+-    await delete_image(current.user_id, current.project_id, "video", out.fileName).catch(() => {});
+-    return;
+-  }
+-  // the operation reserved at submission is now definitively used (REQ-018)
+-  notify(job);
+ }
+ 
+ async function onReply(raw) {
+   let msg;
+-  try {
+-    msg = JSON.parse(raw.content.toString());
+-  } catch (_) {
+-    return console.error("[video-jobs] malformed reply discarded");
+-  }
+-
+-  try {
+-    switch (msg.type) {
+-      case "progress":
+-        return await onProgress(msg);
+-      case "success":
+-        return await onSuccess(msg);
+-      case "error":
+-        console.error(`[video-jobs] job ${msg.jobId} failed:`, msg.error?.code);
+-        return await failJob(msg.jobId, {
+-          code: String(msg.error?.code || "PROCESSING_FAILED"),
+-          message: msg.error?.message || FAILED_MESSAGE,
+-        });
+-      case "cancelled":
+-        return await cancelJob(msg.jobId); // normally already cancelled: no-op
+-      default:
+-        console.error("[video-jobs] unknown reply type:", msg.type);
++  try { msg = JSON.parse(raw.content.toString()); }
++  catch (_) { return console.error("[video-jobs] malformed reply discarded"); }
++  if (!msg || typeof msg !== "object" || !/^[a-f0-9]{24}$/i.test(msg.jobId)) return;
++  switch (msg.type) {
++    case "progress": return onProgress(msg);
++    case "success": return onSuccess(msg);
++    case "error": {
++      const job = await VideoJob.getById(msg.jobId);
++      if (!job) return;
++      return failJob(msg.jobId, {
++        code: String(msg.error?.code || "PROCESSING_FAILED"), message: failedMessage(job.tool),
++      });
+     }
+-  } catch (err) {
+-    console.error(`[video-jobs] error handling ${msg.type} of ${msg.jobId}:`, err.message);
++    case "cancelled": return cancelJob(msg.jobId);
++    default: console.error("[video-jobs] unknown reply type:", msg.type);
+   }
++  // Database/storage errors propagate: the broker retries the unacknowledged reply.
+ }
+ 
+-// ------------------------------------------------------------- maintenance
+-
+-async function failStaleJobs() {
++async function maintainJobs() {
+   const stale = await VideoJob.findStale(new Date(Date.now() - STALE_AFTER_MS));
+-  for (const job of stale) {
+-    await failJob(job._id, { code: "TIMEOUT", message: FAILED_MESSAGE });
+-  }
++  for (const job of stale) await failJob(job._id, { code: "TIMEOUT", message: failedMessage(job.tool) });
++  for (const job of await VideoJob.findRefundPending()) await refundOperation(job);
+ }
+ 
+ function startVideoJobs() {
+-  read_rabbit_msg(REPLY_QUEUE, (msg) => {
+-    onReply(msg);
+-  });
+-  setInterval(() => failStaleJobs().catch((e) => console.error(e.message)), 60 * 1000);
++  broker.consume("video_job_queue", onReply);
++  setInterval(() => maintainJobs().catch((err) => console.error(err.message)), 60 * 1000);
+ }
+ 
+ module.exports = {
+-  serializeJob,
+-  reserveOperation,
+-  refundOperation,
+-  publishTrim,
+-  failJob,
+-  cancelJob,
+-  startVideoJobs,
++  serializeJob, reserveOperation, refundOperation, publishTrim, publishApply,
++  failJob, cancelJob, startVideoJobs, failedMessage,
++  _test: { onProgress, onSuccess, onReply, maintainJobs },
+ };
+diff --git a/projects/utils/videoLocks.js b/projects/utils/videoLocks.js
+new file mode 100644
+index 0000000..245cca2
+--- /dev/null
++++ b/projects/utils/videoLocks.js
+@@ -0,0 +1,17 @@
++// Shared by imports, tool submissions and publication of completed results.
++// This serializes checks in the single projects service used by this MVP.
++const locks = new Map();
++
++function withUserLock(userId, fn) {
++  const key = String(userId);
++  const previous = locks.get(key) || Promise.resolve();
++  const result = previous.then(fn);
++  const tail = result.catch(() => {});
++  locks.set(key, tail);
++  tail.then(() => {
++    if (locks.get(key) === tail) locks.delete(key);
++  });
++  return result;
++}
++
++module.exports = { withUserLock };
+diff --git a/rabbitMQ/definitions.json b/rabbitMQ/definitions.json
+index 114e2e7..e770607 100644
+--- a/rabbitMQ/definitions.json
++++ b/rabbitMQ/definitions.json
+@@ -103,6 +103,13 @@
+             "auto_delete": false,
+             "arguments": {}
+         },
++        {
++            "name": "video_apply_queue",
++            "vhost": "/",
++            "durable": true,
++            "auto_delete": false,
++            "arguments": {}
++        },
+         {
+             "name": "video_job_queue",
+             "vhost": "/",
+@@ -273,6 +280,14 @@
+             "routing_key": "video_trim_queue",
+             "arguments": {}
+         },
++        {
++            "source": "picturas",
++            "vhost": "/",
++            "destination": "video_apply_queue",
++            "destination_type": "queue",
++            "routing_key": "video_apply_queue",
++            "arguments": {}
++        },
+         {
+             "source": "picturas",
+             "vhost": "/",
+diff --git a/tests/uc-vid-003/api.test.cjs b/tests/uc-vid-003/api.test.cjs
+new file mode 100644
+index 0000000..09d7128
+--- /dev/null
++++ b/tests/uc-vid-003/api.test.cjs
+@@ -0,0 +1,296 @@
++// HTTP and lifecycle tests with in-memory service adapters (no live containers).
++const { test, before, beforeEach, after } = require("node:test");
++const assert = require("node:assert/strict");
++const path = require("node:path");
++const fs = require("node:fs");
++const { createRequire } = require("node:module");
++const root = path.resolve(__dirname, "../..");
++const requireProjects = createRequire(path.join(root, "projects/package.json"));
++const express = requireProjects("express");
++const axios = requireProjects("axios");
++const Video = requireProjects("./controllers/video");
++const Job = requireProjects("./controllers/videoJob");
++const Project = requireProjects("./controllers/project");
++const storage = requireProjects("./utils/imageStorage");
++const broker = requireProjects("./utils/videoBroker");
++const { applyLimitsFor, validateTools } = requireProjects("./utils/videoApply");
++const { withUserLock } = requireProjects("./utils/videoLocks");
++const USER = "100000000000000000000001";
++const PROJECT = "200000000000000000000001";
++const SOURCE = "300000000000000000000001";
++let profile, videos, jobs, operations, publications, deletes, refunds, publishFailed, createFailed, hasProject, refundFailed;
++let server, base;
++
++function reset() {
++  profile = "free"; operations = 0; jobs = []; publications = []; deletes = []; refunds = new Set();
++  publishFailed = createFailed = refundFailed = false; hasProject = true;
++  videos = [{ _id: SOURCE, user_id: USER, project_id: PROJECT, name: "praia.mp4", state: "available",
++    format: "mp4", codec: "h264", width: 96, height: 64, duration: 120, size: 10, video_key: "source.mp4" }];
++}
++
++Project.getOne = async () => hasProject ? { _id: PROJECT, user_id: USER } : null;
++Video.getAll = async () => videos;
++Video.getOne = async (user, project, id) => videos.find((video) => String(video._id) === id);
++Video.getByFingerprint = async (_, __, key) => videos.find((video) => video.fingerprint === key);
++Video.usedStorage = async () => videos.reduce((total, video) => total + video.size, 0);
++Video.create = async (video) => { const result = { ...video, _id: `40000000000000000000000${videos.length}` }; videos.push(result); return result; };
++Video.delete = async (id) => { videos = videos.filter((video) => String(video._id) !== String(id)); };
++Job.getById = async (id) => jobs.find((job) => String(job._id) === String(id));
++Job.getOne = async (user, project, id) => jobs.find((job) => String(job._id) === String(id) && job.user_id === user && job.project_id === project);
++Job.getAll = async () => [...jobs].reverse();
++Job.countActive = async () => jobs.filter((job) => Job.ACTIVE_STATES.includes(job.state)).length;
++Job.getActiveByProject = async () => jobs.filter((job) => Job.ACTIVE_STATES.includes(job.state));
++Job.findStale = async () => [];
++Job.findRefundPending = async () => jobs.filter((job) => ["cancelled", "failed"].includes(job.state) && job.quota_reserved && !job.quota_refunded);
++Job.create = async (fields) => {
++  if (createFailed) throw new Error("Injected database failure");
++  const job = { state: "queued", progress: 0, frames_processed: 0, frame_count: null,
++    quota_refunded: false, save: async () => {}, ...fields };
++  jobs.push(job); return job;
++};
++Job.updateIfState = async (id, states, update) => {
++  const job = await Job.getById(id);
++  if (!job || !states.includes(job.state)) return null;
++  if (update.$set) Object.assign(job, update.$set);
++  if (update.$max) for (const [key, value] of Object.entries(update.$max)) job[key] = Math.max(job[key] || 0, value);
++  if (!Object.keys(update).some((key) => key.startsWith("$"))) Object.assign(job, update);
++  return job;
++};
++axios.get = async (url) => {
++  if (url.endsWith("/type")) return { data: { type: profile } };
++  if (url.endsWith("/process/1")) {
++    if (operations >= 5) throw { response: { data: "No more daily_operations available" } };
++    operations++; return { data: true };
++  }
++  throw new Error(`Unexpected request ${url}`);
++};
++axios.post = async (_, body) => {
++  if (refundFailed) throw new Error("Injected users outage");
++  assert.match(body.jobId, /^[a-f0-9]{24}$/);
++  assert.match(body.day, /^\d{4}-\d{2}-\d{2}$/);
++  if (!refunds.has(body.jobId)) { refunds.add(body.jobId); operations--; }
++  return { data: true };
++};
++storage.get_image_internal_url = async () => ({ data: { url: "http://storage/source.mp4" } });
++storage.delete_image = async (...args) => deletes.push(args);
++broker.publish = async (queue, message) => {
++  if (publishFailed && queue !== "ws_queue") throw new Error("Injected broker outage");
++  publications.push({ queue, message });
++};
++const lifecycle = requireProjects("./utils/videoJobs");
++const router = requireProjects("./routes/videoJobs");
++
++before(async () => {
++  const app = express(); app.use(express.json()); app.use(router);
++  await new Promise((resolve) => { server = app.listen(0, "127.0.0.1", resolve); });
++  base = `http://127.0.0.1:${server.address().port}/${USER}/${PROJECT}`;
++});
++beforeEach(reset);
++after(async () => { await new Promise((resolve) => server.close(resolve)); });
++
++async function post(suffix, body = {}, owner = USER) {
++  const response = await fetch(base + suffix, { method: "POST", headers: { "Content-Type": "application/json", "X-Caller-Id": owner }, body: JSON.stringify(body) });
++  return { status: response.status, body: await response.json() };
++}
++const tools = [{ type: "resize", width: 80, height: 48 }, { type: "binarization", threshold: 128 }, { type: "rotate", degrees: 90 }];
++const apply = (chain = tools) => post(`/videos/${SOURCE}/apply`, { tools: chain });
++const success = (job, extra = {}) => lifecycle._test.onSuccess({ jobId: job._id, output: {
++  fileName: `${job._id}.mp4`, format: "mp4", codec: "h264", size: 20, duration: 120,
++  width: job.params.width, height: job.params.height, frame_count: 3600, fps: 30, ...extra,
++} });
++
++test("a three-tool chain queues one operation and preserves order in the worker request", async () => {
++  const result = await apply();
++  assert.equal(result.status, 202);
++  assert.equal(result.body.job.state, "queued");
++  assert.equal(result.body.job.result_name, "praia_editado.mp4");
++  assert.equal(operations, 1);
++  const request = publications.find((item) => item.queue === "video_apply_queue").message;
++  assert.deepEqual(request.parameters.tools, tools);
++  assert.equal(request.parameters.maxDuration, 120);
++  assert.equal(request.parameters.width, 48);
++  assert.equal(request.parameters.height, 80);
++});
++
++test("parameter boundaries, unsupported tools and the fourth tool are rejected before quota", async (t) => {
++  for (const chain of [[], tools.concat({ type: "rotate", degrees: 90 }), [{ type: "ocr" }],
++    [{ type: "resize", width: 15, height: 16 }], [{ type: "resize", width: 3841, height: 16 }],
++    [{ type: "resize", width: "80", height: 16 }], [{ type: "resize", width: 16.5, height: 16 }],
++    [{ type: "binarization", threshold: -1 }], [{ type: "binarization", threshold: 256 }],
++    [{ type: "binarization", threshold: null }], [{ type: "rotate", degrees: 45 }]]) {
++    await t.test(JSON.stringify(chain), async () => {
++      const response = await apply(chain); assert.equal(response.status, 400); assert.equal(operations, 0);
++    });
++  }
++});
++
++test("zero and 255 thresholds, and 16 px dimensions, are accepted", async () => {
++  for (const threshold of [0, 255]) {
++    reset();
++    assert.equal((await apply([{ type: "binarization", threshold }, { type: "resize", width: 16, height: 16 }])).status, 202);
++  }
++});
++
++test("final resolution uses chain order and the current profile", async () => {
++  assert.equal((await apply([{ type: "resize", width: 2560, height: 1440 }])).status, 400);
++  profile = "premium";
++  assert.equal((await apply([{ type: "resize", width: 3840, height: 2160 }])).status, 202);
++  reset();
++  const ordered = [{ type: "resize", width: 1080, height: 1920 }, { type: "rotate", degrees: 90 }];
++  assert.equal((await apply(ordered)).status, 202);
++  await post(`/video-jobs/${jobs[0]._id}/cancel`);
++  assert.equal((await apply([...ordered].reverse())).status, 400);
++});
++
++test("APPLY duration and file-size limits are exact for free and premium", async () => {
++  for (const type of ["free", "premium"]) {
++    for (const field of ["duration", "size"]) {
++      reset(); profile = type;
++      const limit = applyLimitsFor(type)[field === "duration" ? "maxDuration" : "maxSize"];
++      videos[0][field] = limit + (field === "duration" ? 0.01 : 1);
++      assert.equal((await apply()).status, 413);
++      assert.equal(operations, 0);
++      videos[0][field] = limit;
++      assert.equal((await apply()).status, 202);
++    }
++  }
++});
++
++test("the anonymous profile and another owner cannot create jobs", async () => {
++  profile = "anonymous";
++  assert.equal((await apply()).status, 403);
++  profile = "free";
++  assert.equal((await post(`/videos/${SOURCE}/apply`, { tools }, "another-user")).status, 403);
++  assert.equal(jobs.length, 0); assert.equal(operations, 0);
++});
++
++test("only available MP4 H.264 or MOV videos can be processed", async () => {
++  videos[0].format = "avi"; assert.equal((await apply()).status, 415);
++  videos[0].format = "mp4"; videos[0].codec = "mpeg4"; assert.equal((await apply()).status, 415);
++  videos[0].format = "mov"; assert.equal((await apply()).status, 202);
++  reset(); videos[0].state = "validating"; assert.equal((await apply()).status, 409);
++});
++
++test("TRIM and APPLY share the active-job limit", async () => {
++  assert.equal((await post(`/videos/${SOURCE}/trim`, { start: 0, end: 10 })).status, 202);
++  assert.equal((await apply()).body.code, "TOO_MANY_JOBS");
++  reset(); profile = "premium";
++  assert.equal((await apply()).status, 202); assert.equal((await apply()).status, 202);
++  assert.equal((await post(`/videos/${SOURCE}/trim`, { start: 0, end: 10 })).status, 202);
++  assert.equal((await apply()).status, 429);
++  assert.equal(operations, 0);
++});
++
++test("parallel submissions cannot both pass the free active-job check", async () => {
++  const responses = await Promise.all([apply(), apply()]);
++  assert.deepEqual(responses.map((result) => result.status).sort(), [202, 429]);
++  assert.equal(operations, 1);
++});
++
++test("the fifth used daily operation blocks a new APPLY job", async () => {
++  operations = 5;
++  const result = await apply();
++  assert.equal(result.status, 429); assert.equal(result.body.code, "QUOTA_EXCEEDED");
++  assert.match(result.body.message, /Premium/); assert.equal(jobs.length, 0);
++});
++
++test("collision-free edited names also consider queued result names", async () => {
++  profile = "premium";
++  videos.push({ ...videos[0], _id: "another", name: "PRAIA_EDITADO.MP4" });
++  assert.equal((await apply()).body.job.result_name, "praia_editado_2.mp4");
++  assert.equal((await apply()).body.job.result_name, "praia_editado_3.mp4");
++});
++
++test("progress and frame counts are monotonic; completion publishes one new video", async () => {
++  await apply(); const job = jobs[0];
++  await lifecycle._test.onProgress({ jobId: job._id, progress: 50, framesProcessed: 1800, frameCount: 3600 });
++  await lifecycle._test.onProgress({ jobId: job._id, progress: 20, framesProcessed: 720, frameCount: 3600 });
++  assert.equal(job.progress, 50); assert.equal(job.frames_processed, 1800);
++  await success(job);
++  assert.equal(job.state, "completed"); assert.equal(job.progress, 100);
++  assert.equal(job.frames_processed, 3600); assert.equal(videos.length, 2);
++  assert.equal(videos[0].name, "praia.mp4"); assert.equal(videos[1].name, "praia_editado.mp4");
++  assert.equal(operations, 1);
++});
++
++test("a repeated success neither duplicates nor deletes a completed result", async () => {
++  await apply(); const job = jobs[0]; await success(job); await success(job);
++  assert.equal(videos.length, 2); assert.equal(deletes.length, 0); assert.equal(operations, 1);
++});
++
++test("cancel queued/processing jobs, refund once, and remove a late result", async () => {
++  for (const state of ["queued", "processing"]) {
++    reset(); await apply(); const job = jobs[0]; job.state = state;
++    assert.equal((await post(`/video-jobs/${job._id}/cancel`)).status, 200);
++    assert.equal(job.state, "cancelled"); assert.equal(operations, 0);
++    assert.equal((await post(`/video-jobs/${job._id}/cancel`)).status, 409);
++    await success(job); assert.equal(videos.length, 1); assert.equal(deletes.length, 1);
++  }
++});
++
++test("a worker failure uses the required message and refunds the entire chain", async () => {
++  await apply(); const job = jobs[0];
++  await lifecycle._test.onReply({ content: Buffer.from(JSON.stringify({ jobId: String(job._id), type: "error", error: { code: "FRAME_FAILED", message: "internal path" } })) });
++  assert.equal(job.state, "failed"); assert.equal(job.error.message, lifecycle.failedMessage("apply"));
++  assert.equal(operations, 0); assert.equal(videos.length, 1);
++});
++
++test("actual encoded size is checked again before publication", async () => {
++  await apply(); const job = jobs[0]; await success(job, { size: job.max_storage });
++  assert.equal(job.state, "failed"); assert.equal(job.error.code, "STORAGE_FULL");
++  assert.equal(videos.length, 1); assert.equal(deletes.length, 1); assert.equal(operations, 0);
++});
++
++test("a deleted project cannot receive an orphan result", async () => {
++  await apply(); const job = jobs[0]; hasProject = false; await success(job);
++  assert.equal(job.state, "failed"); assert.equal(videos.length, 1); assert.equal(operations, 0);
++});
++
++test("broker publication failure refunds quota and returns a service error", async () => {
++  publishFailed = true; const result = await apply();
++  assert.equal(result.status, 503); assert.equal(jobs[0].state, "failed"); assert.equal(operations, 0);
++});
++
++test("job creation failure compensates the quota reservation", async () => {
++  createFailed = true; assert.equal((await apply()).status, 500);
++  assert.equal(operations, 0); assert.equal(jobs.length, 0);
++});
++
++test("a temporary refund outage is retried without consuming a cancelled operation", async () => {
++  await apply(); const job = jobs[0]; refundFailed = true;
++  await post(`/video-jobs/${job._id}/cancel`); assert.equal(job.quota_refunded, false);
++  refundFailed = false; await lifecycle._test.maintainJobs(); await lifecycle._test.maintainJobs();
++  assert.equal(operations, 0); assert.equal(job.quota_refunded, true); assert.equal(refunds.size, 1);
++});
++
++test("a crash between video insertion and job completion recovers the same result", async () => {
++  await apply(); const job = jobs[0];
++  videos.push({ _id: "recovered", fingerprint: `apply:${job._id}`, name: job.result_name, size: 20 });
++  await success(job); assert.equal(videos.length, 2); assert.equal(job.result_video_id, "recovered");
++});
++
++test("the shared user lock keeps independent users concurrent and releases after failure", async () => {
++  let release;
++  const first = withUserLock("a", () => new Promise((resolve) => { release = resolve; }));
++  await withUserLock("b", async () => {});
++  release(); await first;
++  await assert.rejects(withUserLock("a", async () => { throw Error("test"); }));
++  await withUserLock("a", async () => {});
++});
++
++test("frontend and API agree on parameter boundaries and final resolution", () => {
++  const requireFrontend = createRequire(path.join(root, "frontend/package.json"));
++  const ts = requireFrontend("typescript");
++  const text = fs.readFileSync(path.join(root, "frontend/lib/video-apply.ts"), "utf8");
++  const output = ts.transpileModule(text, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
++  const frontend = {}; new Function("exports", output)(frontend);
++  for (const type of ["free", "premium"]) {
++    for (const chain of [tools, [{ type: "resize", width: 2560, height: 1440 }],
++      [{ type: "resize", width: 16, height: 16 }], [{ type: "resize", width: 3841, height: 16 }],
++      [{ type: "binarization", threshold: 0 }], [{ type: "binarization", threshold: 256 }],
++      [{ type: "rotate", degrees: 45 }], []]) {
++      const api = validateTools(chain, 96, 64, applyLimitsFor(type));
++      assert.equal(!!frontend.applyToolsError(videos[0], chain, type), !!api.error);
++    }
++  }
++});
+diff --git a/tests/uc-vid-003/checklist-manual.md b/tests/uc-vid-003/checklist-manual.md
+new file mode 100644
+index 0000000..09535b7
+--- /dev/null
++++ b/tests/uc-vid-003/checklist-manual.md
+@@ -0,0 +1,54 @@
++# Checklist no ambiente completo — UC-VID-003
++
++Estado inicial: **por executar**. Preencher data, ambiente, browser, utilizador de teste, resultado observado e evidência. Não marcar como validado sem executar.
++
++## Preparação
++
++```bash
++git fetch origin
++git switch feature/uc-vid-003-apply-tools
++docker compose up -d --build
++docker compose logs --tail=100 video_apply_tool projects
++```
++
++Usar contas e projetos de teste. Preparar MP4 H.264 de menos de 2 min com áudio, MOV suportado, e um vídeo de 2 min/1080p/30 fps para desempenho. Confirmar operações livres. Não apagar volumes para adicionar a fila: o publicador e o worker declaram-na e criam a ligação ao exchange.
++
++## Fluxo e limites
++
++- [ ] Registado: abrir um vídeo → Ferramentas de vídeo → Aplicar ferramentas; só existem Redimensionar, Binarizar e Rodar.
++- [ ] Adicionar três ferramentas; não aceitar uma quarta; mover e remover ferramentas mantém os parâmetros corretos.
++- [ ] Largura/altura 16–3840, limiar 0–255 e ângulos 90/180/270. Valor inválido mostra o intervalo e desativa Aplicar.
++- [ ] Gratuito: 2560 × 1440 final é rejeitado; 1920 × 1080 é aceite. Confirmar resolução após rotação e mudança de ordem.
++- [ ] Premium: 3840 × 2160 final é aceite; excesso é rejeitado.
++- [ ] Gratuito: vídeo de 120 s aceite, acima disso rejeitado; Premium: 600 s aceite, acima disso rejeitado.
++- [ ] Confirmar tamanhos de 200 MiB/2 GiB e mensagem de excesso. Usar os valores binários definidos na API.
++- [ ] Anónimo: ausência da biblioteca/ferramenta e sugestão para Criar conta na importação de vídeo.
++- [ ] JWT ausente/expirado/de outro dono não permite usar a rota; o dono pode enviar a cadeia.
++
++## Sucesso e quota
++
++- [ ] Cadeia Redimensionar → Binarizar → Rodar cria pedido Em fila e confirma receção em ≤ 2 s. Medir também para um vídeo Premium longo.
++- [ ] Estado muda para Em processamento. Medir atualizações de percentagem e fotogramas em intervalos ≤ 5 s.
++- [ ] Repetir com WebSocket desligado: a consulta periódica acompanha o pedido e atualiza biblioteca/quota ao terminar.
++- [ ] Resultado `_editado` aparece como novo vídeo e reproduz do início ao fim no browser alvo; Exportar descarrega-o.
++- [ ] Aplicar outra vez mantém ambos os resultados com nomes distintos, incluindo colisões com pedidos ativos.
++- [ ] Comparar `ffprobe -count_frames -show_streams -show_format` e os tempos dos fotogramas: formato/codec, número e taxa iguais.
++- [ ] Comparar SHA-256 dos pacotes de áudio e tempos; verificar áudio presente e sincronizado, incluindo ficheiro com duas faixas.
++- [ ] SHA-256 do ficheiro original igual antes/depois.
++- [ ] Três ferramentas consomem uma operação concluída; cinco operações esgotadas impedem um novo pedido; Premium sem limite diário.
++- [ ] Um TRIM ativo impede APPLY gratuito; três pedidos de vídeo ativos são o máximo Premium, em todos os projetos.
++
++## Cancelamento e falha
++
++- [ ] Cancelar em fila e durante processamento: estado Cancelado, reserva devolvida, sem vídeo novo ou objeto parcial em SeaweedFS.
++- [ ] Cancelar perto do fim/upload: resultado tardio removido e não apresentado na biblioteca.
++- [ ] Em fixture isolada, usar entrada corrompida ou injetar falha de fotograma: estado Falhado, mensagem “Não foi possível aplicar as ferramentas ao vídeo. Tente novamente.”, sem resultado/quota gasta.
++- [ ] Interromper temporariamente `users` durante compensação e repor: a manutenção devolve a reserva uma única vez. Confirmar também uma reserva feita no dia anterior.
++- [ ] Reentregar uma resposta de sucesso no ambiente de teste: resultado concluído não é duplicado nem apagado.
++- [ ] Se a recodificação preencher o espaço, verificar falha, remoção do resultado e devolução da reserva.
++- [ ] Confirmar que o recorte TRIM e as três ferramentas de imagem mantêm o comportamento anterior.
++
++## Desempenho e registo
++
++- [ ] Executar cenário A4: 2 min/1080p/30 fps com três ferramentas; medir tempo total e confirmar ≤ 10 min no equipamento declarado.
++- [ ] Preencher esta checklist e acrescentar evidência real em `resultados.md` e a revisão do aluno em `Docs/registo-ia-apply.md`.
+diff --git a/tests/uc-vid-003/gateway.test.cjs b/tests/uc-vid-003/gateway.test.cjs
+new file mode 100644
+index 0000000..53248f4
+--- /dev/null
++++ b/tests/uc-vid-003/gateway.test.cjs
+@@ -0,0 +1,46 @@
++const { test, before, beforeEach, after } = require("node:test");
++const assert = require("node:assert/strict");
++const path = require("node:path");
++const { createRequire } = require("node:module");
++const requireGateway = createRequire(path.resolve(__dirname, "../../apiGateway/package.json"));
++const express = requireGateway("express");
++const jwt = requireGateway("jsonwebtoken");
++process.env.JWT_SECRET_KEY = "uc-vid-003-test-only";
++let forwarded = [], server, url;
++const axiosPath = requireGateway.resolve("axios");
++requireGateway("axios");
++require.cache[axiosPath].exports = async (request) => {
++  forwarded.push(request);
++  return { status: 202, data: { job: { tool: "apply", state: "queued" } } };
++};
++const router = requireGateway("./routes/videos");
++before(async () => {
++  const app = express(); app.use(express.json()); app.use("/projects", router);
++  await new Promise((resolve) => { server = app.listen(0, "127.0.0.1", resolve); });
++  url = `http://127.0.0.1:${server.address().port}/projects/user/project/videos/video/apply`;
++});
++beforeEach(() => { forwarded = []; });
++after(async () => { await new Promise((resolve) => server.close(resolve)); });
++async function submit(token) {
++  return fetch(url, { method: "POST", headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
++    body: JSON.stringify({ tools: [{ type: "rotate", degrees: 90 }] }) });
++}
++test("a valid owner's JWT forwards APPLY with its body and verified caller", async () => {
++  const token = jwt.sign({ id: "user" }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
++  const response = await submit(token);
++  assert.equal(response.status, 202); assert.equal((await response.json()).job.tool, "apply");
++  assert.equal(forwarded.length, 1); assert.equal(forwarded[0].url, "https://projects:9001/user/project/videos/video/apply");
++  assert.equal(forwarded[0].headers["X-Caller-Id"], "user");
++  assert.deepEqual(forwarded[0].data.tools, [{ type: "rotate", degrees: 90 }]);
++});
++test("a missing JWT never reaches the projects service", async () => {
++  assert.equal((await submit()).status, 401); assert.equal(forwarded.length, 0);
++});
++test("an expired JWT never reaches the projects service", async () => {
++  assert.equal((await submit(jwt.sign({ id: "user" }, process.env.JWT_SECRET_KEY, { expiresIn: -1 }))).status, 401);
++  assert.equal(forwarded.length, 0);
++});
++test("another user's JWT never reaches the projects service", async () => {
++  assert.equal((await submit(jwt.sign({ id: "another" }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" }))).status, 401);
++  assert.equal(forwarded.length, 0);
++});
+diff --git a/tests/uc-vid-003/quota-mongo.test.cjs b/tests/uc-vid-003/quota-mongo.test.cjs
+new file mode 100644
+index 0000000..08a81b9
+--- /dev/null
++++ b/tests/uc-vid-003/quota-mongo.test.cjs
+@@ -0,0 +1,33 @@
++// Enabled by CI's disposable MongoDB 4.4 service. No production data is used.
++const { test } = require("node:test");
++const assert = require("node:assert/strict");
++const path = require("node:path");
++const { createRequire } = require("node:module");
++
++test("MongoDB refunds once under concurrency, on the reservation day", {
++  skip: !process.env.MONGODB_TEST_URL,
++}, async () => {
++  const requireUsers = createRequire(path.resolve(__dirname, "../../users/package.json"));
++  process.env.FIELD_ENCRYPTION_KEY = "uc-vid-003-test-only";
++  const mongoose = requireUsers("mongoose");
++  const User = requireUsers("./models/user");
++  const yesterday = new Date("2026-10-08T00:00:00Z");
++  const today = new Date("2026-10-09T00:00:00Z");
++  const key = "100000000000000000000001";
++  let fixture;
++  try {
++    await mongoose.connect(process.env.MONGODB_TEST_URL, { dbName: "uc_vid_003_test", serverSelectionTimeoutMS: 5000 });
++    fixture = await User.create({ name: "UC-VID-003 fixture", type: "free", email: `quota-${Date.now()}@example.test`,
++      operations: [{ day: yesterday, processed: 3 }, { day: today, processed: 1 }] });
++    await Promise.all(Array.from({ length: 20 }, () => User.refundVideoOperation(fixture._id, key, yesterday, 1)));
++    const result = await User.findById(fixture._id).lean();
++    assert.deepEqual(result.operations.map((operation) => operation.processed), [2, 1]);
++    assert.deepEqual(result.video_refunds, [key]);
++    assert.equal(Object.hasOwn((await User.findById(fixture._id)).toJSON(), "video_refunds"), false);
++    await User.refundVideoOperation(fixture._id, "100000000000000000000002", today, 1);
++    assert.deepEqual((await User.findById(fixture._id).lean()).operations.map((operation) => operation.processed), [2, 0]);
++  } finally {
++    if (fixture) await User.deleteOne({ _id: fixture._id });
++    await mongoose.disconnect();
++  }
++});
+diff --git a/tests/uc-vid-003/resultados.md b/tests/uc-vid-003/resultados.md
+new file mode 100644
+index 0000000..9f9cd56
+--- /dev/null
++++ b/tests/uc-vid-003/resultados.md
+@@ -0,0 +1,63 @@
++# Resultados — UC-VID-003
++
++Execução pelo assistente em 2026-10-09. Este registo distingue testes reais de media, testes com adaptadores e verificações ainda pendentes. Não representa validação manual pelo aluno.
++
++| Verificação local | Resultado | Alcance |
++|---|---|---|
++| `python -m unittest discover -s tests/uc-vid-003 -p 'test_*.py' -v` | 20 passaram | 14 testes de media + 6 do worker com HTTP real e canal de broker substituído |
++| `node --test tests/uc-vid-003/*.test.cjs` | 38 passaram; 1 ignorado | API Express, ciclo de vida, regras da interface e gateway JWT; base de dados/serviços substituídos em memória |
++| `frontend: npx tsc --noEmit --incremental false` | Passou | Tipos de toda a aplicação |
++| ESLint dos seis ficheiros frontend alterados | Passou sem avisos | Painel, diálogo, queries e bibliotecas de vídeo |
++| `frontend: npm run build` | Passou | Compilação e geração das páginas; avisos existentes em cinco ficheiros fora desta alteração |
++| Sintaxe Node/Python, JSON RabbitMQ, YAML Compose | Passou | Configuração e sintaxe; não equivale a executar os contentores |
++| `git -c core.whitespace=cr-at-eol diff --check` | Passou | Mantém CRLF nos ficheiros legados que já o usavam |
++
++Ambiente de execução de media: Python 3.12, PyAV 16.1.0, Pillow 11.0.0, FFmpeg disponível. O Dockerfile e a integração contínua usam Python 3.11; esse ambiente deve ser confirmado pela CI. Os testes geram os vídeos e removem as suas pastas temporárias.
++
++## Evidência coberta
++
++- MP4 H.264 com áudio AAC: mesmos fotogramas, cadência, tempos de apresentação e pacotes de áudio, incluindo hashes SHA-256 e tempos/durações dos pacotes.
++- MOV PNG: comparação exata de pixels de **todos** os fotogramas com a aplicação das funções Pillow partilhadas.
++- MOV ProRes com áudio PCM: codec, contagem/cadência e pacotes de áudio preservados.
++- Duas faixas de áudio, taxa de 30000/1001, tempos variáveis, dimensões ímpares, ordem das ferramentas e original inalterado.
++- Cancelamento a meio do processamento, erro injetado no quarto fotograma, fonte inválida, limite de armazenamento e duração: sem resultado local parcial.
++- Worker: download/transformação/upload reais para um servidor HTTP de teste; cancelamento em fila, durante download e depois do upload; diretórios removidos; resposta repetida de concluído preserva o resultado.
++- API: parâmetros, limites exatos, perfis, quota de uma operação por cadeia, concorrência entre TRIM/APPLY, colisões de nomes, progresso monotónico, cancelamento, falha, limite real do resultado e recuperação após inserção anterior ao estado final.
++- Gateway: JWT válido, ausente, expirado e de outro utilizador.
++
++## Matriz de requisitos
++
++| REQ-VID-APPLY | Evidência automatizada | Verificação ainda necessária |
++|---|---|---|
++| 001 | Painel integrado; tipos/build | Abrir ferramenta no browser |
++| 002 | API/worker rejeitam ferramentas fora das três permitidas | Confirmar opções visíveis |
++| 003 | API rejeita cadeia vazia e quarta ferramenta | Adicionar, ordenar e remover na interface |
++| 004 | Parâmetros e fronteiras; interface/API concordam | Mensagens e botão desativado no browser |
++| 005 | Resolução final, ordem e ambos os perfis | Feedback visual |
++| 006 | MP4 H.264/MOV e rejeição de outros metadados | Integração com vídeos importados |
++| 007 | 120/600 s aceites; excesso fracionário rejeitado | Vídeos longos no Compose |
++| 008 | Fronteiras de tamanho de ambos os perfis | Ficheiros grandes no armazenamento real |
++| 009 | Quinta operação esgotada e indicação Premium | Contador real de `users` |
++| 010 | Limite conjunto TRIM/APPLY, envios simultâneos | Concorrência no Compose |
++| 011 | HTTP 202 e estado inicial `queued` | Confirmação visual |
++| 012 | Trabalho pesado fora da rota HTTP | Medir ≤ 2 s no ambiente completo |
++| 013 | Todos os fotogramas MOV comparados com Pillow; ordem | Demonstração visual da cadeia |
++| 014 | MP4/MOV, ProRes/PNG/H.264, contagem, taxa e tempos | Codecs dos ficheiros da demonstração |
++| 015 | Hash, tempos e duração de pacotes de áudio, duas faixas | Áudio do vídeo importado real |
++| 016 | Transições/progresso/cancelamento/falha nas APIs | Estados e textos no browser |
++| 017 | Processo principal envia progresso enquanto filho bloqueia; contador final | Medir intervalos ≤ 5 s, WebSocket e polling |
++| 018 | Cancelamento queued/processing e worker | Botão na interface |
++| 019 | Temporários removidos e resultado tardio apagado | Confirmar SeaweedFS real |
++| 020 | Nome `_editado`, colisões e inserção recuperável | Novo vídeo na biblioteca real |
++| 021 | SHA-256 original e ausência de alterações no registo de origem | Comparar original armazenado |
++| 022 | Três ferramentas reservam uma; sucesso/cancelamento/falha | Reserva/compensação em `users` real |
++| 023 | Reutiliza biblioteca/player/exportação; build | Reprodução no browser alvo |
++| 024 | Mensagem exigida e estado failed | Falha integrada na aplicação |
++| 025 | Falha de fotograma não guarda resultado; refund/retry com adaptadores | Armazenamento e quota reais |
++| 026 | API recusa anónimo; interface de vídeo existente só mostra biblioteca a registados | Confirmar sugestão de registo e ausência da aba |
++
++## Pendente
++
++Sem Docker neste ambiente, não foram executados Compose, RabbitMQ/SeaweedFS reais nem o teste opcional `quota-mongo.test.cjs`. A workflow `.github/workflows/uc-vid-003.yml` inclui MongoDB 4.4 para esse teste; o seu resultado deve ser consultado na CI, não presumido neste registo.
++
++Também ficam pendentes os tempos do sistema completo, o cenário A4 (2 min, 1080p, 30 fps em ≤ 10 min), a compatibilidade do player e a checklist manual. As reservas legadas de quota e o bloqueio por processo têm as limitações descritas em [implementação](../../Docs/UC-VID-003-implementacao.md).
+diff --git a/tests/uc-vid-003/test_processing.py b/tests/uc-vid-003/test_processing.py
+new file mode 100644
+index 0000000..6ac94e5
+--- /dev/null
++++ b/tests/uc-vid-003/test_processing.py
+@@ -0,0 +1,212 @@
++"""Real media tests. No RabbitMQ/MongoDB required; requires ffmpeg and PyAV."""
++
++import hashlib
++import os
++from pathlib import Path
++import subprocess
++import sys
++import tempfile
++import unittest
++from fractions import Fraction
++from unittest.mock import patch
++
++import av
++from PIL import Image
++
++ROOT = Path(__file__).resolve().parents[2]
++sys.path.insert(0, str(ROOT / "Tools"))
++from utils.image_operations import apply_chain, chain_dimensions, validate_chain
++from video_apply.processing import JobCancelled, ProcessingError, process_video
++
++
++def ffmpeg(*args):
++    subprocess.run(["ffmpeg", "-v", "error", "-y", "-filter_threads", "1", *args],
++                   capture_output=True, check=True, timeout=30)
++
++
++def video_frames(path):
++    with av.open(str(path)) as container:
++        stream = container.streams.video[0]
++        frames = list(container.decode(stream))
++        return frames, stream.average_rate, stream.codec_context.name
++
++
++def audio_packets(path):
++    with av.open(str(path)) as container:
++        streams = list(container.streams.audio)
++        if not streams: return []
++        packets = {stream.index: [] for stream in streams}
++        for packet in container.demux(*streams):
++            if packet.dts is not None:
++                packets[packet.stream.index].append((hashlib.sha256(bytes(packet)).hexdigest(),
++                    packet.pts * packet.time_base, packet.duration * packet.time_base))
++        return list(packets.values())
++
++
++class ProcessingTests(unittest.TestCase):
++    @classmethod
++    def setUpClass(cls):
++        cls.tmp = tempfile.TemporaryDirectory(prefix="uc-vid-003-test-")
++        cls.root = Path(cls.tmp.name)
++        cls.mp4 = cls.root / "source.mp4"
++        ffmpeg("-f", "lavfi", "-i", "testsrc2=size=96x64:rate=12:duration=2",
++               "-f", "lavfi", "-i", "sine=frequency=440:sample_rate=48000:duration=2",
++               "-c:v", "libx264", "-threads", "1", "-c:a", "aac", str(cls.mp4))
++        cls.mov = cls.root / "source.mov"
++        ffmpeg("-f", "lavfi", "-i", "testsrc=size=63x47:rate=10:duration=1",
++               "-c:v", "png", "-threads", "1", "-pix_fmt", "rgb24", str(cls.mov))
++
++    @classmethod
++    def tearDownClass(cls):
++        cls.tmp.cleanup()
++
++    def run_chain(self, tools, source=None, format="mp4", codec="h264", **kwargs):
++        target = self.root / (self._testMethodName + "." + format)
++        metadata = process_video(str(source or self.mp4), str(target), tools, format, codec, **kwargs)
++        return target, metadata
++
++    def test_mp4_frames_timestamps_audio_and_original_preserved(self):
++        before = hashlib.sha256(self.mp4.read_bytes()).digest()
++        progress = []
++        target, meta = self.run_chain([
++            {"type": "resize", "width": 80, "height": 48},
++            {"type": "binarization", "threshold": 128},
++            {"type": "rotate", "degrees": 90},
++        ], on_progress=lambda *values: progress.append(values))
++        original, rate, codec = video_frames(self.mp4)
++        result, new_rate, new_codec = video_frames(target)
++        self.assertEqual((len(result), new_rate, new_codec), (len(original), rate, codec))
++        self.assertEqual([f.pts * f.time_base for f in result], [f.pts * f.time_base for f in original])
++        self.assertEqual(audio_packets(target), audio_packets(self.mp4))
++        self.assertEqual((meta["width"], meta["height"], meta["frame_count"]), (48, 80, 24))
++        self.assertEqual(progress[-1][1], 24)
++        self.assertEqual(before, hashlib.sha256(self.mp4.read_bytes()).digest())
++
++    def test_every_mov_frame_matches_shared_image_tools_exactly(self):
++        tools = [{"type": "binarization", "threshold": 123},
++                 {"type": "resize", "width": 48, "height": 32},
++                 {"type": "rotate", "degrees": 270}]
++        target, meta = self.run_chain(tools, self.mov, "mov", "png")
++        original, rate, codec = video_frames(self.mov)
++        result, new_rate, new_codec = video_frames(target)
++        self.assertEqual((len(result), new_rate, new_codec), (len(original), rate, codec))
++        for source, output in zip(original, result):
++            expected = apply_chain(source.to_image(), tools).convert("RGB")
++            self.assertEqual(output.to_image().tobytes(), expected.tobytes())
++        self.assertEqual(meta["format"], "mov")
++
++    def test_tools_follow_the_selected_order(self):
++        first = [{"type": "resize", "width": 80, "height": 48}, {"type": "rotate", "degrees": 90}]
++        second = list(reversed(first))
++        self.assertEqual(chain_dimensions(96, 64, first), (48, 80))
++        self.assertEqual(chain_dimensions(96, 64, second), (80, 48))
++        image = Image.linear_gradient("L").resize((63, 47))
++        a = [{"type": "resize", "width": 20, "height": 16}, {"type": "binarization", "threshold": 128}]
++        self.assertNotEqual(apply_chain(image, a).tobytes(), apply_chain(image, list(reversed(a))).tobytes())
++
++    def test_all_audio_tracks_preserved(self):
++        source = self.root / "two-audio.mp4"
++        ffmpeg("-i", str(self.mp4), "-f", "lavfi", "-i", "sine=frequency=880:duration=2",
++               "-map", "0:v", "-map", "0:a", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", str(source))
++        target, _ = self.run_chain([{"type": "rotate", "degrees": 180}], source)
++        original = audio_packets(source)
++        self.assertEqual(len(original), 2)
++        self.assertTrue(all(original))
++        self.assertEqual(audio_packets(target), original)
++
++    def test_mov_prores_codec_and_pcm_audio_preserved(self):
++        source = self.root / "prores.mov"
++        ffmpeg("-i", str(self.mp4), "-c:v", "prores_ks", "-threads", "1", "-pix_fmt", "yuv422p10le",
++               "-c:a", "pcm_s16le", str(source))
++        target, meta = self.run_chain([{"type": "rotate", "degrees": 180}], source, "mov", "prores")
++        original, rate, _ = video_frames(source)
++        result, new_rate, codec = video_frames(target)
++        self.assertEqual((len(result), new_rate, codec), (len(original), rate, "prores"))
++        self.assertEqual(audio_packets(target), audio_packets(source))
++        self.assertEqual(meta["codec"], "prores")
++
++    def test_odd_h264_dimensions_are_not_cropped(self):
++        target, meta = self.run_chain([{"type": "resize", "width": 65, "height": 33}])
++        frames, _, _ = video_frames(target)
++        self.assertTrue(all((frame.width, frame.height) == (65, 33) for frame in frames))
++        self.assertEqual((meta["width"], meta["height"]), (65, 33))
++
++    def test_fractional_frame_rate_preserved(self):
++        source = self.root / "fractional.mp4"
++        ffmpeg("-f", "lavfi", "-i", "testsrc2=size=64x48:rate=30000/1001:duration=1",
++               "-c:v", "libx264", "-threads", "1", str(source))
++        target, _ = self.run_chain([{"type": "rotate", "degrees": 180}], source)
++        original, rate, _ = video_frames(source)
++        result, new_rate, _ = video_frames(target)
++        self.assertEqual(rate, Fraction(30000, 1001))
++        self.assertEqual((len(result), new_rate), (len(original), rate))
++        self.assertEqual([f.pts * f.time_base for f in result], [f.pts * f.time_base for f in original])
++
++    def test_variable_frame_timestamps_preserved(self):
++        source = self.root / "variable.mp4"
++        with av.open(str(source), "w") as output:
++            stream = output.add_stream("libx264", rate=25)
++            stream.width, stream.height, stream.pix_fmt = 64, 48, "yuv420p"
++            stream.time_base = stream.codec_context.time_base = Fraction(1, 1000)
++            for pts in [0, 40, 120, 160, 300]:
++                frame = av.VideoFrame.from_image(Image.new("RGB", (64, 48), (pts % 255, 128, 64)))
++                frame.pts, frame.time_base = pts, Fraction(1, 1000)
++                for packet in stream.encode(frame): output.mux(packet)
++            for packet in stream.encode(): output.mux(packet)
++        target, _ = self.run_chain([{"type": "rotate", "degrees": 180}], source)
++        original, rate, _ = video_frames(source)
++        result, new_rate, _ = video_frames(target)
++        self.assertEqual([f.pts * f.time_base for f in result], [f.pts * f.time_base for f in original])
++        self.assertEqual(new_rate, rate)
++
++    def test_cancellation_removes_partial_result(self):
++        done = [0]
++        path = self.root / "cancelled.mp4"
++        with self.assertRaises(JobCancelled):
++            process_video(str(self.mp4), str(path), [{"type": "rotate", "degrees": 90}], "mp4", "h264",
++                          should_cancel=lambda: done[0] >= 3,
++                          on_progress=lambda _, frames, __: done.__setitem__(0, frames))
++        self.assertEqual(done[0], 3)
++        self.assertFalse(path.exists())
++
++    def test_mid_frame_failure_removes_partial_result(self):
++        count = [0]
++        def fail_on_fourth(image, tools):
++            count[0] += 1
++            if count[0] == 4: raise ProcessingError("Injected frame failure")
++            return apply_chain(image, tools)
++        path = self.root / "failed.mp4"
++        with patch("video_apply.processing.apply_chain", side_effect=fail_on_fourth), self.assertRaises(ProcessingError):
++            process_video(str(self.mp4), str(path), [{"type": "rotate", "degrees": 90}], "mp4", "h264")
++        self.assertEqual(count[0], 4)
++        self.assertFalse(path.exists())
++
++    def test_storage_limit_removes_result(self):
++        path = self.root / "oversize.mp4"
++        with self.assertRaises(ProcessingError):
++            process_video(str(self.mp4), str(path), [{"type": "rotate", "degrees": 90}],
++                          "mp4", "h264", max_output_bytes=100)
++        self.assertFalse(path.exists())
++
++    def test_duration_limit(self):
++        with self.assertRaises(ProcessingError):
++            self.run_chain([{"type": "rotate", "degrees": 90}], max_duration=1)
++
++    def test_invalid_chain_parameters(self):
++        for chain in [[], [{}], [{"type": "resize", "width": 15, "height": 16}],
++                      [{"type": "resize", "width": 16.5, "height": 16}],
++                      [{"type": "rotate", "degrees": 45}], [{"type": "binarization", "threshold": True}],
++                      [{"type": "binarization", "threshold": 256}], [{"type": "ocr"}],
++                      [{"type": "rotate", "degrees": 90}] * 4]:
++            with self.subTest(chain=chain), self.assertRaises(ValueError): validate_chain(chain)
++        for threshold in [0, 255]: validate_chain([{"type": "binarization", "threshold": threshold}])
++
++    def test_bad_source_rejected(self):
++        source = self.root / "bad.mp4"
++        source.write_bytes(b"invalid media")
++        with self.assertRaises(Exception):
++            self.run_chain([{"type": "rotate", "degrees": 90}], source)
++
++
++if __name__ == "__main__":
++    unittest.main(verbosity=2)
+diff --git a/tests/uc-vid-003/test_worker.py b/tests/uc-vid-003/test_worker.py
+new file mode 100644
+index 0000000..521b8d7
+--- /dev/null
++++ b/tests/uc-vid-003/test_worker.py
+@@ -0,0 +1,158 @@
++"""Real worker child/HTTP tests; only the broker channel is replaced."""
++
++import json
++import os
++from pathlib import Path
++import subprocess
++import sys
++import tempfile
++import threading
++import time
++import unittest
++from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
++from unittest.mock import patch
++
++ROOT = Path(__file__).resolve().parents[2]
++sys.path.insert(0, str(ROOT / "Tools"))
++from video_apply import video_apply as module
++
++
++class Connection:
++    def __init__(self): self.events = 0
++    def process_data_events(self, time_limit):
++        self.events += 1
++        time.sleep(min(time_limit, 0.05))
++
++
++class WorkerTests(unittest.TestCase):
++    @classmethod
++    def setUpClass(cls):
++        cls.temp = tempfile.TemporaryDirectory()
++        cls.source = Path(cls.temp.name) / "input.mp4"
++        subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i",
++                        "testsrc2=size=64x48:rate=12:duration=1", "-c:v", "libx264",
++                        "-threads", "1", str(cls.source)], check=True, capture_output=True)
++
++    @classmethod
++    def tearDownClass(cls): cls.temp.cleanup()
++
++    def setUp(self):
++        self.state = "queued"
++        self.upload = None
++        self.deletes = 0
++        self.downloads = 0
++        self.slow_download = False
++        self.cancel_after_upload = False
++        self.corrupt = False
++        owner = self
++
++        class Handler(BaseHTTPRequestHandler):
++            def do_GET(self):
++                if self.path == "/source":
++                    owner.downloads += 1
++                    if owner.slow_download:
++                        time.sleep(4)
++                    payload = b"bad media" if owner.corrupt else owner.source.read_bytes()
++                else:
++                    # Cancel after the first state query, while the child downloads.
++                    state = owner.state
++                    if owner.slow_download: owner.state = "cancelled"
++                    payload = json.dumps({"state": state}).encode()
++                self.send_response(200); self.end_headers()
++                try: self.wfile.write(payload)
++                except (BrokenPipeError, ConnectionResetError): pass
++
++            def do_PUT(self):
++                owner.upload = self.rfile.read(int(self.headers["Content-Length"]))
++                if owner.cancel_after_upload: owner.state = "cancelled"
++                self.send_response(201); self.end_headers()
++                self.wfile.write(json.dumps({"data": {"videoKey": "project/video/result.mp4"}}).encode())
++
++            def do_DELETE(self):
++                owner.upload = None
++                owner.deletes += 1
++                self.send_response(201); self.end_headers(); self.wfile.write(b"{}")
++
++            def log_message(self, *_): pass
++
++        self.server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
++        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True); self.thread.start()
++        self.url = f"http://127.0.0.1:{self.server.server_port}"
++        self.env = patch.dict(os.environ, {"PROJECTS_URL": self.url, "IMG_STORAGE_URL": self.url})
++        self.env.start()
++        self.urls = patch.multiple(module, PROJECTS_URL=self.url, STORAGE_URL=self.url)
++        self.urls.start()
++        self.worker = object.__new__(module.VideoApplyWorker)
++        self.worker.connection = Connection()
++        self.replies = []
++        self.worker.reply = lambda job, kind, **fields: self.replies.append({"type": kind, **fields})
++        self.job = "100000000000000000000001"
++        self.params = {
++            "inputVideoURL": self.url + "/source", "userId": "200000000000000000000001",
++            "projectId": "300000000000000000000001", "outputFileName": self.job + ".mp4",
++            "format": "mp4", "codec": "h264", "maxDuration": 120, "maxOutputBytes": 1024**3,
++            "tools": [{"type": "rotate", "degrees": 90}], "width": 48, "height": 64,
++        }
++        self.directories = []
++        real_temporary_directory = tempfile.TemporaryDirectory
++        def observe(*args, **kwargs):
++            directory = real_temporary_directory(*args, **kwargs)
++            self.directories.append(directory.name)
++            return directory
++        self.temporary = patch.object(module.tempfile, "TemporaryDirectory", side_effect=observe)
++        self.temporary.start()
++
++    def tearDown(self):
++        self.temporary.stop(); self.urls.stop(); self.env.stop()
++        self.server.shutdown(); self.server.server_close(); self.thread.join()
++        self.assertTrue(all(not Path(path).exists() for path in self.directories))
++
++    def test_child_downloads_processes_and_uploads_complete_video(self):
++        result = self.worker.process(self.job, self.params)
++        self.assertEqual(result["type"], "success")
++        self.assertEqual(result["output"]["frame_count"], 12)
++        self.assertEqual(result["output"]["width"], 48)
++        self.assertGreater(len(self.upload), 0)
++        self.assertEqual(self.deletes, 0)
++        self.assertGreater(self.worker.connection.events, 0)
++        self.assertEqual(self.replies[-1]["framesProcessed"], 12)
++
++    def test_cancelled_queue_does_not_download_or_process(self):
++        self.state = "cancelled"
++        self.assertEqual(self.worker.process(self.job, self.params)["type"], "cancelled")
++        self.assertEqual(self.downloads, 0)
++        self.assertIsNone(self.upload)
++
++    def test_cancel_during_download_kills_child_and_removes_temporaries(self):
++        self.slow_download = True
++        started = time.monotonic()
++        result = self.worker.process(self.job, self.params)
++        self.assertEqual(result["type"], "cancelled")
++        self.assertLess(time.monotonic() - started, 4)
++        self.assertEqual(self.deletes, 1)
++        self.assertTrue(any(reply["type"] == "progress" for reply in self.replies))
++
++    def test_cancel_after_upload_removes_the_stored_result(self):
++        self.cancel_after_upload = True
++        result = self.worker.process(self.job, self.params)
++        self.assertEqual(result["type"], "cancelled")
++        self.assertIsNone(self.upload)
++        self.assertEqual(self.deletes, 1)
++
++    def test_corrupt_video_returns_required_error_without_a_result(self):
++        self.corrupt = True
++        result = self.worker.process(self.job, self.params)
++        self.assertEqual(result["type"], "error")
++        self.assertEqual(result["error"]["message"], module.FAILED_MESSAGE)
++        self.assertIsNone(self.upload)
++        self.assertEqual(self.deletes, 1)
++
++    def test_replayed_completed_request_preserves_existing_result(self):
++        self.state = "completed"; self.upload = b"already published"
++        self.assertIsNone(self.worker.process(self.job, self.params))
++        self.assertEqual(self.upload, b"already published")
++        self.assertEqual(self.downloads, 0)
++        self.assertEqual(self.deletes, 0)
++
++
++if __name__ == "__main__": unittest.main(verbosity=2)
+diff --git a/users/controllers/user.js b/users/controllers/user.js
+index 694aec3..1bd8651 100644
+--- a/users/controllers/user.js
++++ b/users/controllers/user.js
+@@ -57,3 +57,8 @@ module.exports.update = async (user_id, user) => {
+ module.exports.delete = (user_id) => {
+   return User.deleteOne({ _id: user_id });
+ };
++
++// Refund and remember its key in the same document update. Safe to retry when
++// the HTTP response was lost. Use the reservation day, including across midnight.
++module.exports.refundVideoOperation = async (user_id, jobId, day, count) =>
++  User.refundVideoOperation(user_id, jobId, day, count);
+diff --git a/users/models/user.js b/users/models/user.js
+index b60373e..ab5d592 100644
+--- a/users/models/user.js
++++ b/users/models/user.js
+@@ -34,8 +34,22 @@ const userSchema = new mongoose.Schema({
+     required: true,
+   },
+   operations: { type: [daySchema], required: true, default: [] },
++  // Idempotency keys for video refunds; internal and never sent to the client.
++  video_refunds: { type: [String], default: [] },
+ });
+ 
++// Change the daily counter and its refund key atomically in one document.
++userSchema.statics.refundVideoOperation = function (userId, jobId, day, count) {
++  return this.updateOne({ _id: userId, video_refunds: { $ne: jobId } }, [{ $set: {
++    video_refunds: { $concatArrays: [{ $ifNull: ["$video_refunds", []] }, [jobId]] },
++    operations: { $map: { input: "$operations", as: "op", in: {
++      $cond: [{ $eq: ["$$op.day", day] },
++        { $mergeObjects: ["$$op", { processed: { $max: [0, { $subtract: ["$$op.processed", count] }] } }] },
++        "$$op"],
++    } } },
++  } }]);
++};
++
+ // Virtual "email" para aceder ao valor desencriptado
+ userSchema.virtual("email")
+   .get(function () {
+@@ -62,6 +76,7 @@ userSchema.set("toJSON", {
+     delete ret.email_encrypted;
+     delete ret.email_hash;
+     delete ret.password_hash;
++    delete ret.video_refunds;
+     return ret;
+   },
+ });
+diff --git a/users/routes/users.js b/users/routes/users.js
+index f44d418..f0810ed 100644
+--- a/users/routes/users.js
++++ b/users/routes/users.js
+@@ -323,6 +323,22 @@ router.post("/:user/process/refund/:advanced_tools", async function (req, res) {
+       return res.status(400).jsonp("Invalid operations number");
+     }
+ 
++    // Video jobs supply a stable key and the day on which they reserved quota.
++    // The legacy image refund contract (empty body) remains available.
++    if (req.body?.jobId !== undefined) {
++      const jobId = req.body.jobId;
++      const dayText = req.body.day;
++      const day = new Date(dayText);
++      if (typeof jobId !== "string" || !/^[a-f0-9]{24}$/i.test(jobId) ||
++          typeof dayText !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(dayText) ||
++          !Number.isFinite(day.getTime()) || day.toISOString().slice(0, 10) !== dayText || op_num !== 1) {
++        return res.status(400).jsonp("Invalid video refund");
++      }
++      if (!user) return res.status(404).jsonp("User not found");
++      await User.refundVideoOperation(req.params.user, jobId, day, op_num);
++      return res.status(200).jsonp(true);
++    }
++
+     // premium não precisa de refund (não tem limite diário)
+     if (user.type === "premium") {
+       return res.status(200).jsonp(true);
