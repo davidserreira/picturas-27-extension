@@ -1,8 +1,8 @@
 "use client";
 
-// UC-VID-001 — Recortar um vídeo e exportar o resultado.
+// UC-VID-001 / UC-VID-003 — Recortar, aplicar ferramentas e exportar.
 // Dialog opened from a video of the library, with two tabs: "Ver" (player)
-// and "Ferramentas de vídeo" (Recortar + the requests of this video).
+// and "Ferramentas de vídeo" (Trim / Apply + requests of this video).
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -26,6 +26,8 @@ import { useSession } from "@/providers/session-provider";
 import { useToast } from "@/hooks/use-toast";
 import { useGetVideoJobs, videoJobsKey } from "@/lib/queries/video-jobs";
 import { useQueryClient } from "@tanstack/react-query";
+import { VideoApplyPanel } from "./video-apply-panel";
+import { applyToolDescription } from "@/lib/video-apply";
 import {
   fetchProjectVideoUrl,
   getVideoErrorMessage,
@@ -321,7 +323,7 @@ function JobRow({ job }: { job: VideoJob }) {
         videoJobsKey(session.user._id, pid, session.token),
         (jobs) => jobs?.map((j) => (j._id === updated._id ? updated : j)),
       );
-      toast({ title: "Recorte cancelado", description: "Não foi criado nenhum vídeo." });
+      toast({ title: "Pedido cancelado", description: "Não foi criado nenhum vídeo." });
     } catch (error) {
       toast({
         title: "Não foi possível cancelar",
@@ -342,7 +344,9 @@ function JobRow({ job }: { job: VideoJob }) {
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{job.result_name}</p>
           <p className="text-xs text-muted-foreground">
-            Recorte {formatTimecode(job.params.start)} – {formatTimecode(job.params.end)}
+            {job.tool === "trim"
+              ? `Recorte ${formatTimecode(job.params.start)} – ${formatTimecode(job.params.end)}`
+              : job.params.tools.map(applyToolDescription).join(" → ")}
           </p>
         </div>
         <Badge variant={variant}>{VIDEO_JOB_STATE_LABELS[job.state]}</Badge>
@@ -356,6 +360,12 @@ function JobRow({ job }: { job: VideoJob }) {
             <X /> Cancelar
           </Button>
         </div>
+      )}
+
+      {job.tool === "apply" && job.state !== "queued" && (
+        <p className="text-xs text-muted-foreground" aria-live="polite">
+          Fotogramas processados: {job.frames_processed ?? 0}{job.frame_count != null ? ` / ${job.frame_count}` : ""}
+        </p>
       )}
 
       {job.state === "failed" && job.error && (
@@ -458,12 +468,14 @@ export function VideoToolsDialog({
           <TabsContent value="tools" className="flex flex-col gap-6">
             {video && (
               <>
-                <section className="flex flex-col gap-3">
-                  <h3 className="flex items-center gap-2 text-sm font-semibold">
-                    <Scissors className="size-4" /> Recortar
-                  </h3>
-                  <TrimPanel key={video._id} video={video} />
-                </section>
+                <Tabs key={video._id} defaultValue="trim">
+                  <TabsList className="h-auto flex-wrap">
+                    <TabsTrigger value="trim">Recortar</TabsTrigger>
+                    <TabsTrigger value="apply">Aplicar ferramentas</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="trim"><TrimPanel video={video} /></TabsContent>
+                  <TabsContent value="apply"><VideoApplyPanel video={video} /></TabsContent>
+                </Tabs>
                 <JobsList video={video} />
               </>
             )}

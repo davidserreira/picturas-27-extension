@@ -21,6 +21,8 @@ export interface ProjectVideo {
   duration: number | null;
   width: number | null;
   height: number | null;
+  frame_count?: number | null;
+  fps?: number | null;
   createdAt: string;
   expiresAt: string | null;
 }

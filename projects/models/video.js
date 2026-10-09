@@ -29,6 +29,8 @@ const videoSchema = new mongoose.Schema(
     duration: { type: Number, default: null },
     width: { type: Number, default: null },
     height: { type: Number, default: null },
+    frame_count: { type: Number, default: null },
+    fps: { type: Number, default: null },
     sha256: { type: String, default: null },
   },
   { timestamps: true },

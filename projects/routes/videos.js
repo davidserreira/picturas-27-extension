@@ -14,6 +14,7 @@ const { getCallerId } = require("../utils/caller");
 const { httpsAgent } = require("../utils/httpsAgent");
 const { get_image_public_url } = require("../utils/imageStorage");
 const { limits, limitsFor, formatBytes } = require("../utils/videoLimits");
+const { withUserLock } = require("../utils/videoLocks");
 const {
   CHUNK_SIZE,
   RETENTION_MS,
@@ -67,6 +68,8 @@ function serialize(video) {
     duration: video.duration,
     width: video.width,
     height: video.height,
+    frame_count: video.frame_count,
+    fps: video.fps,
     createdAt: video.createdAt,
     expiresAt:
       video.state === "interrupted" && video.interrupted_at
@@ -125,17 +128,6 @@ const loadProfile = wrap(async (req, res, next) => {
 
 // Runs `fn` after any other pending call for the same user, so that the space
 // and active-import checks of two simultaneous requests cannot both pass.
-const userLocks = new Map();
-function withUserLock(userId, fn) {
-  const previous = userLocks.get(userId) || Promise.resolve();
-  const result = previous.then(fn);
-  const tail = result.catch(() => {});
-  userLocks.set(userId, tail);
-  tail.then(() => {
-    if (userLocks.get(userId) === tail) userLocks.delete(userId);
-  });
-  return result;
-}
 
 function premiumHint(userType, premiumLimit) {
   return userType === "free"

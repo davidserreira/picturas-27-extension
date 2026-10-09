@@ -36,5 +36,9 @@ module.exports.getActiveByProject = async (user_id, project_id) =>
 module.exports.findStale = async (olderThan) =>
   VideoJob.find({ state: { $in: ACTIVE_STATES }, updatedAt: { $lt: olderThan } }).exec();
 
+module.exports.findRefundPending = async () =>
+  VideoJob.find({ state: { $in: ["failed", "cancelled"] }, quota_reserved: true,
+    quota_refunded: { $ne: true } }).exec();
+
 module.exports.deleteByProject = async (user_id, project_id) =>
   VideoJob.deleteMany({ user_id, project_id }).exec();

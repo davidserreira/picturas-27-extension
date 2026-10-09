@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchVideoJobs, isActiveJob, VideoJob } from "../video-jobs";
 import { projectVideosKey } from "./videos";
@@ -18,7 +18,10 @@ export const useGetVideoJobs = (
   token: string,
   enabled: boolean = true,
 ) => {
-  return useQuery<VideoJob[]>({
+  const qc = useQueryClient();
+  const { mutate: refreshSession } = useUpdateSession();
+  const previous = useRef(new Map<string, string>());
+  const query = useQuery<VideoJob[]>({
     queryKey: videoJobsKey(uid, pid, token),
     queryFn: () => fetchVideoJobs({ uid, pid, token }),
     enabled: enabled && !!uid && !!pid && !!token,
@@ -27,6 +30,19 @@ export const useGetVideoJobs = (
     refetchInterval: (query) =>
       (query.state.data ?? []).some(isActiveJob) ? 3000 : false,
   });
+  // Polling must refresh the library/quota too, when a socket event was lost.
+  useEffect(() => {
+    let finished = false;
+    for (const job of query.data ?? []) {
+      if (!isActiveJob(job) && previous.current.get(job._id) !== job.state) finished = true;
+      previous.current.set(job._id, job.state);
+    }
+    if (finished) {
+      qc.invalidateQueries({ queryKey: projectVideosKey(uid, pid, token) });
+      refreshSession({ userId: uid, token });
+    }
+  }, [query.data, qc, uid, pid, token, refreshSession]);
+  return query;
 };
 
 /**

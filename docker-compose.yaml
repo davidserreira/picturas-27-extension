@@ -383,6 +383,25 @@ services:
       IMG_STORAGE_URL: http://img_storage:11000
       PROJECTS_URL: https://projects:9001
 
+  # UC-VID-003: shared image operations on every decoded frame
+  video_apply_tool:
+    build:
+      context: ./Tools
+      dockerfile: video_apply/Dockerfile
+    restart: on-failure
+    networks:
+      - elk
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: user
+      RABBITMQ_PASSWORD: password
+      IMG_STORAGE_URL: http://img_storage:11000
+      PROJECTS_URL: https://projects:9001
+
   saturation_tool:
     build:
       context: ./Tools

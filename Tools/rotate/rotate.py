@@ -1,3 +1,4 @@
+from utils import image_operations
 import sys
 import json
 import datetime
@@ -22,7 +23,7 @@ class Rotate:
 
     def rotate_image(self, img_path, store_img_path, degrees, expand=True):
         img = self._img_handler.get_img(img_path)
-        new_img = img.rotate(degrees, expand=expand)
+        new_img = image_operations.rotate(img, degrees, expand=expand)
         self._img_handler.store_img(new_img, store_img_path)
 
     def rotate_callback(self, ch, method, properties, body):

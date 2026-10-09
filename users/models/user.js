@@ -34,7 +34,21 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   operations: { type: [daySchema], required: true, default: [] },
+  // Idempotency keys for video refunds; internal and never sent to the client.
+  video_refunds: { type: [String], default: [] },
 });
+
+// Change the daily counter and its refund key atomically in one document.
+userSchema.statics.refundVideoOperation = function (userId, jobId, day, count) {
+  return this.updateOne({ _id: userId, video_refunds: { $ne: jobId } }, [{ $set: {
+    video_refunds: { $concatArrays: [{ $ifNull: ["$video_refunds", []] }, [jobId]] },
+    operations: { $map: { input: "$operations", as: "op", in: {
+      $cond: [{ $eq: ["$$op.day", day] },
+        { $mergeObjects: ["$$op", { processed: { $max: [0, { $subtract: ["$$op.processed", count] }] } }] },
+        "$$op"],
+    } } },
+  } }]);
+};
 
 // Virtual "email" para aceder ao valor desencriptado
 userSchema.virtual("email")
@@ -62,6 +76,7 @@ userSchema.set("toJSON", {
     delete ret.email_encrypted;
     delete ret.email_hash;
     delete ret.password_hash;
+    delete ret.video_refunds;
     return ret;
   },
 });

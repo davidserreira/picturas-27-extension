@@ -148,6 +148,11 @@ router.post("/:user/:project/videos/:video/trim", auth.checkToken, function (req
   forward(req, res, "post", videosPath(req, `/${req.params.video}/trim`), req.body);
 });
 
+// UC-VID-003: ordered chain of 1–3 image tools, applied to every frame.
+router.post("/:user/:project/videos/:video/apply", auth.checkToken, function (req, res) {
+  forward(req, res, "post", videosPath(req, `/${req.params.video}/apply`), req.body);
+});
+
 /**
  * Get the video tool requests of a project, most recent first
  * @returns { "jobs": [Job] }

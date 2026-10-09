@@ -57,3 +57,8 @@ module.exports.update = async (user_id, user) => {
 module.exports.delete = (user_id) => {
   return User.deleteOne({ _id: user_id });
 };
+
+// Refund and remember its key in the same document update. Safe to retry when
+// the HTTP response was lost. Use the reservation day, including across midnight.
+module.exports.refundVideoOperation = async (user_id, jobId, day, count) =>
+  User.refundVideoOperation(user_id, jobId, day, count);

@@ -20,6 +20,7 @@ PictuRAS is a web-based image editing platform that combines traditional image p
 - [Project Structure](#-project-structure)
 - [Development Workflow](#-development-workflow)
 - [Troubleshooting](#-troubleshooting)
+- [Video tools — UC-VID-003](#video-tools--uc-vid-003)
 - [Authors](#-authors)
 - [License](#-license)
 - [Contributing](#-contributing)
@@ -491,6 +492,42 @@ docker compose up
 local data**, so use it deliberately.
 
 ---
+
+## Video tools — UC-VID-003
+
+The video library supports importing, trimming and applying a chain of **Resize,
+Binarization and Rotate** to every frame. Open an available video → **Ferramentas
+de vídeo → Aplicar ferramentas**, add 1–3 tools and select **Aplicar ferramentas**.
+Jobs show progress and processed frames, can be cancelled, and save a new
+`{name}_editado` video. Audio packets and frame timestamps are preserved.
+
+APPLY limits are **2 min / 200 MiB / 1920 × 1080** for registered free users and
+**10 min / 2 GiB / 3840 × 2160** for Premium. Active jobs share the existing
+TRIM limit of one/three. A completed chain uses one daily operation; failed or
+cancelled jobs refund their reservation. Anonymous users must register first.
+
+Start or update the development stack with `docker compose up -d --build`.
+The `video_apply_tool` service and `video_apply_queue` are declared automatically;
+existing volumes do not need to be removed.
+
+Details, codec/browser limitations and architecture:
+[UC-VID-003 implementation](Docs/UC-VID-003-implementacao.md).
+[Automated results](tests/uc-vid-003/resultados.md),
+[manual checklist](tests/uc-vid-003/checklist-manual.md), and
+[AI development record](Docs/registo-ia-apply.md).
+
+Run the isolated tests from the repository root (Node dependencies installed
+in `projects`, `apiGateway`, `users` and `frontend`; `ffmpeg` on PATH):
+
+```bash
+python -m pip install -r Tools/video_apply/requirements.txt
+python -m unittest discover -s tests/uc-vid-003 -p 'test_*.py' -v
+node --test tests/uc-vid-003/*.test.cjs
+```
+
+`quota-mongo.test.cjs` additionally requires a disposable MongoDB and
+`MONGODB_TEST_URL`. GitHub Actions supplies MongoDB 4.4. Passing isolated tests
+does not replace the full-stack/browser checklist or performance measurements.
 
 ## 👥 Authors
 

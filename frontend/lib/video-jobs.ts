@@ -1,7 +1,8 @@
-// Video tools (UC-VID-001: Recortar um vídeo). Requests are processed in the
+// Video tools (UC-VID-001 trim / UC-VID-003 apply). Requests are processed in the
 // background; their state comes by WebSocket ("video-job-update") and polling.
 
 import { api } from "./axios";
+import type { VideoApplyTool } from "./video-apply";
 
 export type VideoJobState =
   | "queued"
@@ -10,14 +11,14 @@ export type VideoJobState =
   | "failed"
   | "cancelled";
 
-export interface VideoJob {
+interface VideoJobBase {
   _id: string;
   project_id: string;
   video_id: string;
-  tool: "trim";
-  params: { start: number; end: number };
   state: VideoJobState;
   progress: number;
+  frames_processed: number;
+  frame_count: number | null;
   error: { code: string; message: string } | null;
   result_name: string;
   result_video_id: string | null;
@@ -25,6 +26,11 @@ export interface VideoJob {
   updatedAt: string;
   finished_at: string | null;
 }
+
+export type VideoJob = VideoJobBase & (
+  | { tool: "trim"; params: { start: number; end: number } }
+  | { tool: "apply"; params: { tools: VideoApplyTool[]; width: number; height: number } }
+);
 
 // REQ-011: the five states of a request, as shown to the user
 export const VIDEO_JOB_STATE_LABELS: Record<VideoJobState, string> = {
@@ -112,6 +118,15 @@ export const fetchVideoJobs = async ({ uid, pid, token }: JobsRequest) => {
     { headers: authHeaders(token) },
   );
   return response.data.jobs;
+};
+
+export const applyVideoTools = async ({ uid, pid, token, videoId, tools }:
+  JobsRequest & { videoId: string; tools: VideoApplyTool[] }) => {
+  const response = await api.post<{ job: VideoJob }>(
+    `/projects/${uid}/${pid}/videos/${videoId}/apply`, { tools },
+    { headers: authHeaders(token) },
+  );
+  return response.data.job;
 };
 
 export const cancelVideoJob = async ({

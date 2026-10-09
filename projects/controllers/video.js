@@ -33,6 +33,9 @@ module.exports.create = async (video) => {
   return await Video.create(video);
 };
 
+module.exports.getByFingerprint = async (user_id, project_id, fingerprint) =>
+  Video.findOne({ user_id, project_id, fingerprint }).exec();
+
 module.exports.delete = (video_id) => {
   return Video.deleteOne({ _id: video_id });
 };
