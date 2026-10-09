@@ -1,0 +1,62 @@
+name: UC-VID-003
+
+on:
+  pull_request:
+    paths:
+      - 'Tools/**'
+      - 'projects/**'
+      - 'apiGateway/**'
+      - 'users/**'
+      - 'frontend/**'
+      - 'tests/uc-vid-003/**'
+      - '.github/workflows/uc-vid-003.yml'
+  push:
+    branches: ['feature/uc-vid-003-apply-tools']
+
+permissions:
+  contents: read
+
+jobs:
+  media:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: 'pip install --only-binary=:all: -r Tools/video_apply/requirements.txt'
+      - run: python -m unittest discover -s tests/uc-vid-003 -p 'test_*.py' -v
+  api-and-frontend:
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:4.4
+        ports: ['27017:27017']
+        options: >-
+          --health-cmd "mongo --quiet --eval 'db.adminCommand({ping:1})'"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install --ignore-scripts --no-audit --no-fund
+        working-directory: projects
+      - run: npm install --ignore-scripts --no-audit --no-fund
+        working-directory: apiGateway
+      - run: npm install --ignore-scripts --no-audit --no-fund
+        working-directory: users
+      - run: npm install --ignore-scripts --no-audit --no-fund
+        working-directory: frontend
+      - run: node --test tests/uc-vid-003/*.test.cjs
+        env:
+          MONGODB_TEST_URL: mongodb://127.0.0.1:27017
+      - run: npx tsc --noEmit --incremental false
+        working-directory: frontend
+      - run: npx eslint components/project-page/video-apply-panel.tsx components/project-page/video-tools-dialog.tsx lib/video-apply.ts lib/video-jobs.ts lib/queries/video-jobs.ts lib/videos.ts
+        working-directory: frontend
+      - run: npm run build
+        working-directory: frontend
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
