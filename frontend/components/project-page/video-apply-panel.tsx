@@ -60,7 +60,7 @@ export function VideoApplyPanel({ video }: { video: ProjectVideo }) {
       qc.setQueryData<VideoJob[]>(videoJobsKey(session.user._id, pid, session.token),
         (jobs) => [job, ...(jobs ?? []).filter((other) => other._id !== job._id)]);
       updateSession.mutate({ userId: session.user._id, token: session.token });
-      toast({ title: "Pedido em fila", description: "Pode acompanhar o progresso nos pedidos deste vídeo." });
+      toast({ title: "Pedido em fila", description: "Quando terminar, o vídeo é substituído pelo resultado. Pode acompanhar o progresso nos pedidos deste vídeo." });
     } catch (error) {
       toast({ title: "Não foi possível aplicar as ferramentas", description: getVideoErrorMessage(error), variant: "destructive" });
     } finally { setSubmitting(false); }
@@ -71,7 +71,7 @@ export function VideoApplyPanel({ video }: { video: ProjectVideo }) {
       <div>
         <h3 className="text-sm font-semibold">Aplicar ferramentas a todos os fotogramas</h3>
         <p className="mt-1 text-sm text-muted-foreground">
-          Escolha até 3 ferramentas e a ordem de aplicação. O áudio é preservado e o resultado é guardado como um novo vídeo.
+          Escolha até 3 ferramentas e a ordem de aplicação. O áudio é preservado e o resultado substitui este vídeo.
         </p>
         <p className="mt-1 text-xs text-muted-foreground">
           {isFree ? "Conta gratuita: até 2 min, 200 MB e 1920 × 1080 px." : "Premium: até 10 min, 2 GB e 3840 × 2160 px."}

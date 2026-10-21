@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Download, Film, RotateCcw, Scissors, Trash, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -29,11 +30,9 @@ import { useSession } from "@/providers/session-provider";
 import { useToast } from "@/hooks/use-toast";
 import { projectVideosKey, useGetProjectVideos } from "@/lib/queries/videos";
 import { useVideoJobUpdates } from "@/lib/queries/video-jobs";
-import {
-  useExportVideo,
-  VideoDialogTab,
-  VideoToolsDialog,
-} from "./video-tools-dialog";
+import { useExportVideo } from "./video-tools-panel";
+import { VideoTracks } from "./video-tracks";
+import { useCurrentVideo } from "@/providers/current-video-provider";
 import {
   cancelVideoImportTask,
   dismissVideoImport,
@@ -201,6 +200,58 @@ function VideoTile({
   );
 }
 
+/**
+ * A video of the library as a slide of the carousel, played with its controls
+ * like an image is shown there. The slide on screen hands its player to the
+ * video tools, so "Posição atual" and "Pré-visualizar" act on it.
+ */
+export function ProjectVideoSlide({
+  video,
+  active,
+}: {
+  video: ProjectVideo;
+  active: boolean;
+}) {
+  const url = useVideoUrl(video);
+  const { player, setPlayer } = useCurrentVideo();
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const element = videoRef.current;
+    if (!active) {
+      element?.pause();
+      return;
+    }
+    setPlayer(element);
+    return () => setPlayer(null);
+  }, [active, url.data, setPlayer]);
+
+  return (
+    <Card className="size-full overflow-hidden flex flex-col">
+      <div className="relative min-h-0 flex-1 bg-black flex items-center justify-center">
+        {url.isLoading && <Skeleton className="absolute inset-0" />}
+        {url.isError && (
+          <p className="p-4 text-sm text-destructive">
+            {getVideoErrorMessage(url.error)}
+          </p>
+        )}
+        {url.data && (
+          <video
+            ref={videoRef}
+            src={url.data}
+            controls
+            playsInline
+            preload="metadata"
+            className="size-full object-contain"
+          />
+        )}
+      </div>
+      {/* the audio and video tracks of the selected video, under the player */}
+      {active && <VideoTracks video={video} url={url.data} player={player} />}
+    </Card>
+  );
+}
+
 // A video that is not in the library (yet): being sent, validated, interrupted,
 // or an import that failed or was cancelled.
 function ImportTile({
@@ -296,8 +347,9 @@ export function ProjectVideoTiles() {
   const library = useGetProjectVideos(uid, pid, token, !anonymous);
   const tasks = useVideoImports().filter((t) => t.pid === pid);
 
-  const [playing, setPlaying] = useState<ProjectVideo | null>(null);
-  const [dialogTab, setDialogTab] = useState<VideoDialogTab>("view");
+  const router = useRouter();
+  const owner = useSearchParams().get("owner");
+  const { setPanel } = useCurrentVideo();
   const { exportVideo } = useExportVideo();
   // UC-VID-001: real-time state of the video tool requests
   useVideoJobUpdates(uid, pid, token);
@@ -351,6 +403,16 @@ export function ProjectVideoTiles() {
       description: getVideoErrorMessage(error),
       variant: "destructive",
     });
+  }
+
+  // opens the video in the carousel, like an image of the grid
+  function openInCarousel(video: ProjectVideo) {
+    const params = new URLSearchParams();
+    params.set("mode", "edit");
+    params.set("view", "carousel");
+    params.set("video", video._id);
+    if (owner) params.set("owner", owner);
+    router.push(`?${params.toString()}`);
   }
 
   async function handleCancel(video: ProjectVideo) {
@@ -422,13 +484,10 @@ export function ProjectVideoTiles() {
             {state === "available" ? (
               <VideoTile
                 video={video}
-                onOpen={() => {
-                  setDialogTab("view");
-                  setPlaying(video);
-                }}
+                onOpen={() => openInCarousel(video)}
                 onTools={() => {
-                  setDialogTab("tools");
-                  setPlaying(video);
+                  setPanel("trim");
+                  openInCarousel(video);
                 }}
                 onExport={() => exportVideo(video._id, video.name)}
                 onDelete={() => setToDelete(video)}
@@ -454,13 +513,6 @@ export function ProjectVideoTiles() {
         accept={VIDEO_FILE_ACCEPT}
         className="hidden"
         onChange={handleResumeFile}
-      />
-
-      <VideoToolsDialog
-        video={playing}
-        tab={dialogTab}
-        onTabChange={setDialogTab}
-        onClose={() => setPlaying(null)}
       />
 
       <AlertDialog

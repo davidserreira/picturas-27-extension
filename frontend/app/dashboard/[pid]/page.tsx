@@ -16,6 +16,8 @@ import {
 } from "@/lib/queries/projects";
 import Loading from "@/components/loading";
 import { ProjectProvider } from "@/providers/project-provider";
+import { CurrentVideoProvider } from "@/providers/current-video-provider";
+import { VideoToolsPanel } from "@/components/project-page/video-tools-panel";
 import { use, useEffect, useLayoutEffect, useState, useRef } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useSession } from "@/providers/session-provider";
@@ -602,6 +604,7 @@ const handleCancel = () => {
       shareId={shareId}
       canEdit={canEdit}
     >
+      <CurrentVideoProvider>
       <div className="flex flex-col h-screen relative">
         {/* Barra de aviso quando o link partilhado é revogado */}
         {shareId && shareRevoked && (
@@ -830,6 +833,7 @@ const handleCancel = () => {
 
         <div className="h-full overflow-x-hidden flex">
         <Toolbar />
+        <VideoToolsPanel />
         <ProjectImageList
           setCurrentImageId={setCurrentImage}
           results={projectResults.data}
@@ -867,6 +871,7 @@ const handleCancel = () => {
           </Card>
         </div>
       </Transition>
+      </CurrentVideoProvider>
     </ProjectProvider>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchVideoJobs, isActiveJob, VideoJob } from "../video-jobs";
 import { projectVideosKey } from "./videos";
 import { useGetSocket } from "./projects";
@@ -11,6 +11,13 @@ export const videoJobsKey = (uid: string, pid: string, token: string) => [
   pid,
   token,
 ];
+
+// A completed job replaced the file of its video: its address and its tracks
+// have to be asked again.
+function invalidateReplacedVideos(qc: QueryClient) {
+  qc.invalidateQueries({ queryKey: ["projectVideoUrl"] });
+  qc.invalidateQueries({ queryKey: ["videoTracks"] });
+}
 
 export const useGetVideoJobs = (
   uid: string,
@@ -39,6 +46,7 @@ export const useGetVideoJobs = (
     }
     if (finished) {
       qc.invalidateQueries({ queryKey: projectVideosKey(uid, pid, token) });
+      invalidateReplacedVideos(qc);
       refreshSession({ userId: uid, token });
     }
   }, [query.data, qc, uid, pid, token, refreshSession]);
@@ -70,6 +78,7 @@ export const useVideoJobUpdates = (uid: string, pid: string, token: string) => {
 
       if (!isActiveJob(job)) {
         qc.invalidateQueries({ queryKey: projectVideosKey(uid, pid, token) });
+        if (job.state === "completed") invalidateReplacedVideos(qc);
         updateSession.mutate({ userId: uid, token });
       }
     }

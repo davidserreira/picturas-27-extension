@@ -32,6 +32,12 @@ const videoSchema = new mongoose.Schema(
     frame_count: { type: Number, default: null },
     fps: { type: Number, default: null },
     sha256: { type: String, default: null },
+
+    // audio and video tracks, read on the first time the video is opened
+    // (videoTracks.js); the audio tracks also carry their waveform
+    tracks: { type: mongoose.Schema.Types.Mixed, default: null },
+    waveform_state: { type: String, enum: ["analyzing", "ready", "failed", null], default: null },
+    waveform_version: { type: Number, default: null },
   },
   { timestamps: true },
 );

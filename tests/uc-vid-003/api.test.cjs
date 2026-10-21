@@ -31,6 +31,13 @@ function reset() {
 Project.getOne = async () => hasProject ? { _id: PROJECT, user_id: USER } : null;
 Video.getAll = async () => videos;
 Video.getOne = async (user, project, id) => videos.find((video) => String(video._id) === id);
+Video.getById = async (id) => videos.find((video) => String(video._id) === String(id));
+Video.updateIfState = async (id, states, update, filter = {}) => {
+  const video = await Video.getById(id);
+  if (!video || !states.includes(video.state)) return null;
+  if (Object.entries(filter).some(([key, value]) => video[key] !== value)) return null;
+  return Object.assign(video, update);
+};
 Video.getByFingerprint = async (_, __, key) => videos.find((video) => video.fingerprint === key);
 Video.usedStorage = async () => videos.reduce((total, video) => total + video.size, 0);
 Video.create = async (video) => { const result = { ...video, _id: `40000000000000000000000${videos.length}` }; videos.push(result); return result; };
@@ -103,7 +110,7 @@ test("a three-tool chain queues one operation and preserves order in the worker 
   const result = await apply();
   assert.equal(result.status, 202);
   assert.equal(result.body.job.state, "queued");
-  assert.equal(result.body.job.result_name, "praia_editado.mp4");
+  assert.equal(result.body.job.result_name, "praia.mp4");
   assert.equal(operations, 1);
   const request = publications.find((item) => item.queue === "video_apply_queue").message;
   assert.deepEqual(request.parameters.tools, tools);
@@ -175,9 +182,12 @@ test("TRIM and APPLY share the active-job limit", async () => {
   assert.equal((await post(`/videos/${SOURCE}/trim`, { start: 0, end: 10 })).status, 202);
   assert.equal((await apply()).body.code, "TOO_MANY_JOBS");
   reset(); profile = "premium";
-  assert.equal((await apply()).status, 202); assert.equal((await apply()).status, 202);
-  assert.equal((await post(`/videos/${SOURCE}/trim`, { start: 0, end: 10 })).status, 202);
-  assert.equal((await apply()).status, 429);
+  const others = ["300000000000000000000002", "300000000000000000000003", "300000000000000000000004"];
+  for (const id of others) videos.push({ ...videos[0], _id: id, video_key: `${id}.mp4` });
+  assert.equal((await apply()).status, 202);
+  assert.equal((await post(`/videos/${others[0]}/apply`, { tools })).status, 202);
+  assert.equal((await post(`/videos/${others[1]}/trim`, { start: 0, end: 10 })).status, 202);
+  assert.equal((await post(`/videos/${others[2]}/apply`, { tools })).status, 429);
   assert.equal(operations, 0);
 });
 
@@ -194,28 +204,34 @@ test("the fifth used daily operation blocks a new APPLY job", async () => {
   assert.match(result.body.message, /Premium/); assert.equal(jobs.length, 0);
 });
 
-test("collision-free edited names also consider queued result names", async () => {
+test("a video with a job in progress takes no other job", async () => {
   profile = "premium";
-  videos.push({ ...videos[0], _id: "another", name: "PRAIA_EDITADO.MP4" });
-  assert.equal((await apply()).body.job.result_name, "praia_editado_2.mp4");
-  assert.equal((await apply()).body.job.result_name, "praia_editado_3.mp4");
+  assert.equal((await apply()).status, 202);
+  const second = await post(`/videos/${SOURCE}/trim`, { start: 0, end: 10 });
+  assert.equal(second.status, 409); assert.equal(second.body.code, "VIDEO_BUSY");
+  assert.equal(jobs.length, 1);
 });
 
-test("progress and frame counts are monotonic; completion publishes one new video", async () => {
+test("progress and frame counts are monotonic; completion replaces the video it was made from", async () => {
   await apply(); const job = jobs[0];
   await lifecycle._test.onProgress({ jobId: job._id, progress: 50, framesProcessed: 1800, frameCount: 3600 });
   await lifecycle._test.onProgress({ jobId: job._id, progress: 20, framesProcessed: 720, frameCount: 3600 });
   assert.equal(job.progress, 50); assert.equal(job.frames_processed, 1800);
   await success(job);
   assert.equal(job.state, "completed"); assert.equal(job.progress, 100);
-  assert.equal(job.frames_processed, 3600); assert.equal(videos.length, 2);
-  assert.equal(videos[0].name, "praia.mp4"); assert.equal(videos[1].name, "praia_editado.mp4");
+  assert.equal(job.frames_processed, 3600); assert.equal(videos.length, 1);
+  assert.equal(job.result_video_id, SOURCE);
+  assert.equal(videos[0].name, "praia.mp4"); assert.equal(videos[0].video_key, `${job._id}.mp4`);
+  assert.equal(videos[0].width, job.params.width); assert.equal(videos[0].size, 20);
+  assert.equal(videos[0].tracks, null); // read again from the new file
+  assert.deepEqual(deletes.map((args) => args[3]), ["source.mp4"]); // the old file
   assert.equal(operations, 1);
 });
 
 test("a repeated success neither duplicates nor deletes a completed result", async () => {
   await apply(); const job = jobs[0]; await success(job); await success(job);
-  assert.equal(videos.length, 2); assert.equal(deletes.length, 0); assert.equal(operations, 1);
+  assert.equal(videos.length, 1); assert.equal(videos[0].video_key, `${job._id}.mp4`);
+  assert.deepEqual(deletes.map((args) => args[3]), ["source.mp4"]); assert.equal(operations, 1);
 });
 
 test("cancel queued/processing jobs, refund once, and remove a late result", async () => {
@@ -225,6 +241,7 @@ test("cancel queued/processing jobs, refund once, and remove a late result", asy
     assert.equal(job.state, "cancelled"); assert.equal(operations, 0);
     assert.equal((await post(`/video-jobs/${job._id}/cancel`)).status, 409);
     await success(job); assert.equal(videos.length, 1); assert.equal(deletes.length, 1);
+    assert.equal(videos[0].video_key, "source.mp4"); // the video is left intact
   }
 });
 
@@ -236,9 +253,11 @@ test("a worker failure uses the required message and refunds the entire chain", 
 });
 
 test("actual encoded size is checked again before publication", async () => {
-  await apply(); const job = jobs[0]; await success(job, { size: job.max_storage });
+  // the replaced video's own size is freed: only a result above the whole storage is too big
+  await apply(); const job = jobs[0]; await success(job, { size: job.max_storage + 1 });
   assert.equal(job.state, "failed"); assert.equal(job.error.code, "STORAGE_FULL");
   assert.equal(videos.length, 1); assert.equal(deletes.length, 1); assert.equal(operations, 0);
+  assert.equal(videos[0].video_key, "source.mp4");
 });
 
 test("a deleted project cannot receive an orphan result", async () => {
@@ -263,10 +282,18 @@ test("a temporary refund outage is retried without consuming a cancelled operati
   assert.equal(operations, 0); assert.equal(job.quota_refunded, true); assert.equal(refunds.size, 1);
 });
 
-test("a crash between video insertion and job completion recovers the same result", async () => {
+test("a crash between the replacement and the job completion completes it and removes the old file", async () => {
   await apply(); const job = jobs[0];
-  videos.push({ _id: "recovered", fingerprint: `apply:${job._id}`, name: job.result_name, size: 20 });
-  await success(job); assert.equal(videos.length, 2); assert.equal(job.result_video_id, "recovered");
+  Object.assign(videos[0], { video_key: `${job._id}.mp4`, size: 20 }); job.replaced_key = "source.mp4";
+  await success(job);
+  assert.equal(job.state, "completed"); assert.equal(job.result_video_id, SOURCE);
+  assert.equal(videos.length, 1); assert.deepEqual(deletes.map((args) => args[3]), ["source.mp4"]);
+});
+
+test("a removed source video cannot receive the result", async () => {
+  await apply(); const job = jobs[0]; videos = []; await success(job);
+  assert.equal(job.state, "failed"); assert.equal(job.error.code, "SOURCE_REMOVED");
+  assert.equal(deletes.length, 1); assert.equal(operations, 0);
 });
 
 test("the shared user lock keeps independent users concurrent and releases after failure", async () => {

@@ -2,9 +2,9 @@
 
 = Conclusão
 
-O MVP valida o ciclo completo de um vídeo no PictuRAS: importação com retoma e validação do conteúdo real, duas ferramentas de processamento assíncrono com estado, progresso, cancelamento e resultados que nunca alteram o original, e a integração com os perfis e com a quota diária, reinterpretada como uma operação por pedido concluído. A decisão de modelar um *pedido de processamento comum* permitiu que a segunda ferramenta reutilizasse estados, quota e cancelamento sem alterar a primeira.
+O MVP valida o ciclo completo de um vídeo no PictuRAS: importação com retoma e validação do conteúdo real, duas ferramentas de processamento assíncrono com estado, progresso, cancelamento e resultados que substituem o vídeo só quando o pedido conclui, e a integração com os perfis e com a quota diária, reinterpretada como uma operação por pedido concluído. A decisão de modelar um *pedido de processamento comum* permitiu que a segunda ferramenta reutilizasse estados, quota e cancelamento sem alterar a primeira.
 
-Ficou por fazer: miniaturas geradas no servidor, escolha do formato de saída, encadeamento do recorte com outras ferramentas e processamento de vários vídeos em lote (questões em aberto adiadas para a Fase 3). #preencher[acrescentar o que não foi concluído até à entrega]
+Ficou por fazer: desfazer a substituição de um vídeo por uma ferramenta, miniaturas geradas no servidor, edição das faixas (remover ou substituir o áudio, UC-VID-002/Q5), escolha do formato de saída, encadeamento do recorte com outras ferramentas e processamento de vários vídeos em lote (questões em aberto adiadas para a Fase 3). #preencher[acrescentar o que não foi concluído até à entrega]
 
 *Lições aprendidas.* Especificar critérios de aceitação verificáveis desde o Exercício 1 tornou os testes quase diretos; manter a rastreabilidade gerada a partir de uma única fonte evitou requisitos órfãos e duplicados; e os agentes de IA foram úteis sobretudo quando as decisões e a validação ficaram registadas. #preencher[lições da equipa]
 

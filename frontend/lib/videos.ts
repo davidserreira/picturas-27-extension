@@ -27,6 +27,41 @@ export interface ProjectVideo {
   expiresAt: string | null;
 }
 
+interface TrackBase {
+  index: number;
+  number: number;
+  codec: string | null;
+  language: string | null;
+  duration: number | null;
+  bitrate: number | null;
+}
+
+export interface VideoStreamTrack extends TrackBase {
+  type: "video";
+  width: number | null;
+  height: number | null;
+  fps: number | null;
+}
+
+export interface AudioStreamTrack extends TrackBase {
+  type: "audio";
+  channels: number | null;
+  channel_layout: string | null;
+  sample_rate: number | null;
+  // loudest sample of each slice of the track, 0..1; null until analysed
+  peaks: number[] | null;
+  peaks_duration: number | null;
+}
+
+export type VideoTrack = VideoStreamTrack | AudioStreamTrack;
+
+export interface VideoTracks {
+  // state of the audio waveforms, computed the first time the video is opened
+  state: "analyzing" | "ready" | "failed";
+  duration: number;
+  tracks: VideoTrack[];
+}
+
 export interface VideoLimits {
   maxSize: number;
   maxDuration: number;
@@ -166,6 +201,20 @@ export const fetchProjectVideoUrl = async ({
   );
 
   return response.data.url;
+};
+
+export const fetchProjectVideoTracks = async ({
+  uid,
+  pid,
+  token,
+  videoId,
+}: VideoIdRequest) => {
+  const response = await api.get<VideoTracks>(
+    `/projects/${uid}/${pid}/videos/${videoId}/tracks`,
+    { headers: authHeaders(token) },
+  );
+
+  return response.data;
 };
 
 export const createVideoImport = async ({

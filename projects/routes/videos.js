@@ -10,6 +10,7 @@ const { pipeline } = require("stream/promises");
 
 const Project = require("../controllers/project");
 const Video = require("../controllers/video");
+const VideoJob = require("../controllers/videoJob");
 const { getCallerId } = require("../utils/caller");
 const { httpsAgent } = require("../utils/httpsAgent");
 const { get_image_public_url } = require("../utils/imageStorage");
@@ -25,6 +26,7 @@ const {
   validateImport,
   removeVideo,
 } = require("../utils/videoImport");
+const { loadTracks } = require("../utils/videoTracks");
 
 const users_ms = "https://users:10001/";
 
@@ -172,6 +174,41 @@ router.get("/:user/:project/videos/:video/url", requireOwner, wrap(async (req, r
   );
 
   res.status(200).jsonp({ url: resp.data.url });
+}));
+
+/**
+ * Get the audio and video tracks of an available video. The first call reads
+ * them from the file; the audio waveforms follow in the background, so while
+ * "state" is "analyzing" the audio tracks have no peaks yet.
+ * @returns {
+ *   "state": "analyzing" | "ready" | "failed" (of the waveforms),
+ *   "duration": Number (seconds),
+ *   "tracks": [{ index, type: "video" | "audio", number, codec, language, duration, bitrate,
+ *                width, height, fps (video) | channels, channel_layout, sample_rate,
+ *                peaks: [Number 0..1] | null, peaks_duration (audio) }]
+ * }
+ */
+router.get("/:user/:project/videos/:video/tracks", requireOwner, wrap(async (req, res) => {
+  const video = await Video.getOne(req.params.user, req.params.project, req.params.video);
+  if (!video) return fail(res, 404, "NOT_FOUND", "Vídeo não encontrado.");
+  if (video.state !== "available") {
+    return fail(res, 409, "NOT_AVAILABLE", "Este vídeo ainda não está disponível.");
+  }
+
+  let current;
+  try {
+    current = await loadTracks(video);
+  } catch (err) {
+    console.error("[videos] tracks", String(video._id), err.message);
+    return fail(res, 500, "TRACKS_UNREADABLE", "Não foi possível ler as faixas deste vídeo.");
+  }
+  if (!current) return fail(res, 404, "NOT_FOUND", "Vídeo não encontrado.");
+
+  res.status(200).jsonp({
+    state: current.waveform_state,
+    duration: current.duration,
+    tracks: current.tracks,
+  });
 }));
 
 /**
@@ -480,6 +517,11 @@ router.delete("/:user/:project/videos/:video", requireOwner, wrap(async (req, re
 
   if (Video.ACTIVE_STATES.includes(video.state)) {
     return fail(res, 409, "IMPORT_ACTIVE", "A importação ainda está em curso. Cancele-a primeiro.");
+  }
+  // a job in progress would replace the video once it completes
+  const running = await VideoJob.getActiveByProject(req.params.user, req.params.project);
+  if (running.some((j) => String(j.video_id) === String(video._id))) {
+    return fail(res, 409, "VIDEO_BUSY", "Este vídeo tem um pedido em curso. Cancele-o primeiro.");
   }
 
   await removeVideo(video);

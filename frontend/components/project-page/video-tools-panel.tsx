@@ -1,10 +1,10 @@
 "use client";
 
 // UC-VID-001 / UC-VID-003 — Recortar, aplicar ferramentas e exportar.
-// Dialog opened from a video of the library, with two tabs: "Ver" (player)
-// and "Ferramentas de vídeo" (Trim / Apply + requests of this video).
+// Panel docked next to the toolbar while a video is open in the carousel:
+// the tool chosen in the toolbar (Trim / Apply) + the requests of this video.
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { Download, LoaderCircle, Play, Scissors, X } from "lucide-react";
@@ -13,15 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useProjectInfo } from "@/providers/project-provider";
+import { useCurrentVideo, VideoToolPanel } from "@/providers/current-video-provider";
 import { useSession } from "@/providers/session-provider";
 import { useToast } from "@/hooks/use-toast";
 import { useGetVideoJobs, videoJobsKey } from "@/lib/queries/video-jobs";
@@ -45,9 +38,7 @@ import {
   VideoJob,
 } from "@/lib/video-jobs";
 
-export type VideoDialogTab = "view" | "tools";
-
-function useVideoUrl(videoId: string | null | undefined) {
+export function useVideoUrl(videoId: string | null | undefined) {
   const { _id: pid } = useProjectInfo();
   const session = useSession();
 
@@ -103,8 +94,8 @@ function TrimPanel({ video }: { video: ProjectVideo }) {
   const session = useSession();
   const { toast } = useToast();
   const qc = useQueryClient();
-  const url = useVideoUrl(video._id);
-  const playerRef = useRef<HTMLVideoElement>(null);
+  // the player of the carousel, where the video is being watched
+  const { player } = useCurrentVideo();
 
   const duration = video.duration ?? 0;
   const maxEnd = Math.max(1, Math.ceil(duration));
@@ -127,18 +118,17 @@ function TrimPanel({ video }: { video: ProjectVideo }) {
   function setFromSlider([s, e]: number[]) {
     setStartText(formatTimecode(s));
     setEndText(formatTimecode(e));
-    if (playerRef.current) playerRef.current.currentTime = s;
+    if (player) player.currentTime = s;
   }
 
   function takeCurrentTime(which: "start" | "end") {
-    const t = Math.round(playerRef.current?.currentTime ?? 0);
+    const t = Math.round(player?.currentTime ?? 0);
     if (which === "start") setStartText(formatTimecode(t));
     else setEndText(formatTimecode(t));
   }
 
   // plays only the chosen interval, without processing anything
   function preview() {
-    const player = playerRef.current;
     if (!player || invalid || start === null) return;
     player.currentTime = start;
     setPreviewing(true);
@@ -146,7 +136,6 @@ function TrimPanel({ video }: { video: ProjectVideo }) {
   }
 
   useEffect(() => {
-    const player = playerRef.current;
     if (!player || !previewing || end === null) return;
     const stopAtEnd = () => {
       if (player.currentTime >= end) {
@@ -156,7 +145,7 @@ function TrimPanel({ video }: { video: ProjectVideo }) {
     };
     player.addEventListener("timeupdate", stopAtEnd);
     return () => player.removeEventListener("timeupdate", stopAtEnd);
-  }, [previewing, end]);
+  }, [player, previewing, end]);
 
   async function apply() {
     if (invalid || start === null || end === null) return;
@@ -173,7 +162,7 @@ function TrimPanel({ video }: { video: ProjectVideo }) {
       // REQ-009: confirm the request was received
       toast({
         title: "Pedido de recorte recebido",
-        description: `"${job.result_name}" vai ser criado. Pode acompanhar o progresso abaixo ou sair desta página.`,
+        description: "Quando terminar, o vídeo é substituído pelo recorte. Pode acompanhar o progresso abaixo ou sair desta página.",
       });
       qc.setQueryData<VideoJob[]>(
         videoJobsKey(session.user._id, pid, session.token),
@@ -198,18 +187,6 @@ function TrimPanel({ video }: { video: ProjectVideo }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex justify-center items-center min-h-40 rounded-md bg-black">
-        {url.isLoading && <LoaderCircle className="size-6 animate-spin text-white" />}
-        {url.data && (
-          <video
-            ref={playerRef}
-            src={url.data}
-            controls
-            className="w-full max-h-[40vh] rounded-md"
-          />
-        )}
-      </div>
-
       <div className="flex flex-col gap-2">
         <div className="flex justify-between text-xs text-muted-foreground">
           <span>Duração total: {formatTimecode(duration)}</span>
@@ -242,7 +219,7 @@ function TrimPanel({ video }: { video: ProjectVideo }) {
         </SliderPrimitive.Root>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3">
         {(
           [
             ["start", "Início", startText, setStartText],
@@ -282,7 +259,7 @@ function TrimPanel({ video }: { video: ProjectVideo }) {
             : "Plano Premium: sem limite diário de operações."}
         </p>
         <div className="flex gap-2">
-          <Button variant="outline" disabled={!!invalid || !url.data} onClick={preview}>
+          <Button variant="outline" disabled={!!invalid || !player} onClick={preview}>
             <Play /> Pré-visualizar
           </Button>
           <Button disabled={!!invalid || submitting || noOperations} onClick={apply}>
@@ -323,7 +300,7 @@ function JobRow({ job }: { job: VideoJob }) {
         videoJobsKey(session.user._id, pid, session.token),
         (jobs) => jobs?.map((j) => (j._id === updated._id ? updated : j)),
       );
-      toast({ title: "Pedido cancelado", description: "Não foi criado nenhum vídeo." });
+      toast({ title: "Pedido cancelado", description: "O vídeo não foi alterado." });
     } catch (error) {
       toast({
         title: "Não foi possível cancelar",
@@ -342,7 +319,9 @@ function JobRow({ job }: { job: VideoJob }) {
     <li className="flex flex-col gap-2 rounded-md border p-3">
       <div className="flex items-center justify-between gap-2">
         <div className="min-w-0">
-          <p className="truncate text-sm font-medium">{job.result_name}</p>
+          <p className="truncate text-sm font-medium">
+            {job.tool === "trim" ? "Recortar" : "Aplicar ferramentas"}
+          </p>
           <p className="text-xs text-muted-foreground">
             {job.tool === "trim"
               ? `Recorte ${formatTimecode(job.params.start)} – ${formatTimecode(job.params.end)}`
@@ -417,71 +396,46 @@ function JobsList({ video }: { video: ProjectVideo }) {
   );
 }
 
-// ----------------------------------------------------------------- dialog
+// ------------------------------------------------------------------ panel
 
-export function VideoToolsDialog({
-  video,
-  tab,
-  onTabChange,
-  onClose,
-}: {
-  video: ProjectVideo | null;
-  tab: VideoDialogTab;
-  onTabChange: (tab: VideoDialogTab) => void;
-  onClose: () => void;
-}) {
-  const url = useVideoUrl(video?._id);
+const PANEL_TITLES: Record<VideoToolPanel, string> = {
+  trim: "Recortar",
+  apply: "Aplicar ferramentas",
+};
+
+// The video tool opened from the toolbar, for the video in the carousel.
+export function VideoToolsPanel() {
+  const { video, panel, setPanel } = useCurrentVideo();
+  if (!video || !panel) return null;
 
   return (
-    <Dialog open={!!video} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="truncate pr-6">{video?.name}</DialogTitle>
-          <DialogDescription className="sr-only">
-            Ver o vídeo ou aplicar ferramentas de vídeo
-          </DialogDescription>
-        </DialogHeader>
-
-        <Tabs value={tab} onValueChange={(v) => onTabChange(v as VideoDialogTab)}>
-          <TabsList>
-            <TabsTrigger value="view">Ver</TabsTrigger>
-            <TabsTrigger value="tools">Ferramentas de vídeo</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="view">
-            <div className="flex justify-center items-center min-h-40">
-              {url.isLoading && <LoaderCircle className="size-6 animate-spin" />}
-              {url.isError && (
-                <p className="text-sm text-destructive">{getVideoErrorMessage(url.error)}</p>
-              )}
-              {url.data && tab === "view" && (
-                <video
-                  src={url.data}
-                  controls
-                  autoPlay
-                  className="w-full max-h-[60vh] rounded-md bg-black"
-                />
-              )}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="tools" className="flex flex-col gap-6">
-            {video && (
-              <>
-                <Tabs key={video._id} defaultValue="trim">
-                  <TabsList className="h-auto flex-wrap">
-                    <TabsTrigger value="trim">Recortar</TabsTrigger>
-                    <TabsTrigger value="apply">Aplicar ferramentas</TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="trim"><TrimPanel video={video} /></TabsContent>
-                  <TabsContent value="apply"><VideoApplyPanel video={video} /></TabsContent>
-                </Tabs>
-                <JobsList video={video} />
-              </>
-            )}
-          </TabsContent>
-        </Tabs>
-      </DialogContent>
-    </Dialog>
+    <aside
+      className="flex h-full w-80 shrink-0 flex-col border-r bg-background lg:w-96"
+      aria-label={PANEL_TITLES[panel]}
+    >
+      <div className="flex items-center justify-between gap-2 border-b px-3 py-2">
+        <div className="min-w-0">
+          <h2 className="text-sm font-semibold">{PANEL_TITLES[panel]}</h2>
+          <p className="truncate text-xs text-muted-foreground" title={video.name}>
+            {video.name}
+          </p>
+        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-8 shrink-0"
+          aria-label="Fechar ferramenta"
+          onClick={() => setPanel(null)}
+        >
+          <X />
+        </Button>
+      </div>
+      {/* keyed by video, so a tool started on one video does not carry over to the
+          next, and by its file, so that the tool restarts once a result replaced it */}
+      <div key={`${video._id}:${video.size}:${video.duration}`} className="flex flex-col gap-6 overflow-y-auto p-3">
+        {panel === "trim" ? <TrimPanel video={video} /> : <VideoApplyPanel video={video} />}
+        <JobsList video={video} />
+      </div>
+    </aside>
   );
 }

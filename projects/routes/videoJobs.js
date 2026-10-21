@@ -2,7 +2,6 @@
 // in their workers and share the lifecycle in utils/videoJobs.js.
 
 const express = require("express");
-const path = require("path");
 const { Types } = require("mongoose");
 const { applyLimitsFor, validateTools } = require("../utils/videoApply");
 
@@ -32,32 +31,6 @@ const UPGRADE_HINT = " Com o plano Premium tem limites maiores.";
 function isSupported(video) {
   // RN1: MP4 (H.264) or MOV
   return (video.format === "mp4" && video.codec === "h264") || video.format === "mov";
-}
-
-// "praia.mp4" -> "praia_recorte.mp4" (RN7, REQ-016). If that name is already
-// used in the project (by a video or by a request still running), a number is
-// added: "praia_recorte_2.mp4", "praia_recorte_3.mp4", ...
-function resultName(name, suffix, usedNames = new Set()) {
-  const ext = path.extname(name);
-  const base = `${path.basename(name, ext)}_${suffix}`;
-  let candidate = `${base}${ext}`;
-  for (let n = 2; usedNames.has(candidate.toLowerCase()); n++) {
-    candidate = `${base}_${n}${ext}`;
-  }
-  return candidate;
-}
-
-const trimmedName = (name, used) => resultName(name, "recorte", used);
-const editedName = (name, used) => resultName(name, "editado", used);
-
-async function namesInUse(user, project) {
-  const videos = await Video.getAll(user, project);
-  const running = await VideoJob.getActiveByProject(user, project);
-  return new Set(
-    [...videos.map((v) => v.name), ...running.map((j) => j.result_name)].map((n) =>
-      n.toLowerCase(),
-    ),
-  );
 }
 
 // RN2 / REQ-002 / REQ-003: whole seconds, 0 <= start < end <= duration, >= 1 s.
@@ -130,6 +103,12 @@ function submitTool(tool) {
           `Já tem ${lim.maxActiveJobs} pedido(s) de vídeo em curso. ` +
           "Aguarde que termine ou cancele-o antes de fazer outro."] };
       }
+      // The result replaces this video: one job at a time on the same video.
+      const running = await VideoJob.getActiveByProject(user, project);
+      if (running.some((j) => String(j.video_id) === String(video._id))) {
+        return { error: [409, "VIDEO_BUSY",
+          "Este vídeo já tem um pedido em curso. Aguarde que termine ou cancele-o antes de fazer outro."] };
+      }
       const used = await Video.usedStorage(user);
       // Encoding may enlarge a file. Check actual output size again at completion.
       if (used >= lim.storage) {
@@ -151,7 +130,7 @@ function submitTool(tool) {
         const job = await VideoJob.create({
           _id: id, user_id: user, project_id: project, video_id: video._id,
           tool, params,
-          result_name: resultName(video.name, tool === "apply" ? "editado" : "recorte", await namesInUse(user, project)),
+          result_name: video.name,
           max_duration: lim.maxDuration, max_storage: lim.storage,
           quota_reserved: reserved, createdAt,
         });
@@ -205,4 +184,4 @@ router.post("/:user/:project/video-jobs/:job/cancel", requireOwner, wrap(async (
 }));
 
 module.exports = router;
-module.exports._test = { checkInterval, trimmedName, editedName, isSupported };
+module.exports._test = { checkInterval, isSupported };

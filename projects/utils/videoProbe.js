@@ -67,4 +67,4 @@ async function probeVideo(filePath) {
   };
 }
 
-module.exports = { probeVideo };
+module.exports = { probeVideo, ffprobe };

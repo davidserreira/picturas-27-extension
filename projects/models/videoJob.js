@@ -24,9 +24,11 @@ const videoJobSchema = new mongoose.Schema(
       message: { type: String, default: null },
     },
 
-    // name the result will get in the library ("{nome}_recorte.ext")
+    // the result replaces the video it was made from, keeping its name
     result_name: { type: String, required: true },
     result_video_id: { type: mongoose.Schema.Types.ObjectId, default: null },
+    // file of the video before the replacement, removed once the job completes
+    replaced_key: { type: String, default: null },
     // profile duration limit, copied to the resulting video
     max_duration: { type: Number, required: true },
     max_storage: { type: Number, default: null },

@@ -136,47 +136,66 @@ async function onSuccess(msg) {
       return failJob(current._id, { code: "INVALID_RESULT", message: failedMessage(current.tool) });
     }
     const cleanup = () => delete_image(current.user_id, current.project_id, "video", out.fileName);
+    // The result replaces the video it was made from: same video, same name,
+    // new file. Done only now, so a failed or cancelled job leaves it intact.
+    const source = await Video.getById(current.video_id);
+    // A replay after a crash between the replacement and the job completion.
+    const replaced = source?.video_key === out.fileName;
     if (!VideoJob.ACTIVE_STATES.includes(current.state)) {
-      await cleanup();
+      // never remove the file the video already points to
+      if (!replaced) await cleanup();
       return;
     }
-    const fingerprint = `${current.tool}:${current._id}`;
-    // Recover a result inserted just before a projects process crashed.
-    let video = await Video.getByFingerprint(current.user_id, current.project_id, fingerprint);
-    const rejectResult = async (code) => {
-      if (video) await Video.delete(video._id);
-      await cleanup();
-      return failJob(current._id, { code, message: failedMessage(current.tool) });
-    };
-    if (!Number.isFinite(out.size) || out.size <= 0 || !Number.isFinite(out.duration) ||
-        out.duration <= 0 || !Number.isInteger(out.width) || !Number.isInteger(out.height) ||
-        (current.tool === "apply" && (out.width !== current.params.width || out.height !== current.params.height ||
-          !Number.isInteger(out.frame_count) || out.frame_count <= 0))) {
-      return rejectResult("INVALID_RESULT");
-    }
-    if (!(await Project.getOne(current.user_id, current.project_id))) return rejectResult("PROJECT_REMOVED");
-    const maximum = current.max_storage || limitsFor("free").storage;
-    const used = await Video.usedStorage(current.user_id);
-    if (used - (video?.size || 0) + out.size > maximum) return rejectResult("STORAGE_FULL");
-    if (!video) {
-      video = await Video.create({
-        user_id: current.user_id, project_id: current.project_id,
-        name: current.result_name, size: out.size, received: out.size,
-        fingerprint, state: "available", max_duration: current.max_duration,
-        video_key: out.fileName, format: out.format, codec: out.codec,
-        duration: out.duration, width: out.width, height: out.height,
-        frame_count: out.frame_count ?? null, fps: out.fps ?? null,
-      });
+    const replacedKey = replaced ? current.replaced_key : source?.video_key;
+    if (!replaced) {
+      const rejectResult = async (code) => {
+        await cleanup();
+        return failJob(current._id, { code, message: failedMessage(current.tool) });
+      };
+      if (!Number.isFinite(out.size) || out.size <= 0 || !Number.isFinite(out.duration) ||
+          out.duration <= 0 || !Number.isInteger(out.width) || !Number.isInteger(out.height) ||
+          (current.tool === "apply" && (out.width !== current.params.width || out.height !== current.params.height ||
+            !Number.isInteger(out.frame_count) || out.frame_count <= 0))) {
+        return rejectResult("INVALID_RESULT");
+      }
+      if (!(await Project.getOne(current.user_id, current.project_id))) return rejectResult("PROJECT_REMOVED");
+      if (!source || source.state !== "available") return rejectResult("SOURCE_REMOVED");
+      const maximum = current.max_storage || limitsFor("free").storage;
+      const used = await Video.usedStorage(current.user_id);
+      if (used - source.size + out.size > maximum) return rejectResult("STORAGE_FULL");
+
+      // remembered first, so that a replay can still remove the old file
+      await VideoJob.updateIfState(current._id, VideoJob.ACTIVE_STATES, { replaced_key: source.video_key });
+      const updated = await Video.updateIfState(source._id, ["available"], {
+        video_key: out.fileName, size: out.size, received: out.size,
+        format: out.format, codec: out.codec, duration: out.duration,
+        width: out.width, height: out.height,
+        frame_count: out.frame_count ?? null, fps: out.fps ?? null, sha256: null,
+        // the tracks are read again from the new file
+        tracks: null, waveform_state: null, waveform_version: null,
+      }, { video_key: source.video_key });
+      if (!updated) return rejectResult("SOURCE_REMOVED");
     }
     const job = await VideoJob.updateIfState(current._id, VideoJob.ACTIVE_STATES, {
-      state: "completed", progress: 100, result_video_id: video._id,
+      state: "completed", progress: 100, result_video_id: current.video_id,
       frames_processed: out.frame_count || current.frames_processed || 0,
       frame_count: out.frame_count ?? current.frame_count, finished_at: new Date(),
     });
     if (!job) {
-      await Video.delete(video._id);
+      // cancelled meanwhile: the video goes back to what it was
+      if (!replaced && source) {
+        const previous = ["video_key", "size", "received", "format", "codec", "duration",
+          "width", "height", "frame_count", "fps", "sha256", "tracks", "waveform_state", "waveform_version"];
+        await Video.updateIfState(source._id, ["available"],
+          Object.fromEntries(previous.map((field) => [field, source[field] ?? null])),
+          { video_key: out.fileName });
+      }
       await cleanup();
       return;
+    }
+    if (replacedKey && replacedKey !== out.fileName) {
+      await delete_image(current.user_id, current.project_id, "video", replacedKey)
+        .catch((err) => console.error(`[video-jobs] could not remove ${replacedKey}:`, err.message));
     }
     notify(job);
   });

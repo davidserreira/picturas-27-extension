@@ -6,7 +6,7 @@
 
 O PictuRAS processava apenas imagens. Este incremento acrescenta suporte a vídeo numa lógica de MVP: o objetivo é validar funcionalmente o ciclo completo de um vídeo no sistema — importar, processar de forma assíncrona com estado e progresso, guardar o resultado e exportá-lo — articulado com os perfis de utilização e com a quota diária de operações já existentes. Os requisitos não funcionais são especificados com um alvo de produção, mas no MVP só se exige o alvo indicado entre parênteses, que é a linha de base para a Fase 2.
 
-Foram especificadas e implementadas três funcionalidades (Tabela 3): *importar um vídeo* para a biblioteca (UC-VID-002), *recortar um intervalo* e exportar o resultado (UC-VID-001) e *aplicar ferramentas de imagem a todos os fotogramas* (UC-VID-003). As duas últimas partilham o mesmo modelo de pedido de processamento.
+Foram especificadas e implementadas três funcionalidades (Tabela 3): *importar um vídeo* para a biblioteca e consultar as suas faixas de vídeo e de áudio (UC-VID-002), *recortar um intervalo* e exportar o resultado (UC-VID-001) e *aplicar ferramentas de imagem a todos os fotogramas* (UC-VID-003). As duas últimas partilham o mesmo modelo de pedido de processamento.
 
 == _Baseline_ e repositório
 

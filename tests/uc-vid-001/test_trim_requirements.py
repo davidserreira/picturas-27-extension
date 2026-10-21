@@ -13,8 +13,10 @@ Pré-requisitos:
 O script encontra esse vídeo sozinho; para escolher outro use
 `--user U --project P --video V`.
 
-Os vídeos e registos de teste criados são removidos no fim. O resultado é
-escrito também em tests/uc-vid-001/resultados.md.
+Como um recorte substitui o vídeo recortado, os testes trabalham sobre cópias
+desse vídeo (com ficheiro próprio no armazenamento): o vídeo do utilizador nunca
+é alterado. As cópias e os registos de teste são removidos no fim. O resultado
+é escrito também em tests/uc-vid-001/resultados.md.
 """
 
 import argparse
@@ -166,11 +168,33 @@ class Ctx:
     def remove_fake(self, video_id):
         projects_db(f"db.videos.deleteOne({{_id: ObjectId('{video_id}')}})")
 
+    def copy_video(self, tag):
+        """Cópia do vídeo com um ficheiro próprio no armazenamento: um recorte
+        substitui-a sem tocar no ficheiro do vídeo copiado."""
+        info = json.loads(projects_db(
+            f"var v = db.videos.findOne({{_id: ObjectId('{self.v}')}});"
+            "print(JSON.stringify({key: v.video_key, format: v.format}))"))
+        key = f"__teste_{tag}_{int(time.time() * 1000)}.{info['format']}"
+        js = (
+            "const s = require('./utils/imageStorage'); const axios = require('axios');"
+            "(async () => {"
+            f" const url = (await s.get_image_internal_url('{self.u}', '{self.p}', 'video', '{info['key']}')).data.url;"
+            " const r = await axios.get(url, {responseType: 'stream'});"
+            f" await s.post_video('{self.u}', '{self.p}', '{key}', r.data,"
+            " Number(r.headers['content-length']), r.headers['content-type'] || 'video/mp4');"
+            "})().catch((e) => { console.error(e.message); process.exit(1); });"
+        )
+        out = subprocess.run(["docker", "compose", "exec", "-T", "projects", "node", "-e", js],
+                             cwd=REPO, capture_output=True, text=True, timeout=300)
+        if out.returncode != 0:
+            raise RuntimeError("não foi possível copiar o vídeo de teste: " + (out.stderr or out.stdout))
+        return self.fake_video(tag, {"video_key": key})
+
 
 def find_test_video():
     js = (
         "var v = db.videos.find({state: 'available', format: 'mp4', duration: {$gte: 40},"
-        " name: {$not: /_recorte/}}).sort({_id: 1}).limit(1).toArray()[0];"
+        " name: {$not: /_recorte|^__teste_/}}).sort({_id: 1}).limit(1).toArray()[0];"
         "if (v) print(JSON.stringify({u: v.user_id.str, p: v.project_id.str, v: v._id.str}));"
     )
     out = projects_db(js)
@@ -189,15 +213,15 @@ def test_interval(c):
         record("REQ-003", f"rejeita {s}–{e} s ({why})", ok, body.get("message", "") if isinstance(body, dict) else str(body))
 
 
-def test_success(c, created):
+def test_success(c):
     print("\n[2] Recorte 10–40 s do início ao fim")
     original = projects_db(
         f"var v = db.videos.findOne({{_id: ObjectId('{c.v}')}});"
-        "print(JSON.stringify({name: v.name, format: v.format, codec: v.codec, sha256: v.sha256}))")
+        "print(JSON.stringify({name: v.name, format: v.format, codec: v.codec}))")
     original = json.loads(original)
     hash_before = sha256_url(c.video_url(c.v))
     remaining_before = c.remaining()
-    names_before = {v["name"] for v in c.videos()}
+    ids_before = {v["_id"] for v in c.videos()}
 
     status, body, elapsed = c.trim(10, 40)
     if status != 202:
@@ -214,39 +238,33 @@ def test_success(c, created):
     record("REQ-012", "progresso atualizado em intervalos ≤ 5 s",
            all(g <= 5.5 for g in gaps), f"maior intervalo {max(gaps or [0]):.1f} s")
 
-    new = next((v for v in c.videos() if v["_id"] == job["result_video_id"]), None)
-    if new:
-        created.append(new["_id"])
-    ok = bool(new) and abs(new["duration"] - 30) <= 1 and new["format"] == original["format"] \
-        and new["codec"] == original["codec"]
+    video = next((v for v in c.videos() if v["_id"] == c.v), None)
+    ok = bool(video) and abs(video["duration"] - 30) <= 1 and video["format"] == original["format"] \
+        and video["codec"] == original["codec"]
     record("REQ-015", "resultado com 30 s ± 1 s, mesmo formato e codec",
-           ok, f"{new['duration']:.2f} s, {new['format']}/{new['codec']}" if new else "sem vídeo")
-
-    base = original["name"].rsplit(".", 1)[0] + "_recorte"
-    record("REQ-016", "resultado guardado como novo vídeo '{nome}_recorte[_n]'",
-           bool(new) and new["name"].startswith(base) and new["name"] not in names_before,
-           new["name"] if new else "")
+           ok, f"{video['duration']:.2f} s, {video['format']}/{video['codec']}" if video else "sem vídeo")
 
     hash_after = sha256_url(c.video_url(c.v))
-    same = hash_before == hash_after and (not original.get("sha256") or original["sha256"] == hash_after)
-    record("REQ-017", "ficheiro original inalterado (SHA-256 igual antes e depois)", same, hash_after[:16] + "…")
+    record("REQ-016", "o resultado substitui o vídeo recortado (mesmo vídeo e nome, sem vídeo novo)",
+           job.get("result_video_id") == c.v and bool(video) and video["name"] == original["name"]
+           and {v["_id"] for v in c.videos()} == ids_before and hash_after != hash_before,
+           video["name"] if video else "")
 
     remaining_after = c.remaining()
     record("REQ-018", "desconta 1 operação quando o pedido termina 'Concluído'",
            remaining_before is not None and remaining_after == remaining_before - 1,
            f"{remaining_before} → {remaining_after}")
 
-    return new
-
 
 def test_active_and_cancel(c):
     print("\n[3] Pedidos ativos e cancelamento (E6, FA2)")
     remaining_before = c.remaining()
     videos_before = {v["_id"] for v in c.videos()}
+    hash_before = sha256_url(c.video_url(c.v))
 
-    status, body, _ = c.trim(0, 40)
+    status, body, _ = c.trim(0, 20)
     first = body["job"]
-    status2, body2, _ = c.trim(0, 20)
+    status2, body2, _ = c.trim(0, 10)
     record("REQ-008", "rejeita um 2.º pedido com 1 pedido ativo (registado)",
            status2 == 429 and body2.get("code") == "TOO_MANY_JOBS", body2.get("message", "") if isinstance(body2, dict) else "")
 
@@ -268,6 +286,9 @@ def test_active_and_cancel(c):
            no_video and tmp == "0" and job["state"] == "cancelled", f"temporários no worker: {tmp}")
     record("REQ-018", "cancelado: a quota não muda", c.remaining() == remaining_before,
            f"{remaining_before} → {c.remaining()}")
+    hash_after = sha256_url(c.video_url(c.v))
+    record("REQ-017", "cancelado: o vídeo fica inalterado (SHA-256 igual antes e depois)",
+           hash_after == hash_before, hash_after[:16] + "…")
 
 
 def test_quota(c):
@@ -324,32 +345,34 @@ def test_limits(c):
             c.remove_fake(fake)
 
 
-def test_premium(c, created):
+def test_premium(c, copies):
     print("\n[7] Utilizador premium (FA1)")
+    # um pedido de cada vez por vídeo: os 3 pedidos simultâneos são em cópias diferentes
+    targets = [c.copy_video(f"premium{n}") for n in range(3)]
+    copies.extend(targets)
     set_user_type(c.u, "premium")
     jobs = []
     try:
         processed_before = processed_today(c.u)
 
         # 3 pedidos ativos em simultâneo são aceites; o 4.º é rejeitado (RN5)
-        for start in (0, 10, 20):
-            status, body, _ = c.trim(start, start + 10)
+        for target in targets:
+            status, body, _ = c.trim(0, 10, video=target)
             if status == 202:
                 jobs.append(body["job"]["_id"])
-        status4, body4, _ = c.trim(30, 40)
+        status4, body4, _ = c.trim(0, 10)
         record("REQ-008", "premium: aceita 3 pedidos ativos e rejeita o 4.º",
                len(jobs) == 3 and status4 == 429 and body4.get("code") == "TOO_MANY_JOBS",
                f"{len(jobs)} aceites; 4.º: {body4.get('message', '') if isinstance(body4, dict) else body4}")
 
         finished = [c.wait(j)[0] for j in jobs]
-        created.extend(j["result_video_id"] for j in finished if j.get("result_video_id"))
         record("REQ-018", "premium: recortes concluídos não gastam quota diária",
                all(j["state"] == "completed" for j in finished) and processed_today(c.u) == processed_before,
                f"{sum(j['state'] == 'completed' for j in finished)}/3 concluídos; "
                f"operações hoje {processed_before} → {processed_today(c.u)}")
 
         # limites do premium: 6 min aceite (acima do limite do registado), 31 min rejeitado
-        fake = c.fake_video("premium6min", {"duration": 360})
+        fake = c.fake_video("premium6min", {"video_key": "nao-existe.mp4", "duration": 360})
         try:
             status, body, _ = c.trim(0, 10, video=fake)
             ok = status == 202
@@ -369,7 +392,7 @@ def test_premium(c, created):
         finally:
             c.remove_fake(fake)
 
-        fake = c.fake_video("premium250mb", {"size": 250 * 1024 * 1024})
+        fake = c.fake_video("premium250mb", {"video_key": "nao-existe.mp4", "size": 250 * 1024 * 1024})
         try:
             status, body, _ = c.trim(0, 10, video=fake)
             ok = status == 202
@@ -389,23 +412,22 @@ def library_usage(c):
     return http("GET", f"{PROJECTS}/{c.u}/{c.p}/videos", caller=c.u)[1]["usage"]["used"]
 
 
-def test_library_and_performance(c, created):
+def test_library_and_performance(c):
     print("\n[8] Biblioteca e desempenho (E7, LIB-002, TRIM-031)")
 
-    # TST-TRIM-M14 / LIB-002: o resultado conta na ocupação da biblioteca
+    # TST-TRIM-M14 / LIB-002: a ocupação passa a contar o tamanho do resultado
     used_before = library_usage(c)
+    size_before = next(v["size"] for v in c.videos() if v["_id"] == c.v)
     status, body, _ = c.trim(0, 10)
+    desc = "a ocupação da biblioteca passa a contar o tamanho do resultado em vez do anterior"
     if status == 202:
-        job, _, _ = c.wait(body["job"]["_id"])
-        new = next((v for v in c.videos() if v["_id"] == job.get("result_video_id")), None)
-        if new:
-            created.append(new["_id"])
+        c.wait(body["job"]["_id"])
+        size_after = next(v["size"] for v in c.videos() if v["_id"] == c.v)
         used_after = library_usage(c)
-        record("LIB-002", "a ocupação da biblioteca aumenta o tamanho do resultado",
-               bool(new) and used_after - used_before == new["size"],
-               f"{used_before} → {used_after} bytes (resultado: {new['size'] if new else '—'} bytes)")
+        record("LIB-002", desc, used_after - used_before == size_after - size_before,
+               f"{used_before} → {used_after} bytes (vídeo: {size_before} → {size_after} bytes)")
     else:
-        record("LIB-002", "a ocupação da biblioteca aumenta o tamanho do resultado", False, f"HTTP {status}: {body}")
+        record("LIB-002", desc, False, f"HTTP {status}: {body}")
 
     # TST-TRIM-M12 / TRIM-027: biblioteca cheia (1 GB no registado)
     filler = c.fake_video("biblioteca-cheia", {"size": 1024 * 1024 * 1024})
@@ -453,8 +475,6 @@ def test_library_and_performance(c, created):
         t0 = time.monotonic()
         job, _, _ = c.wait(body["job"]["_id"], timeout=600)
         elapsed = time.monotonic() - t0
-        if job.get("result_video_id"):
-            created.append(job["result_video_id"])
         record("TRIM-031", "recorte de 5 min a 1080p concluído em ≤ 5 min",
                job["state"] == "completed" and elapsed <= 300,
                f"{job['state']} em {elapsed:.0f} s ({elapsed / 60:.1f} min)")
@@ -518,19 +538,21 @@ def main():
     if active:
         sys.exit("Há um pedido de vídeo em curso. Espere que termine ou cancele-o.")
 
-    print(f"Utilizador {c.u} · projeto {c.p} · vídeo {c.v}")
-    created = []
+    original = c.v
+    c.v = c.copy_video("trabalho")
+    print(f"Utilizador {c.u} · projeto {c.p} · vídeo {original} (testes sobre a cópia {c.v})")
+    copies = [c.v]
     try:
         test_interval(c)
-        test_success(c, created)
+        test_success(c)
         test_active_and_cancel(c)
         test_quota(c)
         test_failure(c)
         test_limits(c)
-        test_premium(c, created)
-        test_library_and_performance(c, created)
+        test_premium(c, copies)
+        test_library_and_performance(c)
     finally:
-        for video_id in created:
+        for video_id in copies:
             c.delete_video(video_id)
         write_report(c)
 

@@ -9,6 +9,7 @@ on:
       - 'users/**'
       - 'frontend/**'
       - 'tests/uc-vid-003/**'
+      - 'tests/video-tracks/**'
       - '.github/workflows/uc-vid-003.yml'
   push:
     branches: ['feature/uc-vid-003-apply-tools']
@@ -49,12 +50,12 @@ jobs:
         working-directory: users
       - run: npm install --ignore-scripts --no-audit --no-fund
         working-directory: frontend
-      - run: node --test tests/uc-vid-003/*.test.cjs
+      - run: node --test tests/uc-vid-003/*.test.cjs tests/video-tracks/*.test.cjs
         env:
           MONGODB_TEST_URL: mongodb://127.0.0.1:27017
       - run: npx tsc --noEmit --incremental false
         working-directory: frontend
-      - run: npx eslint components/project-page/video-apply-panel.tsx components/project-page/video-tools-dialog.tsx lib/video-apply.ts lib/video-jobs.ts lib/queries/video-jobs.ts lib/videos.ts
+      - run: npx eslint components/project-page/video-apply-panel.tsx components/project-page/video-tools-panel.tsx components/project-page/video-tracks.tsx lib/video-apply.ts lib/video-jobs.ts lib/queries/video-jobs.ts lib/videos.ts
         working-directory: frontend
       - run: npm run build
         working-directory: frontend

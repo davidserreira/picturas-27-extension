@@ -8,10 +8,10 @@
   tabela-campos(
     [ID do Caso de Uso], [UC-VID-003],
     [Nome], [Aplicar ferramentas de imagem a todos os fotogramas de um vídeo],
-    [Versão], [v1.2],
+    [Versão], [v1.4],
     [Autor], [Guilherme Bento & João Sousa],
-    [Data], [2026-10-07 (v1.0); 2026-10-14 (v1.1); 2026-10-19 (v1.2)],
-    [Objetivo], [Aplicar uma cadeia de 1 a 3 ferramentas de imagem a todos os fotogramas de um vídeo da biblioteca, obtendo um novo vídeo],
+    [Data], [2026-10-07 (v1.0); 2026-10-14 (v1.1); 2026-10-19 (v1.2); 2026-10-21 (v1.3); 2026-10-21 (v1.4)],
+    [Objetivo], [Aplicar uma cadeia de 1 a 3 ferramentas de imagem a todos os fotogramas de um vídeo da biblioteca, substituindo-o pelo resultado (v1.4)],
     [Âmbito], [Módulo de vídeo do PictuRAS: ferramentas de vídeo, ferramentas de imagem, encadeamento, fila de processamento e biblioteca],
     [Ator Principal], [Utilizador Registado (gratuito, 5 operações/dia) ou Premium (pago, ilimitado)],
     [_Stakeholders_ e Interesses], [- *Utilizador*: quer transformar o vídeo inteiro com ferramentas que já conhece
@@ -33,8 +33,8 @@
     [2], [Adiciona de 1 a 3 ferramentas à cadeia, ordena-as e define os parâmetros], [Valida os parâmetros e a resolução final e apresenta a cadeia ordenada e a resolução final],
     [3], [Clica em *Aplicar a todos os fotogramas*], [Verifica formato, limites, quota e pedidos ativos; cria o pedido "Em fila" e confirma a receção],
     [4], [Acompanha o progresso (pode sair da página)], [Processa o vídeo aplicando a cadeia, por ordem, a todos os fotogramas; apresenta estado, percentagem e fotogramas processados],
-    [5], [—], [Guarda o resultado como novo vídeo, marca "Concluído" e desconta 1 operação (registado)],
-    [6], [Abre o vídeo resultante e reproduz-o], [Reproduz o vídeo resultante],
+    [5], [—], [Substitui o vídeo pelo resultado, com o mesmo nome (v1.4), marca "Concluído" e desconta 1 operação (registado)],
+    [6], [Abre o vídeo e reproduz-o], [Reproduz o vídeo já alterado e apresenta as suas faixas (UC-VID-002/FA4), onde o utilizador confirma que o áudio foi mantido (v1.3)],
   ),
 )
 
@@ -45,7 +45,7 @@
     colunas: (4cm, 1fr),
     [Fluxo], [Descrição (passo de origem: condição → comportamento → retorno)],
     [FA1 – Utilizador premium], [No passo 3, se o perfil é premium → aplicam-se os limites de premium (10 min, resolução 3840 × 2160 e 3 pedidos ativos) e não se verifica a quota],
-    [FA2 – Cancelar], [No passo 4, o utilizador escolhe *Cancelar* → o sistema interrompe, marca "Cancelado", remove os ficheiros parciais e não cria vídeo],
+    [FA2 – Cancelar], [No passo 4, o utilizador escolhe *Cancelar* → o sistema interrompe, marca "Cancelado", remove os ficheiros parciais e mantém o vídeo inalterado],
   ),
 )
 
@@ -60,9 +60,10 @@
     [E3 – Quota diária esgotada (registado)], [No passo 3, rejeita o pedido com _"Atingiu o limite de 5 operações diárias"_],
     [E4 – Parâmetro fora do intervalo permitido], [No passo 2, apresenta o intervalo permitido e mantém *Aplicar* desativado],
     [E5 – A resolução final excede o limite do perfil], [No passo 2, apresenta o limite aplicável e mantém *Aplicar* desativado],
-    [E6 – O processamento falha a meio (por exemplo, um fotograma ilegível)], [Marca "Falhado", apresenta _"Não foi possível aplicar as ferramentas ao vídeo. Tente novamente."_, remove parciais, não cria vídeo e não desconta quota],
+    [E6 – O processamento falha a meio (por exemplo, um fotograma ilegível)], [Marca "Falhado", apresenta _"Não foi possível aplicar as ferramentas ao vídeo. Tente novamente."_, remove parciais, mantém o vídeo inalterado e não desconta quota],
     [E7 – Número máximo de pedidos ativos], [No passo 3, rejeita o pedido e indica que tem de aguardar ou cancelar um pedido ativo],
-    [E8 – Espaço da biblioteca insuficiente (v1.1)], [No passo 5, se o vídeo resultante excede o espaço livre da biblioteca, marca "Falhado", apresenta o espaço livre, não cria vídeo e não desconta quota],
+    [E8 – Espaço da biblioteca insuficiente (v1.1)], [No passo 5, se o resultado, em vez do vídeo atual, excede o espaço livre da biblioteca, marca "Falhado", apresenta o espaço livre, mantém o vídeo inalterado e não desconta quota],
+    [E9 – O vídeo já tem um pedido em curso (v1.4)], [No passo 3, rejeita o pedido e indica que tem de aguardar que o pedido desse vídeo termine ou cancelá-lo],
   ),
 )
 
@@ -71,8 +72,8 @@
 #tabela(
     colunas: (4cm, 1fr),
     [Tipo], [Resultado],
-    [Garantia de Sucesso], [Existe um novo vídeo com a cadeia aplicada a todos os fotogramas, com o mesmo número e taxa de fotogramas e o mesmo áudio; o original está inalterado; no registado, a quota desceu 1 operação],
-    [Garantia Mínima], [O original está inalterado; não existe vídeo parcial nem ficheiros temporários; a quota não mudou; o estado e o motivo são apresentados],
+    [Garantia de Sucesso], [O vídeo foi substituído pelo resultado da cadeia aplicada a todos os fotogramas, com o mesmo nome, o mesmo número e taxa de fotogramas e o mesmo áudio; não foi criado outro vídeo; no registado, a quota desceu 1 operação],
+    [Garantia Mínima], [O vídeo está inalterado; não existe vídeo parcial nem ficheiros temporários; a quota não mudou; o estado e o motivo são apresentados],
   )
 
 === Regras de Negócio e Restrições
@@ -89,8 +90,8 @@
     [RN7], [Registado: 5 operações/dia; premium: sem limite; anónimo: sem acesso. Um pedido conta 1 operação, qualquer que seja o número de ferramentas, só se "Concluído"],
     [RN8], [Pedidos ativos em simultâneo: 1 (registado) e 3 (premium), contando todas as ferramentas de vídeo],
     [RN9], [Receção do pedido confirmada em ≤ 2 s; progresso atualizado pelo menos a cada 5 s],
-    [RN10], [O resultado é guardado como novo vídeo "{nome}\_editado"; se esse nome já existir no projeto, acrescenta-se um número ("{nome}\_editado\_2", "\_3", …) (refinada na v1.1); o original nunca é alterado],
-    [RN11 (v1.1)], [O resultado ocupa espaço da biblioteca de vídeo (1 GB registado, 10 GB premium) e mantém-se até o utilizador o remover],
+    [RN10 (v1.4)], [O resultado substitui o vídeo, com o mesmo nome, só quando o pedido termina "Concluído"; até lá, e se o pedido falhar ou for cancelado, o vídeo mantém-se inalterado. Um vídeo só pode ter um pedido ativo de cada vez],
+    [RN11 (v1.1)], [O vídeo alterado passa a ocupar na biblioteca de vídeo (1 GB registado, 10 GB premium) o tamanho do resultado e mantém-se até o utilizador o remover],
   )
 
 === Assunções
@@ -115,4 +116,5 @@
     [Q2], [As ferramentas avançadas (por exemplo, contagem de pessoas) devem poder ser aplicadas a vídeo?], [Adiada: fora do MVP (UC-VID-003/RN2); reavaliar na Fase 3.],
     [Q3], [Deve ser possível aplicar a mesma cadeia a vários vídeos, como se faz com imagens?], [Adiada: o lote fica fora do MVP (5.3); reavaliar na Fase 3.],
     [Q4 (v1.1)], [Os limites de resolução final devem considerar a orientação do vídeo? Hoje aplicam-se literalmente à largura e à altura, pelo que rodar um vídeo 1920 × 1080 para 1080 × 1920 excede a altura permitida ao registado.], [Adiada: mantém-se a interpretação literal (UC-VID-003/RN4). #preencher[confirmar a decisão do grupo]],
+    [Q5 (v1.4)], [Deve ser possível desfazer a aplicação de ferramentas, guardando a versão anterior do vídeo?], [Adiada: no MVP a substituição é definitiva (RNG-09), como no UC-VID-001/Q6; reavaliar na Fase 3.],
   )

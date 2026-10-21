@@ -85,6 +85,15 @@ router.get("/:user/:project/videos/:video/url", auth.checkToken, function (req, 
 });
 
 /**
+ * Get the audio and video tracks of an available video
+ * @body Empty
+ * @returns { "state": String, "duration": Number, "tracks": [Track] }
+ */
+router.get("/:user/:project/videos/:video/tracks", auth.checkToken, function (req, res, next) {
+  forward(req, res, "get", videosPath(req, `/${req.params.video}/tracks`));
+});
+
+/**
  * Start importing a video
  * @body { "name": String, "size": Number, "fingerprint": String }
  * @returns { "video": Video, "chunkSize": Number }

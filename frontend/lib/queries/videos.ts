@@ -1,5 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchProjectVideos, VideoLibrary } from "../videos";
+import {
+  fetchProjectVideos,
+  fetchProjectVideoTracks,
+  VideoLibrary,
+  VideoTracks,
+} from "../videos";
 
 export const projectVideosKey = (uid: string, pid: string, token: string) => [
   "projectVideos",
@@ -26,5 +31,24 @@ export const useGetProjectVideos = (
       if (states.includes("interrupted")) return 15000;
       return false;
     },
+  });
+};
+
+export const useGetVideoTracks = (
+  uid: string,
+  pid: string,
+  token: string,
+  videoId: string | undefined,
+) => {
+  return useQuery<VideoTracks>({
+    queryKey: ["videoTracks", uid, pid, videoId],
+    queryFn: () => fetchProjectVideoTracks({ uid, pid, token, videoId: videoId! }),
+    enabled: !!uid && !!pid && !!token && !!videoId,
+    // the tracks of a video never change
+    staleTime: Infinity,
+    retry: 1,
+    // the waveforms are computed on the server the first time
+    refetchInterval: (query) =>
+      query.state.data?.state === "analyzing" ? 2000 : false,
   });
 };
