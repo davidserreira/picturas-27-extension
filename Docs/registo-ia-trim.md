@@ -236,4 +236,4 @@ excerto do meio. Ramo `feature/recorte-melhorias`.
 **Verificação do aluno:** o comando do FFmpeg do modo remover foi experimentado fora
 do sistema com vídeos de 20 s, com e sem áudio, removendo o meio, o início e o fim
 (15 s em todos os casos). TypeScript e ESLint sem erros. Testes novos no bloco [9] de
-`tests/uc-vid-001/test_trim_requirements.py` (TST-TRIM-25 a 28).
+`tests/uc-vid-001/test_trim_requirements.py` (TST-TRIM-25 a 28): **39/39** (2026-10-21).
