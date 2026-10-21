@@ -10,10 +10,10 @@
 *Lançar a solução:*
 - Descompactar `solucao-ext-mvp.zip` e, na pasta raiz, executar `docker compose up -d --build` (a primeira vez demora 15 a 30 min).
 - Abrir https:/\/localhost:8080 (aceitar o certificado autoassinado).
-- Registar uma conta (perfil registado) e criar um projeto; usar *Importar vídeo* com `Docs/videosTestes/video_teste.mp4`. #preencher[credenciais de uma conta premium de teste, se existir]
+- Registar uma conta (perfil registado) e criar um projeto; usar *Importar vídeo* com `Docs/testes/video_teste.mp4`. Não existe uma conta premium de teste: os casos do perfil premium são verificados pelos testes automáticos, que alteram temporariamente o tipo do utilizador e o repõem no fim.
 
 *Correr os testes:*
-- UC-VID-001 (com o sistema a correr): `python tests/uc-vid-001/test_trim_requirements.py` #preencher[confirmar argumentos e variáveis necessárias]
+- UC-VID-001 (com o sistema a correr e um utilizador registado com um vídeo MP4 de pelo menos 40 s importado, e.g. `video_teste.mp4`): `python3 tests/uc-vid-001/test_trim_requirements.py --reset-quota`. O script encontra o vídeo sozinho (ou `--user`, `--project` e `--video` para escolher outro), trabalha sobre cópias dele, repõe as operações diárias desse dia (`--reset-quota`, só para ambiente de testes), remove o que cria e escreve o resultado em `tests/uc-vid-001/resultados.md` (cerca de 6 min).
 - UC-VID-003: `python -m unittest discover -s tests/uc-vid-003 -p "test_*.py" -v` e `node --test tests/uc-vid-003/*.test.cjs`.
 - Faixas de um vídeo (UC-VID-002/FA4): `node --test tests/video-tracks/*.test.cjs` (requer `npm install` na pasta `projects`).
 - Testes manuais: seguir `tests/uc-vid-001/checklist-manual.md`, `tests/uc-vid-003/checklist-manual.md` e a Tabela 19 (incluindo TST-IMPORT-M01 a M12 e TST-LIB-M01 a M04).

@@ -11,6 +11,7 @@ Problemas da solução de base encontrados durante o estudo e a integração do 
     [ID], [Descrição do problema], [Impacto], [Prioridade], [Rel. Req.], [Estado],
     [T-01], [Ao alternar entre grelha e carrossel, o botão de vista descarta o parâmetro `share` do endereço, pelo que um colaborador que abriu o projeto por link perde o contexto de partilha.], [Funcional], [Média], [RF45], [Pendente],
     [T-02], [O serviço de quota reserva operações por um pedido GET sem chave de idempotência; uma repetição do pedido pode reservar duas vezes.], [Fiabilidade], [Média], [RNF48], [Parcial (contrato de devolução com chave para vídeo; reserva de imagem por corrigir)],
-    [T-03], [#preencher[outros problemas encontrados na baseline]], [#preencher[…]], [#preencher[…]], [#preencher[…]], [#preencher[…]],
+    [T-03], [O login por email falhava sempre (erro 701): `getOneEmail()` devolvia o utilizador em formato JSON, que remove o `password_hash`, e a comparação da password com `bcrypt` falhava. Só funcionava a sessão iniciada automaticamente após o registo. Corrigido devolvendo o _hash_ apenas para a autenticação; um email inexistente passa a dar 401.], [Funcional (bloqueante)], [Alta], [Login (baseline)], [Corrigido (PR \#3)],
+    [T-04], [#preencher[outros problemas encontrados na baseline]], [#preencher[…]], [#preencher[…]], [#preencher[…]], [#preencher[…]],
   ),
 )
