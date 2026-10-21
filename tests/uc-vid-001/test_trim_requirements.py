@@ -385,6 +385,84 @@ def test_premium(c, created):
         set_user_type(c.u, "free")
 
 
+def library_usage(c):
+    return http("GET", f"{PROJECTS}/{c.u}/{c.p}/videos", caller=c.u)[1]["usage"]["used"]
+
+
+def test_library_and_performance(c, created):
+    print("\n[8] Biblioteca e desempenho (E7, LIB-002, TRIM-031)")
+
+    # TST-TRIM-M14 / LIB-002: o resultado conta na ocupação da biblioteca
+    used_before = library_usage(c)
+    status, body, _ = c.trim(0, 10)
+    if status == 202:
+        job, _, _ = c.wait(body["job"]["_id"])
+        new = next((v for v in c.videos() if v["_id"] == job.get("result_video_id")), None)
+        if new:
+            created.append(new["_id"])
+        used_after = library_usage(c)
+        record("LIB-002", "a ocupação da biblioteca aumenta o tamanho do resultado",
+               bool(new) and used_after - used_before == new["size"],
+               f"{used_before} → {used_after} bytes (resultado: {new['size'] if new else '—'} bytes)")
+    else:
+        record("LIB-002", "a ocupação da biblioteca aumenta o tamanho do resultado", False, f"HTTP {status}: {body}")
+
+    # TST-TRIM-M12 / TRIM-027: biblioteca cheia (1 GB no registado)
+    filler = c.fake_video("biblioteca-cheia", {"size": 1024 * 1024 * 1024})
+    try:
+        status, body, _ = c.trim(0, 10)
+        msg = body.get("message", "") if isinstance(body, dict) else str(body)
+        record("TRIM-027", "biblioteca cheia: rejeita o recorte com a ocupação e o limite",
+               status == 413 and body.get("code") == "STORAGE_FULL" and "1 GB" in msg, msg)
+    finally:
+        c.remove_fake(filler)
+
+    # TST-TRIM-M13 / TRIM-031: vídeo de 5 min a 1080p recortado em <= 5 min
+    print("  (a gerar um vídeo de teste de 5 min a 1080p; pode demorar 1-3 min)")
+    gen = subprocess.run(
+        ["docker", "compose", "exec", "-T", "video_trim_tool", "python", "-c",
+         "import subprocess, requests, json, os\n"
+         "p='/tmp/perf_5min.mp4'\n"
+         "subprocess.run(['ffmpeg','-y','-loglevel','error','-f','lavfi','-i',"
+         "'testsrc2=size=1920x1080:rate=30:duration=300','-f','lavfi','-i','sine=frequency=440:duration=300',"
+         "'-c:v','libx264','-preset','ultrafast','-pix_fmt','yuv420p','-c:a','aac','-shortest',p],check=True)\n"
+         f"r=requests.put('http://img_storage:11000/video/{c.u}/{c.p}/perf_5min.mp4',data=open(p,'rb'),"
+         "headers={'Content-Type':'video/mp4','Content-Length':str(os.path.getsize(p))},timeout=600)\n"
+         "r.raise_for_status()\n"
+         "o=json.loads(subprocess.run(['ffprobe','-v','error','-print_format','json','-show_format',p],"
+         "capture_output=True,text=True).stdout)\n"
+         "print(json.dumps({'size':os.path.getsize(p),'duration':float(o['format']['duration'])}))\n"
+         "os.remove(p)\n"],
+        cwd=REPO, capture_output=True, text=True, timeout=900)
+    if gen.returncode != 0:
+        record("TRIM-031", "recorte de 5 min a 1080p concluído em ≤ 5 min", False,
+               "não foi possível gerar o vídeo de teste: " + (gen.stderr or gen.stdout)[-200:])
+        return
+    info = json.loads(gen.stdout.strip().splitlines()[-1])
+    perf = c.fake_video("desempenho-5min", {
+        "video_key": "perf_5min.mp4", "size": info["size"], "duration": min(info["duration"], 300),
+        "width": 1920, "height": 1080, "format": "mp4", "codec": "h264", "sha256": None})
+    # corre como premium: o ficheiro gerado pode ultrapassar os 200 MB do registado,
+    # e o requisito mede só o tempo de processamento
+    set_user_type(c.u, "premium")
+    try:
+        status, body, _ = c.trim(0, 300, video=perf)
+        if status != 202:
+            record("TRIM-031", "recorte de 5 min a 1080p concluído em ≤ 5 min", False, f"HTTP {status}: {body}")
+            return
+        t0 = time.monotonic()
+        job, _, _ = c.wait(body["job"]["_id"], timeout=600)
+        elapsed = time.monotonic() - t0
+        if job.get("result_video_id"):
+            created.append(job["result_video_id"])
+        record("TRIM-031", "recorte de 5 min a 1080p concluído em ≤ 5 min",
+               job["state"] == "completed" and elapsed <= 300,
+               f"{job['state']} em {elapsed:.0f} s ({elapsed / 60:.1f} min)")
+    finally:
+        set_user_type(c.u, "free")
+        c.delete_video(perf)  # remove o documento e o ficheiro do armazenamento
+
+
 # ------------------------------------------------------------------------ main
 
 def write_report(c):
@@ -432,8 +510,8 @@ def main():
 
     if c.user_type() != "free":
         sys.exit("Estes testes são para um utilizador registado (gratuito).")
-    if (c.remaining() or 0) < 2:
-        sys.exit("O utilizador precisa de pelo menos 2 operações diárias disponíveis. "
+    if (c.remaining() or 0) < 3:
+        sys.exit("O utilizador precisa de pelo menos 3 operações diárias disponíveis. "
                  "Volte a correr com --reset-quota para as repor (ambiente de testes).")
     active = [j for j in http("GET", f"{PROJECTS}/{c.u}/{c.p}/video-jobs", caller=c.u)[1]["jobs"]
               if j["state"] in ("queued", "processing")]
@@ -450,6 +528,7 @@ def main():
         test_failure(c)
         test_limits(c)
         test_premium(c, created)
+        test_library_and_performance(c, created)
     finally:
         for video_id in created:
             c.delete_video(video_id)

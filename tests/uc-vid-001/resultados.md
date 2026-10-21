@@ -1,6 +1,6 @@
 # Resultados dos testes automáticos — UC-VID-001
 
-Executado em 2026-10-21 11:55 com `tests/uc-vid-001/test_trim_requirements.py` (perfil registado; o bloco [7] passa o utilizador temporariamente a premium para testar o FA1).
+Executado em 2026-10-21 12:19 com `tests/uc-vid-001/test_trim_requirements.py` (perfil registado; o bloco [7] passa o utilizador temporariamente a premium para testar o FA1).
 
 | Requisito | Teste | Resultado | Detalhe |
 |-----------|-------|-----------|---------|
@@ -10,7 +10,7 @@ Executado em 2026-10-21 11:55 com `tests/uc-vid-001/test_trim_requirements.py` (
 | REQ-003 | rejeita -1–5 s (início negativo) | ✅ Passou | O início não pode ser negativo. |
 | REQ-003 | rejeita 10–10.5 s (fração de segundo) | ✅ Passou | O início e o fim têm de ser indicados em segundos inteiros. |
 | REQ-009 | pedido criado no estado 'Em fila' (queued) | ✅ Passou | queued |
-| REQ-010 | receção confirmada em ≤ 2 s | ✅ Passou | 0.08 s |
+| REQ-010 | receção confirmada em ≤ 2 s | ✅ Passou | 0.07 s |
 | REQ-011 | estados seguem Em fila → Em processamento → Concluído | ✅ Passou | queued → processing → completed |
 | REQ-012 | progresso atualizado em intervalos ≤ 5 s | ✅ Passou | maior intervalo 2.1 s |
 | REQ-015 | resultado com 30 s ± 1 s, mesmo formato e codec | ✅ Passou | 30.00 s, mp4/h264 |
@@ -32,5 +32,8 @@ Executado em 2026-10-21 11:55 com `tests/uc-vid-001/test_trim_requirements.py` (
 | REQ-005 | premium: aceita vídeo de 6 min (limite 30 min) | ✅ Passou | HTTP 202 |
 | REQ-005 | premium: rejeita vídeo de 31 min, sem sugerir o Premium | ✅ Passou | O seu perfil só permite recortar vídeos até 30 min. |
 | REQ-006 | premium: aceita vídeo de 250 MB (limite 2 GB) | ✅ Passou | HTTP 202 |
+| LIB-002 | a ocupação da biblioteca aumenta o tamanho do resultado | ✅ Passou | 259595059 → 271653794 bytes (resultado: 12058735 bytes) |
+| TRIM-027 | biblioteca cheia: rejeita o recorte com a ocupação e o limite | ✅ Passou | Não há espaço na sua biblioteca de vídeos (1.3 GB de 1 GB). Com o plano Premium tem limites maiores. |
+| TRIM-031 | recorte de 5 min a 1080p concluído em ≤ 5 min | ✅ Passou | completed em 42 s (0.7 min) |
 
-**28 de 28 testes passaram.**
+**31 de 31 testes passaram.**

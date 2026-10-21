@@ -182,7 +182,16 @@ pela checklist manual.
 - **Novo bloco de testes [7] (FA1, premium):** o utilizador passa temporariamente a premium.
   Verifica 3 pedidos ativos e o 4.º rejeitado, recortes concluídos sem gasto de quota, e os
   limites de 30 min / 2 GB. Resultado total: **28/28**.
+- **Novo bloco de testes [8]:** testes que estavam como manuais "por executar" no relatório,
+  automatizados:
+  - LIB-002: a ocupação da biblioteca aumenta exatamente o tamanho do resultado;
+  - TRIM-027 (E7): com a biblioteca cheia (1 GB), o recorte é rejeitado com a ocupação e o limite;
+  - TRIM-031: um vídeo gerado de 5 min a 1080p (H.264) é recortado por inteiro em **42 s**
+    (alvo do MVP ≤ 5 min; alvo de produção ≤ 1 min, também cumprido neste equipamento:
+    macOS 27.0.1, Apple M1 Pro, 16 GB).
+  Resultado total: **31/31**.
 
 | ID | Decisão | Alternativas consideradas | Porquê |
 |----|---------|---------------------------|--------|
 | D32 | Testar o FA1 alterando temporariamente o tipo do utilizador na base de dados (e repondo-o no fim, mesmo em caso de erro) | Criar e pagar uma subscrição premium; deixar por testar | Não havia conta premium; o comportamento depende só do tipo do utilizador lido pelo `projects` |
+| D33 | Desempenho medido com um vídeo sintético gerado dentro do contentor do processador (`testsrc2`, 1920 × 1080, 30 fps, 300 s), enviado para o armazenamento e removido no fim; corre como premium | Gravar e importar manualmente um vídeo real de 5 min | Repetível em qualquer máquina e sem ficheiros grandes no repositório; o perfil premium evita o limite de 200 MB, que não é o que o requisito mede |
