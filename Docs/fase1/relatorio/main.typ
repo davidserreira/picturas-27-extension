@@ -29,8 +29,6 @@
 #set page(numbering: "i", number-align: center)
 #counter(page).update(1)
 
-#include "capitulos/00-historico-versoes.typ"
-
 #outline(title: [Índice], indent: auto, depth: 3)
 #pagebreak()
 #outline(title: [Lista de Figuras], target: figure.where(kind: image))
