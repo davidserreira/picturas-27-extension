@@ -4,12 +4,13 @@
 
 == Estratégia e ambiente de testes
 
-- *Automáticos de aceitação (caixa negra)* contra o sistema completo em Docker, um por critério de aceitação: `tests/uc-vid-001/test_trim_requirements.py` (Python, 23 casos agrupados em TST-TRIM-01 a 17).
+- *Automáticos de aceitação (caixa negra)* contra o sistema completo em Docker, um por critério de aceitação: `tests/uc-vid-001/test_trim_requirements.py` (Python, 31 casos agrupados em TST-TRIM-01 a 24). Como um recorte substitui o vídeo (v1.4), os testes trabalham sobre cópias do vídeo de teste; os casos do perfil premium e de desempenho alteram temporariamente o tipo do utilizador e geram um vídeo sintético de 5 min a 1080p dentro do contentor do processador. Tudo é reposto e removido no fim (decisões D32 e D33 em `Docs/registo-ia-trim.md`).
+- *Regressão*: o conjunto TST-TRIM foi corrido outra vez depois da integração do UC-VID-003 (2026-10-21, 28/28) e depois da v1.4 (2026-10-21, 31/31).
 - *Automáticos de média, processador e API*: `tests/uc-vid-003` (14 testes de média e 6 do processador em Python; 38 testes Node da API, ciclo de vida e gateway, com serviços substituídos em memória; teste de quota com MongoDB na integração contínua).
 - *Automáticos das faixas de um vídeo*: `tests/video-tracks/tracks.test.cjs` (8 testes Node da rota e do cálculo da forma de onda, com ffprobe, FFmpeg, armazenamento e base de dados substituídos em memória).
 - *Manuais e de inspeção* no browser e no ambiente Docker, a partir das _checklists_ em `tests/uc-vid-001/checklist-manual.md` e `tests/uc-vid-003/checklist-manual.md`, e das listas TST-IMPORT-M01 a M12 (importação) e TST-LIB-M01 a M04 (faixas).
-- *Ambiente*: `docker compose` com todos os serviços; #preencher[sistema operativo, CPU e memória do equipamento usado nas medições].
-- *Vídeos de teste*: `video_teste.mp4` (MP4 H.264, 60 s, 1080p) em `Docs/videosTestes`; vídeos sintéticos gerados pelos testes do UC-VID-003 (MP4 H.264 com AAC, MOV PNG, MOV ProRes com PCM); cópias com formato, duração ou tamanho alterados para os limites (decisão D30).
+- *Ambiente*: `docker compose` com todos os serviços; macOS 27.0.1, Apple M1 Pro, 16 GB de RAM (Docker Desktop).
+- *Vídeos de teste*: `video_teste.mp4` (MP4 H.264, 60 s, 1080p) em `Docs/testes`; vídeo sintético de 5 min, 1920 × 1080, 30 fps, H.264 com AAC, gerado pelo teste de desempenho do recorte; vídeos sintéticos gerados pelos testes do UC-VID-003 (MP4 H.264 com AAC, MOV PNG, MOV ProRes com PCM); cópias com formato, duração ou tamanho alterados para os limites (decisão D30).
 
 == Testes realizados
 
@@ -18,23 +19,30 @@
     colunas: (2.3cm, 1.6cm, 1fr, 3cm, 2.6cm),
     tamanho: 8pt,
     [ID], [Tipo], [Descrição (Dado… Quando… Então…)], [Requisito(s)], [Resultado],
-    [TST-TRIM-01], [Automático], [Dado um vídeo de 60 s, quando se pedem os intervalos 50–70 s, 20–10 s, 5–5 s, -1–5 s e 10–10,5 s, então todos são rejeitados com o motivo.], [TRIM-003], [Passa (2026-10-08)],
-    [TST-TRIM-02], [Automático], [Dado um recorte válido, quando é submetido, então o pedido é criado "Em fila".], [JOB-001], [Passa (2026-10-08)],
-    [TST-TRIM-03], [Automático], [Dado um recorte válido, quando é submetido, então a confirmação chega em ≤ 2 s.], [JOB-012], [Passa (2026-10-08); medido 0,04 s],
-    [TST-TRIM-04], [Automático], [Dado um recorte, quando é seguido até ao fim, então os estados são Em fila → Em processamento → Concluído.], [JOB-002], [Passa (2026-10-08)],
-    [TST-TRIM-05], [Automático], [Dado um recorte em curso, quando se registam as atualizações, então nenhum intervalo excede 5 s.], [JOB-013], [Passa (2026-10-08); maior intervalo 2,1 s],
-    [TST-TRIM-06], [Automático], [Dado o intervalo 10–40 s, quando o pedido conclui, então o resultado tem 30 s ± 1 s e o formato e codec do original.], [JOB-006; TRIM-015], [Passa (2026-10-08); 30,00 s, mp4/h264],
-    [TST-TRIM-07], [Automático], [Dado uma cópia do vídeo de teste recortada 10–40 s, quando o pedido conclui, então o mesmo vídeo, com o mesmo nome, passa a ter 30 s e não aparece vídeo novo (v1.4).], [TRIM-016], [#preencher[Por repetir (v1.4); antes: Passa (2026-10-08) com "{nome}\_recorte\_2"]],
-    [TST-TRIM-08], [Automático], [Dado um recorte cancelado, então o SHA-256 do vídeo é igual antes e depois (v1.4).], [JOB-014], [#preencher[Por repetir (v1.4)]],
-    [TST-TRIM-09], [Automático], [Dado um registado, quando um recorte conclui, então a quota desce 1; quando um recorte é cancelado ou falha, então não muda.], [JOB-009], [Passa (2026-10-08); 5 → 4, 4 → 4],
-    [TST-TRIM-10], [Automático], [Dado um registado com 1 pedido ativo, quando submete outro, então é rejeitado.], [JOB-007], [Passa (2026-10-08)],
-    [TST-TRIM-11], [Automático], [Dado um recorte em curso, quando é cancelado, então fica "Cancelado".], [JOB-003], [Passa (2026-10-08)],
-    [TST-TRIM-12], [Automático], [Dado um recorte cancelado, então o vídeo fica inalterado e não há ficheiros temporários no processador.], [JOB-004, 006], [Passa (2026-10-08); 0 temporários],
-    [TST-TRIM-13], [Automático], [Dado um registado com 5 operações usadas, quando pede um recorte, então é rejeitado e é sugerido o premium.], [JOB-008], [Passa (2026-10-08)],
-    [TST-TRIM-14], [Automático], [Dado uma falha no processamento, então o pedido fica "Falhado" com a mensagem prevista e o vídeo inalterado.], [JOB-006; TRIM-019], [Passa (2026-10-08)],
-    [TST-TRIM-15], [Automático], [Dado um vídeo AVI, quando se pede o recorte, então é rejeitado com "Formato não suportado".], [JOB-011], [Passa (2026-10-08)],
-    [TST-TRIM-16], [Automático], [Dado um registado e um vídeo de 6 min, quando pede o recorte, então é rejeitado com o limite de 5 min.], [TRIM-005], [Passa (2026-10-08)],
-    [TST-TRIM-17], [Automático], [Dado um registado e um vídeo de 250 MB, quando pede o recorte, então é rejeitado com o limite de 200 MB.], [TRIM-006], [Passa (2026-10-08)],
+    [TST-TRIM-01], [Automático], [Dado um vídeo de 60 s, quando se pedem os intervalos 50–70 s, 20–10 s, 5–5 s, -1–5 s e 10–10,5 s, então todos são rejeitados com o motivo.], [TRIM-003], [Passa (2026-10-21)],
+    [TST-TRIM-02], [Automático], [Dado um recorte válido, quando é submetido, então o pedido é criado "Em fila".], [JOB-001], [Passa (2026-10-21)],
+    [TST-TRIM-03], [Automático], [Dado um recorte válido, quando é submetido, então a confirmação chega em ≤ 2 s.], [JOB-012], [Passa (2026-10-21); medido 0,09 s],
+    [TST-TRIM-04], [Automático], [Dado um recorte, quando é seguido até ao fim, então os estados são Em fila → Em processamento → Concluído.], [JOB-002], [Passa (2026-10-21)],
+    [TST-TRIM-05], [Automático], [Dado um recorte em curso, quando se registam as atualizações, então nenhum intervalo excede 5 s.], [JOB-013], [Passa (2026-10-21); maior intervalo 2,1 s],
+    [TST-TRIM-06], [Automático], [Dado o intervalo 10–40 s, quando o pedido conclui, então o resultado tem 30 s ± 1 s e o formato e codec do original.], [JOB-006; TRIM-015], [Passa (2026-10-21); 30,00 s, mp4/h264],
+    [TST-TRIM-07], [Automático], [Dado uma cópia do vídeo de teste recortada 10–40 s, quando o pedido conclui, então o mesmo vídeo, com o mesmo nome, passa a ter 30 s e não aparece vídeo novo (v1.4).], [TRIM-016], [Passa (2026-10-21)],
+    [TST-TRIM-08], [Automático], [Dado um recorte cancelado, então o SHA-256 do vídeo é igual antes e depois (v1.4).], [JOB-014], [Passa (2026-10-21)],
+    [TST-TRIM-09], [Automático], [Dado um registado, quando um recorte conclui, então a quota desce 1; quando um recorte é cancelado ou falha, então não muda.], [JOB-009], [Passa (2026-10-21); 5 → 4, 4 → 4],
+    [TST-TRIM-10], [Automático], [Dado um registado com 1 pedido ativo, quando submete outro, então é rejeitado.], [JOB-007], [Passa (2026-10-21)],
+    [TST-TRIM-11], [Automático], [Dado um recorte em curso, quando é cancelado, então fica "Cancelado".], [JOB-003], [Passa (2026-10-21)],
+    [TST-TRIM-12], [Automático], [Dado um recorte cancelado, então o vídeo fica inalterado e não há ficheiros temporários no processador.], [JOB-004, 006], [Passa (2026-10-21); 0 temporários],
+    [TST-TRIM-13], [Automático], [Dado um registado com 5 operações usadas, quando pede um recorte, então é rejeitado e é sugerido o premium.], [JOB-008], [Passa (2026-10-21)],
+    [TST-TRIM-14], [Automático], [Dado uma falha no processamento, então o pedido fica "Falhado" com a mensagem prevista e o vídeo inalterado.], [JOB-006; TRIM-019], [Passa (2026-10-21)],
+    [TST-TRIM-15], [Automático], [Dado um vídeo AVI, quando se pede o recorte, então é rejeitado com "Formato não suportado".], [JOB-011], [Passa (2026-10-21)],
+    [TST-TRIM-16], [Automático], [Dado um registado e um vídeo de 6 min, quando pede o recorte, então é rejeitado com o limite de 5 min.], [TRIM-005], [Passa (2026-10-21)],
+    [TST-TRIM-17], [Automático], [Dado um registado e um vídeo de 250 MB, quando pede o recorte, então é rejeitado com o limite de 200 MB.], [TRIM-006], [Passa (2026-10-21)],
+    [TST-TRIM-18], [Automático], [Dado um premium, quando submete 3 recortes em simultâneo (em 3 vídeos) e depois um 4.º, então os 3 primeiros são aceites e o 4.º é rejeitado com o limite.], [JOB-007], [Passa (2026-10-21)],
+    [TST-TRIM-19], [Automático], [Dado um premium, quando 3 recortes concluem, então as operações usadas no dia não mudam.], [JOB-009], [Passa (2026-10-21); 1 → 1],
+    [TST-TRIM-20], [Automático], [Dado um premium, quando pede o recorte de um vídeo de 6 min e de outro de 31 min, então o primeiro é aceite e o segundo rejeitado com o limite de 30 min, sem sugerir o premium.], [TRIM-005], [Passa (2026-10-21)],
+    [TST-TRIM-21], [Automático], [Dado um premium e um vídeo de 250 MB, quando pede o recorte, então é aceite (limite de 2 GB).], [TRIM-006], [Passa (2026-10-21)],
+    [TST-TRIM-22], [Automático], [Dado a ocupação da biblioteca antes de um recorte, quando o recorte conclui, então a ocupação passa a contar o tamanho do resultado em vez do anterior.], [LIB-002], [Passa (2026-10-21); vídeo 45 174 560 → 14 221 814 bytes],
+    [TST-TRIM-23], [Automático], [Dado um registado com a biblioteca de vídeo acima de 1 GB, quando pede um recorte, então é rejeitado com a ocupação e o limite.], [TRIM-027], [Passa (2026-10-21)],
+    [TST-TRIM-24], [Automático], [Dado um vídeo de 5 min, 1920 × 1080, H.264, quando se recorta 0:00–5:00, então o pedido fica "Concluído" em ≤ 5 min.], [TRIM-031], [Passa (2026-10-21); 45 s],
     [TST-TRIM-M01], [Manual], [Dado um registado com um vídeo, quando o abre, então a ferramenta Recortar está disponível.], [TRIM-001], [Passa (2026-10-08, interface anterior); #preencher[repetir na interface com barra de ferramentas]],
     [TST-TRIM-M02], [Manual], [Dado um vídeo de 60 s, quando define 0:10–0:40 (campos, slider e "Posição atual"), então os valores são aceites e a duração apresentada é 0:30.], [TRIM-002, 025], [Passa (2026-10-08)],
     [TST-TRIM-M03], [Manual], [Dado o intervalo 0:50–0:20, então aparece o motivo e Aplicar recorte fica desativado.], [TRIM-003], [Passa (2026-10-08)],
@@ -44,11 +52,11 @@
     [TST-TRIM-M07], [Manual], [Dado "Operações diárias restantes", quando um recorte conclui, então desce 1; num cancelado, não desce.], [JOB-009], [Passa (2026-10-08)],
     [TST-TRIM-M08], [Manual], [Dado um recorte concluído, quando escolhe Exportar, então o ficheiro é descarregado com o nome do vídeo e abre num leitor externo.], [TRIM-021], [Passa (2026-10-08)],
     [TST-TRIM-M09], [Manual], [Dado um utilizador anónimo, quando abre um projeto, então não há vídeos nem ferramentas de vídeo; ao importar, é sugerido criar conta.], [ACCESS-004, 005], [Passa (2026-10-08)],
-    [TST-TRIM-M10], [Manual], [Dado um premium, quando faz 2 recortes em simultâneo, então ambos são aceites (até 3 ativos).], [JOB-007], [#preencher[Por executar: falta conta premium]],
-    [TST-TRIM-M11], [Manual], [Dado o intervalo 0:10–0:40, quando escolhe Pré-visualizar, então o vídeo é reproduzido de 0:10 a 0:40 e não é criado pedido.], [TRIM-026], [#preencher[Por executar]],
-    [TST-TRIM-M12], [Manual], [Dado um registado com a biblioteca de vídeo cheia (1 GB), quando pede um recorte, então é rejeitado com a ocupação e o limite.], [TRIM-027], [#preencher[Por executar]],
-    [TST-TRIM-M14], [Manual], [Dado a ocupação da biblioteca de vídeo antes de um recorte, quando o recorte conclui, então a ocupação passa a contar o tamanho do resultado em vez do anterior.], [LIB-002], [#preencher[Por executar]],
-    [TST-TRIM-M13], [Manual], [Dado um vídeo de 5 min a 1080p, quando se recorta 0:00–5:00, então o pedido conclui em ≤ 5 min (medir o tempo).], [TRIM-031], [#preencher[Por executar; registar tempo medido]],
+    [TST-TRIM-M10], [Manual], [Dado um premium, quando faz 2 recortes em simultâneo, então ambos são aceites (até 3 ativos).], [JOB-007], [Substituído por TST-TRIM-18 (automático, 2026-10-21)],
+    [TST-TRIM-M11], [Manual], [Dado o intervalo 0:10–0:40, quando escolhe Pré-visualizar, então o vídeo é reproduzido de 0:10 a 0:40 e não é criado pedido.], [TRIM-026], [Passa (2026-10-21)],
+    [TST-TRIM-M12], [Manual], [Dado um registado com a biblioteca de vídeo cheia (1 GB), quando pede um recorte, então é rejeitado com a ocupação e o limite.], [TRIM-027], [Substituído por TST-TRIM-23 (automático, 2026-10-21)],
+    [TST-TRIM-M14], [Manual], [Dado a ocupação da biblioteca de vídeo antes de um recorte, quando o recorte conclui, então a ocupação passa a contar o tamanho do resultado em vez do anterior.], [LIB-002], [Substituído por TST-TRIM-22 (automático, 2026-10-21)],
+    [TST-TRIM-M13], [Manual], [Dado um vídeo de 5 min a 1080p, quando se recorta 0:00–5:00, então o pedido conclui em ≤ 5 min (medir o tempo).], [TRIM-031], [Substituído por TST-TRIM-24 (automático, 2026-10-21); 45 s],
     [TST-IMPORT-M01], [Manual], [Dado um registado, quando importa um MP4 (H.264) válido de 60 s (video\_teste.mp4), então vê "Importar vídeo" junto de "Adicionar imagens", o progresso, os estados A carregar → A validar → Disponível e o vídeo com nome, duração e tamanho; o SHA-256 do ficheiro guardado é igual ao do enviado.], [IMPORT-001, 002, 007, 013, 014, 015, 029], [#preencher[Por executar]],
     [TST-IMPORT-M02], [Manual], [Dado um ficheiro .avi, quando é selecionado, então aparece "Formato não suportado" e o envio não começa.], [IMPORT-003], [#preencher[Por executar]],
     [TST-IMPORT-M03], [Manual], [Dado um registado e um ficheiro de 250 MB, quando é selecionado, então o envio é bloqueado com o limite de 200 MB.], [IMPORT-004], [#preencher[Por executar]],
@@ -82,7 +90,7 @@
     [TST-SEC-M03], [Inspeção], [Dado um vídeo importado, quando se inspecionam os volumes do armazenamento, então o conteúdo não é legível sem a chave.], [ACCESS-003], [#preencher[Por executar]],
     [TST-QUAL-M01], [Manual], [Dado um resultado MP4 (H.264) de cada ferramenta, quando é aberto em Chrome, Edge e Firefox atuais, então é reproduzido do início ao fim.], [COMPAT-001], [#preencher[Por executar]],
     [TST-QUAL-M02], [Inspeção], [Dado cada exceção dos três casos de uso provocada, então a mensagem indica o motivo e, nas de limite, o valor do limite.], [USAB-001], [#preencher[Por executar]],
-    [TST-QUAL-M03], [Inspeção], [Dado o código de Recortar e de Aplicar ferramentas, quando se compara o que cada ferramenta acrescentou, então a segunda não alterou ficheiros da primeira.], [TOOLS-001], [#preencher[Rever o diff do ramo feature/uc-vid-003-apply-tools]],
+    [TST-QUAL-M03], [Inspeção], [Dado o código de Recortar e de Aplicar ferramentas, quando se compara o que cada ferramenta acrescentou, então a segunda não alterou ficheiros da primeira.], [TOOLS-001], [Parcial (2026-10-21): o processador `Tools/video_trim` não foi alterado, mas foram generalizados os ficheiros partilhados dos pedidos (`projects/routes/videoJobs.js`, `projects/utils/videoJobs.js`, modelo, controlador e frontend); os testes TST-TRIM passaram depois da integração],
     [TST-QUAL-M04], [Manual], [Dado um anfitrião só com o motor de contentores, quando se executa `docker compose up --build`, então os processadores de vídeo concluem um pedido de teste.], [PORT-001], [#preencher[Por executar (indicar sistema operativo)]],
   ),
 )
@@ -91,12 +99,13 @@
 
 - A importação (UC-VID-002) não tem testes automáticos; a verificação depende de TST-IMPORT-M01 a M12.
 - A validação manual do UC-VID-003 no ambiente completo ainda não foi registada pelo aluno (TST-APPLY-M01 a M03).
-- Sem conta premium de teste, os limites e o FA1 premium só estão cobertos pelos testes automáticos (TST-TRIM-M10).
+- Os casos do perfil premium (FA1) foram verificados com testes automáticos que alteram temporariamente o tipo do utilizador (TST-TRIM-18 a 21); não foi usada uma subscrição premium real.
+- O alvo de desempenho do recorte (TRIM-031) foi medido com um vídeo sintético (padrão de teste do FFmpeg), que se comprime de forma diferente de um vídeo real; o tempo com vídeos reais pode ser maior.
+- TOOLS-001 só está parcialmente cumprido: acrescentar a 2.ª ferramenta (Aplicar) obrigou a generalizar o código partilhado dos pedidos, escrito para o recorte. Agora que esse código é genérico, uma 3.ª ferramenta só deverá acrescentar ficheiros (Fase 2).
 - O bloqueio por utilizador (DA-10) só é correto com uma instância do serviço `projects`.
 - Resultados H.264 com dimensões ímpares usam um formato de cor que nem todos os browsers reproduzem; preferir dimensões pares.
 - O limite de resolução final é literal (largura e altura), pelo que rodar um vídeo 1920 × 1080 excede a altura permitida ao registado (UC-VID-003/Q4).
 - A interface com o vídeo no visualizador e as ferramentas na barra de ferramentas (ramo `feature/video-carousel-view`) foi integrada no `main` com o painel Faixas (v1.3). #preencher[confirmar o commit da integração]
 - Os fotogramas da faixa de vídeo são obtidos pelo browser: num vídeo que o browser não reproduz (e.g., MOV ProRes), a faixa de vídeo aparece sem fotogramas, mas com o codec e as características.
 - O resultado de uma ferramenta substitui o vídeo sem possibilidade de desfazer (UC-VID-001/Q6); para guardar a versão anterior, o utilizador tem de a exportar antes.
-- Os testes caixa-preta do UC-VID-001 (`tests/uc-vid-001`) foram adaptados à substituição (trabalham sobre cópias do vídeo de teste) mas ainda não foram repetidos na v1.4.
 - Os alvos de produção dos requisitos não funcionais não foram medidos; são a linha de base da Fase 2.

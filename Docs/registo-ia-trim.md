@@ -195,3 +195,25 @@ pela checklist manual.
 |----|---------|---------------------------|--------|
 | D32 | Testar o FA1 alterando temporariamente o tipo do utilizador na base de dados (e repondo-o no fim, mesmo em caso de erro) | Criar e pagar uma subscrição premium; deixar por testar | Não havia conta premium; o comportamento depende só do tipo do utilizador lido pelo `projects` |
 | D33 | Desempenho medido com um vídeo sintético gerado dentro do contentor do processador (`testsrc2`, 1920 × 1080, 30 fps, 300 s), enviado para o armazenamento e removido no fim; corre como premium | Gravar e importar manualmente um vídeo real de 5 min | Repetível em qualquer máquina e sem ficheiros grandes no repositório; o perfil premium evita o limite de 200 MB, que não é o que o requisito mede |
+
+---
+
+## Fase 7 — O recorte passa a substituir o vídeo (v1.4, 2026-10-21)
+
+Alteração feita pelo David (commit `9a55b81`) e aceite pelo autor do UC-VID-001, depois
+de revista: o resultado do recorte deixa de ser um vídeo novo ("{nome}\_recorte", "\_2",
+…) e passa a substituir o vídeo recortado, com o mesmo nome.
+
+| ID | Decisão | Alternativas consideradas | Porquê |
+|----|---------|---------------------------|--------|
+| D34 | O recorte substitui o vídeo, só quando o pedido termina "Concluído"; até lá, e se falhar ou for cancelado, o vídeo fica inalterado. Um vídeo só pode ter um pedido ativo de cada vez (nova E8) | Manter a criação de um vídeo novo (D28); guardar versões para desfazer | Comporta-se como um editor de vídeo e não enche a biblioteca de cópias nem duplica o espaço ocupado. Custo: não há "desfazer" no MVP (UC-VID-001/Q6, adiada para a Fase 3); o utilizador pode exportar uma cópia antes. Substitui a D28 |
+
+**Revisão do código (aluno):** a substituição é feita só na conclusão; um cancelamento
+que chegue no último instante repõe o vídeo anterior; o ficheiro antigo só é apagado
+depois de o pedido ficar "Concluído"; uma resposta repetida após uma falha do serviço não
+apaga o resultado.
+
+**Validação:** os testes do recorte foram adaptados para trabalhar sobre cópias do vídeo
+(para não alterar o vídeo do utilizador) e corridos outra vez: **31/31** (2026-10-21).
+TST-TRIM-07 verifica a substituição (mesmo vídeo e nome, sem vídeo novo, 30 s) e
+TST-TRIM-08 que um recorte cancelado deixa o vídeo igual (SHA-256).

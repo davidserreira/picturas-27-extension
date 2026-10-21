@@ -14,13 +14,13 @@
 #cover(
   title: "Fase 1 — Suporte a Vídeo",
   subtitle: "Requisitos, Arquitetura, Implementação e Validação do MVP",
-  group: "Grupo PL?-G?",   // e.g., "Grupo PL3-G2"
+  group: "Grupo 5",
   authors: (
-    (name: "Nome Apelido", number: "pg00000"),
-    (name: "Nome Apelido", number: "pg00000"),
-    (name: "Nome Apelido", number: "pg00000"),
-    (name: "Nome Apelido", number: "pg00000"),
-    (name: "Nome Apelido", number: "pg00000"),
+    (name: "David Cruz", number: "pg65403"),
+    (name: "João Sousa", number: "pg62406"),
+    (name: "Miguel Páscoa", number: "pg64007"),
+    (name: "Pedro Rebelo", number: "pg64018"),
+    (name: "Tiago Barros", number: "pg64035"),
   ),
   "Outubro, 2026",
 )
