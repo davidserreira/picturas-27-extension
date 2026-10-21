@@ -232,7 +232,7 @@ Uma linha por requisito. Todos os requisitos estão implementados, alguns de for
     [REQ-VID-TRIM-005], [frontend, projects, video\_trim\_tool], [Implementado], [TST-TRIM-16, TST-TRIM-20], [Passa],
     [REQ-VID-TRIM-006], [frontend, projects, video\_trim\_tool], [Implementado], [TST-TRIM-17, TST-TRIM-21], [Passa],
     [REQ-VID-TRIM-015], [frontend, projects, video\_trim\_tool], [Implementado], [TST-TRIM-06], [Passa],
-    [REQ-VID-TRIM-016], [frontend, projects, video\_trim\_tool], [Implementado (v1.4)], [TST-TRIM-07, TST-TRIM-M06, TST-APPLY-03], [Passa (2); #preencher[M06 por repetir na interface v1.4]],
+    [REQ-VID-TRIM-016], [frontend, projects, video\_trim\_tool], [Implementado (v1.4)], [TST-TRIM-07, TST-TRIM-M06, TST-APPLY-03], [Passa],
     [REQ-VID-TRIM-019], [frontend, projects, video\_trim\_tool], [Implementado], [TST-TRIM-14], [Passa],
     [REQ-VID-TRIM-021], [frontend, img\_storage], [Implementado], [TST-TRIM-M08], [Passa],
     [REQ-VID-TRIM-025], [frontend, projects, video\_trim\_tool], [Implementado], [TST-TRIM-M02], [Passa],
