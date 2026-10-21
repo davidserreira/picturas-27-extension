@@ -23,10 +23,15 @@ module.exports.getOne = async (user_id) => {
   return user ? user.toJSON() : null;
 };
 
+// Used by login: toJSON() removes password_hash (so it never reaches the
+// client), but authentication needs it, so it is added back here. The login
+// route strips it again (removeSensitiveInfo) before answering.
+// T-01 (corrective maintenance): without this, every login by email failed
+// with 701, because bcrypt.compare() received an undefined hash.
 module.exports.getOneEmail = async (email) => {
   const emailHash = hashEmail(email);
   const user = await User.findOne({ email_hash: emailHash }).exec();
-  return user ? user.toJSON() : null;
+  return user ? { ...user.toJSON(), password_hash: user.password_hash } : null;
 };
 
 

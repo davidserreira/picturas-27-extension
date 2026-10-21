@@ -220,6 +220,10 @@ router.post("/", function (req, res, next) {
 router.post("/:email/login", function (req, res, next) {
   User.getOneEmail(req.params.email)
     .then(async (user) => {
+      // unknown e-mail or missing password: same answer as a wrong password
+      if (!user || !user.password_hash || typeof req.body?.password !== "string") {
+        return res.status(401).jsonp("The provided credentials are incorrect");
+      }
       const correct_pass = await auth.authenticate(req.body.password, user);
       if (correct_pass) {
         const userResponse = removeSensitiveInfo(user);
