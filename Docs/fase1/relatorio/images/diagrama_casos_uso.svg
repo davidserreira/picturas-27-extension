@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="730" viewBox="0 0 1180 730" font-family="Carlito, Calibri, Arial, sans-serif">
+<defs>
+  <marker id="tri" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#fff" stroke="#000"/></marker>
+  <marker id="arr" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L11,6 L1,11" fill="none" stroke="#000"/></marker>
+  <marker id="sol" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L11,6 L1,11 Z" fill="#000"/></marker>
+</defs>
+<rect width="1180" height="730" fill="#ffffff"/>
+<rect x="330" y="20" width="620" height="690" fill="none" stroke="#000"/>
+<text x="640" y="40" font-size="13" text-anchor="middle" fill="#000">PictuRAS</text>
+<ellipse cx="640" cy="80" rx="150" ry="22" fill="#E6E6E6" stroke="#8C8C8C" stroke-width="1.3"/><text x="640" y="84" font-size="13" text-anchor="middle" fill="#555555">Registo</text>
+<ellipse cx="640" cy="135" rx="150" ry="22" fill="#E6E6E6" stroke="#8C8C8C" stroke-width="1.3"/><text x="640" y="139" font-size="13" text-anchor="middle" fill="#555555">Login</text>
+<ellipse cx="640" cy="190" rx="150" ry="22" fill="#E6E6E6" stroke="#8C8C8C" stroke-width="1.3"/><text x="640" y="194" font-size="13" text-anchor="middle" fill="#555555">Carregar imagens</text>
+<ellipse cx="640" cy="252" rx="150" ry="30" fill="#E6E6E6" stroke="#8C8C8C" stroke-width="1.3"/><text x="640" y="248" font-size="13" text-anchor="middle" fill="#555555">Aplicar encadeamento de</text><text x="640" y="264" font-size="13" text-anchor="middle" fill="#555555">ferramentas a conjunto de imagens</text>
+<ellipse cx="640" cy="316" rx="150" ry="22" fill="#E6E6E6" stroke="#8C8C8C" stroke-width="1.3"/><text x="640" y="320" font-size="13" text-anchor="middle" fill="#555555">Criar filtro personalizado</text>
+<ellipse cx="640" cy="371" rx="150" ry="22" fill="#E6E6E6" stroke="#8C8C8C" stroke-width="1.3"/><text x="640" y="375" font-size="13" text-anchor="middle" fill="#555555">Partilhar projeto</text>
+<ellipse cx="640" cy="426" rx="150" ry="22" fill="#E6E6E6" stroke="#8C8C8C" stroke-width="1.3"/><text x="640" y="430" font-size="13" text-anchor="middle" fill="#555555">Assistente IA na edição</text>
+<ellipse cx="640" cy="520" rx="190" ry="30" fill="#FBD7B0" stroke="#C76C1B" stroke-width="1.3"/><text x="640" y="516" font-size="13" text-anchor="middle" fill="#000000">Importar vídeo para a biblioteca</text><text x="640" y="534" font-size="11" text-anchor="middle" fill="#000000" font-weight="bold">UC-VID-002</text>
+<ellipse cx="640" cy="595" rx="190" ry="30" fill="#FBD7B0" stroke="#C76C1B" stroke-width="1.3"/><text x="640" y="591" font-size="13" text-anchor="middle" fill="#000000">Recortar vídeo e exportar o resultado</text><text x="640" y="609" font-size="11" text-anchor="middle" fill="#000000" font-weight="bold">UC-VID-001</text>
+<ellipse cx="640" cy="670" rx="190" ry="30" fill="#FBD7B0" stroke="#C76C1B" stroke-width="1.3"/><text x="640" y="666" font-size="13" text-anchor="middle" fill="#000000">Aplicar ferramentas a todos os fotogramas</text><text x="640" y="684" font-size="11" text-anchor="middle" fill="#000000" font-weight="bold">UC-VID-003</text>
+<polyline points="210,80 490,80" fill="none" stroke="#8C8C8C" stroke-width="1.2"/>
+<polyline points="212,272 490,135" fill="none" stroke="#8C8C8C" stroke-width="1.2"/>
+<polyline points="212,272 490,190" fill="none" stroke="#8C8C8C" stroke-width="1.2"/>
+<polyline points="212,272 490,252" fill="none" stroke="#8C8C8C" stroke-width="1.2"/>
+<polyline points="212,272 490,316" fill="none" stroke="#8C8C8C" stroke-width="1.2"/>
+<polyline points="212,272 490,371" fill="none" stroke="#8C8C8C" stroke-width="1.2"/>
+<polyline points="212,618 500,440" fill="none" stroke="#8C8C8C" stroke-width="1.2"/>
+<polyline points="212,472 450,520" fill="none" stroke="#C76C1B" stroke-width="1.6"/>
+<polyline points="212,472 450,595" fill="none" stroke="#C76C1B" stroke-width="1.6"/>
+<polyline points="212,472 450,670" fill="none" stroke="#C76C1B" stroke-width="1.6"/>
+<polyline points="190,136 190,238" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#tri)"/>
+<polyline points="82,272 168,272" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#tri)"/>
+<polyline points="190,438 190,330" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#tri)"/>
+<polyline points="190,588 190,530" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#tri)"/>
+<g stroke="#000" stroke-width="1.3" fill="none">
+  <circle cx="190" cy="60" r="10" fill="#9DD3F2"/>
+  <line x1="190" y1="70" x2="190" y2="98"/>
+  <line x1="172" y1="80" x2="208" y2="80"/>
+  <line x1="190" y1="98" x2="176" y2="118"/>
+  <line x1="190" y1="98" x2="204" y2="118"/>
+</g><text x="190" y="136" font-size="13" text-anchor="middle" fill="#000000">Anónimo</text>
+<g stroke="#000" stroke-width="1.3" fill="none">
+  <circle cx="190" cy="250" r="10" fill="#9DD3F2"/>
+  <line x1="190" y1="260" x2="190" y2="288"/>
+  <line x1="172" y1="270" x2="208" y2="270"/>
+  <line x1="190" y1="288" x2="176" y2="308"/>
+  <line x1="190" y1="288" x2="204" y2="308"/>
+</g><text x="190" y="326" font-size="13" text-anchor="middle" fill="#000000">Utilizador</text>
+<g stroke="#000" stroke-width="1.3" fill="none">
+  <circle cx="60" cy="250" r="10" fill="#9DD3F2"/>
+  <line x1="60" y1="260" x2="60" y2="288"/>
+  <line x1="42" y1="270" x2="78" y2="270"/>
+  <line x1="60" y1="288" x2="46" y2="308"/>
+  <line x1="60" y1="288" x2="74" y2="308"/>
+</g><text x="60" y="326" font-size="13" text-anchor="middle" fill="#000000">Utilizador Convidado</text>
+<g stroke="#000" stroke-width="1.3" fill="none">
+  <circle cx="190" cy="450" r="10" fill="#FBD7B0"/>
+  <line x1="190" y1="460" x2="190" y2="488"/>
+  <line x1="172" y1="470" x2="208" y2="470"/>
+  <line x1="190" y1="488" x2="176" y2="508"/>
+  <line x1="190" y1="488" x2="204" y2="508"/>
+</g><text x="190" y="526" font-size="13" text-anchor="middle" fill="#000000">Registado</text>
+<g stroke="#000" stroke-width="1.3" fill="none">
+  <circle cx="190" cy="600" r="10" fill="#9DD3F2"/>
+  <line x1="190" y1="610" x2="190" y2="638"/>
+  <line x1="172" y1="620" x2="208" y2="620"/>
+  <line x1="190" y1="638" x2="176" y2="658"/>
+  <line x1="190" y1="638" x2="204" y2="658"/>
+</g><text x="190" y="676" font-size="13" text-anchor="middle" fill="#000000">Premium</text>
+<path d="M970,470 L1150,470 L1165,485 L1165,620 L970,620 Z" fill="#FFF8E7" stroke="#C76C1B"/>
+<text x="980" y="492" font-size="12" text-anchor="start" fill="#000">O Anónimo não tem associação</text>
+<text x="980" y="509" font-size="12" text-anchor="start" fill="#000">aos casos de uso de vídeo</text>
+<text x="980" y="526" font-size="12" text-anchor="start" fill="#000">(RNG-02).</text>
+<text x="980" y="543" font-size="12" text-anchor="start" fill="#000">Premium herda as associações</text>
+<text x="980" y="560" font-size="12" text-anchor="start" fill="#000">de Registado. UC-VID-002 é</text>
+<text x="980" y="577" font-size="12" text-anchor="start" fill="#000">pré-condição de UC-VID-001</text>
+<text x="980" y="594" font-size="12" text-anchor="start" fill="#000">e UC-VID-003.</text>
+<rect x="970" y="640" width="18" height="12" fill="#E6E6E6" stroke="#8C8C8C"/>
+<text x="995" y="651" font-size="12" text-anchor="start" fill="#000">baseline (imagem)</text>
+<rect x="970" y="662" width="18" height="12" fill="#FBD7B0" stroke="#C76C1B"/>
+<text x="995" y="673" font-size="12" text-anchor="start" fill="#000">novo na Fase 1 (vídeo)</text>
+</svg>

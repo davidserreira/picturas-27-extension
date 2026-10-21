@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1210" height="890" viewBox="0 0 1210 890" font-family="Carlito, Calibri, Arial, sans-serif">
+<defs>
+  <marker id="tri" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L13,7 L1,13 Z" fill="#fff" stroke="#000"/></marker>
+  <marker id="arr" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L11,6 L1,11" fill="none" stroke="#000"/></marker>
+  <marker id="sol" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L11,6 L1,11 Z" fill="#000"/></marker>
+</defs>
+<rect width="1210" height="890" fill="#ffffff"/>
+<rect x="18" y="15" width="124" height="44" fill="#9DD3F2" stroke="#2B6E99"/>
+<text x="80" y="29" font-size="13" text-anchor="middle" fill="#000" font-weight="bold">Browser</text>
+<text x="80" y="44" font-size="13" text-anchor="middle" fill="#000" font-weight="bold">(frontend)</text>
+<polyline points="80,59 80,880" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6,4"/>
+<rect x="168" y="15" width="124" height="44" fill="#9DD3F2" stroke="#2B6E99"/>
+<text x="230" y="35" font-size="13" text-anchor="middle" fill="#000" font-weight="bold">apiGateway</text>
+<polyline points="230,59 230,880" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6,4"/>
+<rect x="318" y="15" width="124" height="44" fill="#9DD3F2" stroke="#2B6E99"/>
+<text x="380" y="35" font-size="13" text-anchor="middle" fill="#000" font-weight="bold">projects</text>
+<polyline points="380,59 380,880" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6,4"/>
+<rect x="468" y="15" width="124" height="44" fill="#9DD3F2" stroke="#2B6E99"/>
+<text x="530" y="35" font-size="13" text-anchor="middle" fill="#000" font-weight="bold">users</text>
+<polyline points="530,59 530,880" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6,4"/>
+<rect x="618" y="15" width="124" height="44" fill="#9DD3F2" stroke="#2B6E99"/>
+<text x="680" y="35" font-size="13" text-anchor="middle" fill="#000" font-weight="bold">RabbitMQ</text>
+<polyline points="680,59 680,880" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6,4"/>
+<rect x="768" y="15" width="124" height="44" fill="#FBD7B0" stroke="#2B6E99"/>
+<text x="830" y="35" font-size="13" text-anchor="middle" fill="#000" font-weight="bold">video_trim_tool</text>
+<polyline points="830,59 830,880" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6,4"/>
+<rect x="918" y="15" width="124" height="44" fill="#9DD3F2" stroke="#2B6E99"/>
+<text x="980" y="29" font-size="13" text-anchor="middle" fill="#000" font-weight="bold">img_storage</text>
+<text x="980" y="44" font-size="13" text-anchor="middle" fill="#000" font-weight="bold">+ SeaweedFS</text>
+<polyline points="980,59 980,880" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6,4"/>
+<rect x="1068" y="15" width="124" height="44" fill="#9DD3F2" stroke="#2B6E99"/>
+<text x="1130" y="35" font-size="13" text-anchor="middle" fill="#000" font-weight="bold">wsGateway</text>
+<polyline points="1130,59 1130,880" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6,4"/>
+<polyline points="80,90 230,90" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="155" y="85" font-size="12" text-anchor="middle" fill="#000">POST recorte {início, fim}</text>
+<polyline points="230,120 380,120" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="305" y="115" font-size="12" text-anchor="middle" fill="#000">encaminha (JWT válido)</text>
+<polyline points="380,150 420,150 420,166 384,166" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="426" y="154" font-size="12" text-anchor="start" fill="#000">valida formato, limites, espaço e pedidos ativos</text>
+<polyline points="380,188 530,188" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="455" y="183" font-size="12" text-anchor="middle" fill="#000">reserva 1 operação</text>
+<polyline points="380,218 680,218" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="530" y="213" font-size="12" text-anchor="middle" fill="#000">publica pedido (video_trim_queue)</text>
+<polyline points="380,248 230,248" fill="none" stroke="#000" stroke-width="1.2" stroke-dasharray="6,4" marker-end="url(#arr)"/>
+<text x="305" y="243" font-size="12" text-anchor="middle" fill="#000">202: pedido "Em fila"</text>
+<polyline points="230,278 80,278" fill="none" stroke="#000" stroke-width="1.2" stroke-dasharray="6,4" marker-end="url(#arr)"/>
+<text x="155" y="273" font-size="12" text-anchor="middle" fill="#000">confirmação (≤ 2 s)</text>
+<polyline points="680,308 830,308" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="755" y="303" font-size="12" text-anchor="middle" fill="#000">entrega pedido</text>
+<polyline points="830,338 980,338" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="905" y="333" font-size="12" text-anchor="middle" fill="#000">pede endereço assinado e lê o original</text>
+<polyline points="830,378 680,378" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="755" y="373" font-size="12" text-anchor="middle" fill="#000">progresso % (video_job_queue)</text>
+<polyline points="680,408 380,408" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="530" y="403" font-size="12" text-anchor="middle" fill="#000">progresso</text>
+<polyline points="380,438 1130,438" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="755" y="433" font-size="12" text-anchor="middle" fill="#000">video-job-update</text>
+<polyline points="1130,468 80,468" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="605" y="463" font-size="12" text-anchor="middle" fill="#000">estado e % (≤ 5 s)</text>
+<polyline points="830,498 380,498" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="605" y="493" font-size="12" text-anchor="middle" fill="#000">consulta se foi cancelado</text>
+<rect x="30" y="356" width="1150" height="164" fill="none" stroke="#C76C1B"/>
+<rect x="30" y="356" width="110" height="18" fill="#FBD7B0" stroke="#C76C1B"/>
+<text x="85" y="369" font-size="12" text-anchor="middle" fill="#000">loop a cada 2 s</text>
+<polyline points="830,534 980,534" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="905" y="529" font-size="12" text-anchor="middle" fill="#000">envia o resultado completo</text>
+<polyline points="830,564 680,564" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="755" y="559" font-size="12" text-anchor="middle" fill="#000">concluído (video_job_queue)</text>
+<polyline points="680,594 380,594" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="530" y="589" font-size="12" text-anchor="middle" fill="#000">concluído</text>
+<polyline points="380,624 420,624 420,640 384,640" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="426" y="628" font-size="12" text-anchor="start" fill="#000">cria o vídeo resultante; confirma a operação</text>
+<polyline points="380,662 1130,662" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="755" y="657" font-size="12" text-anchor="middle" fill="#000">video-job-update</text>
+<polyline points="1130,692 80,692" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="605" y="687" font-size="12" text-anchor="middle" fill="#000">"Concluído"; biblioteca atualizada</text>
+<polyline points="830,732 870,732 870,748 834,748" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="876" y="736" font-size="12" text-anchor="start" fill="#000">falha ou cancelamento: remove temporários</text>
+<polyline points="830,770 680,770" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="755" y="765" font-size="12" text-anchor="middle" fill="#000">falhado / cancelado</text>
+<polyline points="680,800 380,800" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="530" y="795" font-size="12" text-anchor="middle" fill="#000">falhado / cancelado</text>
+<polyline points="380,830 530,830" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
+<text x="455" y="825" font-size="12" text-anchor="middle" fill="#000">devolve a operação</text>
+<rect x="30" y="710" width="1150" height="142" fill="none" stroke="#B00020" stroke-dasharray="6,4"/>
+<rect x="30" y="710" width="200" height="18" fill="#F8D7DA" stroke="#B00020"/>
+<text x="130" y="723" font-size="12" text-anchor="middle" fill="#000">alt: falha ou cancelamento</text>
+</svg>
