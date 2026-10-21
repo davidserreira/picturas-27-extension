@@ -15,6 +15,7 @@ const { getCallerId } = require("../utils/caller");
 const { httpsAgent } = require("../utils/httpsAgent");
 const { get_image_public_url } = require("../utils/imageStorage");
 const { limits, limitsFor, formatBytes } = require("../utils/videoLimits");
+const { uniqueName, namesInUse } = require("../utils/videoNames");
 const { withUserLock } = require("../utils/videoLocks");
 const {
   CHUNK_SIZE,
@@ -271,10 +272,14 @@ router.post("/:user/:project/videos", requireOwner, loadProfile, wrap(async (req
       return null;
     }
 
+    // UC-VID-002/RN12 (v1.5): a repeated name gets a number, "praia (2).mp4".
+    // Chosen inside the lock, so two imports never get the same name.
+    const unique = uniqueName(name, await namesInUse(req.params.user, req.params.project));
     return await Video.create({
       user_id: req.params.user,
       project_id: req.params.project,
-      name,
+      name: unique,
+      file_name: name,
       size,
       fingerprint,
       max_duration: maxDuration,
@@ -437,7 +442,7 @@ router.post("/:user/:project/videos/:video/resume", requireOwner, wrap(async (re
   }
 
   if (
-    req.body.name !== video.name ||
+    req.body.name !== (video.file_name || video.name) ||
     req.body.size !== video.size ||
     req.body.fingerprint !== video.fingerprint
   ) {

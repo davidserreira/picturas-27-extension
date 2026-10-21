@@ -4,13 +4,18 @@
 // player: a strip of frames for each video track and the waveform of each
 // audio track, with the playback position. Clicking the tracks seeks, the
 // playhead can be dragged, and the timeline can be zoomed in and scrolled.
+// UC-VID-001 v1.5: with "Recortar" on, the interval to keep or to remove is
+// selected on the tracks, by dragging its two ends over the video and audio.
 
 import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { AudioLines, Film, VolumeX, ZoomIn, ZoomOut } from "lucide-react";
+import { AudioLines, Film, LoaderCircle, Scissors, VolumeX, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Slider } from "@/components/ui/slider";
 import { useProjectInfo } from "@/providers/project-provider";
+import { TrimSelection, useCurrentVideo } from "@/providers/current-video-provider";
+import { TrimModeToggle, useTrimSubmit } from "./trim-submit";
+import { formatTimecode, trimResultDuration, trimSelectionError } from "@/lib/video-jobs";
 import { useSession } from "@/providers/session-provider";
 import { useGetVideoTracks } from "@/lib/queries/videos";
 import {
@@ -318,6 +323,88 @@ function Playhead({
   );
 }
 
+// The selection of the trim over the video and audio tracks (not the ruler).
+// Keep: what is outside it is dimmed. Remove: the selection is struck out.
+// Its two ends are dragged (or moved with the arrows) in whole seconds (RN2).
+function TrimOverlay({
+  trim,
+  duration,
+  onHandleDown,
+  onHandleMove,
+  onHandleUp,
+  onHandleKey,
+}: {
+  trim: TrimSelection;
+  duration: number;
+  onHandleDown: (which: "start" | "end", e: React.PointerEvent<HTMLDivElement>) => void;
+  onHandleMove: (which: "start" | "end", e: React.PointerEvent<HTMLDivElement>) => void;
+  onHandleUp: (e: React.PointerEvent<HTMLDivElement>) => void;
+  onHandleKey: (which: "start" | "end", e: React.KeyboardEvent<HTMLDivElement>) => void;
+}) {
+  const percent = (t: number) => (Math.min(t, duration) * 100) / (duration || 1);
+  const left = percent(trim.start);
+  const right = percent(trim.end);
+  const remove = trim.mode === "remove";
+  const color = remove ? "bg-destructive" : "bg-primary";
+
+  return (
+    <div className="pointer-events-none absolute inset-x-0 bottom-1 top-5 z-20" aria-hidden={false}>
+      {remove ? (
+        <div
+          className="absolute inset-y-0 border-y-2 border-destructive bg-destructive/30"
+          style={{
+            left: `${left}%`,
+            width: `${right - left}%`,
+            backgroundImage:
+              "repeating-linear-gradient(135deg, transparent 0 6px, hsl(var(--destructive) / 0.35) 6px 8px)",
+          }}
+        />
+      ) : (
+        <>
+          <div className="absolute inset-y-0 left-0 bg-background/70" style={{ width: `${left}%` }} />
+          <div className="absolute inset-y-0 right-0 bg-background/70" style={{ width: `${100 - right}%` }} />
+          <div
+            className="absolute inset-y-0 border-y-2 border-primary"
+            style={{ left: `${left}%`, width: `${right - left}%` }}
+          />
+        </>
+      )}
+      {(
+        [
+          ["start", left, "Início da seleção", trim.start],
+          ["end", right, "Fim da seleção", trim.end],
+        ] as const
+      ).map(([which, position, label, value]) => (
+        <div
+          key={which}
+          role="slider"
+          tabIndex={0}
+          aria-label={label}
+          aria-valuemin={0}
+          aria-valuemax={Math.ceil(duration)}
+          aria-valuenow={value}
+          aria-valuetext={formatTimecode(value)}
+          title={`${label}: arraste ou use as setas`}
+          className={`pointer-events-auto absolute inset-y-0 flex w-3 -translate-x-1/2 cursor-ew-resize touch-none items-center justify-center rounded-sm shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${color}`}
+          style={{ left: `${position}%` }}
+          onPointerDown={(e) => onHandleDown(which, e)}
+          onPointerMove={(e) => onHandleMove(which, e)}
+          onPointerUp={onHandleUp}
+          onPointerCancel={onHandleUp}
+          onKeyDown={(e) => onHandleKey(which, e)}
+        >
+          <span className="h-4 w-0.5 rounded bg-white/80" />
+          <span
+            className={`absolute -top-5 whitespace-nowrap rounded px-1 text-[10px] font-medium tabular-nums text-white ${color} ${which === "start" ? "left-0" : "right-0"}`}
+          >
+            {formatTimecode(value)}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function TrackLabel({
   name,
   icon,
@@ -355,6 +442,8 @@ export function VideoTracks({
     session.token,
     video._id,
   );
+  const { panel, setPanel, trim, setTrim } = useCurrentVideo();
+  const { requestTrim, submitting, dialog } = useTrimSubmit(video);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   // set while the playhead is being dragged: the distance (px) between the
@@ -474,6 +563,53 @@ export function VideoTracks({
 
   const zoomSteps = Math.log(maxZoom);
 
+  // ------------------------------------------------------------- trim
+  const trimming = panel === "trim" && trim !== null;
+  const maxEnd = Math.max(1, Math.ceil(duration));
+  const trimInvalid = trim
+    ? trimSelectionError(trim.start, trim.end, duration, trim.mode, video.codec)
+    : null;
+  const isFree = session.user.type === "free";
+  const remaining = session.user.remaining_operations;
+  const noOperations = isFree && remaining != null && remaining <= 0;
+
+  // an end never passes the other: at least 1 s stays selected
+  function moveEnd(which: "start" | "end", time: number) {
+    if (!trim) return;
+    const t = Math.round(time);
+    const next =
+      which === "start"
+        ? { ...trim, start: Math.min(Math.max(0, t), trim.end - 1) }
+        : { ...trim, end: Math.max(Math.min(maxEnd, t), trim.start + 1) };
+    if (next.start !== trim.start || next.end !== trim.end) setTrim(next);
+    // the player shows the frame where the end is
+    seek(which === "start" ? next.start : next.end);
+  }
+
+  function onHandleDown(which: "start" | "end", e: React.PointerEvent<HTMLDivElement>) {
+    if (e.button !== 0) return;
+    e.stopPropagation(); // not a seek of the timeline
+    e.currentTarget.setPointerCapture(e.pointerId);
+    moveEnd(which, timeAt(e.clientX));
+  }
+
+  function onHandleMove(which: "start" | "end", e: React.PointerEvent<HTMLDivElement>) {
+    e.stopPropagation();
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) moveEnd(which, timeAt(e.clientX));
+  }
+
+  function onHandleUp(e: React.PointerEvent<HTMLDivElement>) {
+    e.stopPropagation();
+  }
+
+  function onHandleKey(which: "start" | "end", e: React.KeyboardEvent<HTMLDivElement>) {
+    if (!trim || (e.key !== "ArrowLeft" && e.key !== "ArrowRight")) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const delta = e.key === "ArrowRight" ? 1 : -1;
+    moveEnd(which, (which === "start" ? trim.start : trim.end) + delta);
+  }
+
   return (
     <section
       className="flex shrink-0 flex-col border-t bg-background"
@@ -487,6 +623,19 @@ export function VideoTracks({
           <p className="truncate text-xs text-muted-foreground" title={video.name}>
             {video.name}
           </p>
+        </div>
+        <div className="flex shrink-0 items-center gap-1">
+          <Button
+            variant={trimming ? "default" : "outline"}
+            size="sm"
+            className="mr-2 h-7"
+            aria-pressed={trimming}
+            title="Selecionar nas faixas o intervalo a manter ou a remover"
+            disabled={video.state !== "available" || duration <= 0}
+            onClick={() => setPanel(trimming ? null : "trim")}
+          >
+            <Scissors /> Recortar
+          </Button>
         </div>
         <div className="flex shrink-0 items-center gap-1" aria-label="Escala das faixas">
           <Button
@@ -525,6 +674,35 @@ export function VideoTracks({
           </span>
         </div>
       </div>
+
+      {trimming && trim && (
+        <div className="flex flex-wrap items-center gap-2 border-b bg-muted/30 px-3 py-2">
+          <TrimModeToggle compact mode={trim.mode} onChange={(mode) => setTrim({ ...trim, mode })} />
+          <span className="text-xs tabular-nums">
+            {trim.mode === "keep" ? "Manter" : "Remover"} {formatTimecode(trim.start)} –{" "}
+            {formatTimecode(trim.end)}
+            {!trimInvalid && (
+              <span className="text-muted-foreground">
+                {" "}· fica com {formatTimecode(trimResultDuration(trim.start, trim.end, duration, trim.mode))}
+              </span>
+            )}
+          </span>
+          {(trimInvalid || noOperations) && (
+            <span className="text-xs text-destructive">
+              {trimInvalid ?? "Atingiu o limite de 5 operações diárias."}
+            </span>
+          )}
+          <Button
+            size="sm"
+            className="ml-auto h-7"
+            disabled={!!trimInvalid || submitting || noOperations}
+            onClick={() => requestTrim(trim)}
+          >
+            {submitting ? <LoaderCircle className="animate-spin" /> : <Scissors />}
+            Aplicar recorte
+          </Button>
+        </div>
+      )}
 
       <div className="p-3">
         {tracks.isError ? (
@@ -639,11 +817,22 @@ export function VideoTracks({
                 {tracks.data && (
                   <Playhead player={player} duration={duration} scrollerRef={scrollerRef} />
                 )}
+                {tracks.data && trimming && trim && duration > 0 && (
+                  <TrimOverlay
+                    trim={trim}
+                    duration={duration}
+                    onHandleDown={onHandleDown}
+                    onHandleMove={onHandleMove}
+                    onHandleUp={onHandleUp}
+                    onHandleKey={onHandleKey}
+                  />
+                )}
               </div>
             </div>
           </div>
         )}
       </div>
+      {dialog}
     </section>
   );
 }

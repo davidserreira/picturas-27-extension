@@ -127,9 +127,57 @@ class VideoTrimWorker:
     # ------------------------------------------------------------------ ffmpeg
 
     @staticmethod
-    def _ffmpeg_command(params, out_path):
+    def _has_audio(url):
+        """Whether the input has an audio stream (needed to join the parts)."""
+        try:
+            out = subprocess.run(
+                ["ffprobe", "-v", "error", "-select_streams", "a",
+                 "-show_entries", "stream=index", "-of", "csv=p=0", url],
+                capture_output=True, text=True, timeout=60,
+            )
+            return out.returncode == 0 and out.stdout.strip() != ""
+        except subprocess.SubprocessError:
+            return False
+
+    @classmethod
+    def _ffmpeg_command(cls, params, out_path):
         start = float(params["start"])
-        length = float(params["end"]) - start
+        end = float(params["end"])
+        mode = params.get("mode", "keep")
+        tail = ["-movflags", "+faststart"] if params.get("format") == "mp4" else []
+
+        if mode == "remove":
+            # v1.5 (UC-VID-001/FA5): cut [start, end] out and join what is
+            # before and after it. Only H.264 (checked by projects): joining
+            # needs re-encoding, so the result keeps the codec.
+            duration = float(params.get("duration") or end)
+            parts = [(a, b) for a, b in ((0.0, start), (end, duration)) if b - a > 0.01]
+            if len(parts) == 1:
+                # the interval touches an end of the video: a plain trim
+                start, end = parts[0]
+            else:
+                audio = cls._has_audio(params["inputVideoURL"])
+                chains, inputs = [], ""
+                for i, (a, b) in enumerate(parts):
+                    chains.append(f"[0:v:0]trim=start={a:.3f}:end={b:.3f},setpts=PTS-STARTPTS[v{i}]")
+                    inputs += f"[v{i}]"
+                    if audio:
+                        chains.append(f"[0:a:0]atrim=start={a:.3f}:end={b:.3f},asetpts=PTS-STARTPTS[a{i}]")
+                        inputs += f"[a{i}]"
+                chains.append(f"{inputs}concat=n={len(parts)}:v=1:a={1 if audio else 0}"
+                              + ("[v][a]" if audio else "[v]"))
+                cmd = [
+                    "ffmpeg", "-y", "-hide_banner", "-nostats", "-loglevel", "error",
+                    "-i", params["inputVideoURL"],
+                    "-filter_complex", ";".join(chains), "-map", "[v]",
+                ]
+                if audio:
+                    cmd += ["-map", "[a]", "-c:a", "aac", "-b:a", "192k"]
+                cmd += ["-c:v", "libx264", "-preset", "veryfast", "-crf", "18"]
+                cmd += tail + ["-progress", "pipe:1", out_path]
+                return cmd, sum(b - a for a, b in parts)
+
+        length = end - start
         cmd = [
             "ffmpeg", "-y", "-hide_banner", "-nostats", "-loglevel", "error",
             "-ss", f"{start:.3f}",            # seek before input: fast and, with
@@ -145,9 +193,7 @@ class VideoTrimWorker:
             # other MOV codecs: copy streams (no re-encoder for every codec);
             # the cut snaps to the nearest keyframe (see registo, decisão D5)
             cmd += ["-c", "copy"]
-        if params.get("format") == "mp4":
-            cmd += ["-movflags", "+faststart"]
-        cmd += ["-progress", "pipe:1", out_path]
+        cmd += tail + ["-progress", "pipe:1", out_path]
         return cmd, length
 
     def _run_ffmpeg(self, job_id, params, out_path):
@@ -257,7 +303,8 @@ class VideoTrimWorker:
         try:
             start, end = float(params["start"]), float(params["end"])
             ok = start >= 0 and end - start >= 1 and params["inputVideoURL"] \
-                and params["userId"] and params["projectId"] and params["outputFileName"]
+                and params["userId"] and params["projectId"] and params["outputFileName"] \
+                and params.get("mode", "keep") in ("keep", "remove")
         except (KeyError, TypeError, ValueError):
             ok = False
         if not ok:

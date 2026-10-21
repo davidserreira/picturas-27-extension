@@ -217,3 +217,23 @@ apaga o resultado.
 (para não alterar o vídeo do utilizador) e corridos outra vez: **31/31** (2026-10-21).
 TST-TRIM-07 verifica a substituição (mesmo vídeo e nome, sem vídeo novo, 30 s) e
 TST-TRIM-08 que um recorte cancelado deixa o vídeo igual (SHA-256).
+
+---
+
+## Fase 8 — Melhorias do recorte (v1.5, 2026-10-21)
+
+Pedidas pelo aluno depois de usar a aplicação: (1) nomes repetidos ganham um número,
+(2) no fim do recorte escolhe-se se o original é mantido, (3) o recorte faz-se nas
+faixas de vídeo e áudio, arrastando as extremidades da seleção, e pode remover um
+excerto do meio. Ramo `feature/recorte-melhorias`.
+
+| ID | Decisão | Alternativas consideradas | Porquê |
+|----|---------|---------------------------|--------|
+| D35 | Um nome repetido no projeto recebe um número: "praia.mp4" → "praia (2).mp4" → "praia (3).mp4" (como no Finder/Explorador). Aplica-se às importações (UC-VID-002/RN12) e às cópias do recorte. O nome é escolhido dentro do *lock* do utilizador e conta também os nomes reservados por recortes em curso. O nome do ficheiro original fica em `file_name`, para a retoma de importações continuar a funcionar | Recusar o nome repetido; sufixo "\_2" (D28) | Pedido do aluno; nunca há dois vídeos com o mesmo nome e não obriga o utilizador a mudar o nome do ficheiro |
+| D36 | Ao aplicar o recorte, a aplicação pergunta "Manter também o original?". Sim → o resultado é guardado como um vídeo novo com nome numerado (D35) e o original não é tocado; Não → substitui (D34). Fica no pedido (`keep_original`) e a cópia só é criada quando o pedido termina "Concluído" | Opção fixa nas definições; perguntar antes de abrir o recorte | A decisão é tomada no momento em que o utilizador vê o resultado que vai pedir; recupera o comportamento da D28 sem perder a D34. Uma cópia conta para a biblioteca: se não couber, o pedido é rejeitado logo (E7) |
+| D37 | Seleção nas faixas: com "Recortar" ligado, a seleção aparece sobre as faixas de vídeo e de áudio, com as duas extremidades arrastáveis (em segundos inteiros, RN2) e editáveis pelo teclado; o painel Recortar mostra a mesma seleção (estado partilhado em `CurrentVideoProvider`). Novo modo "Remover seleção" (FA5): o processador corta o intervalo e junta o que fica antes e depois (`trim`/`atrim` + `concat` do FFmpeg, recodificado em H.264/AAC); só para vídeos H.264 e o vídeo tem de ficar com ≥ 1 s | Vários cortes e arrastar excertos (*timeline* completa de editor); remover com `-c copy` | Cobre o pedido "cortar no meio" com um só pedido e um só resultado. Mover/reordenar excertos e vários cortes exigiam um modelo de projeto de edição (lista de segmentos), fora do âmbito da Fase 1; ficam registados como evolução. Juntar com `-c copy` só corta em *keyframes* e dá saltos visíveis |
+
+**Verificação do aluno:** o comando do FFmpeg do modo remover foi experimentado fora
+do sistema com vídeos de 20 s, com e sem áudio, removendo o meio, o início e o fim
+(15 s em todos os casos). TypeScript e ESLint sem erros. Testes novos no bloco [9] de
+`tests/uc-vid-001/test_trim_requirements.py` (TST-TRIM-25 a 28).

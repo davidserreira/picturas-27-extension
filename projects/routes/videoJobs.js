@@ -25,6 +25,11 @@ const { helpers } = require("./videos");
 const { fail, wrap, requireOwner, loadProfile, withUserLock } = helpers;
 
 const MIN_TRIM_SECONDS = 1; // RN2
+const { uniqueName, namesInUse } = require("../utils/videoNames");
+
+// v1.5: "keep" keeps only the interval (as before); "remove" removes it and
+// joins what is before and after it (UC-VID-001/FA5)
+const TRIM_MODES = ["keep", "remove"];
 
 const UPGRADE_HINT = " Com o plano Premium tem limites maiores.";
 
@@ -43,6 +48,13 @@ function checkInterval(start, end, duration) {
   if (start >= end) return "O instante de fim tem de ser posterior ao de início.";
   if (end > Math.ceil(duration)) return "O instante de fim não pode exceder a duração do vídeo.";
   if (end - start < MIN_TRIM_SECONDS) return "O recorte tem de ter pelo menos 1 segundo.";
+  return null;
+}
+
+// FA5 (v1.5): removing an interval must leave at least 1 s of video.
+function checkRemoval(start, end, duration) {
+  const left = start + Math.max(0, duration - end);
+  if (left < MIN_TRIM_SECONDS) return "O vídeo tem de ficar com pelo menos 1 segundo depois de remover o intervalo.";
   return null;
 }
 
@@ -92,10 +104,25 @@ function submitTool(tool) {
     } else {
       const start = Number(req.body?.start);
       const end = Number(req.body?.end);
-      const invalid = checkInterval(start, end, video.duration);
+      const mode = req.body?.mode ?? "keep";
+      if (!TRIM_MODES.includes(mode)) {
+        return fail(res, 400, "INVALID_MODE", "O modo do recorte tem de ser manter ou remover o intervalo.");
+      }
+      // Joining the two parts needs a re-encode, which is only done for H.264 (D37)
+      if (mode === "remove" && video.codec !== "h264") {
+        return fail(res, 415, "UNSUPPORTED_FORMAT",
+          "Remover um intervalo só está disponível para vídeos H.264.");
+      }
+      const invalid = checkInterval(start, end, video.duration) ||
+        (mode === "remove" ? checkRemoval(start, end, video.duration) : null);
       if (invalid) return fail(res, 400, "INVALID_INTERVAL", invalid);
-      params = { start, end };
+      params = { start, end, mode };
     }
+    // UC-VID-001/FA4 (v1.5): keep the original and save the result as a copy
+    if (req.body?.keep_original !== undefined && typeof req.body.keep_original !== "boolean") {
+      return fail(res, 400, "INVALID_REQUEST", "Indique se o original deve ser mantido.");
+    }
+    params.keep_original = req.body?.keep_original === true;
 
     const outcome = await withUserLock(user, async () => {
       if ((await VideoJob.countActive(user)) >= lim.maxActiveJobs) {
@@ -111,7 +138,8 @@ function submitTool(tool) {
       }
       const used = await Video.usedStorage(user);
       // Encoding may enlarge a file. Check actual output size again at completion.
-      if (used >= lim.storage) {
+      // A copy (keep_original) adds a new file to the library.
+      if (used >= lim.storage || (params.keep_original && used + video.size > lim.storage)) {
         return { error: [413, "STORAGE_FULL",
           `Não há espaço na sua biblioteca de vídeos (${formatBytes(used)} de ${formatBytes(lim.storage)}).${hint}`] };
       }
@@ -130,7 +158,10 @@ function submitTool(tool) {
         const job = await VideoJob.create({
           _id: id, user_id: user, project_id: project, video_id: video._id,
           tool, params,
-          result_name: video.name,
+          // the copy gets a free name in the project: "praia (2).mp4" (RN7)
+          result_name: params.keep_original
+            ? uniqueName(video.name, await namesInUse(user, project))
+            : video.name,
           max_duration: lim.maxDuration, max_storage: lim.storage,
           quota_reserved: reserved, createdAt,
         });
@@ -184,4 +215,4 @@ router.post("/:user/:project/video-jobs/:job/cancel", requireOwner, wrap(async (
 }));
 
 module.exports = router;
-module.exports._test = { checkInterval, isSupported };
+module.exports._test = { checkInterval, checkRemoval, isSupported };

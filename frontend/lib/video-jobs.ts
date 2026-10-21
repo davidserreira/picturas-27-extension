@@ -4,6 +4,9 @@
 import { api } from "./axios";
 import type { VideoApplyTool } from "./video-apply";
 
+// UC-VID-001 v1.5: keep the selected interval, or remove it (FA5)
+export type TrimMode = "keep" | "remove";
+
 export type VideoJobState =
   | "queued"
   | "processing"
@@ -28,7 +31,10 @@ interface VideoJobBase {
 }
 
 export type VideoJob = VideoJobBase & (
-  | { tool: "trim"; params: { start: number; end: number } }
+  | {
+      tool: "trim";
+      params: { start: number; end: number; mode?: TrimMode; keep_original?: boolean };
+    }
   | { tool: "apply"; params: { tools: VideoApplyTool[]; width: number; height: number } }
 );
 
@@ -84,6 +90,42 @@ export function trimIntervalError(
   return null;
 }
 
+// FA5 (same rules as the backend): the interval to remove must be valid and
+// leave at least 1 s of video; only H.264 videos can be joined again
+export function trimSelectionError(
+  start: number | null,
+  end: number | null,
+  duration: number,
+  mode: TrimMode,
+  codec?: string | null,
+): string | null {
+  const invalid = trimIntervalError(start, end, duration);
+  if (invalid || mode === "keep") return invalid;
+  if (codec && codec !== "h264")
+    return "Remover um intervalo só está disponível para vídeos H.264.";
+  if (duration - (Math.min(end!, duration) - start!) < 1)
+    return "O vídeo tem de ficar com pelo menos 1 segundo depois de remover o intervalo.";
+  return null;
+}
+
+// duration of the video that results from the selection
+export function trimResultDuration(start: number, end: number, duration: number, mode: TrimMode) {
+  const selected = Math.min(end, duration) - start;
+  return mode === "keep" ? selected : duration - selected;
+}
+
+// "Manter 0:05 – 0:20" / "Remover 0:05 – 0:20", and whether it is a copy
+export function trimJobDescription(params: {
+  start: number;
+  end: number;
+  mode?: TrimMode;
+  keep_original?: boolean;
+}) {
+  const verb = params.mode === "remove" ? "Remover" : "Manter";
+  const interval = `${formatTimecode(params.start)} – ${formatTimecode(params.end)}`;
+  return `${verb} ${interval}${params.keep_original ? " · original mantido" : ""}`;
+}
+
 // ----------------------------------------------------------------------- api
 
 interface JobsRequest {
@@ -103,10 +145,18 @@ export const trimVideo = async ({
   videoId,
   start,
   end,
-}: JobsRequest & { videoId: string; start: number; end: number }) => {
+  mode = "keep",
+  keepOriginal = false,
+}: JobsRequest & {
+  videoId: string;
+  start: number;
+  end: number;
+  mode?: TrimMode;
+  keepOriginal?: boolean;
+}) => {
   const response = await api.post<{ job: VideoJob }>(
     `/projects/${uid}/${pid}/videos/${videoId}/trim`,
-    { start, end },
+    { start, end, mode, keep_original: keepOriginal },
     { headers: authHeaders(token) },
   );
   return response.data.job;
