@@ -243,7 +243,7 @@ Uma linha por requisito. Todos os requisitos estão implementados, alguns de for
     [REQ-VID-TRIM-027], [frontend, projects, video\_trim\_tool], [Implementado], [TST-TRIM-23], [Passa],
     [REQ-VID-TRIM-032], [frontend (video-tracks, video-tools-panel), projects, video\_trim\_tool], [Implementado (v1.5)], [TST-TRIM-25, TST-TRIM-26, TST-TRIM-M16], [Passa (2); #preencher[M16 por executar]],
     [REQ-VID-TRIM-034], [frontend (video-tracks, video-tools-panel, current-video-provider)], [Implementado (v1.6)], [TST-TRIM-M15], [#preencher[Por executar]],
-    [REQ-VID-TRIM-031], [frontend, projects, video\_trim\_tool], [Implementado], [TST-TRIM-24], [Passa (43 s)],
+    [REQ-VID-TRIM-031], [frontend, projects, video\_trim\_tool], [Implementado], [TST-TRIM-24], [Passa (42 s)],
     [REQ-VID-USAB-001], [frontend, projects], [Implementado], [TST-QUAL-M02], [#preencher[Por executar]],
   ),
 )

@@ -253,4 +253,4 @@ ferramentas) e deixa de haver a lista "Pedidos deste vídeo".
 | D40 | Sem lista de pedidos: o painel mostra apenas o pedido em curso do vídeo (estado, progresso, fotogramas, *Cancelar*) ou o motivo da falha do último; ao concluir aparece um aviso "foi substituído pelo resultado"; ao voltar a um vídeo com um pedido em curso, o painel dessa ferramenta reabre (uma vez por visita). Exportar faz-se pelo menu do vídeo | Manter a lista dos últimos 5 pedidos | Como o resultado substitui o vídeo, pedidos antigos não têm nada para abrir ou exportar; o que interessa é o pedido em curso. A reabertura mantém o REQ-VID-JOB-010 (reencontrar o pedido ao voltar), reformulado |
 
 **Verificação:** TypeScript e ESLint sem erros; testes automáticos ajustados (bloco [9]
-sem os 3 casos de manter o original: 36 casos).
+sem os 3 casos de manter o original): **36/36** (2026-10-21).
