@@ -110,10 +110,10 @@ class Ctx:
     def __init__(self, user, project, video):
         self.u, self.p, self.v = user, project, video
 
-    def trim(self, start, end, video=None):
+    def trim(self, start, end, video=None, **extra):
         t0 = time.monotonic()
         status, body = http("POST", f"{PROJECTS}/{self.u}/{self.p}/videos/{video or self.v}/trim",
-                            {"start": start, "end": end}, self.u)
+                            {"start": start, "end": end, **extra}, self.u)
         return status, body, time.monotonic() - t0
 
     def job(self, job_id):
@@ -408,6 +408,101 @@ def test_premium(c, copies):
         set_user_type(c.u, "free")
 
 
+def unique_name(name, used):
+    """O mesmo algoritmo do backend (projects/utils/videoNames.js)."""
+    import re
+    used = {n.lower() for n in used}
+    if name.lower() not in used:
+        return name
+    stem, ext = os.path.splitext(name)
+    stem = re.sub(r" \(\d+\)$", "", stem)
+    n = 2
+    while f"{stem} ({n}){ext}".lower() in used:
+        n += 1
+    return f"{stem} ({n}){ext}"
+
+
+def test_v15(c, copies):
+    print("\n[9] Remover um intervalo, manter o original e nomes únicos (v1.5)")
+    video = next(v for v in c.videos() if v["_id"] == c.v)
+    duration = video["duration"]
+
+    # validações do modo remover e do manter o original
+    status, body, _ = c.trim(0, 10, mode="cortar")
+    record("TRIM-032", "rejeita um modo desconhecido", status == 400 and body.get("code") == "INVALID_MODE",
+           body.get("message", "") if isinstance(body, dict) else str(body))
+    status, body, _ = c.trim(0, int(-(-duration // 1)), mode="remove")
+    record("TRIM-032", "remover o vídeo todo é rejeitado (tem de ficar ≥ 1 s)",
+           status == 400 and body.get("code") == "INVALID_INTERVAL",
+           body.get("message", "") if isinstance(body, dict) else str(body))
+    fake = c.fake_video("hevc", {"format": "mov", "codec": "hevc"})
+    try:
+        status, body, _ = c.trim(5, 10, video=fake, mode="remove")
+        record("TRIM-032", "remover um intervalo de um vídeo que não é H.264 é rejeitado",
+               status == 415 and body.get("code") == "UNSUPPORTED_FORMAT",
+               body.get("message", "") if isinstance(body, dict) else str(body))
+    finally:
+        c.remove_fake(fake)
+    status, body, _ = c.trim(0, 10, keep_original="sim")
+    record("TRIM-033", "rejeita um valor inválido para manter o original",
+           status == 400 and body.get("code") == "INVALID_REQUEST",
+           body.get("message", "") if isinstance(body, dict) else str(body))
+
+    # FA5: remover 5–10 s junta o que fica antes e depois
+    status, body, _ = c.trim(5, 10, mode="remove")
+    desc = f"remover 0:05–0:10 de um vídeo de {duration:.0f} s deixa {duration - 5:.0f} s ± 1 s, no mesmo vídeo"
+    if status == 202:
+        job, _, _ = c.wait(body["job"]["_id"])
+        after = next((v for v in c.videos() if v["_id"] == c.v), None)
+        record("TRIM-032", desc,
+               job["state"] == "completed" and job["result_video_id"] == c.v and after
+               and abs(after["duration"] - (duration - 5)) <= 1,
+               f"{job['state']}; {after['duration']:.2f} s" if after else job["state"])
+    else:
+        record("TRIM-032", desc, False, f"HTTP {status}: {body}")
+
+    # FA4: manter o original -> o resultado é uma cópia "nome (2).mp4"
+    before = c.videos()
+    video = next(v for v in before if v["_id"] == c.v)
+    hash_before = sha256_url(c.video_url(c.v))
+    used_before = library_usage(c)
+    expected = unique_name(video["name"], [v["name"] for v in before])
+    status, body, _ = c.trim(0, 10, keep_original=True)
+    desc = f"manter o original: cria \"{expected}\" com 10 s e o original fica igual"
+    if status == 202:
+        job, _, _ = c.wait(body["job"]["_id"])
+        copy_id = job.get("result_video_id")
+        if copy_id and copy_id != c.v:
+            copies.append(copy_id)
+        after = c.videos()
+        copy = next((v for v in after if v["_id"] == copy_id), None)
+        original = next((v for v in after if v["_id"] == c.v), None)
+        ok = (job["state"] == "completed" and copy is not None and copy_id != c.v
+              and copy["name"] == expected and abs(copy["duration"] - 10) <= 1
+              and original is not None and original["size"] == video["size"]
+              and sha256_url(c.video_url(c.v)) == hash_before)
+        record("TRIM-033", desc, ok,
+               f"{copy['name']}, {copy['duration']:.2f} s; original com o mesmo SHA-256" if copy else job["state"])
+        if copy:
+            record("TRIM-033", "manter o original: a ocupação aumenta o tamanho da cópia",
+                   library_usage(c) - used_before == copy["size"],
+                   f"{used_before} → {library_usage(c)} bytes (cópia: {copy['size']} bytes)")
+    else:
+        record("TRIM-033", desc, False, f"HTTP {status}: {body}")
+
+    # UC-VID-002/RN12: importar um ficheiro com um nome que já existe numera-o
+    names = [v["name"] for v in c.videos()]
+    expected = unique_name(video["name"], names)
+    status, body = http("POST", f"{PROJECTS}/{c.u}/{c.p}/videos",
+                        {"name": video["name"], "size": 1000, "fingerprint": "0" * 64}, c.u)
+    imported = body.get("video", {}) if isinstance(body, dict) else {}
+    record("IMPORT-032", f"importar outra vez \"{video['name']}\" dá o nome \"{expected}\"",
+           status == 201 and imported.get("name") == expected, f"HTTP {status}: {imported.get('name')}")
+    if imported.get("_id"):
+        http("POST", f"{PROJECTS}/{c.u}/{c.p}/videos/{imported['_id']}/cancel", {}, c.u)
+        c.delete_video(imported["_id"])
+
+
 def library_usage(c):
     return http("GET", f"{PROJECTS}/{c.u}/{c.p}/videos", caller=c.u)[1]["usage"]["used"]
 
@@ -530,8 +625,8 @@ def main():
 
     if c.user_type() != "free":
         sys.exit("Estes testes são para um utilizador registado (gratuito).")
-    if (c.remaining() or 0) < 3:
-        sys.exit("O utilizador precisa de pelo menos 3 operações diárias disponíveis. "
+    if (c.remaining() or 0) < 4:
+        sys.exit("O utilizador precisa de pelo menos 4 operações diárias disponíveis. "
                  "Volte a correr com --reset-quota para as repor (ambiente de testes).")
     active = [j for j in http("GET", f"{PROJECTS}/{c.u}/{c.p}/video-jobs", caller=c.u)[1]["jobs"]
               if j["state"] in ("queued", "processing")]
@@ -549,6 +644,7 @@ def main():
         test_quota(c)
         test_failure(c)
         test_limits(c)
+        test_v15(c, copies)
         test_premium(c, copies)
         test_library_and_performance(c)
     finally:

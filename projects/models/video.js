@@ -6,7 +6,10 @@ const videoSchema = new mongoose.Schema(
   {
     user_id: { type: mongoose.Schema.Types.ObjectId, required: true, index: true },
     project_id: { type: mongoose.Schema.Types.ObjectId, required: true },
-    name: { type: String, required: true },
+    name: { type: String, required: true }, // unique in the project (v1.5)
+    // name of the file the user chose; differs from `name` when a number was
+    // added to avoid a repeated name; used to recognise the file on resume
+    file_name: { type: String, default: null },
     size: { type: Number, required: true }, // bytes, as declared when the import was created
     received: { type: Number, default: 0 }, // bytes already stored in the partial file
     fingerprint: { type: String, required: true }, // identifies the file when resuming

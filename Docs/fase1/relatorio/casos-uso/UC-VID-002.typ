@@ -8,9 +8,9 @@
   tabela-campos(
     [ID do Caso de Uso], [UC-VID-002],
     [Nome], [Importar um vídeo para a biblioteca],
-    [Versão], [v1.3],
+    [Versão], [v1.5],
     [Autor], [David Cruz],
-    [Data], [2026-10-07 (v1.0); 2026-10-14 (v1.1); 2026-10-19 (v1.2); 2026-10-21 (v1.3)],
+    [Data], [2026-10-07 (v1.0); 2026-10-14 (v1.1); 2026-10-19 (v1.2); 2026-10-21 (v1.3 e v1.5)],
     [Objetivo], [Enviar um vídeo do dispositivo para o PictuRAS, acompanhar o envio e a validação e ficar com o vídeo disponível na biblioteca, podendo consultar as suas faixas de vídeo e de áudio (v1.3)],
     [Âmbito], [Módulo de vídeo do PictuRAS: biblioteca, envio de ficheiros, validação e armazenamento],
     [Ator Principal], [Utilizador Registado (gratuito, 5 operações/dia) ou Premium (pago, ilimitado)],
@@ -92,6 +92,7 @@
     [RN9 (v1.1)], [Um vídeo "Disponível" mantém-se na biblioteca até o utilizador o remover; remover um vídeo liberta o espaço que ocupava],
     [RN10 (v1.3)], [Faixas apresentadas: de vídeo (codec, resolução e fotogramas/s) e de áudio (codec, canais, frequência de amostragem e idioma, quando conhecido), numeradas por tipo (V1, A1, A2, …); capas e legendas não são faixas; um vídeo sem áudio apresenta "Sem faixa de áudio"],
     [RN11 (v1.3)], [As faixas são lidas uma vez, na primeira abertura do vídeo, e guardadas com ele; a lista de faixas é apresentada em ≤ 2 s e a forma de onda de um vídeo até 5 min em ≤ 30 s],
+    [RN12 (v1.5)], [Num projeto não há dois vídeos com o mesmo nome: se já existir um vídeo com o nome do ficheiro importado, o vídeo recebe o primeiro número livre, "praia (2).mp4", "praia (3).mp4", …; a retoma (FA3) continua a reconhecer o ficheiro pelo nome original],
   )
 
 === Assunções
