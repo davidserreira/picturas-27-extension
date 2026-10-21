@@ -4,18 +4,18 @@
 // player: a strip of frames for each video track and the waveform of each
 // audio track, with the playback position. Clicking the tracks seeks, the
 // playhead can be dragged, and the timeline can be zoomed in and scrolled.
-// UC-VID-001 v1.5: with "Recortar" on, the interval to keep or to remove is
-// selected on the tracks, by dragging its two ends over the video and audio.
+// UC-VID-001 v1.5: while the Recortar panel is open (toolbar, on the left),
+// the interval to keep or to remove is also selected here, by dragging its two
+// ends over the video and audio tracks. The controls are only in the panel.
 
 import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { AudioLines, Film, LoaderCircle, Scissors, VolumeX, ZoomIn, ZoomOut } from "lucide-react";
+import { AudioLines, Film, VolumeX, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Slider } from "@/components/ui/slider";
 import { useProjectInfo } from "@/providers/project-provider";
 import { TrimSelection, useCurrentVideo } from "@/providers/current-video-provider";
-import { TrimModeToggle, useTrimSubmit } from "./trim-submit";
-import { formatTimecode, trimResultDuration, trimSelectionError } from "@/lib/video-jobs";
+import { formatTimecode } from "@/lib/video-jobs";
 import { useSession } from "@/providers/session-provider";
 import { useGetVideoTracks } from "@/lib/queries/videos";
 import {
@@ -442,8 +442,7 @@ export function VideoTracks({
     session.token,
     video._id,
   );
-  const { panel, setPanel, trim, setTrim } = useCurrentVideo();
-  const { requestTrim, submitting, dialog } = useTrimSubmit(video);
+  const { panel, trim, setTrim } = useCurrentVideo();
   const scrollerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   // set while the playhead is being dragged: the distance (px) between the
@@ -566,12 +565,6 @@ export function VideoTracks({
   // ------------------------------------------------------------- trim
   const trimming = panel === "trim" && trim !== null;
   const maxEnd = Math.max(1, Math.ceil(duration));
-  const trimInvalid = trim
-    ? trimSelectionError(trim.start, trim.end, duration, trim.mode, video.codec)
-    : null;
-  const isFree = session.user.type === "free";
-  const remaining = session.user.remaining_operations;
-  const noOperations = isFree && remaining != null && remaining <= 0;
 
   // an end never passes the other: at least 1 s stays selected
   function moveEnd(which: "start" | "end", time: number) {
@@ -624,19 +617,6 @@ export function VideoTracks({
             {video.name}
           </p>
         </div>
-        <div className="flex shrink-0 items-center gap-1">
-          <Button
-            variant={trimming ? "default" : "outline"}
-            size="sm"
-            className="mr-2 h-7"
-            aria-pressed={trimming}
-            title="Selecionar nas faixas o intervalo a manter ou a remover"
-            disabled={video.state !== "available" || duration <= 0}
-            onClick={() => setPanel(trimming ? null : "trim")}
-          >
-            <Scissors /> Recortar
-          </Button>
-        </div>
         <div className="flex shrink-0 items-center gap-1" aria-label="Escala das faixas">
           <Button
             variant="ghost"
@@ -674,35 +654,6 @@ export function VideoTracks({
           </span>
         </div>
       </div>
-
-      {trimming && trim && (
-        <div className="flex flex-wrap items-center gap-2 border-b bg-muted/30 px-3 py-2">
-          <TrimModeToggle compact mode={trim.mode} onChange={(mode) => setTrim({ ...trim, mode })} />
-          <span className="text-xs tabular-nums">
-            {trim.mode === "keep" ? "Manter" : "Remover"} {formatTimecode(trim.start)} –{" "}
-            {formatTimecode(trim.end)}
-            {!trimInvalid && (
-              <span className="text-muted-foreground">
-                {" "}· fica com {formatTimecode(trimResultDuration(trim.start, trim.end, duration, trim.mode))}
-              </span>
-            )}
-          </span>
-          {(trimInvalid || noOperations) && (
-            <span className="text-xs text-destructive">
-              {trimInvalid ?? "Atingiu o limite de 5 operações diárias."}
-            </span>
-          )}
-          <Button
-            size="sm"
-            className="ml-auto h-7"
-            disabled={!!trimInvalid || submitting || noOperations}
-            onClick={() => requestTrim(trim)}
-          >
-            {submitting ? <LoaderCircle className="animate-spin" /> : <Scissors />}
-            Aplicar recorte
-          </Button>
-        </div>
-      )}
 
       <div className="p-3">
         {tracks.isError ? (
@@ -832,7 +783,6 @@ export function VideoTracks({
           </div>
         )}
       </div>
-      {dialog}
     </section>
   );
 }

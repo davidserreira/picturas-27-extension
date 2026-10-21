@@ -4,10 +4,10 @@
 // Panel docked next to the toolbar while a video is open in the carousel:
 // the tool chosen in the toolbar (Trim / Apply) + the requests of this video.
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import * as SliderPrimitive from "@radix-ui/react-slider";
-import { Download, LoaderCircle, Play, Scissors, X } from "lucide-react";
+import { LoaderCircle, Play, Scissors, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -97,7 +97,7 @@ function TrimPanel({ video }: { video: ProjectVideo }) {
   // the player of the carousel, where the video is being watched, and the
   // selection, shared with the tracks (where it can be dragged)
   const { player, trim, setTrim } = useCurrentVideo();
-  const { requestTrim, submitting, dialog } = useTrimSubmit(video);
+  const { submitTrim, submitting } = useTrimSubmit(video);
 
   const duration = video.duration ?? 0;
   const maxEnd = Math.max(1, Math.ceil(duration));
@@ -264,7 +264,7 @@ function TrimPanel({ video }: { video: ProjectVideo }) {
           </Button>
           <Button
             disabled={!!invalid || submitting || noOperations}
-            onClick={() => start !== null && end !== null && requestTrim({ start, end, mode })}
+            onClick={() => start !== null && end !== null && submitTrim({ start, end, mode })}
           >
             {submitting ? <LoaderCircle className="animate-spin" /> : <Scissors />}
             Aplicar recorte
@@ -276,20 +276,47 @@ function TrimPanel({ video }: { video: ProjectVideo }) {
           Atingiu o limite de 5 operações diárias. Com o plano Premium não tem limite diário.
         </p>
       )}
-      {dialog}
     </div>
   );
 }
 
-// --------------------------------------------------------------- requests
+// --------------------------------------------------------------- request
 
-function JobRow({ job }: { job: VideoJob }) {
+// The request in progress for this video: state, progress and Cancelar (and,
+// if the last one failed, why). There is no list of requests: a tool changes
+// the video itself, so there is nothing else to open or export here.
+function CurrentJob({ video }: { video: ProjectVideo }) {
   const { _id: pid } = useProjectInfo();
   const session = useSession();
   const { toast } = useToast();
   const qc = useQueryClient();
-  const { exportVideo, exporting } = useExportVideo();
+  const jobs = useGetVideoJobs(session.user._id, pid, session.token);
   const [cancelling, setCancelling] = useState(false);
+  // the request that was running, to say when it has replaced the video
+  const running = useRef<string | null>(null);
+
+  const job = useMemo(
+    () =>
+      (jobs.data ?? [])
+        .filter((j) => j.video_id === video._id)
+        .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))[0],
+    [jobs.data, video._id],
+  );
+
+  useEffect(() => {
+    if (!job) return;
+    if (isActiveJob(job)) running.current = job._id;
+    else if (running.current === job._id) {
+      running.current = null;
+      if (job.state === "completed")
+        toast({
+          title: job.tool === "trim" ? "Vídeo recortado" : "Ferramentas aplicadas",
+          description: `"${job.result_name}" foi substituído pelo resultado.`,
+        });
+    }
+  }, [job, toast]);
+
+  if (!job || !(isActiveJob(job) || job.state === "failed")) return null;
 
   async function cancel() {
     setCancelling(true);
@@ -298,11 +325,11 @@ function JobRow({ job }: { job: VideoJob }) {
         uid: session.user._id,
         pid,
         token: session.token,
-        jobId: job._id,
+        jobId: job!._id,
       });
       qc.setQueryData<VideoJob[]>(
         videoJobsKey(session.user._id, pid, session.token),
-        (jobs) => jobs?.map((j) => (j._id === updated._id ? updated : j)),
+        (list) => list?.map((j) => (j._id === updated._id ? updated : j)),
       );
       toast({ title: "Pedido cancelado", description: "O vídeo não foi alterado." });
     } catch (error) {
@@ -316,11 +343,8 @@ function JobRow({ job }: { job: VideoJob }) {
     }
   }
 
-  const variant =
-    job.state === "failed" ? "destructive" : job.state === "completed" ? "default" : "secondary";
-
   return (
-    <li className="flex flex-col gap-2 rounded-md border p-3">
+    <section className="flex flex-col gap-2 rounded-md border p-3" aria-live="polite">
       <div className="flex items-center justify-between gap-2">
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">
@@ -332,7 +356,9 @@ function JobRow({ job }: { job: VideoJob }) {
               : job.params.tools.map(applyToolDescription).join(" → ")}
           </p>
         </div>
-        <Badge variant={variant}>{VIDEO_JOB_STATE_LABELS[job.state]}</Badge>
+        <Badge variant={job.state === "failed" ? "destructive" : "secondary"}>
+          {VIDEO_JOB_STATE_LABELS[job.state]}
+        </Badge>
       </div>
 
       {isActiveJob(job) && (
@@ -345,58 +371,17 @@ function JobRow({ job }: { job: VideoJob }) {
         </div>
       )}
 
-      {job.tool === "apply" && job.state !== "queued" && (
-        <p className="text-xs text-muted-foreground" aria-live="polite">
-          Fotogramas processados: {job.frames_processed ?? 0}{job.frame_count != null ? ` / ${job.frame_count}` : ""}
+      {job.tool === "apply" && job.state === "processing" && (
+        <p className="text-xs text-muted-foreground">
+          Fotogramas processados: {job.frames_processed ?? 0}
+          {job.frame_count != null ? ` / ${job.frame_count}` : ""}
         </p>
       )}
 
       {job.state === "failed" && job.error && (
         <p className="text-xs text-destructive">{job.error.message}</p>
       )}
-
-      {job.state === "completed" && job.result_video_id && (
-        <div className="flex justify-end">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={exporting === job.result_video_id}
-            onClick={() => exportVideo(job.result_video_id!, job.result_name)}
-          >
-            {exporting === job.result_video_id ? (
-              <LoaderCircle className="animate-spin" />
-            ) : (
-              <Download />
-            )}
-            Exportar
-          </Button>
-        </div>
-      )}
-    </li>
-  );
-}
-
-function JobsList({ video }: { video: ProjectVideo }) {
-  const { _id: pid } = useProjectInfo();
-  const session = useSession();
-  const jobs = useGetVideoJobs(session.user._id, pid, session.token);
-
-  const ofThisVideo = useMemo(
-    () => (jobs.data ?? []).filter((j) => j.video_id === video._id).slice(0, 5),
-    [jobs.data, video._id],
-  );
-
-  if (ofThisVideo.length === 0) return null;
-
-  return (
-    <div className="flex flex-col gap-2">
-      <h3 className="text-sm font-semibold">Pedidos deste vídeo</h3>
-      <ul className="flex flex-col gap-2">
-        {ofThisVideo.map((job) => (
-          <JobRow key={job._id} job={job} />
-        ))}
-      </ul>
-    </div>
+    </section>
   );
 }
 
@@ -410,6 +395,24 @@ const PANEL_TITLES: Record<VideoToolPanel, string> = {
 // The video tool opened from the toolbar, for the video in the carousel.
 export function VideoToolsPanel() {
   const { video, panel, setPanel } = useCurrentVideo();
+  const { _id: pid } = useProjectInfo();
+  const session = useSession();
+  const jobs = useGetVideoJobs(session.user._id, pid, session.token, !!video);
+  const reopened = useRef<string | null>(null);
+
+  // REQ-VID-JOB-010: back to a video with a request in progress, its tool
+  // opens again, with the progress (once per visit, so it can be closed)
+  useEffect(() => {
+    if (!video) {
+      reopened.current = null;
+      return;
+    }
+    if (!jobs.data || reopened.current === video._id) return;
+    reopened.current = video._id;
+    const active = jobs.data.find((j) => j.video_id === video._id && isActiveJob(j));
+    if (active && !panel) setPanel(active.tool);
+  }, [video, jobs.data, panel, setPanel]);
+
   if (!video || !panel) return null;
 
   return (
@@ -436,9 +439,12 @@ export function VideoToolsPanel() {
       </div>
       {/* keyed by video, so a tool started on one video does not carry over to the
           next, and by its file, so that the tool restarts once a result replaced it */}
-      <div key={`${video._id}:${video.size}:${video.duration}`} className="flex flex-col gap-6 overflow-y-auto p-3">
-        {panel === "trim" ? <TrimPanel video={video} /> : <VideoApplyPanel video={video} />}
-        <JobsList video={video} />
+      <div className="flex flex-col gap-6 overflow-y-auto p-3">
+        <div key={`${video._id}:${video.size}:${video.duration}`}>
+          {panel === "trim" ? <TrimPanel video={video} /> : <VideoApplyPanel video={video} />}
+        </div>
+        {/* outside the key above, to notice when the result replaced the video */}
+        <CurrentJob key={video._id} video={video} />
       </div>
     </aside>
   );

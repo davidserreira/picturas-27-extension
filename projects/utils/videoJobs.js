@@ -138,8 +138,6 @@ async function onSuccess(msg) {
       return failJob(current._id, { code: "INVALID_RESULT", message: failedMessage(current.tool) });
     }
     const cleanup = () => delete_image(current.user_id, current.project_id, "video", out.fileName);
-    // UC-VID-001/FA4 (v1.5): the user chose to keep the original -> new video
-    if (current.params?.keep_original) return completeAsCopy(current, out, cleanup);
     // The result replaces the video it was made from: same video, same name,
     // new file. Done only now, so a failed or cancelled job leaves it intact.
     const source = await Video.getById(current.video_id);
@@ -203,58 +201,6 @@ async function onSuccess(msg) {
     }
     notify(job);
   });
-}
-
-// The result is saved as a new video ("praia (2).mp4") and the original is not
-// touched. Safe to replay: the copy is found again by its fingerprint.
-async function completeAsCopy(current, out, cleanup) {
-  const fingerprint = `copy:${current._id}`;
-  let copy = await Video.getByFingerprint(current.user_id, current.project_id, fingerprint);
-  if (!VideoJob.ACTIVE_STATES.includes(current.state)) {
-    // a replay of a job that already completed with this copy: nothing to do
-    if (copy && String(current.result_video_id) === String(copy._id)) return;
-    // cancelled or failed meanwhile: nothing of it may stay in the library
-    if (copy) await Video.delete(copy._id);
-    await cleanup();
-    return;
-  }
-  const rejectResult = async (code) => {
-    if (copy) await Video.delete(copy._id);
-    await cleanup();
-    return failJob(current._id, { code, message: failedMessage(current.tool) });
-  };
-  if (!Number.isFinite(out.size) || out.size <= 0 || !Number.isFinite(out.duration) ||
-      out.duration <= 0 || !Number.isInteger(out.width) || !Number.isInteger(out.height) ||
-      (current.tool === "apply" && (out.width !== current.params.width || out.height !== current.params.height ||
-        !Number.isInteger(out.frame_count) || out.frame_count <= 0))) {
-    return rejectResult("INVALID_RESULT");
-  }
-  if (!(await Project.getOne(current.user_id, current.project_id))) return rejectResult("PROJECT_REMOVED");
-  const maximum = current.max_storage || limitsFor("free").storage;
-  const used = await Video.usedStorage(current.user_id);
-  if (used - (copy?.size || 0) + out.size > maximum) return rejectResult("STORAGE_FULL");
-  if (!copy) {
-    copy = await Video.create({
-      user_id: current.user_id, project_id: current.project_id,
-      name: current.result_name, size: out.size, received: out.size,
-      fingerprint, state: "available", max_duration: current.max_duration,
-      video_key: out.fileName, format: out.format, codec: out.codec,
-      duration: out.duration, width: out.width, height: out.height,
-      frame_count: out.frame_count ?? null, fps: out.fps ?? null,
-    });
-  }
-  const job = await VideoJob.updateIfState(current._id, VideoJob.ACTIVE_STATES, {
-    state: "completed", progress: 100, result_video_id: copy._id,
-    frames_processed: out.frame_count || current.frames_processed || 0,
-    frame_count: out.frame_count ?? current.frame_count, finished_at: new Date(),
-  });
-  if (!job) {
-    // cancelled at the very last moment: undo the copy
-    await Video.delete(copy._id);
-    await cleanup();
-    return;
-  }
-  notify(job);
 }
 
 async function onReply(raw) {

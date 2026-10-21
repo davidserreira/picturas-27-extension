@@ -60,7 +60,7 @@ export function VideoApplyPanel({ video }: { video: ProjectVideo }) {
       qc.setQueryData<VideoJob[]>(videoJobsKey(session.user._id, pid, session.token),
         (jobs) => [job, ...(jobs ?? []).filter((other) => other._id !== job._id)]);
       updateSession.mutate({ userId: session.user._id, token: session.token });
-      toast({ title: "Pedido em fila", description: "Quando terminar, o vídeo é substituído pelo resultado. Pode acompanhar o progresso nos pedidos deste vídeo." });
+      toast({ title: "Pedido em fila", description: "Quando terminar, o vídeo é substituído pelo resultado. Pode acompanhar o progresso neste painel." });
     } catch (error) {
       toast({ title: "Não foi possível aplicar as ferramentas", description: getVideoErrorMessage(error), variant: "destructive" });
     } finally { setSubmitting(false); }

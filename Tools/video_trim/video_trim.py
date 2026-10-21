@@ -147,7 +147,7 @@ class VideoTrimWorker:
         tail = ["-movflags", "+faststart"] if params.get("format") == "mp4" else []
 
         if mode == "remove":
-            # v1.5 (UC-VID-001/FA5): cut [start, end] out and join what is
+            # v1.5 (UC-VID-001/FA4): cut [start, end] out and join what is
             # before and after it. Only H.264 (checked by projects): joining
             # needs re-encoding, so the result keeps the codec.
             duration = float(params.get("duration") or end)

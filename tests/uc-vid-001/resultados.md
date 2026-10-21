@@ -1,6 +1,6 @@
 # Resultados dos testes automáticos — UC-VID-001
 
-Executado em 2026-10-21 16:31 com `tests/uc-vid-001/test_trim_requirements.py` (perfil registado; o bloco [7] passa o utilizador temporariamente a premium para testar o FA1).
+Executado em 2026-10-21 17:17 com `tests/uc-vid-001/test_trim_requirements.py` (perfil registado; o bloco [7] passa o utilizador temporariamente a premium para testar o FA1).
 
 | Requisito | Teste | Resultado | Detalhe |
 |-----------|-------|-----------|---------|
@@ -30,18 +30,15 @@ Executado em 2026-10-21 16:31 com `tests/uc-vid-001/test_trim_requirements.py` (
 | TRIM-032 | rejeita um modo desconhecido | ✅ Passou | O modo do recorte tem de ser manter ou remover o intervalo. |
 | TRIM-032 | remover o vídeo todo é rejeitado (tem de ficar ≥ 1 s) | ✅ Passou | O vídeo tem de ficar com pelo menos 1 segundo depois de remover o intervalo. |
 | TRIM-032 | remover um intervalo de um vídeo que não é H.264 é rejeitado | ✅ Passou | Remover um intervalo só está disponível para vídeos H.264. |
-| TRIM-033 | rejeita um valor inválido para manter o original | ✅ Passou | Indique se o original deve ser mantido. |
 | TRIM-032 | remover 0:05–0:10 de um vídeo de 30 s deixa 25 s ± 1 s, no mesmo vídeo | ✅ Passou | completed; 25.00 s |
-| TRIM-033 | manter o original: cria "__teste_trabalho (2).mp4" com 10 s e o original fica igual | ✅ Passou | __teste_trabalho (2).mp4, 10.00 s; original com o mesmo SHA-256 |
-| TRIM-033 | manter o original: a ocupação aumenta o tamanho da cópia | ✅ Passou | 262990018 → 277199685 bytes (cópia: 14209667 bytes) |
-| IMPORT-032 | importar outra vez "__teste_trabalho.mp4" dá o nome "__teste_trabalho (3).mp4" | ✅ Passou | HTTP 201: __teste_trabalho (3).mp4 |
+| IMPORT-032 | importar outra vez "__teste_trabalho.mp4" dá o nome "__teste_trabalho (2).mp4" | ✅ Passou | HTTP 201: __teste_trabalho (2).mp4 |
 | REQ-008 | premium: aceita 3 pedidos ativos e rejeita o 4.º | ✅ Passou | 3 aceites; 4.º: Já tem 3 pedido(s) de vídeo em curso. Aguarde que termine ou cancele-o antes de fazer outro. |
-| REQ-018 | premium: recortes concluídos não gastam quota diária | ✅ Passou | 3/3 concluídos; operações hoje 3 → 3 |
+| REQ-018 | premium: recortes concluídos não gastam quota diária | ✅ Passou | 3/3 concluídos; operações hoje 2 → 2 |
 | REQ-005 | premium: aceita vídeo de 6 min (limite 30 min) | ✅ Passou | HTTP 202 |
 | REQ-005 | premium: rejeita vídeo de 31 min, sem sugerir o Premium | ✅ Passou | O seu perfil só permite recortar vídeos até 30 min. |
 | REQ-006 | premium: aceita vídeo de 250 MB (limite 2 GB) | ✅ Passou | HTTP 202 |
-| LIB-002 | a ocupação da biblioteca passa a contar o tamanho do resultado em vez do anterior | ✅ Passou | 319828686 → 296810728 bytes (vídeo: 37227625 → 14209667 bytes) |
+| LIB-002 | a ocupação da biblioteca passa a contar o tamanho do resultado em vez do anterior | ✅ Passou | 390613593 → 367595635 bytes (vídeo: 37227625 → 14209667 bytes) |
 | TRIM-027 | biblioteca cheia: rejeita o recorte com a ocupação e o limite | ✅ Passou | Não há espaço na sua biblioteca de vídeos (1.3 GB de 1 GB). Com o plano Premium tem limites maiores. |
-| TRIM-031 | recorte de 5 min a 1080p concluído em ≤ 5 min | ✅ Passou | completed em 43 s (0.7 min) |
+| TRIM-031 | recorte de 5 min a 1080p concluído em ≤ 5 min | ✅ Passou | completed em 42 s (0.7 min) |
 
-**39 de 39 testes passaram.**
+**36 de 36 testes passaram.**
