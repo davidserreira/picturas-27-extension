@@ -14,4 +14,4 @@ Requisitos que dependem da interface e não são cobertos por
 | REQ-018 (UI) | Ver "Operações diárias restantes" antes e depois de um recorte concluído | Desce 1; não desce num cancelado || ✅ 2026-10-08 |
 | REQ-021 | No pedido concluído, carregar em **Exportar** (ou botão direito no vídeo → Exportar) | O ficheiro é descarregado com o nome do vídeo e abre num leitor externo com a duração esperada || ✅ 2026-10-08 |
 | REQ-022 | Terminar sessão (perfil anónimo) e abrir um projeto | Não há vídeos nem ferramentas de vídeo; ao importar, sugere criar conta || ✅ 2026-10-08 |
-| FA1 (opcional) | Com um utilizador premium, fazer 2 recortes ao mesmo tempo | Ambos aceites (até 3 ativos); sem contador de operações || ⏳ Por testar (sem conta premium); limites premium cobertos em `videoLimits.js` |
+| FA1 (opcional) | Com um utilizador premium, fazer 2 recortes ao mesmo tempo | Ambos aceites (até 3 ativos); sem contador de operações || ✅ 2026-10-21 — verificado pelo teste automático [7] (3 pedidos ativos, sem quota, limites premium) |

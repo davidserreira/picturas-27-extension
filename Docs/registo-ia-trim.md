@@ -163,3 +163,35 @@ backend, a correr contra o sistema em Docker), `tests/uc-vid-001/resultados.md`
 **Resultado:** 23 de 23 testes passaram (ver `tests/uc-vid-001/resultados.md`),
 cobrindo REQ-003 a REQ-020. Os REQ-001, 002, 021 e 022 e o FA1 são verificados
 pela checklist manual.
+
+
+---
+
+## Fase 6 — Regressão após a integração do UC-VID-003 e teste do FA1 (2026-10-21)
+
+- Depois de integrado o UC-VID-003 (que generalizou `projects/routes/videoJobs.js` e
+  `projects/utils/videoJobs.js` para servir o recorte e a aplicação de ferramentas), os
+  testes do recorte foram corridos outra vez, sem alterações: **23/23**. A integração não
+  partiu o UC-VID-001.
+- Alterações do colega que afetam o recorte, revistas e aceites:
+  - o limite de duração passou a comparar a duração exata (antes era arredondada para baixo);
+  - a verificação de espaço (E7) passou a ser feita em dois momentos: ao submeter (biblioteca
+    já cheia) e ao concluir (tamanho real do resultado), o que é mais correto do que estimar
+    pelo tamanho do original (D18);
+  - reembolso de quota idempotente (por pedido e dia), evitando reembolsos em duplicado.
+- **Novo bloco de testes [7] (FA1, premium):** o utilizador passa temporariamente a premium.
+  Verifica 3 pedidos ativos e o 4.º rejeitado, recortes concluídos sem gasto de quota, e os
+  limites de 30 min / 2 GB. Resultado total: **28/28**.
+- **Novo bloco de testes [8]:** testes que estavam como manuais "por executar" no relatório,
+  automatizados:
+  - LIB-002: a ocupação da biblioteca aumenta exatamente o tamanho do resultado;
+  - TRIM-027 (E7): com a biblioteca cheia (1 GB), o recorte é rejeitado com a ocupação e o limite;
+  - TRIM-031: um vídeo gerado de 5 min a 1080p (H.264) é recortado por inteiro em **42 s**
+    (alvo do MVP ≤ 5 min; alvo de produção ≤ 1 min, também cumprido neste equipamento:
+    macOS 27.0.1, Apple M1 Pro, 16 GB).
+  Resultado total: **31/31**.
+
+| ID | Decisão | Alternativas consideradas | Porquê |
+|----|---------|---------------------------|--------|
+| D32 | Testar o FA1 alterando temporariamente o tipo do utilizador na base de dados (e repondo-o no fim, mesmo em caso de erro) | Criar e pagar uma subscrição premium; deixar por testar | Não havia conta premium; o comportamento depende só do tipo do utilizador lido pelo `projects` |
+| D33 | Desempenho medido com um vídeo sintético gerado dentro do contentor do processador (`testsrc2`, 1920 × 1080, 30 fps, 300 s), enviado para o armazenamento e removido no fim; corre como premium | Gravar e importar manualmente um vídeo real de 5 min | Repetível em qualquer máquina e sem ficheiros grandes no repositório; o perfil premium evita o limite de 200 MB, que não é o que o requisito mede |
