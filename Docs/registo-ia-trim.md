@@ -163,3 +163,26 @@ backend, a correr contra o sistema em Docker), `tests/uc-vid-001/resultados.md`
 **Resultado:** 23 de 23 testes passaram (ver `tests/uc-vid-001/resultados.md`),
 cobrindo REQ-003 a REQ-020. Os REQ-001, 002, 021 e 022 e o FA1 são verificados
 pela checklist manual.
+
+
+---
+
+## Fase 6 — Regressão após a integração do UC-VID-003 e teste do FA1 (2026-10-21)
+
+- Depois de integrado o UC-VID-003 (que generalizou `projects/routes/videoJobs.js` e
+  `projects/utils/videoJobs.js` para servir o recorte e a aplicação de ferramentas), os
+  testes do recorte foram corridos outra vez, sem alterações: **23/23**. A integração não
+  partiu o UC-VID-001.
+- Alterações do colega que afetam o recorte, revistas e aceites:
+  - o limite de duração passou a comparar a duração exata (antes era arredondada para baixo);
+  - a verificação de espaço (E7) passou a ser feita em dois momentos: ao submeter (biblioteca
+    já cheia) e ao concluir (tamanho real do resultado), o que é mais correto do que estimar
+    pelo tamanho do original (D18);
+  - reembolso de quota idempotente (por pedido e dia), evitando reembolsos em duplicado.
+- **Novo bloco de testes [7] (FA1, premium):** o utilizador passa temporariamente a premium.
+  Verifica 3 pedidos ativos e o 4.º rejeitado, recortes concluídos sem gasto de quota, e os
+  limites de 30 min / 2 GB. Resultado total: **28/28**.
+
+| ID | Decisão | Alternativas consideradas | Porquê |
+|----|---------|---------------------------|--------|
+| D32 | Testar o FA1 alterando temporariamente o tipo do utilizador na base de dados (e repondo-o no fim, mesmo em caso de erro) | Criar e pagar uma subscrição premium; deixar por testar | Não havia conta premium; o comportamento depende só do tipo do utilizador lido pelo `projects` |

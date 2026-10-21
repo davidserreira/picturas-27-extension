@@ -87,6 +87,23 @@ def sha256_url(url):
     return h.hexdigest()
 
 
+def users_db(js):
+    return mongo("users_mongoDB", 27019, js)
+
+
+def processed_today(user_id):
+    today = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+    out = users_db(
+        f"var u = db.users.findOne({{_id: ObjectId('{user_id}')}});"
+        f"var op = (u.operations || []).filter(function(o){{ return o.day.toISOString().slice(0,10) == '{today}' }})[0];"
+        "print(op ? op.processed : 0)")
+    return int(out or 0)
+
+
+def set_user_type(user_id, user_type):
+    users_db(f"db.users.updateOne({{_id: ObjectId('{user_id}')}}, {{$set: {{type: '{user_type}'}}}})")
+
+
 class Ctx:
     def __init__(self, user, project, video):
         self.u, self.p, self.v = user, project, video
@@ -307,6 +324,67 @@ def test_limits(c):
             c.remove_fake(fake)
 
 
+def test_premium(c, created):
+    print("\n[7] Utilizador premium (FA1)")
+    set_user_type(c.u, "premium")
+    jobs = []
+    try:
+        processed_before = processed_today(c.u)
+
+        # 3 pedidos ativos em simultâneo são aceites; o 4.º é rejeitado (RN5)
+        for start in (0, 10, 20):
+            status, body, _ = c.trim(start, start + 10)
+            if status == 202:
+                jobs.append(body["job"]["_id"])
+        status4, body4, _ = c.trim(30, 40)
+        record("REQ-008", "premium: aceita 3 pedidos ativos e rejeita o 4.º",
+               len(jobs) == 3 and status4 == 429 and body4.get("code") == "TOO_MANY_JOBS",
+               f"{len(jobs)} aceites; 4.º: {body4.get('message', '') if isinstance(body4, dict) else body4}")
+
+        finished = [c.wait(j)[0] for j in jobs]
+        created.extend(j["result_video_id"] for j in finished if j.get("result_video_id"))
+        record("REQ-018", "premium: recortes concluídos não gastam quota diária",
+               all(j["state"] == "completed" for j in finished) and processed_today(c.u) == processed_before,
+               f"{sum(j['state'] == 'completed' for j in finished)}/3 concluídos; "
+               f"operações hoje {processed_before} → {processed_today(c.u)}")
+
+        # limites do premium: 6 min aceite (acima do limite do registado), 31 min rejeitado
+        fake = c.fake_video("premium6min", {"duration": 360})
+        try:
+            status, body, _ = c.trim(0, 10, video=fake)
+            ok = status == 202
+            if ok:
+                c.cancel(body["job"]["_id"])
+            record("REQ-005", "premium: aceita vídeo de 6 min (limite 30 min)", ok, f"HTTP {status}")
+        finally:
+            time.sleep(3)
+            c.remove_fake(fake)
+
+        fake = c.fake_video("premium31min", {"duration": 31 * 60})
+        try:
+            status, body, _ = c.trim(0, 10, video=fake)
+            record("REQ-005", "premium: rejeita vídeo de 31 min, sem sugerir o Premium",
+                   status == 413 and body.get("code") == "DURATION_LIMIT" and "Premium" not in body.get("message", ""),
+                   body.get("message", "") if isinstance(body, dict) else str(body))
+        finally:
+            c.remove_fake(fake)
+
+        fake = c.fake_video("premium250mb", {"size": 250 * 1024 * 1024})
+        try:
+            status, body, _ = c.trim(0, 10, video=fake)
+            ok = status == 202
+            if ok:
+                c.cancel(body["job"]["_id"])
+            record("REQ-006", "premium: aceita vídeo de 250 MB (limite 2 GB)", ok, f"HTTP {status}")
+        finally:
+            time.sleep(3)
+            c.remove_fake(fake)
+    finally:
+        for j in jobs:
+            c.cancel(j)
+        set_user_type(c.u, "free")
+
+
 # ------------------------------------------------------------------------ main
 
 def write_report(c):
@@ -314,7 +392,8 @@ def write_report(c):
         "# Resultados dos testes automáticos — UC-VID-001",
         "",
         f"Executado em {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')} com "
-        "`tests/uc-vid-001/test_trim_requirements.py` (perfil registado).",
+        "`tests/uc-vid-001/test_trim_requirements.py` (perfil registado; o bloco [7] "
+        "passa o utilizador temporariamente a premium para testar o FA1).",
         "",
         "| Requisito | Teste | Resultado | Detalhe |",
         "|-----------|-------|-----------|---------|",
@@ -370,6 +449,7 @@ def main():
         test_quota(c)
         test_failure(c)
         test_limits(c)
+        test_premium(c, created)
     finally:
         for video_id in created:
             c.delete_video(video_id)
