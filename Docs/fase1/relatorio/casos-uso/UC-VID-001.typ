@@ -8,7 +8,7 @@
   tabela-campos(
     [ID do Caso de Uso], [UC-VID-001],
     [Nome], [Recortar um vídeo e exportar o resultado],
-    [Autores], [David Cruz, João Sousa, Miguel Páscoa, Pedro Rebelo e Tiago Barros],
+    [Autores], [Todos os elementos da equipa],
     [Data], [2026-10-07 a 2026-10-21],
     [Objetivo], [Recortar um vídeo da biblioteca, mantendo ou removendo o intervalo selecionado, substituí-lo pelo resultado, acompanhar o processamento e exportá-lo],
     [Âmbito], [Módulo de vídeo do PictuRAS: ferramentas de vídeo, fila de processamento, biblioteca e exportação],

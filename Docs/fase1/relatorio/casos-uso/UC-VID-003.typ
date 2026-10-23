@@ -8,7 +8,7 @@
   tabela-campos(
     [ID do Caso de Uso], [UC-VID-003],
     [Nome], [Aplicar ferramentas de imagem a todos os fotogramas de um vídeo],
-    [Autores], [David Cruz, João Sousa, Miguel Páscoa, Pedro Rebelo e Tiago Barros],
+    [Autores], [Todos os elementos da equipa],
     [Data], [2026-10-07 a 2026-10-21],
     [Objetivo], [Aplicar uma cadeia de 1 a 3 ferramentas de imagem a todos os fotogramas de um vídeo da biblioteca, substituindo-o pelo resultado],
     [Âmbito], [Módulo de vídeo do PictuRAS: ferramentas de vídeo, ferramentas de imagem, encadeamento, fila de processamento e biblioteca],
@@ -116,4 +116,5 @@
     [Q3], [Deve ser possível aplicar a mesma cadeia a vários vídeos, como se faz com imagens?], [Adiada: o lote fica fora do MVP (5.3); reavaliar na Fase 3.],
     [Q4], [Os limites de resolução final devem considerar a orientação do vídeo? Hoje aplicam-se literalmente à largura e à altura, pelo que rodar um vídeo 1920 × 1080 para 1080 × 1920 excede a altura permitida ao registado.], [Adiada: mantém-se a interpretação literal (UC-VID-003/RN4).],
     [Q5], [Deve ser possível desfazer a aplicação de ferramentas, guardando a versão anterior do vídeo?], [Adiada: no MVP a substituição é definitiva (RNG-09), como no UC-VID-001/Q6; reavaliar na Fase 3.],
+    [Q6], [Um pedido premium dentro dos limites (10 min, resolução final 3840 × 2160) pode demorar mais do que o limite de 15 min do processador (DA-08) e terminar "Falhado". O limite do processador deve ser proporcional à duração e à resolução do vídeo, ou o limite premium deve ser reduzido?], [Adiada para a Fase 2: no MVP mantêm-se o limite de 15 min e os limites premium (RN5); o caso não foi medido. Pela medição do TST-APPLY-M03 (2 min a 1080p em 4,5 min), um vídeo de 10 min a 1080p já demoraria cerca de 22 min. A solução prevista é um limite proporcional ao trabalho (duração × píxeis).],
   )
