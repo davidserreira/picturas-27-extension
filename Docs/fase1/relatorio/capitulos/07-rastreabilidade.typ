@@ -155,7 +155,7 @@ Uma linha por requisito. Todos os requisitos estão implementados, alguns de for
     [REQ-VID-APPLY-003], [frontend, projects, video\_apply\_tool], [Implementado], [TST-APPLY-03], [Passa],
     [REQ-VID-APPLY-004], [frontend, projects, video\_apply\_tool], [Implementado], [TST-APPLY-03], [Passa],
     [REQ-VID-APPLY-005], [frontend, projects, video\_apply\_tool], [Implementado], [TST-APPLY-03], [Passa],
-    [REQ-VID-APPLY-007], [frontend, projects, video\_apply\_tool], [Implementado], [TST-APPLY-03], [Passa],
+    [REQ-VID-APPLY-007], [frontend, projects, video\_apply\_tool], [Implementado], [TST-APPLY-03], [Passa (o limite premium de 10 min é aceite, mas vídeos longos podem exceder o limite de 15 min do processador, UC-VID-003/Q6)],
     [REQ-VID-APPLY-008], [frontend, projects, video\_apply\_tool], [Implementado], [TST-APPLY-03], [Passa],
     [REQ-VID-APPLY-013], [frontend, projects, video\_apply\_tool], [Implementado], [TST-APPLY-01], [Passa],
     [REQ-VID-APPLY-014], [frontend, projects, video\_apply\_tool], [Implementado], [TST-APPLY-01], [Passa],
