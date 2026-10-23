@@ -21,6 +21,30 @@ function ffprobe(filePath) {
   });
 }
 
+// Packets that can actually be read from the first video stream, against the
+// number the header declares. A file cut short keeps a complete header (moov at
+// the start, as in phones and "faststart" files) but loses the frames after
+// the cut, so fewer packets are read than declared (D-01, UC-VID-002/E3).
+// Only the container is read, nothing is decoded: well under 1 s for 200 MB.
+function countVideoPackets(filePath) {
+  return new Promise((resolve) => {
+    execFile(
+      "ffprobe",
+      ["-v", "error", "-select_streams", "v:0", "-count_packets",
+        "-show_entries", "stream=nb_read_packets,nb_frames", "-print_format", "json", filePath],
+      { timeout: 60 * 1000, maxBuffer: 1024 * 1024 },
+      (error, stdout) => {
+        try {
+          const stream = JSON.parse(stdout).streams?.[0] || {};
+          resolve({ read: Number(stream.nb_read_packets), declared: Number(stream.nb_frames) });
+        } catch (_) {
+          resolve(error ? null : {});
+        }
+      },
+    );
+  });
+}
+
 /**
  * Inspects the real content of a file, ignoring its extension.
  * Returns { ok: true, format, codec, duration, width, height } or
@@ -54,6 +78,14 @@ async function probeVideo(filePath) {
 
   const duration = parseFloat(info.format.duration ?? video.duration);
   if (!Number.isFinite(duration) || duration <= 0) {
+    return { ok: false, error: "unreadable" };
+  }
+
+  // D-01: a truncated file is unreadable even if its header is intact
+  const packets = await countVideoPackets(filePath);
+  if (!packets) return { ok: false, error: "unreadable" };
+  if (Number.isFinite(packets.declared) && packets.declared > 0 &&
+      Number.isFinite(packets.read) && packets.read < packets.declared) {
     return { ok: false, error: "unreadable" };
   }
 

@@ -2,7 +2,7 @@
 
 // UC-VID-001 / UC-VID-003 — Recortar, aplicar ferramentas e exportar.
 // Panel docked next to the toolbar while a video is open in the carousel:
-// the tool chosen in the toolbar (Trim / Apply) + the requests of this video.
+// the tool chosen in the toolbar (Trim / Apply) and the request in progress.
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";

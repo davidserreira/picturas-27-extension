@@ -15,7 +15,7 @@
     [Ator Principal], [Utilizador Registado (gratuito, 5 operações/dia) ou Premium (pago, ilimitado)],
     [_Stakeholders_ e Interesses], [- *Utilizador*: quer carregar o vídeo sem o perder a meio e saber depressa se serve
 - *Proprietário do Sistema*: quer controlar o custo de armazenamento por perfil
-- *Equipa de Desenvolvimento*: este caso de uso é pré-condição de todos os outros de vídeo],
+- *Equipa de Desenvolvimento*: quer uma importação única e reutilizável, de que dependem todas as ferramentas de vídeo],
     [Pré-condições], [- Sessão iniciada com perfil registado ou premium
 - A biblioteca mostra as ações "Adicionar imagens" e "Importar vídeo"],
     [_Trigger_], [O utilizador clica em *Importar vídeo*, ao lado de *Adicionar imagens*],
@@ -47,7 +47,7 @@
     [FA2 – Cancelar], [Nos passos 4 ou 5, o utilizador escolhe *Cancelar* → o sistema interrompe, marca "Cancelado", remove os ficheiros parciais e não cria vídeo],
     [FA3 – Retomar], [O pedido está "Interrompido" há menos de 1 h → o utilizador escolhe *Retomar* e seleciona o mesmo ficheiro → o sistema continua a partir do ponto já recebido],
     [FA4 – Consultar as faixas], [Depois do passo 6, o utilizador abre o vídeo na biblioteca → o sistema reproduz o vídeo e apresenta, num painel sob o leitor, numa linha temporal com a duração do vídeo, as suas faixas de vídeo (com fotogramas distribuídos ao longo da duração) e de áudio (com a forma de onda), cada uma com o codec e as características, e a posição de reprodução → o utilizador clica numa faixa → o sistema muda a reprodução para esse instante],
-    [FA5 – Importar ao criar o projeto], [Em vez dos passos 1 a 3, o utilizador cria um projeto novo e junta um vídeo às imagens na área de submissão → o sistema cria o projeto com as imagens e inicia a importação do vídeo em segundo plano, como no passo 3 (um vídeo de cada vez; no perfil anónimo, apresenta a mensagem da RN3 e não cria o projeto) → o fluxo continua no passo 4],
+    [FA5 – Importar ao criar o projeto], [Em vez dos passos 1 a 3, o utilizador cria um projeto novo e junta um vídeo às imagens na área de submissão → o sistema cria o projeto com as imagens e inicia a importação do vídeo em segundo plano, como no passo 3 (um vídeo de cada vez; no perfil anónimo, apresenta _"O perfil anónimo não tem acesso a funcionalidades de vídeo. Crie uma conta para importar vídeos."_ (RN3) e não cria o projeto) → o fluxo continua no passo 4],
   ),
 )
 
@@ -63,7 +63,7 @@
     [E4 – O tamanho excede o espaço livre da biblioteca de vídeo], [No passo 3, não cria o pedido e apresenta o espaço livre],
     [E5 – A ligação falha a meio do envio], [Marca "Interrompido" e mantém o parcial durante 1 h; sem retoma nesse prazo, remove o parcial e marca "Falhado"],
     [E6 – Número máximo de importações ativas], [No passo 3, rejeita o pedido e indica que tem de aguardar ou cancelar uma importação ativa],
-    [E7 – As faixas não podem ser lidas], [Na FA4, o vídeo continua a ser reproduzido e é apresentado _"Não foi possível ler as faixas deste vídeo."_; se só a forma de onda falhar, as faixas são apresentadas com _"Não foi possível obter a forma de onda"_],
+    [E7 – As faixas não podem ser lidas], [No FA4, o vídeo continua a ser reproduzido e é apresentado _"Não foi possível ler as faixas deste vídeo."_; se só a forma de onda falhar, as faixas são apresentadas com _"Não foi possível obter a forma de onda"_],
   ),
 )
 
@@ -84,7 +84,7 @@
     [RN1], [Formatos aceites: MP4 (H.264) e MOV, validados pelo conteúdo do ficheiro],
     [RN2], [Limites: registado, vídeos até 5 min e 200 MB; premium, até 30 min e 2 GB],
     [RN3], [O perfil anónimo não tem acesso a funcionalidades de vídeo],
-    [RN4], [Armazenamento da biblioteca de vídeo: 1 GB (registado) e 10 GB (premium), incluindo vídeos resultantes de ferramentas],
+    [RN4], [Armazenamento da biblioteca de vídeo: 1 GB (registado) e 10 GB (premium), contando o tamanho atual de cada vídeo, também depois de alterado por uma ferramenta],
     [RN5], [Importações ativas em simultâneo: 1 (registado) e 3 (premium)],
     [RN6], [O envio inicia em ≤ 2 s após a confirmação; o progresso é atualizado pelo menos a cada 5 s],
     [RN7], [A importação não conta na quota diária de operações],
@@ -100,7 +100,7 @@
 #tabela(
     colunas: (1.6cm, 1fr),
     [ID], [Assunção],
-    [A1], [A biblioteca mostra imagens e vídeos no mesmo ecrã, em secções separadas],
+    [A1], [A biblioteca do projeto mostra imagens e vídeos na mesma grelha],
     [A2], [Importa-se um ficheiro de cada vez],
     [A3], [Não há verificação de vírus no MVP],
     [A4], [Na retoma, o ficheiro é reconhecido pelo nome, tamanho e resumo criptográfico],
@@ -116,7 +116,7 @@
     [ID], [Questão], [Resolução],
     [Q1], [Deve ser possível importar vários vídeos de uma vez ou um .zip, como nas imagens?], [Adiada: fora do âmbito do MVP (5.3); reavaliar na Fase 3.],
     [Q2], [A miniatura do vídeo deve ser gerada automaticamente após a importação?], [Adiada: a biblioteca mostra o primeiro fotograma obtido pelo browser; uma miniatura gerada no servidor fica para a Fase 3.],
-    [Q3], [O perfil anónimo deve poder importar vídeos pequenos?], [Decidida: não → RNG-02 (UC-VID-002/RN3).],
+    [Q3], [O perfil anónimo deve poder importar vídeos pequenos?], [Decidida: não → RNG-02 (RN3).],
     [Q4], [Antes de produção, deve existir verificação de vírus ou de conteúdo dos ficheiros importados (ver A3)?], [Adiada para antes de produção (Fase 3); mantém-se a assunção UC-VID-002/A3.],
     [Q5], [Deve ser possível editar as faixas (por exemplo, remover, silenciar ou substituir o áudio)?], [Adiada: no MVP as faixas só são consultadas (A7); reavaliar na Fase 3.],
   )

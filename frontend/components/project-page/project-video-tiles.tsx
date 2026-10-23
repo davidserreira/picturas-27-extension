@@ -166,6 +166,8 @@ function VideoTile({
           <div className="absolute top-2 left-2 z-10 inline-flex items-center gap-1 rounded-md bg-black/70 px-1.5 py-0.5 text-xs font-medium text-white">
             <Film className="size-3" />
             {video.duration != null && formatDuration(video.duration)}
+            {/* REQ-VID-IMPORT-015: name, duration and size */}
+            <span className="text-white/80">· {formatBytes(video.size)}</span>
           </div>
 
           <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/80 to-transparent px-2 pb-2 pt-6 text-left">

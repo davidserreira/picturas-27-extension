@@ -4,7 +4,7 @@ Data: 2026-10-09. Ferramenta: ChatGPT/Codex. Branch: `feature/uc-vid-003-apply-t
 
 Pedido do utilizador: analisar o repositório e desenvolver a sua parte, identificada na especificação como UC-VID-003 — aplicar ferramentas de imagem a todos os fotogramas. A IA leu a especificação e os caminhos de importação, recorte, imagem, quota, armazenamento e interface existentes.
 
-Este registo descreve trabalho e validação automática executados pelo assistente. **A revisão e validação pelo aluno ainda não foram registadas.** Não foram inventados nomes/números de alunos, medições do Compose ou testes manuais.
+A parte inicial deste registo descreve o trabalho e a validação automática executados pelo assistente (2026-10-09); a validação feita depois pela equipa está na secção "Validação pela equipa", no fim.
 
 ## Decisões
 
@@ -38,12 +38,10 @@ Foi criada uma workflow de CI com testes de media, API, gateway, frontend e comp
 - [PyAV — containers](https://pyav.org/docs/stable/api/container.html): demux/decode/encode e streams. A API efetiva de `add_stream_from_template` foi confirmada no PyAV 16.1.0 instalado.
 - [MongoDB — updates com pipeline](https://www.mongodb.com/docs/manual/tutorial/update-documents-with-aggregation-pipeline/): atualização do contador e chave de devolução num documento.
 
-## Revisão pelo aluno — por preencher depois de executar
+## Validação pela equipa
 
-- Data, identificação e ambiente: pendentes.
-- Código revisto, decisões aceites/alteradas e entendimento do processamento de frames: pendentes.
-- Checklist manual e testes com o Compose: pendentes.
-- Medições de receção, progresso e cenário A4: pendentes.
-- Comentários do grupo/docente e correções posteriores: pendentes.
-
-As limitações remanescentes de quota legada, bloqueio por processo e browsers constam de [UC-VID-003-implementacao.md](UC-VID-003-implementacao.md). Esta entrega é um MVP para revisão e verificação; não é uma declaração de preparação para produção.
+- **Integração (2026-10-21):** o UC-VID-003 foi integrado no `main`; os testes do UC-VID-001 foram repetidos sem alterações (regressão, 28/28) e o código partilhado dos pedidos generalizado foi revisto (TST-QUAL-M03).
+- **Substituição do vídeo (v1.4, 2026-10-21):** o resultado passou a substituir o vídeo, como no recorte (RNG-09); os testes da API foram adaptados (35/35).
+- **Repetição noutro ambiente:** em Linux (Docker Engine, Intel Core i5-11300H), 20/20 testes Python, 35/35 da API, 4/4 do gateway e 1/1 de quota com um MongoDB descartável.
+- **Verificação final (2026-10-22 e 23):** com as imagens reconstruídas a partir da versão entregue, em Windows 11 com Docker Desktop: testes pela API (TST-APPLY-M02 e M03, tempos medidos) e no browser (TST-APPLY-M01 e M02, Playwright); encontrados e corrigidos os defeitos D-02 (mensagem sem o espaço livre) e D-04 (mensagem de quota sem o limite), em `Docs/defeitos-conhecidos.md`. A 2026-10-23 os testes isolados foram corridos outra vez: 20/20 Python, 35/35 API, 4/4 gateway (`tests/uc-vid-003/resultados.md`).
+- **Limitações que se mantêm:** bloqueio por utilizador só correto com uma instância do serviço `projects`; dimensões ímpares em H.264; limite de resolução literal (UC-VID-003/Q4). Estão na secção 10.3 do relatório.

@@ -1,5 +1,7 @@
 # Checklist no ambiente completo — UC-VID-003
 
+> **Histórico.** Esta lista regista as execuções manuais das versões anteriores (v1.0 a v1.5). Na versão entregue, os testes de interface estão automatizados em `tests/browser` e os resultados estão na tabela 10.2 do relatório; a interface e o comportamento atuais (resultado que substitui o vídeo, ferramentas no painel à esquerda) estão descritos nos casos de uso.
+
 Estado inicial: **por executar**. Preencher data, ambiente, browser, utilizador de teste, resultado observado e evidência. Não marcar como validado sem executar.
 
 ## Preparação

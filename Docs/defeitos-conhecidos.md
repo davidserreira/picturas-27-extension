@@ -6,7 +6,7 @@ documentados aqui e no relatório (secção 10.3 e tarefa T-04 do capítulo 11).
 
 | ID | Defeito | Origem | Requisitos | Estado |
 |----|---------|--------|------------|--------|
-| D-01 | Um MP4 truncado com o cabeçalho intacto é aceite como "Disponível" | Importação (UC-VID-002) | REQ-VID-IMPORT-011; UC-VID-002/E3 | Não corrigido |
+| D-01 | Um MP4 truncado com o cabeçalho intacto é aceite como "Disponível" | Importação (UC-VID-002) | REQ-VID-IMPORT-011; UC-VID-002/E3 | Corrigido (2026-10-23) |
 | T-04 | O armazenamento só aceita ficheiros de cerca de 6 utilizadores | Solução de base (SeaweedFS) | LIB-001, IMPORT-013; afeta também as imagens | Não corrigido |
 | D-02 | Um pedido que falha por falta de espaço não indica o espaço livre | Pedidos (UC-VID-003/E8) | REQ-VID-APPLY-028 | Corrigido (2026-10-23) |
 | D-03 | Os ficheiros parciais de um processador terminado a meio ficam no contentor | Processadores de vídeo | REQ-VID-JOB-004, JOB-005; PROCESS-003 | Corrigido (2026-10-23) |
