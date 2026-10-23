@@ -40,7 +40,7 @@ def write_results(path, title):
              "| Teste | Requisitos | Descrição | Resultado | Detalhe |", "|---|---|---|---|---|"]
     for test, reqs, desc, ok, detail in results:
         lines.append(f"| {test} | {reqs} | {desc} | {'Passa' if ok else 'Falha'} | {detail} |")
-    with open(path, "w") as f:
+    with open(path, "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
     return passed
 

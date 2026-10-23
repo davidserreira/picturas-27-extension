@@ -193,12 +193,19 @@ class Ctx:
 
 def find_test_video():
     js = (
-        "var v = db.videos.find({state: 'available', format: 'mp4', duration: {$gte: 40},"
-        " name: {$not: /_recorte|^__teste_/}}).sort({_id: 1}).limit(1).toArray()[0];"
-        "if (v) print(JSON.stringify({u: v.user_id.str, p: v.project_id.str, v: v._id.str}));"
+        "var vs = db.videos.find({state: 'available', format: 'mp4', duration: {$gte: 40},"
+        " name: {$not: /_recorte|^__teste_/}}).sort({_id: 1}).limit(50).toArray();"
+        "print(JSON.stringify(vs.map(function (v) {"
+        " return {u: v.user_id.str, p: v.project_id.str, v: v._id.str}; })));"
     )
     out = projects_db(js)
-    return json.loads(out) if out else None
+    # o primeiro vídeo de um utilizador registado que ainda existe (a base de dados
+    # de projetos pode ter vídeos de contas entretanto apagadas)
+    for ids in json.loads(out or "[]"):
+        status, user = http("GET", f"{USERS}/{ids['u']}")
+        if status == 200 and isinstance(user, dict) and user.get("type") == "free":
+            return ids
+    return None
 
 
 # ----------------------------------------------------------------------- testes

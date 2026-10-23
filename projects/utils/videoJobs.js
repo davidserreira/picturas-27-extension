@@ -5,7 +5,7 @@ const Video = require("../controllers/video");
 const Project = require("../controllers/project");
 const broker = require("./videoBroker");
 const { withUserLock } = require("./videoLocks");
-const { limitsFor } = require("./videoLimits");
+const { limitsFor, formatBytes } = require("./videoLimits");
 const { httpsAgent } = require("./httpsAgent");
 const { get_image_internal_url, delete_image } = require("./imageStorage");
 
@@ -164,7 +164,15 @@ async function onSuccess(msg) {
       if (!source || source.state !== "available") return rejectResult("SOURCE_REMOVED");
       const maximum = current.max_storage || limitsFor("free").storage;
       const used = await Video.usedStorage(current.user_id);
-      if (used - source.size + out.size > maximum) return rejectResult("STORAGE_FULL");
+      if (used - source.size + out.size > maximum) {
+        // UC-VID-003/E8: the user is told how much space is free
+        await cleanup();
+        return failJob(current._id, {
+          code: "STORAGE_FULL",
+          message: `Não há espaço na biblioteca de vídeo para o resultado (${formatBytes(out.size)}). ` +
+            `Espaço livre: ${formatBytes(maximum - used + source.size)} de ${formatBytes(maximum)}.`,
+        });
+      }
 
       // remembered first, so that a replay can still remove the old file
       await VideoJob.updateIfState(current._id, VideoJob.ACTIVE_STATES, { replaced_key: source.video_key });

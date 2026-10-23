@@ -256,6 +256,7 @@ test("actual encoded size is checked again before publication", async () => {
   // the replaced video's own size is freed: only a result above the whole storage is too big
   await apply(); const job = jobs[0]; await success(job, { size: job.max_storage + 1 });
   assert.equal(job.state, "failed"); assert.equal(job.error.code, "STORAGE_FULL");
+  assert.match(job.error.message, /^Não há espaço na biblioteca de vídeo para o resultado .*Espaço livre: .+ de 1 GB\.$/);
   assert.equal(videos.length, 1); assert.equal(deletes.length, 1); assert.equal(operations, 0);
   assert.equal(videos[0].video_key, "source.mp4");
 });

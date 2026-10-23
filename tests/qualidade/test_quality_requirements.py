@@ -14,6 +14,7 @@ Escreve o resultado em tests/qualidade/resultados.md.
 
 import argparse
 import os
+import platform
 import shutil
 import subprocess
 import sys
@@ -115,11 +116,15 @@ def test_processor_crash(m):
     time.sleep(3)
     subprocess.run(["docker", "compose", "start", "video_trim_tool"], cwd=REPO, capture_output=True)
     final, states, _ = u.wait_job(job, timeout=900)
+    # os ficheiros parciais do processamento interrompido não podem ficar no processador
+    left = subprocess.run(["docker", "compose", "exec", "-T", "video_trim_tool", "sh", "-c",
+                           "ls -d /tmp/trim-* 2>/dev/null | wc -l"],
+                          cwd=REPO, capture_output=True, text=True).stdout.strip()
     record("TST-JOB-M01", "PROCESS-003",
-           "processador terminado a meio: o pedido volta a ser processado e termina",
-           final["state"] in ("completed", "failed"),
-           f"terminado a {at} %; estados vistos depois: {' → '.join(states)}. "
-           "A deteção de pedidos parados (20 min) não foi esperada")
+           "processador terminado a meio: o pedido volta a ser processado e termina, sem deixar temporários",
+           final["state"] in ("completed", "failed") and left == "0",
+           f"terminado a {at} %; estados vistos depois: {' → '.join(states)}; temporários no processador: "
+           f"{left}. A deteção de pedidos parados (20 min) é testada em test_stalled_job.py")
     return final["state"] == "completed"
 
 
@@ -219,10 +224,12 @@ def main():
     if args.fila:
         test_queue(m)
     host_ffmpeg = shutil.which("ffmpeg") is not None
+    engine = subprocess.run(["docker", "info", "--format", "{{.OperatingSystem}} {{.ServerVersion}}"],
+                            capture_output=True, text=True).stdout.strip()
     record("TST-QUAL-M04", "PORT-001",
            "processadores de vídeo concluem pedidos sem dependências no anfitrião",
            apply_ok and crash_ok and not host_ffmpeg,
-           f"Linux com Docker Engine; FFmpeg no anfitrião: {'sim' if host_ffmpeg else 'não'}; "
+           f"{platform.system()} com {engine}; FFmpeg no anfitrião: {'sim' if host_ffmpeg else 'não'}; "
            "recorte e aplicação de ferramentas concluídos")
 
     passed = write_results(os.path.join(HERE, "resultados.md"), "Resultados — requisitos de qualidade (API)")

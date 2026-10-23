@@ -28,8 +28,10 @@ Reply messages (published on video_job_queue):
 """
 
 import datetime
+import glob
 import json
 import os
+import shutil
 import subprocess
 import tempfile
 import threading
@@ -371,7 +373,16 @@ class VideoTrimWorker:
         self._channel.start_consuming()
 
 
+def remove_leftover_files():
+    """Removes the partial files of a job interrupted by a crash (the container was
+    killed and started again; the job is re-delivered and redone from the start).
+    One job at a time per worker, so none of them is in use when it starts."""
+    for path in glob.glob(os.path.join(tempfile.gettempdir(), "trim-*")):
+        shutil.rmtree(path, ignore_errors=True)
+
+
 if __name__ == "__main__":
+    remove_leftover_files()
     # RabbitMQ may still be starting; retry instead of crash-looping
     while True:
         try:
