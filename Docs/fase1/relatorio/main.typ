@@ -17,7 +17,6 @@
   group: "Grupo 5",
   authors: (
     (name: "David Cruz", number: "pg65403"),
-    (name: "João Sousa", number: "pg62406"),
     (name: "Miguel Páscoa", number: "pg64007"),
     (name: "Pedro Rebelo", number: "pg64018"),
     (name: "Tiago Barros", number: "pg64035"),
