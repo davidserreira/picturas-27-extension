@@ -1,7 +1,8 @@
 # Registo de desenvolvimento assistido por IA — UC-VID-001 (Recortar vídeo)
 
 Autor: Miguel Páscoa · Branch: `feature/video-trim`
-Ferramenta de IA: Claude (Anthropic).
+Ferramenta de IA: Claude (Anthropic), modelo Claude Opus 5.5, via Claude Code (sem _skills_ nem
+instruções de projeto versionadas; o contexto foi dado em cada sessão).
 Este registo documenta, por fase, o que foi pedido à IA, as decisões tomadas,
 as alternativas rejeitadas e a validação feita pelo aluno.
 
@@ -250,7 +251,43 @@ ferramentas) e deixa de haver a lista "Pedidos deste vídeo".
 |----|---------|---------------------------|--------|
 | D38 | Retirar a opção "Manter também o original?" (D36): o pedido deixa de aceitar `keep_original` e o resultado substitui sempre o vídeo (D34). O antigo FA5 (remover a seleção) passa a FA4; REQ-VID-TRIM-033 é retirado e o ID não é reutilizado. Os nomes numerados mantêm-se na importação (D35) | Manter a opção | A equipa quer um único comportamento, como num editor: não há "original" e "modificado", só o vídeo modificado. Menos código (sem cópias na conclusão) e menos casos de teste |
 | D39 | Os controlos do recorte (*Manter/Remover seleção*, campos, *Aplicar recorte*) ficam só no painel à esquerda; o botão *Recortar* e a barra sobre as faixas são retirados. As faixas mantêm a seleção arrastável enquanto o painel Recortar está aberto | Controlos também sobre as faixas (v1.5) | Um só caminho para cada ferramenta, a barra de ferramentas, como nas imagens; as faixas servem para escolher o intervalo, não para aplicar |
-| D40 | Sem lista de pedidos: o painel mostra apenas o pedido em curso do vídeo (estado, progresso, fotogramas, *Cancelar*) ou o motivo da falha do último; ao concluir aparece um aviso "foi substituído pelo resultado"; ao voltar a um vídeo com um pedido em curso, o painel dessa ferramenta reabre (uma vez por visita). Exportar faz-se pelo menu do vídeo | Manter a lista dos últimos 5 pedidos | Como o resultado substitui o vídeo, pedidos antigos não têm nada para abrir ou exportar; o que interessa é o pedido em curso. A reabertura mantém o REQ-VID-JOB-010 (reencontrar o pedido ao voltar), reformulado |
+| D40 | Sem lista de pedidos: o painel mostra apenas o pedido em curso do vídeo (estado, progresso, fotogramas, *Cancelar*) ou o motivo da falha do último; ao concluir aparece um aviso "foi substituído pelo resultado"; ao voltar a um vídeo com um pedido em curso, o painel dessa ferramenta reabre (uma vez por visita). Exportar faz-se pela barra de ferramentas (*Tools*) | Manter a lista dos últimos 5 pedidos | Como o resultado substitui o vídeo, pedidos antigos não têm nada para abrir ou exportar; o que interessa é o pedido em curso. A reabertura mantém o REQ-VID-JOB-010 (reencontrar o pedido ao voltar), reformulado |
 
 **Verificação:** TypeScript e ESLint sem erros; testes automáticos ajustados (bloco [9]
 sem os 3 casos de manter o original): **36/36** (2026-10-21).
+
+O caso TST-TRIM-28 da v1.5 (manter o original) foi retirado com a D38; o antigo
+TST-TRIM-28 (nomes únicos na importação) passou a TST-TRIM-27.
+
+---
+
+## Pedidos à IA (resumo)
+
+Resumo dos pedidos feitos à IA nos momentos que definiram o UC-VID-001 (as sessões
+completas não são versionadas). As respostas e as decisões estão nas fases acima.
+
+| Fase | Pedido (resumo) | Decisões |
+|------|-----------------|----------|
+| 0–5 | Analisar o repositório e implementar o recorte a partir do caso de uso e dos requisitos do Exercício 2, com um teste por requisito e as decisões registadas. | D1–D27 |
+| 5 | Numerar os nomes dos resultados repetidos em vez de os recusar. | D28 |
+| 6 | Testar o perfil premium sem conta paga e medir o desempenho com um vídeo de 5 min. | D32–D33 |
+| 8 (v1.5) | Numerar nomes repetidos na importação, perguntar no fim do recorte se o original se mantém, e fazer o recorte nas faixas de vídeo e áudio, arrastando as extremidades e podendo remover um excerto; atualizar o relatório. | D35–D37 |
+| 9 (v1.6) | Voltar a substituir sempre o vídeo, pôr todos os controlos das ferramentas só no painel à esquerda e retirar a lista de pedidos, também em Aplicar ferramentas; atualizar o relatório. | D38–D40 |
+| Verificação final | Rever o relatório, o código, os testes e a apresentação face às diretrizes da Fase 1 e corrigir o que faltasse para a entrega. | D41 |
+
+---
+
+## Verificação final (2026-10-23)
+
+Revisão do relatório face às diretrizes da Fase 1, ao enunciado e ao código, feita com a IA
+e confirmada pelo aluno.
+
+| ID | Decisão | Alternativas consideradas | Porquê |
+|----|---------|---------------------------|--------|
+| D41 | Corrigir o defeito D-01: a validação da importação conta os pacotes de vídeo que se conseguem ler (`ffprobe -count_packets`) e recusa o ficheiro se forem menos do que os declarados no cabeçalho | Descodificar o vídeo todo (`ffmpeg -f null`); deixar o defeito registado | Deteta o MP4 truncado sem descodificar (165 ms para o `video_teste.mp4`, menos de 1 s para 200 MB), pelo que não põe em risco o REQ-VID-IMPORT-030. Verificado com MP4 e MOV completos e truncados e com um MOV ProRes |
+
+Também foram corrigidos: o modelo de domínio (sem a associação "resultado", que já não
+existia desde a v1.4), critérios de aceitação sem "Quando", requisitos não atómicos
+(LIB-007 dividido em LIB-007 e LIB-010) e sem requisito (operações restantes: JOB-016), o
+tamanho do vídeo na biblioteca (REQ-VID-IMPORT-015), texto desatualizado e erros de português.
+

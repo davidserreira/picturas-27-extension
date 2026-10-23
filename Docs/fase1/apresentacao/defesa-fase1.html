@@ -213,11 +213,11 @@ label.tog{display:flex;gap:6px;align-items:center;font-size:14px;cursor:pointer}
 <section class="scene titlecard" data-ep="0" data-name="Título" data-title="Abertura">
   <div class="num">Fase 1</div>
   <p class="ttl">Suporte a vídeo no PictuRAS</p>
-  <div class="meta">DEFESA · GRUPO PL?-G? · 10 MIN</div>
+  <div class="meta">DEFESA · GRUPO 5 · 10 MIN</div>
   <div class="rule">UC-VID-001 · Recortar um vídeo<br>REQ-VID-JOB-001 · REQ-VID-TRIM-016<br>demonstração no MVP</div>
   <script type="text/x-cues">
 @ min=4
-Bom dia. Somos o grupo PL?-G? e vamos apresentar a Fase 1 do PictuRAS: o suporte a vídeo.
+Bom dia. Somos o grupo 5 e vamos apresentar a Fase 1 do PictuRAS: o suporte a vídeo.
   </script>
 </section>
 
@@ -227,7 +227,7 @@ Bom dia. Somos o grupo PL?-G? e vamos apresentar a Fase 1 do PictuRAS: o suporte
   <div class="center">
     <div class="feat">
       <div class="card" data-at="1"><div class="k">UC-VID-002</div><div class="h">Importar um vídeo</div><div class="d">Envio por blocos com retoma, validação do conteúdo real e consulta das faixas de vídeo e áudio.</div></div>
-      <div class="card me" data-at="2"><div class="k">UC-VID-001</div><div class="h">Recortar um vídeo</div><div class="d">Intervalo com precisão de 1 s, processado de forma assíncrona; o resultado substitui o vídeo.</div></div>
+      <div class="card me" data-at="2"><div class="k">UC-VID-001</div><div class="h">Recortar um vídeo</div><div class="d">Manter ou remover um intervalo, com precisão de 1 s, processado de forma assíncrona; o resultado substitui o vídeo.</div></div>
       <div class="card" data-at="1"><div class="k">UC-VID-003</div><div class="h">Aplicar ferramentas</div><div class="d">Redimensionar, Binarizar e Rodar em todos os fotogramas, com o áudio intacto.</div></div>
     </div>
     <div class="phases" data-at="3">
@@ -256,7 +256,7 @@ Três minutos para o caso de uso, dois para dois requisitos e cinco para a demon
     <div class="card" data-at="1"><div class="k">Objetivo</div><div class="h">Ficar só com o trecho que interessa</div><div class="d">O resultado <b>substitui o vídeo</b> e pode ser exportado. O processamento é acompanhado sem bloquear a aplicação.</div></div>
     <div class="card" data-at="2"><div class="k">Ator principal</div><div class="h">Utilizador registado ou premium</div><div class="d">Registado: 5 operações/dia, vídeos até 5 min e 200 MB. Premium: sem quota, até 30 min e 2 GB. O anónimo não tem acesso a vídeo.</div></div>
     <div class="card" data-at="3"><div class="k">Pré-condições · trigger</div><div class="h">Vídeo na biblioteca, do próprio utilizador</div><div class="d">Importado antes (UC-VID-002). O utilizador abre o vídeo e escolhe <b>Recortar</b> na barra de ferramentas.</div></div>
-    <div class="card" data-at="4"><div class="k">Stakeholders</div><div class="h">Três interesses diferentes</div><div class="d"><b>Utilizador:</b> o trecho certo, sem esperar ao ecrã.<br><b>Proprietário:</b> controlar o custo por perfil.<br><b>Operações:</b> nenhum ficheiro parcial guardado.</div></div>
+    <div class="card" data-at="4"><div class="k">Stakeholders</div><div class="h">Três interesses diferentes</div><div class="d"><b>Utilizador:</b> o trecho certo, sem ficar à espera em frente ao ecrã.<br><b>Proprietário:</b> controlar o custo por perfil.<br><b>Operações:</b> nenhum ficheiro parcial guardado.</div></div>
   </div>
   <script type="text/x-cues">
 @
@@ -266,7 +266,7 @@ O ator é o utilizador registado ou premium, com limites diferentes: o registado
 @
 A pré-condição é o vídeo já estar na biblioteca. Começa quando o utilizador o abre e escolhe Recortar.
 @
-O utilizador quer o trecho certo sem esperar ao ecrã, o proprietário quer controlar o custo e as operações não querem ficheiros parciais.
+O utilizador quer o trecho certo sem ficar à espera em frente ao ecrã, o proprietário quer controlar o custo e as operações não querem ficheiros parciais.
   </script>
 </section>
 
@@ -278,8 +278,8 @@ O utilizador quer o trecho certo sem esperar ao ecrã, o proprietário quer cont
         <thead><tr><th>#</th><th>Ator</th><th>Sistema</th></tr></thead>
         <tbody>
           <tr data-row="1"><td class="n">1</td><td>Seleciona um vídeo da biblioteca</td><td>Mostra o vídeo, as suas faixas e as operações restantes no dia</td></tr>
-          <tr data-row="2"><td class="n">2</td><td>Escolhe <b>Recortar</b></td><td>Mostra o início, o fim e a duração total</td></tr>
-          <tr data-row="3"><td class="n">3</td><td>Define o início e o fim</td><td>Valida o intervalo e mostra a duração do recorte</td></tr>
+          <tr data-row="2"><td class="n">2</td><td>Escolhe <b>Recortar</b> na barra de ferramentas</td><td>Abre o painel à esquerda e mostra a seleção, arrastável, sobre as faixas</td></tr>
+          <tr data-row="3"><td class="n">3</td><td>Arrasta as extremidades ou escreve o início e o fim</td><td>Valida o intervalo e mostra a duração do resultado</td></tr>
           <tr data-row="4"><td class="n">4</td><td>Clica em <b>Aplicar recorte</b></td><td>Verifica formato, limites, espaço, quota e pedidos ativos; cria o pedido <b>“Em fila”</b> e confirma</td></tr>
           <tr data-row="5"><td class="n">5</td><td>Acompanha (pode sair da página)</td><td><b>“Em processamento”</b>, com percentagem de progresso</td></tr>
           <tr data-row="6"><td class="n">6</td><td>—</td><td>Substitui o vídeo pelo resultado, <b>“Concluído”</b>, desconta 1 operação</td></tr>
@@ -299,9 +299,9 @@ O utilizador quer o trecho certo sem esperar ao ecrã, o proprietário quer cont
 @
 Sete passos. O utilizador seleciona o vídeo, e o sistema mostra-o com as faixas e as operações restantes no dia.
 @
-Escolhe Recortar e vê os controlos de início e fim.
+Escolhe Recortar na barra de ferramentas: abre-se o painel à esquerda e aparece, sobre as faixas de vídeo e de áudio, uma seleção com as duas extremidades arrastáveis.
 @
-Define o intervalo, que é validado enquanto escreve.
+Define o intervalo, arrastando as extremidades ou escrevendo no painel, e é validado logo.
 @
 Ao aplicar, o sistema verifica limites, quota e pedidos ativos, cria o pedido Em fila e confirma logo.
 @ min=5
@@ -316,10 +316,11 @@ Por fim, pode exportar o vídeo.
 <section class="scene" data-ep="1" data-name="Alternativas e exceções">
   <p class="eyebrow">1.3 · Fluxos alternativos e exceções</p>
   <div class="center" style="gap:2cqw">
-    <div class="cols3" data-at="1">
+    <div class="cols4" data-at="1">
       <div class="card"><div class="k">FA1</div><div class="h">Utilizador premium</div><div class="d">Limites maiores, até 3 pedidos ativos, sem quota.</div></div>
-      <div class="card"><div class="k">FA2</div><div class="h">Cancelar</div><div class="d">Pára o processamento; o vídeo fica inalterado e a operação é devolvida.</div></div>
+      <div class="card"><div class="k">FA2</div><div class="h">Cancelar</div><div class="d">Para o processamento; o vídeo fica inalterado e a operação é devolvida.</div></div>
       <div class="card"><div class="k">FA3</div><div class="h">Pré-visualizar</div><div class="d">Reproduz só o intervalo, sem criar pedido nem gastar quota.</div></div>
+      <div class="card"><div class="k">FA4</div><div class="h">Remover a seleção</div><div class="d">Corta o intervalo do meio e junta o que está antes e depois (só H.264).</div></div>
     </div>
     <div class="chipgrid" data-at="2">
       <div class="ex"><div class="c">E1</div><div class="h">Formato não suportado</div></div>
@@ -334,7 +335,7 @@ Por fim, pode exportar o vídeo.
   </div>
   <script type="text/x-cues">
 @
-Três alternativas: premium, com limites maiores; cancelar, que deixa o vídeo como estava; e pré-visualizar, sem gastar quota.
+Quatro alternativas: premium, com limites maiores; cancelar, que deixa o vídeo como estava; pré-visualizar, sem gastar quota; e remover a seleção, que corta um excerto do meio do vídeo.
 @
 E oito exceções, cada uma com uma mensagem que diz o motivo e, quando existe, o limite.
 @ min=6
@@ -393,7 +394,7 @@ key: <b>Garantia mínima:</b> se o recorte falhar ou for cancelado, o vídeo, a 
         <div class="hop"><div class="who">RabbitMQ</div><div class="what">fila <code>video_trim_queue</code></div></div>
         <div class="hop"><div class="who">video_trim_tool</div><div class="what">processa e envia progresso a cada 2 s</div></div>
       </div>
-      <div data-at="4" style="display:flex;gap:1.6cqw;align-items:baseline"><div class="timer">0,04 s</div><div class="muted" style="font-size:1.35cqw">confirmação medida (TST-TRIM-03)<br>alvo do MVP ≤ 2 s (JOB-012)</div></div>
+      <div data-at="4" style="display:flex;gap:1.6cqw;align-items:baseline"><div class="timer">0,14 s</div><div class="muted" style="font-size:1.35cqw">confirmação medida (TST-TRIM-03)<br>alvo do MVP ≤ 2 s (JOB-012)</div></div>
     </div>
   </div>
   <script type="text/x-cues">
@@ -404,8 +405,8 @@ O critério de aceitação diz: dado um recorte válido, quando é submetido, en
 @
 É importante porque obrigou a uma decisão de arquitetura. O serviço projects valida, reserva a operação, cria o pedido e responde de imediato. O trabalho pesado vai para uma fila RabbitMQ e é feito por um processador dedicado.
 @ min=5
-O resultado: a confirmação chega em quatro centésimos de segundo, qualquer que seja a duração do vídeo.
-say: O resultado: a confirmação chega em quatro centésimos de segundo, qualquer que seja a duração do vídeo.
+O resultado: a confirmação chega em catorze centésimos de segundo, qualquer que seja a duração do vídeo.
+say: O resultado: a confirmação chega em catorze centésimos de segundo, qualquer que seja a duração do vídeo.
   </script>
 </section>
 
@@ -485,9 +486,9 @@ Como o recorte substitui o vídeo, vamos recortar uma cópia, para podermos repe
   <p class="eyebrow">3.2 · Guião da demonstração · UC-VID-001</p>
   <div class="demo" style="flex:1;align-content:center">
     <div class="tm" data-at="1">0:00</div><div class="ac" data-at="1"><b>Abrir o vídeo no carrossel</b> (passo 1) · painel <b>Faixas</b>: V1 H.264 1280 × 720 · 30 fps e A1 AAC mono, com fotogramas e forma de onda <span class="muted">· arrastar o marcador e ampliar a escala</span></div>
-    <div class="tm" data-at="2">0:50</div><div class="ac" data-at="2"><b>Recortar</b> na barra Tools (passo 2) · início 0:10, fim 0:40 → duração 0:30 (passo 3) <span class="muted">· E4: 0:50–0:20 desativa o botão · FA3: Pré-visualizar</span></div>
-    <div class="tm" data-at="3">1:50</div><div class="ac" data-at="3"><b>Aplicar recorte</b> (passo 4) · confirmação “Em fila” e operações restantes <span class="muted">· E6/E8: um segundo pedido é recusado</span></div>
-    <div class="tm" data-at="4">2:40</div><div class="ac" data-at="4"><b>Acompanhar o progresso</b> (passo 5) · sair do projeto e voltar: o pedido continua</div>
+    <div class="tm" data-at="2">0:50</div><div class="ac" data-at="2"><b>Recortar</b> na barra Tools (passo 2) · arrastar nas faixas até 0:10 e 0:40 → duração 0:30 (passo 3) <span class="muted">· E4: 0:50–0:20 desativa o botão · FA3: Pré-visualizar · FA4: Remover seleção</span></div>
+    <div class="tm" data-at="3">1:50</div><div class="ac" data-at="3"><b>Aplicar recorte</b> (passo 4) · confirmação “Em fila” <span class="muted">· E8: um segundo pedido do mesmo vídeo é recusado</span></div>
+    <div class="tm" data-at="4">2:40</div><div class="ac" data-at="4"><b>Acompanhar o progresso</b> (passo 5) · sair do vídeo e voltar: o painel reabre com o pedido em curso</div>
     <div class="tm" data-at="5">3:30</div><div class="ac" data-at="5"><b>Concluído</b> (passo 6) · o mesmo vídeo passa a 0:30, as faixas são relidas, não há vídeo novo, a quota desceu 1</div>
     <div class="tm" data-at="6">4:20</div><div class="ac" data-at="6"><b>Exportar</b> (passo 7) · o ficheiro abre num leitor externo com 30 s</div>
   </div>
@@ -495,11 +496,11 @@ Como o recorte substitui o vídeo, vamos recortar uma cópia, para podermos repe
 @
 Começamos por abrir o vídeo no carrossel. Por baixo aparecem as faixas: a de vídeo, com os fotogramas, e a de áudio, com a forma de onda. Podemos arrastar o marcador e ampliar a escala.
 @
-Escolhemos Recortar na barra de ferramentas e definimos dos dez aos quarenta segundos. Se trocarmos o início com o fim, o botão fica desativado. Podemos pré-visualizar o intervalo sem gastar quota.
+Escolhemos Recortar na barra de ferramentas e arrastamos as extremidades da seleção, nas faixas, até aos dez e aos quarenta segundos; o painel acompanha. Se trocarmos o início com o fim, o botão fica desativado. Podemos pré-visualizar sem gastar quota e, com Remover seleção, cortar antes um excerto do meio.
 @
-Aplicamos o recorte: a confirmação é imediata, o pedido fica Em fila e as operações restantes atualizam. Um segundo pedido é recusado.
+Aplicamos o recorte: a confirmação é imediata e o pedido fica Em fila. Um segundo pedido para o mesmo vídeo é recusado.
 @
-Acompanhamos o progresso. Podemos sair do projeto e voltar, e o pedido continua.
+Acompanhamos o progresso no painel. Podemos sair do vídeo e voltar: o painel reabre com o pedido em curso.
 @
 Quando conclui, o mesmo vídeo passa a ter trinta segundos, as faixas são lidas de novo e não aparece nenhuma cópia na biblioteca.
 @
@@ -511,7 +512,7 @@ Por fim, exportamos o vídeo e abrimo-lo num leitor externo.
   <div class="center" style="align-items:flex-start">
     <p class="eyebrow">Obrigado</p>
     <p class="t">Perguntas?</p>
-    <p class="n">UC-VID-001 Recortar · REQ-VID-JOB-001 · REQ-VID-TRIM-016<br>Relatório: Docs/fase1/relatorio · Testes: tests/uc-vid-001, tests/uc-vid-003, tests/video-tracks</p>
+    <p class="n">UC-VID-001 Recortar · REQ-VID-JOB-001 · REQ-VID-TRIM-016<br>Relatório: Docs/fase1/relatorio · Testes: tests/uc-vid-001, uc-vid-002, uc-vid-003, video-tracks, qualidade e browser</p>
   </div>
   <script type="text/x-cues">
 @ min=4

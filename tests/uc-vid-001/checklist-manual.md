@@ -1,5 +1,7 @@
 # Checklist de testes manuais — UC-VID-001 (Recortar um vídeo)
 
+> **Histórico.** Esta lista regista as execuções manuais das versões anteriores (v1.0 a v1.5). Na versão entregue, os testes de interface estão automatizados em `tests/browser` e os resultados estão na tabela 10.2 do relatório; a interface e o comportamento atuais (resultado que substitui o vídeo, ferramentas no painel à esquerda) estão descritos nos casos de uso.
+
 Requisitos que dependem da interface e não são cobertos por
 `test_trim_requirements.py`. Preencher com ✅/❌ e a data.
 
@@ -19,3 +21,4 @@ Requisitos que dependem da interface e não são cobertos por
 | TRIM-032 (v1.5) | Selecionar 0:10–0:20, escolher **Remover seleção** no painel, **Pré-visualizar** e **Aplicar recorte** | Seleção riscada; a pré-visualização salta o intervalo; o vídeo fica com 50 s | |
 | IMPORT-032 (v1.5) | Importar outra vez um ficheiro com o mesmo nome de um vídeo do projeto | O vídeo novo fica "{nome} (2).mp4" | |
 | JOB-010 (v1.6) | Aplicar um recorte ou ferramentas, sair do vídeo e voltar durante o processamento | Sem lista "Pedidos deste vídeo"; o painel reabre só com o pedido em curso (progresso e **Cancelar**); ao concluir, o vídeo é substituído e aparece um aviso | |
+| TST-TRIM-M06 (v1.4) | Fazer dois recortes sucessivos do mesmo vídeo, terminar sessão e voltar a entrar | A biblioteca tem um único vídeo, com o nome original e os dois recortes aplicados | ✅ 2026-10-21 (Miguel Páscoa) |

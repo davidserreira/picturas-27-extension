@@ -20,7 +20,7 @@
   tabela(
     colunas: (3cm, 1.6cm, 1fr, 1.8cm, 2.6cm),
     [_Stakeholder_], [Estado], [Interesse(s) relativamente ao vídeo], [Influência], [UC / requisitos],
-    [Utilizador (registado ou premium)], [Revisto], [Carregar vídeos sem os perder a meio, obter o trecho ou a transformação certos sem esperar ao ecrã, editar o próprio vídeo sem acumular cópias e nunca o perder por uma falha do processamento.], [Alta], [UC-VID-001, 002, 003],
+    [Utilizador (registado ou premium)], [Revisto], [Carregar vídeos sem os perder a meio, obter o trecho ou a transformação certos sem ter de ficar à espera em frente ao ecrã, editar o próprio vídeo sem acumular cópias e nunca o perder por uma falha do processamento.], [Alta], [UC-VID-001, 002, 003],
     [Proprietário do Sistema], [Revisto], [Controlar o custo de processamento e de armazenamento por perfil; incentivar a subscrição premium.], [Alta], [RNG-03 a RNG-06; JOB-007, JOB-008],
     [Equipa de Operações], [Novo], [Não ter ficheiros parciais em armazenamento; pedidos nunca presos em processamento.], [Média], [UC-VID-001; JOB-004, JOB-005, PROCESS-002],
     [Equipa de Desenvolvimento], [Novo], [Reutilizar as ferramentas de imagem e o encadeamento existentes; acrescentar ferramentas de vídeo sem alterar as que existem.], [Média], [UC-VID-002, UC-VID-003; TOOLS-001, APPLY-036],

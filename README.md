@@ -493,41 +493,41 @@ local data**, so use it deliberately.
 
 ---
 
-## Video tools — UC-VID-003
+## Video support — Phase 1 (UC-VID-001, UC-VID-002, UC-VID-003)
 
-The video library supports importing, trimming and applying a chain of **Resize,
-Binarization and Rotate** to every frame. Open an available video → **Ferramentas
-de vídeo → Aplicar ferramentas**, add 1–3 tools and select **Aplicar ferramentas**.
-Jobs show progress and processed frames, can be cancelled, and save a new
-`{name}_editado` video. Audio packets and frame timestamps are preserved.
+Registered and Premium users can **import** MP4 (H.264) and MOV videos into a project
+(**Add Video**, chunked upload with resume; repeated names become "name (2).mp4"), see their
+video and audio **tracks** under the player, and apply two tools from the **Tools** bar on the
+left: **Recortar** (keep or remove an interval, selected in the panel or by dragging its ends on
+the tracks) and **Aplicar ferramentas** (Resize, Binarize and Rotate on every frame, audio
+preserved). Jobs run in the background with state, progress and cancel; when a job completes,
+its result **replaces** the video (same name). A completed job uses one daily operation.
 
-APPLY limits are **2 min / 200 MiB / 1920 × 1080** for registered free users and
-**10 min / 2 GiB / 3840 × 2160** for Premium. Active jobs share the existing
-TRIM limit of one/three. A completed chain uses one daily operation; failed or
-cancelled jobs refund their reservation. Anonymous users must register first.
+Limits (registered / Premium): videos up to 5 min and 200 MB / 30 min and 2 GB; library of
+1 GB / 10 GB; 1 / 3 active jobs. Aplicar ferramentas: 2 min, 200 MB, 1920 × 1080 / 10 min,
+2 GB, 3840 × 2160. Anonymous users have no access to video.
 
-Start or update the development stack with `docker compose up -d --build`.
-The `video_apply_tool` service and `video_apply_queue` are declared automatically;
-existing volumes do not need to be removed.
+Start or update the stack with `docker compose up -d --build` (the `video_trim_tool` and
+`video_apply_tool` services and their queues are created automatically).
 
-Details, codec/browser limitations and architecture:
-[UC-VID-003 implementation](Docs/UC-VID-003-implementacao.md).
-[Automated results](tests/uc-vid-003/resultados.md),
-[manual checklist](tests/uc-vid-003/checklist-manual.md), and
-[AI development record](Docs/registo-ia-apply.md).
+**Documentation:** Phase 1 report in `Docs/fase1/relatorio` (Typst; `typst compile --font-path
+fonts main.typ doc-ext-requisitos.pdf`), defence slides in `Docs/fase1/apresentacao`, AI
+records in `Docs/registo-ia-trim.md` and `Docs/registo-ia-apply.md`, known defects in
+`Docs/defeitos-conhecidos.md`.
 
-Run the isolated tests from the repository root (Node dependencies installed
-in `projects`, `apiGateway`, `users` and `frontend`; `ffmpeg` on PATH):
+**Tests** (full instructions in Annex A of the report):
 
 ```bash
-python -m pip install -r Tools/video_apply/requirements.txt
-python -m unittest discover -s tests/uc-vid-003 -p 'test_*.py' -v
-node --test tests/uc-vid-003/*.test.cjs
+# with the stack running
+python3 tests/uc-vid-001/test_trim_requirements.py --reset-quota   # trim, 36 cases
+python3 tests/uc-vid-002/test_import_requirements.py                # import, 12 cases
+python3 tests/qualidade/test_quality_requirements.py --fila         # security, jobs, quality
+python3 tests/browser/test_browser.py                               # UI tests (Playwright)
+# isolated (ffmpeg on PATH; npm install in projects, apiGateway, users, frontend)
+python3 -m pip install -r Tools/video_apply/requirements.txt
+python3 -m unittest discover -s tests/uc-vid-003 -p 'test_*.py' -v
+node --test tests/uc-vid-003/*.test.cjs tests/video-tracks/*.test.cjs
 ```
-
-`quota-mongo.test.cjs` additionally requires a disposable MongoDB and
-`MONGODB_TEST_URL`. GitHub Actions supplies MongoDB 4.4. Passing isolated tests
-does not replace the full-stack/browser checklist or performance measurements.
 
 ## 👥 Authors
 

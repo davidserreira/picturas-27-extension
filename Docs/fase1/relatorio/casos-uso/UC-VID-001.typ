@@ -13,7 +13,7 @@
     [Objetivo], [Recortar um vídeo da biblioteca, mantendo ou removendo o intervalo selecionado, substituí-lo pelo resultado, acompanhar o processamento e exportá-lo],
     [Âmbito], [Módulo de vídeo do PictuRAS: ferramentas de vídeo, fila de processamento, biblioteca e exportação],
     [Ator Principal], [Utilizador Registado (gratuito, 5 operações/dia) ou Premium (pago, ilimitado)],
-    [_Stakeholders_ e Interesses], [- *Utilizador*: quer o trecho certo sem esperar ao ecrã, sem acumular cópias na biblioteca e sem perder o vídeo se o recorte falhar
+    [_Stakeholders_ e Interesses], [- *Utilizador*: quer o trecho certo sem ter de ficar à espera em frente ao ecrã, sem acumular cópias na biblioteca e sem perder o vídeo se o recorte falhar
 - *Proprietário do Sistema*: quer controlar o custo de processamento por perfil
 - *Equipa de Operações*: não quer ficheiros parciais em armazenamento],
     [Pré-condições], [- Sessão iniciada com perfil registado ou premium
@@ -46,7 +46,7 @@
     [Fluxo], [Descrição (passo de origem: condição → comportamento → retorno)],
     [FA1 – Utilizador premium], [No passo 4, se o perfil é premium → aplicam-se os limites de premium e até 3 pedidos ativos, não se verifica a quota e o fluxo continua no passo 5],
     [FA2 – Cancelar], [Nos passos 5 ou 6, o utilizador escolhe *Cancelar* → o sistema interrompe, marca "Cancelado", remove os ficheiros parciais e mantém o vídeo inalterado],
-    [FA3 – Pré-visualizar], [No passo 3, o utilizador escolhe *Pré-visualizar* → o sistema reproduz só o intervalo escolhido (no FA4, os segundos antes do intervalo, saltando-o), sem criar pedido nem gastar quota, e o fluxo regressa ao passo 3],
+    [FA3 – Pré-visualizar], [No passo 3, o utilizador escolhe *Pré-visualizar* → o sistema reproduz só o intervalo escolhido (no FA4, os 3 s antes e os 3 s depois do intervalo, saltando-o), sem criar pedido nem gastar quota, e o fluxo regressa ao passo 3],
     [FA4 – Remover a seleção], [No passo 3, o utilizador escolhe *Remover seleção* no painel → a seleção aparece riscada nas faixas e o resultado passa a ser o vídeo sem esse intervalo, com o que está antes e depois dele juntos; o fluxo continua no passo 4],
   ),
 )
@@ -60,10 +60,10 @@
     [E1 – Formato ou codec não suportado], [No passo 4, rejeita o pedido com _"Formato não suportado. Formatos aceites: MP4 (H.264) e MOV"_ (a importação já rejeita estes vídeos, UC-VID-002/E1, pelo que só chegam à biblioteca por outra via); no FA4, num vídeo que não é H.264, apresenta _"Remover um intervalo só está disponível para vídeos H.264."_ e mantém *Aplicar recorte* desativado],
     [E2 – Duração ou tamanho excedem o limite do perfil], [No passo 4, rejeita o pedido e apresenta o limite; no registado, sugere o premium],
     [E3 – Quota diária esgotada (registado)], [No passo 4, rejeita o pedido com _"Atingiu o limite de 5 operações diárias"_ e sugere o premium],
-    [E4 – Intervalo inválido (início ≥ fim, fim acima da duração ou \< 1 s; no FA4, o vídeo ficaria com \< 1 s)], [Apresenta o motivo e mantém *Aplicar recorte* desativado],
+    [E4 – Intervalo inválido (início ≥ fim, fim acima da duração ou intervalo com menos de 1 s; no FA4, o vídeo ficaria com menos de 1 s)], [Apresenta o motivo e mantém *Aplicar recorte* desativado],
     [E5 – O processamento falha a meio], [Marca "Falhado", apresenta _"Não foi possível recortar o vídeo. Tente novamente."_, remove parciais, mantém o vídeo inalterado e não desconta quota],
     [E6 – Número máximo de pedidos ativos], [No passo 4, rejeita o pedido e indica que tem de aguardar ou cancelar um pedido ativo],
-    [E7 – Biblioteca de vídeo cheia], [No passo 4, se a ocupação da biblioteca atingiu o limite do perfil, rejeita o pedido e apresenta a ocupação e o limite],
+    [E7 – Biblioteca de vídeo cheia], [No passo 4, se a ocupação da biblioteca atingiu o limite do perfil, rejeita o pedido e apresenta a ocupação e o limite; no passo 6, se o resultado, em vez do vídeo atual, exceder o espaço livre (o resultado recodificado do FA4 pode ser maior), marca "Falhado", apresenta o espaço livre, mantém o vídeo inalterado e não desconta quota],
     [E8 – O vídeo já tem um pedido em curso], [No passo 4, rejeita o pedido e indica que tem de aguardar que o pedido desse vídeo termine ou cancelá-lo],
   ),
 )
@@ -110,11 +110,11 @@
 #tabela(
     colunas: (1.6cm, 1fr, 5cm),
     [ID], [Questão], [Resolução],
-    [Q1], [O perfil anónimo deve poder usar alguma ferramenta de vídeo?], [Decidida: não no MVP → RNG-02 (UC-VID-001/RN4).],
+    [Q1], [O perfil anónimo deve poder usar alguma ferramenta de vídeo?], [Decidida: não no MVP → RNG-02 (RN4).],
     [Q2], [O recorte deve poder entrar no encadeamento de ferramentas e no lote?], [Adiada: fora do âmbito do MVP (5.3); reavaliar na Fase 3.],
     [Q3], [O utilizador deve poder escolher o formato de saída na exportação?], [Decidida no MVP: o resultado mantém o formato do original (RNG-01); a escolha do formato fica para a Fase 3.],
-    [Q4], [Um pedido que falha a meio deve ser repetido automaticamente, em vez de o utilizador o voltar a submeter? (alvo de produção do REQ-VID-PROCESS-003)], [Adiada para a Fase 2: alvo de produção do REQ-VID-PROCESS-003.],
-    [Q5], [Os vídeos resultantes devem expirar ao fim de algum tempo, para libertar armazenamento?], [Decidida no MVP: não expiram (RNG-08); reavaliar com dados de utilização na Fase 2.],
+    [Q4], [Um pedido que falha a meio deve ser repetido automaticamente, em vez de o utilizador o voltar a submeter?], [Adiada para a Fase 2: alvo de produção do REQ-VID-PROCESS-003.],
+    [Q5], [Os vídeos da biblioteca devem expirar ao fim de algum tempo, para libertar armazenamento?], [Decidida no MVP: não expiram (RNG-08); reavaliar com dados de utilização na Fase 2.],
     [Q6], [Deve ser possível desfazer um recorte, guardando a versão anterior do vídeo?], [Adiada: no MVP a substituição é definitiva (RNG-09); a exportação antes do recorte permite guardar uma cópia; reavaliar na Fase 3. A opção de manter o original chegou a ser implementada e foi retirada por decisão da equipa (3.1).],
     [Q7], [Deve ser possível fazer vários cortes de uma vez e mover ou reordenar os excertos nas faixas, como num editor de vídeo?], [Adiada para a Fase 3: exige guardar o vídeo como uma lista de excertos (projeto de edição). No MVP, um pedido mantém ou remove um único intervalo.],
   )

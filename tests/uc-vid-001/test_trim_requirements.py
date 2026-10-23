@@ -9,7 +9,7 @@ Corre contra o PictuRAS a funcionar em Docker, na pasta do repositório:
 Pré-requisitos:
   - `docker compose up -d` com os serviços a correr;
   - um utilizador REGISTADO (gratuito) com um vídeo MP4 de pelo menos 40 s importado
-    num projeto (por exemplo Docs/video_teste.mp4).
+    num projeto (por exemplo Docs/testes/video_teste.mp4).
 O script encontra esse vídeo sozinho; para escolher outro use
 `--user U --project P --video V`.
 
@@ -561,6 +561,10 @@ def write_report(c):
         "`tests/uc-vid-001/test_trim_requirements.py` (perfil registado; o bloco [7] "
         "passa o utilizador temporariamente a premium para testar o FA1).",
         "",
+        "Nota: a coluna \"Requisito\" usa a numeração curta do script (REQ-nnn = REQ-VID-TRIM-nnn "
+        "do dossiê v1.1; a correspondência com os IDs atuais e com os testes TST-TRIM-01 a 27 está "
+        "nas secções 5.4 e 10.2 do relatório).",
+        "",
         "| Requisito | Teste | Resultado | Detalhe |",
         "|-----------|-------|-----------|---------|",
     ]
@@ -586,7 +590,7 @@ def main():
     else:
         ids = find_test_video()
         if not ids:
-            sys.exit("Não encontrei nenhum vídeo MP4 disponível com ≥ 40 s. Importe Docs/video_teste.mp4 primeiro.")
+            sys.exit("Não encontrei nenhum vídeo MP4 disponível com ≥ 40 s. Importe Docs/testes/video_teste.mp4 primeiro.")
     c = Ctx(ids["u"], ids["p"], ids["v"])
 
     if args.reset_quota:

@@ -2,6 +2,8 @@
 
 Executado em 2026-10-23 00:57 com `tests/uc-vid-001/test_trim_requirements.py` (perfil registado; o bloco [7] passa o utilizador temporariamente a premium para testar o FA1).
 
+Nota: a coluna "Requisito" usa a numeração curta do script (REQ-nnn = REQ-VID-TRIM-nnn do dossiê v1.1; a correspondência com os IDs atuais e com os testes TST-TRIM-01 a 27 está nas secções 5.4 e 10.2 do relatório).
+
 | Requisito | Teste | Resultado | Detalhe |
 |-----------|-------|-----------|---------|
 | REQ-003 | rejeita 50–70 s (fim acima da duração) | ✅ Passou | O instante de fim não pode exceder a duração do vídeo. |

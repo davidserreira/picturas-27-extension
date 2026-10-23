@@ -120,6 +120,8 @@
   show heading.where(level: 2): it => text(size: 14pt, it)
   show heading.where(level: 3): it => text(size: 12pt, it)
 
+  // IDs (UC-VID-001, REQ-VID-TRIM-016, TST-TRIM-M06, …) never break at a hyphen
+  show regex("\b(UC|REQ|TST|RNG|DQ|DA)-[A-Za-z0-9-]*[A-Za-z0-9]"): it => box(it)
   show link: set text(fill: blue.darken(30%))
   show link: underline.with(evade: false)
 
