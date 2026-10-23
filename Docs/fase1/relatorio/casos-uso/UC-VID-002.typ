@@ -8,7 +8,7 @@
   tabela-campos(
     [ID do Caso de Uso], [UC-VID-002],
     [Nome], [Importar um vídeo para a biblioteca],
-    [Autor], [David Cruz],
+    [Autores], [David Cruz, João Sousa, Miguel Páscoa, Pedro Rebelo e Tiago Barros],
     [Data], [2026-10-07 a 2026-10-21],
     [Objetivo], [Enviar um vídeo do dispositivo para o PictuRAS, acompanhar o envio e a validação e ficar com o vídeo disponível na biblioteca, podendo consultar as suas faixas de vídeo e de áudio],
     [Âmbito], [Módulo de vídeo do PictuRAS: biblioteca, envio de ficheiros, validação e armazenamento],

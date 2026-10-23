@@ -8,7 +8,7 @@
   tabela-campos(
     [ID do Caso de Uso], [UC-VID-003],
     [Nome], [Aplicar ferramentas de imagem a todos os fotogramas de um vídeo],
-    [Autor], [João Sousa],
+    [Autores], [David Cruz, João Sousa, Miguel Páscoa, Pedro Rebelo e Tiago Barros],
     [Data], [2026-10-07 a 2026-10-21],
     [Objetivo], [Aplicar uma cadeia de 1 a 3 ferramentas de imagem a todos os fotogramas de um vídeo da biblioteca, substituindo-o pelo resultado],
     [Âmbito], [Módulo de vídeo do PictuRAS: ferramentas de vídeo, ferramentas de imagem, encadeamento, fila de processamento e biblioteca],
