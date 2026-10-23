@@ -18,7 +18,7 @@
 - *Equipa de Desenvolvimento*: valida a reutilização das ferramentas de imagem sobre vídeo],
     [Pré-condições], [- Sessão iniciada com perfil registado ou premium
 - O vídeo está na biblioteca (UC-VID-002) e o utilizador é o proprietário],
-    [_Trigger_], [O utilizador abre um vídeo da biblioteca e escolhe *Aplicar ferramentas a todos os fotogramas*],
+    [_Trigger_], [O utilizador abre um vídeo da biblioteca e escolhe *Aplicar ferramentas* na barra de ferramentas],
   ),
 )
 
@@ -28,9 +28,9 @@
   tabela(
     colunas: (1.2cm, 1fr, 1fr),
     [Passo], [Ação do Ator], [Resposta do Sistema],
-    [1], [Seleciona um vídeo e escolhe *Aplicar ferramentas a todos os fotogramas*], [Apresenta Redimensionar, Binarizar e Rodar e a cadeia vazia],
+    [1], [Seleciona um vídeo e escolhe *Aplicar ferramentas* na barra de ferramentas], [Abre à esquerda o painel "Aplicar ferramentas a todos os fotogramas", com Redimensionar, Binarizar e Rodar e a cadeia vazia],
     [2], [Adiciona de 1 a 3 ferramentas à cadeia, ordena-as e define os parâmetros], [Valida os parâmetros e a resolução final e apresenta a cadeia ordenada e a resolução final],
-    [3], [Clica em *Aplicar a todos os fotogramas*], [Verifica formato, limites, quota e pedidos ativos; cria o pedido "Em fila" e confirma a receção],
+    [3], [Clica em *Aplicar ferramentas* no painel], [Verifica formato, limites, quota e pedidos ativos; cria o pedido "Em fila" e confirma a receção],
     [4], [Acompanha o progresso (pode sair da página)], [Processa o vídeo aplicando a cadeia, por ordem, a todos os fotogramas; apresenta estado, percentagem e fotogramas processados],
     [5], [—], [Substitui o vídeo pelo resultado, com o mesmo nome, marca "Concluído" e desconta 1 operação (registado)],
     [6], [Abre o vídeo e reproduz-o], [Reproduz o vídeo já alterado e apresenta as suas faixas (UC-VID-002/FA4), onde o utilizador confirma que o áudio foi mantido],

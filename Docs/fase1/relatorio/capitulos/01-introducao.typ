@@ -16,7 +16,7 @@ Foram especificadas e implementadas três funcionalidades (Tabela 3): *importar 
     [Documento de requisitos de base], [doc-ext-requisitos.pdf (equipa de 2025/26, novembro de 2025)],
     [Documento de solução arquitetural de base], [doc-sol-arquitetural.pdf (equipa de 2025/26)],
     [Repositório de partida], [https:/\/github.com/picturas-um/picturas-27, commit `781a63e` (inclui a migração do armazenamento de MinIO para SeaweedFS)],
-    [Solução entregue], [solucao-ext-mvp.zip; repositório https:/\/github.com/davidserreira/picturas-27-extension, commit #preencher[commit da entrega]],
+    [Solução entregue], [solucao-ext-mvp.zip; repositório https:/\/github.com/davidserreira/picturas-27-extension, ramo `main` (versão de 23 de outubro de 2026)],
   )
 
 == Organização do documento

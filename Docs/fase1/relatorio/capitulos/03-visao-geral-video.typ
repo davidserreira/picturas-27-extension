@@ -67,7 +67,7 @@ Os casos de uso de imagem da _baseline_ mantêm-se, a cinzento. Os três casos d
     [RNG-04], [Um pedido de processamento conta 1 operação da quota diária (5/dia no registado, partilhada com imagens), qualquer que seja a duração ou o número de ferramentas, e só se terminar "Concluído". Importar não conta.], [Reinterpretação para vídeo da regra "até 5 operações por dia" da baseline (RNF48): simples de explicar ao utilizador e não penaliza falhas do sistema.], [IMPORT-021; JOB-008, 009],
     [RNG-05], [Pedidos de processamento ativos em simultâneo: 1 (registado) e 3 (premium), em conjunto para todas as ferramentas. Importações ativas: 1 e 3, contadas à parte.], [Arbitragem de recursos de processamento por utilizador (DQ-007).], [JOB-007],
     [RNG-06], [Armazenamento da biblioteca de vídeo: 1 GB (registado) e 10 GB (premium), contando o tamanho atual de cada vídeo, também depois de alterado por uma ferramenta.], [Controla o custo de armazenamento por perfil (interesse do Proprietário do Sistema).], [IMPORT-026; LIB-002],
-    [RNG-07], [A receção de um pedido é confirmada em ≤ 2 s e o progresso é atualizado pelo menos a cada 5 s.], [Valores do guia da secção 4; confirmados por medição na implementação (0,04 s e 2,1 s no recorte).], [JOB-012, 013],
+    [RNG-07], [A receção de um pedido é confirmada em ≤ 2 s e o progresso é atualizado pelo menos a cada 5 s.], [Valores do guia da secção 4; confirmados por medição na implementação (0,14 s e 2,1 s no recorte).], [JOB-012, 013],
     [RNG-08], [Vídeos importados e resultados mantêm-se até o utilizador os remover; o parcial de uma importação interrompida é mantido 1 h; os ficheiros temporários do processamento são removidos no fim do pedido.], [Persistência e expiração dos ficheiros (tópico do Exercício 2).], [IMPORT-019; LIB-001],
     [RNG-09], [O resultado de uma ferramenta substitui o vídeo a que foi aplicada, com o mesmo nome, só quando o pedido termina "Concluído"; até lá, e se o pedido falhar ou for cancelado, o vídeo mantém-se inalterado. Um vídeo só pode ter um pedido ativo de cada vez.], [Decisão da equipa, confirmada no fim da implementação: editar o vídeo em vez de acumular cópias na biblioteca (ver 3.1, evolução do âmbito). Substituir só no fim mantém a garantia mínima (DQ-002); um pedido por vídeo impede que dois resultados se substituam. Inicialmente, o resultado era um novo vídeo "{nome}\_{sufixo}".], [APPLY-020; JOB-014, 015; TRIM-016],
   ),
@@ -84,7 +84,7 @@ Os casos de uso de imagem da _baseline_ mantêm-se, a cinzento. Os três casos d
     [RNk, Ak, Qk, FAk, Ek], [Regra, assunção, questão em aberto, fluxo alternativo e exceção de um caso de uso (locais; qualificados nas tabelas partilhadas, e.g. UC-VID-001/RN2)],
     [RNG-nn / DQ-nnn], [Regra de negócio transversal / decisão de qualidade (globais)],
     [DA-nn], [Decisão arquitetural (capítulo 8)],
-    [TST-{FUNC}-nn], [Teste automático; TST-{FUNC}-Mnn: teste manual ou de inspeção],
+    [TST-{FUNC}-nn], [Teste automático; TST-{FUNC}-Mnn: teste definido como manual ou de inspeção (os que depois foram automatizados, pela API ou no browser, mantêm o ID)],
     [T-nn], [Tarefa de manutenção corretiva da solução de base],
     [UCnn, RFnn, RNFnn], [Elementos do documento de requisitos de base (referidos quando são alterados — ALT)],
   )

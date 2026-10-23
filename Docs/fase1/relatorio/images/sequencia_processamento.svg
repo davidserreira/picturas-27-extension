@@ -32,7 +32,7 @@
 <text x="1130" y="35" font-size="13" text-anchor="middle" fill="#000" font-weight="bold">wsGateway</text>
 <polyline points="1130,59 1130,880" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6,4"/>
 <polyline points="80,90 230,90" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
-<text x="155" y="85" font-size="12" text-anchor="middle" fill="#000">POST recorte {início, fim}</text>
+<text x="155" y="85" font-size="12" text-anchor="middle" fill="#000">POST recorte {início, fim, modo}</text>
 <polyline points="230,120 380,120" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
 <text x="305" y="115" font-size="12" text-anchor="middle" fill="#000">encaminha (JWT válido)</text>
 <polyline points="380,150 420,150 420,166 384,166" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
@@ -69,7 +69,7 @@
 <polyline points="680,594 380,594" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
 <text x="530" y="589" font-size="12" text-anchor="middle" fill="#000">concluído</text>
 <polyline points="380,624 420,624 420,640 384,640" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
-<text x="426" y="628" font-size="12" text-anchor="start" fill="#000">cria o vídeo resultante; confirma a operação</text>
+<text x="426" y="628" font-size="12" text-anchor="start" fill="#000">substitui o ficheiro do vídeo pelo resultado; confirma a operação</text>
 <polyline points="380,662 1130,662" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>
 <text x="755" y="657" font-size="12" text-anchor="middle" fill="#000">video-job-update</text>
 <polyline points="1130,692 80,692" fill="none" stroke="#000" stroke-width="1.2" marker-end="url(#sol)"/>

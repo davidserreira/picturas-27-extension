@@ -106,7 +106,7 @@
     [A4], [Na retoma, o ficheiro é reconhecido pelo nome, tamanho e resumo criptográfico],
     [A5], [Os limites de armazenamento (1 GB / 10 GB) e de importações ativas são valores iniciais de MVP, sem dados reais de utilização (ver DQ-007)],
     [A6], [O alvo de validação (REQ-VID-IMPORT-030) assume vídeos até 200 MB num único processador de validação],
-    [A7], [A forma de onda é uma pré-visualização (a amplitude máxima de cada intervalo de 10 ms, reduzida a 1000 pontos) e os fotogramas da faixa de vídeo são obtidos pelo browser; não substituem um editor de áudio nem de vídeo],
+    [A7], [A forma de onda é uma pré-visualização (a amplitude máxima de cada intervalo de 10 ms, reduzida a 50 pontos por segundo, entre 1000 e 20 000 pontos) e os fotogramas da faixa de vídeo são obtidos pelo browser; não substituem um editor de áudio nem de vídeo],
   )
 
 === Questões em Aberto

@@ -57,7 +57,7 @@
   tabela(
     colunas: (1fr, 1fr),
     [Condição], [Comportamento do Sistema],
-    [E1 – Formato ou codec não suportado], [*Recortar* fica indisponível com _"Formato não suportado. Formatos aceites: MP4 (H.264) e MOV"_; no FA4, num vídeo que não é H.264, apresenta _"Remover um intervalo só está disponível para vídeos H.264."_],
+    [E1 – Formato ou codec não suportado], [No passo 4, rejeita o pedido com _"Formato não suportado. Formatos aceites: MP4 (H.264) e MOV"_ (a importação já rejeita estes vídeos, UC-VID-002/E1, pelo que só chegam à biblioteca por outra via); no FA4, num vídeo que não é H.264, apresenta _"Remover um intervalo só está disponível para vídeos H.264."_ e mantém *Aplicar recorte* desativado],
     [E2 – Duração ou tamanho excedem o limite do perfil], [No passo 4, rejeita o pedido e apresenta o limite; no registado, sugere o premium],
     [E3 – Quota diária esgotada (registado)], [No passo 4, rejeita o pedido com _"Atingiu o limite de 5 operações diárias"_ e sugere o premium],
     [E4 – Intervalo inválido (início ≥ fim, fim acima da duração ou \< 1 s; no FA4, o vídeo ficaria com \< 1 s)], [Apresenta o motivo e mantém *Aplicar recorte* desativado],
