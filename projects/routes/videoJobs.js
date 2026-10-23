@@ -25,10 +25,9 @@ const { helpers } = require("./videos");
 const { fail, wrap, requireOwner, loadProfile, withUserLock } = helpers;
 
 const MIN_TRIM_SECONDS = 1; // RN2
-const { uniqueName, namesInUse } = require("../utils/videoNames");
 
 // v1.5: "keep" keeps only the interval (as before); "remove" removes it and
-// joins what is before and after it (UC-VID-001/FA5)
+// joins what is before and after it (UC-VID-001/FA4)
 const TRIM_MODES = ["keep", "remove"];
 
 const UPGRADE_HINT = " Com o plano Premium tem limites maiores.";
@@ -51,7 +50,7 @@ function checkInterval(start, end, duration) {
   return null;
 }
 
-// FA5 (v1.5): removing an interval must leave at least 1 s of video.
+// FA4 (v1.5): removing an interval must leave at least 1 s of video.
 function checkRemoval(start, end, duration) {
   const left = start + Math.max(0, duration - end);
   if (left < MIN_TRIM_SECONDS) return "O vídeo tem de ficar com pelo menos 1 segundo depois de remover o intervalo.";
@@ -118,11 +117,6 @@ function submitTool(tool) {
       if (invalid) return fail(res, 400, "INVALID_INTERVAL", invalid);
       params = { start, end, mode };
     }
-    // UC-VID-001/FA4 (v1.5): keep the original and save the result as a copy
-    if (req.body?.keep_original !== undefined && typeof req.body.keep_original !== "boolean") {
-      return fail(res, 400, "INVALID_REQUEST", "Indique se o original deve ser mantido.");
-    }
-    params.keep_original = req.body?.keep_original === true;
 
     const outcome = await withUserLock(user, async () => {
       if ((await VideoJob.countActive(user)) >= lim.maxActiveJobs) {
@@ -138,8 +132,7 @@ function submitTool(tool) {
       }
       const used = await Video.usedStorage(user);
       // Encoding may enlarge a file. Check actual output size again at completion.
-      // A copy (keep_original) adds a new file to the library.
-      if (used >= lim.storage || (params.keep_original && used + video.size > lim.storage)) {
+      if (used >= lim.storage) {
         return { error: [413, "STORAGE_FULL",
           `Não há espaço na sua biblioteca de vídeos (${formatBytes(used)} de ${formatBytes(lim.storage)}).${hint}`] };
       }
@@ -158,10 +151,8 @@ function submitTool(tool) {
         const job = await VideoJob.create({
           _id: id, user_id: user, project_id: project, video_id: video._id,
           tool, params,
-          // the copy gets a free name in the project: "praia (2).mp4" (RN7)
-          result_name: params.keep_original
-            ? uniqueName(video.name, await namesInUse(user, project))
-            : video.name,
+          // the result replaces the video, with the same name (RN7)
+          result_name: video.name,
           max_duration: lim.maxDuration, max_storage: lim.storage,
           quota_reserved: reserved, createdAt,
         });

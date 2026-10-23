@@ -28,8 +28,10 @@ Reply messages (published on video_job_queue):
 """
 
 import datetime
+import glob
 import json
 import os
+import shutil
 import subprocess
 import tempfile
 import threading
@@ -147,7 +149,7 @@ class VideoTrimWorker:
         tail = ["-movflags", "+faststart"] if params.get("format") == "mp4" else []
 
         if mode == "remove":
-            # v1.5 (UC-VID-001/FA5): cut [start, end] out and join what is
+            # v1.5 (UC-VID-001/FA4): cut [start, end] out and join what is
             # before and after it. Only H.264 (checked by projects): joining
             # needs re-encoding, so the result keeps the codec.
             duration = float(params.get("duration") or end)
@@ -371,7 +373,16 @@ class VideoTrimWorker:
         self._channel.start_consuming()
 
 
+def remove_leftover_files():
+    """Removes the partial files of a job interrupted by a crash (the container was
+    killed and started again; the job is re-delivered and redone from the start).
+    One job at a time per worker, so none of them is in use when it starts."""
+    for path in glob.glob(os.path.join(tempfile.gettempdir(), "trim-*")):
+        shutil.rmtree(path, ignore_errors=True)
+
+
 if __name__ == "__main__":
+    remove_leftover_files()
     # RabbitMQ may still be starting; retry instead of crash-looping
     while True:
         try:

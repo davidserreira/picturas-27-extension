@@ -4,7 +4,7 @@
 import { api } from "./axios";
 import type { VideoApplyTool } from "./video-apply";
 
-// UC-VID-001 v1.5: keep the selected interval, or remove it (FA5)
+// UC-VID-001 v1.5: keep the selected interval, or remove it (FA4)
 export type TrimMode = "keep" | "remove";
 
 export type VideoJobState =
@@ -33,7 +33,7 @@ interface VideoJobBase {
 export type VideoJob = VideoJobBase & (
   | {
       tool: "trim";
-      params: { start: number; end: number; mode?: TrimMode; keep_original?: boolean };
+      params: { start: number; end: number; mode?: TrimMode };
     }
   | { tool: "apply"; params: { tools: VideoApplyTool[]; width: number; height: number } }
 );
@@ -90,7 +90,7 @@ export function trimIntervalError(
   return null;
 }
 
-// FA5 (same rules as the backend): the interval to remove must be valid and
+// FA4 (same rules as the backend): the interval to remove must be valid and
 // leave at least 1 s of video; only H.264 videos can be joined again
 export function trimSelectionError(
   start: number | null,
@@ -114,16 +114,11 @@ export function trimResultDuration(start: number, end: number, duration: number,
   return mode === "keep" ? selected : duration - selected;
 }
 
-// "Manter 0:05 – 0:20" / "Remover 0:05 – 0:20", and whether it is a copy
-export function trimJobDescription(params: {
-  start: number;
-  end: number;
-  mode?: TrimMode;
-  keep_original?: boolean;
-}) {
+// "Manter 0:05 – 0:20" / "Remover 0:05 – 0:20"
+export function trimJobDescription(params: { start: number; end: number; mode?: TrimMode }) {
   const verb = params.mode === "remove" ? "Remover" : "Manter";
   const interval = `${formatTimecode(params.start)} – ${formatTimecode(params.end)}`;
-  return `${verb} ${interval}${params.keep_original ? " · original mantido" : ""}`;
+  return `${verb} ${interval}`;
 }
 
 // ----------------------------------------------------------------------- api
@@ -146,17 +141,15 @@ export const trimVideo = async ({
   start,
   end,
   mode = "keep",
-  keepOriginal = false,
 }: JobsRequest & {
   videoId: string;
   start: number;
   end: number;
   mode?: TrimMode;
-  keepOriginal?: boolean;
 }) => {
   const response = await api.post<{ job: VideoJob }>(
     `/projects/${uid}/${pid}/videos/${videoId}/trim`,
-    { start, end, mode, keep_original: keepOriginal },
+    { start, end, mode },
     { headers: authHeaders(token) },
   );
   return response.data.job;

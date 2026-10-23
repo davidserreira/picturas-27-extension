@@ -237,3 +237,20 @@ excerto do meio. Ramo `feature/recorte-melhorias`.
 do sistema com vídeos de 20 s, com e sem áudio, removendo o meio, o início e o fim
 (15 s em todos os casos). TypeScript e ESLint sem erros. Testes novos no bloco [9] de
 `tests/uc-vid-001/test_trim_requirements.py` (TST-TRIM-25 a 28): **39/39** (2026-10-21).
+
+---
+
+## Fase 9 — Só substituir e só o painel (v1.6, 2026-10-21)
+
+Pedido da equipa depois de experimentar a v1.5: o resultado substitui sempre o vídeo,
+todos os controlos das ferramentas ficam no painel à esquerda (aberto pela barra de
+ferramentas) e deixa de haver a lista "Pedidos deste vídeo".
+
+| ID | Decisão | Alternativas consideradas | Porquê |
+|----|---------|---------------------------|--------|
+| D38 | Retirar a opção "Manter também o original?" (D36): o pedido deixa de aceitar `keep_original` e o resultado substitui sempre o vídeo (D34). O antigo FA5 (remover a seleção) passa a FA4; REQ-VID-TRIM-033 é retirado e o ID não é reutilizado. Os nomes numerados mantêm-se na importação (D35) | Manter a opção | A equipa quer um único comportamento, como num editor: não há "original" e "modificado", só o vídeo modificado. Menos código (sem cópias na conclusão) e menos casos de teste |
+| D39 | Os controlos do recorte (*Manter/Remover seleção*, campos, *Aplicar recorte*) ficam só no painel à esquerda; o botão *Recortar* e a barra sobre as faixas são retirados. As faixas mantêm a seleção arrastável enquanto o painel Recortar está aberto | Controlos também sobre as faixas (v1.5) | Um só caminho para cada ferramenta, a barra de ferramentas, como nas imagens; as faixas servem para escolher o intervalo, não para aplicar |
+| D40 | Sem lista de pedidos: o painel mostra apenas o pedido em curso do vídeo (estado, progresso, fotogramas, *Cancelar*) ou o motivo da falha do último; ao concluir aparece um aviso "foi substituído pelo resultado"; ao voltar a um vídeo com um pedido em curso, o painel dessa ferramenta reabre (uma vez por visita). Exportar faz-se pelo menu do vídeo | Manter a lista dos últimos 5 pedidos | Como o resultado substitui o vídeo, pedidos antigos não têm nada para abrir ou exportar; o que interessa é o pedido em curso. A reabertura mantém o REQ-VID-JOB-010 (reencontrar o pedido ao voltar), reformulado |
+
+**Verificação:** TypeScript e ESLint sem erros; testes automáticos ajustados (bloco [9]
+sem os 3 casos de manter o original): **36/36** (2026-10-21).

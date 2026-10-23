@@ -1,11 +1,13 @@
 """UC-VID-003 worker. A child process keeps processing off the broker thread."""
 
 import datetime
+import glob
 import json
 import multiprocessing
 import os
 import queue
 import re
+import shutil
 import tempfile
 import time
 
@@ -219,7 +221,14 @@ class VideoApplyWorker:
         self.channel.start_consuming()
 
 
+def remove_leftover_files():
+    """Removes the partial files of a job interrupted by a crash; one job at a time per worker."""
+    for path in glob.glob(os.path.join(tempfile.gettempdir(), "video-apply-*")):
+        shutil.rmtree(path, ignore_errors=True)
+
+
 if __name__ == "__main__":
+    remove_leftover_files()
     while True:
         try:
             worker = VideoApplyWorker()

@@ -1,10 +1,9 @@
-// Unique video names inside a project (UC-VID-002/RN12, UC-VID-001/RN7, v1.5):
-// "praia.mp4" stays "praia.mp4" if no other video of the project has that
-// name; otherwise it becomes "praia (2).mp4", "praia (3).mp4", ...
+// Unique video names inside a project (UC-VID-002/RN12, v1.5): "praia.mp4"
+// stays "praia.mp4" if no other video of the project has that name;
+// otherwise it becomes "praia (2).mp4", "praia (3).mp4", ...
 
 const path = require("path");
 const Video = require("../controllers/video");
-const VideoJob = require("../controllers/videoJob");
 
 function uniqueName(name, usedNames) {
   const used = new Set([...usedNames].map((n) => String(n).toLowerCase()));
@@ -18,15 +17,11 @@ function uniqueName(name, usedNames) {
   }
 }
 
-// Names already taken in a project: its videos (in any state, as they are all
-// shown in the library) and the copies that running requests will create.
+// Names already taken in a project: its videos, in any state, as they are all
+// shown in the library.
 async function namesInUse(userId, projectId) {
   const videos = await Video.getAll(userId, projectId);
-  const running = await VideoJob.getActiveByProject(userId, projectId);
-  return [
-    ...videos.map((v) => v.name),
-    ...running.filter((j) => j.params?.keep_original).map((j) => j.result_name),
-  ];
+  return videos.map((v) => v.name);
 }
 
 module.exports = { uniqueName, namesInUse };

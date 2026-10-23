@@ -5,18 +5,22 @@
 
 = Instruções de execução
 
-*Pré-requisitos:* Docker Desktop (ou Docker Engine 24+) com Docker Compose v2, cerca de 8 GB de RAM livres e 15 GB de disco.
+*Pré-requisitos:* Docker Desktop (ou Docker Engine 24+) com Docker Compose v2, cerca de 8 GB de RAM livres e pelo menos 45 GB de disco (as imagens dos contentores ocupam cerca de 40 GB, dos quais cerca de 9 GB são da `cut_ai_tool`, que instala o PyTorch com as bibliotecas CUDA).
 
 *Lançar a solução:*
-- Descompactar `solucao-ext-mvp.zip` e, na pasta raiz, executar `docker compose up -d --build` (a primeira vez demora 15 a 30 min).
+- Clonar o repositório (https:/\/github.com/davidserreira/picturas-27-extension) e, na pasta raiz, executar `docker compose up -d --build` (a primeira vez demora 15 a 30 min, mais com uma ligação lenta). Se já tiver corrido outra versão do PictuRAS, é obrigatório usar `--build`: o nome do projeto é fixo (`picturas`), pelo que `docker compose up` sem `--build` reutilizaria as imagens da versão anterior, sem suporte a vídeo.
 - Abrir https:/\/localhost:8080 (aceitar o certificado autoassinado).
 - Registar uma conta (perfil registado) e criar um projeto; usar *Importar vídeo* com `Docs/testes/video_teste.mp4`. Não existe uma conta premium de teste: os casos do perfil premium são verificados pelos testes automáticos, que alteram temporariamente o tipo do utilizador e o repõem no fim.
 
 *Correr os testes:*
 - UC-VID-001 (com o sistema a correr e um utilizador registado com um vídeo MP4 de pelo menos 40 s importado, e.g. `video_teste.mp4`): `python3 tests/uc-vid-001/test_trim_requirements.py --reset-quota`. O script encontra o vídeo sozinho (ou `--user`, `--project` e `--video` para escolher outro), trabalha sobre cópias dele, repõe as operações diárias desse dia (`--reset-quota`, só para ambiente de testes), remove o que cria e escreve o resultado em `tests/uc-vid-001/resultados.md` (cerca de 6 min).
-- UC-VID-003: `python -m unittest discover -s tests/uc-vid-003 -p "test_*.py" -v` e `node --test tests/uc-vid-003/*.test.cjs`.
+- UC-VID-003: `python -m unittest discover -s tests/uc-vid-003 -p "test_*.py" -v` e `node --test tests/uc-vid-003/*.test.cjs` (requer FFmpeg e as dependências de `Tools/video_apply/requirements.txt` para os testes Python, e `npm install` nas pastas `projects`, `apiGateway`, `users` e `frontend` para os testes Node; o teste de quota só corre com `MONGODB_TEST_URL` a apontar para um MongoDB descartável).
 - Faixas de um vídeo (UC-VID-002/FA4): `node --test tests/video-tracks/*.test.cjs` (requer `npm install` na pasta `projects`).
-- Testes manuais: seguir `tests/uc-vid-001/checklist-manual.md`, `tests/uc-vid-003/checklist-manual.md` e a Tabela 19 (incluindo TST-IMPORT-M01 a M12 e TST-LIB-M01 a M04).
+- Testes pela API (com o sistema a correr; criam contas de teste próprias e geram os vídeos sintéticos com o FFmpeg do contentor `video_trim_tool`): `python3 tests/uc-vid-002/test_import_requirements.py` (TST-IMPORT-M01 a M12, cerca de 6 min) e `python3 tests/qualidade/test_quality_requirements.py --fila` (TST-SEC, TST-JOB, TST-APPLY-M02/M03, TST-LIB-M04 e TST-QUAL-M04; o TST-JOB-M01 termina e volta a arrancar o contentor `video_trim_tool`). Escrevem `resultados.md` em cada pasta.
+- Pedido parado (TST-JOB-M01, 2.ª parte): `python3 tests/qualidade/test_stalled_job.py` (suspende o contentor `video_trim_tool` durante cerca de 21 min; escreve `resultados-pedido-parado.md`).
+- Testes no browser (Playwright): `pip install playwright`, `python -m playwright install firefox` e, com o Google Chrome e o Microsoft Edge instalados, `python3 tests/browser/test_browser.py` (TST-LIB-M01 a M04, TST-TRIM-M04 e M15 a M17, TST-APPLY-M01 e M02, TST-JOB-M03, TST-IMPORT-M12 e M13 e TST-QUAL-M01, cerca de 10 min); escreve `tests/browser/resultados.md` e as capturas em `tests/browser/capturas/`.
+- Em Windows, usar `python` em vez de `python3` e definir `PYTHONUTF8=1`, para que a saída com acentos e símbolos (≤, →) possa ser redirecionada para um ficheiro.
+- Testes manuais: seguir `tests/uc-vid-001/checklist-manual.md`, `tests/uc-vid-003/checklist-manual.md` e a tabela de testes e resultados da secção 10.2.
 
 = Glossário
 

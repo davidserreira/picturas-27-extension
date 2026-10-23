@@ -60,7 +60,7 @@ export function VideoApplyPanel({ video }: { video: ProjectVideo }) {
       qc.setQueryData<VideoJob[]>(videoJobsKey(session.user._id, pid, session.token),
         (jobs) => [job, ...(jobs ?? []).filter((other) => other._id !== job._id)]);
       updateSession.mutate({ userId: session.user._id, token: session.token });
-      toast({ title: "Pedido em fila", description: "Quando terminar, o vídeo é substituído pelo resultado. Pode acompanhar o progresso nos pedidos deste vídeo." });
+      toast({ title: "Pedido em fila", description: "Quando terminar, o vídeo é substituído pelo resultado. Pode acompanhar o progresso neste painel." });
     } catch (error) {
       toast({ title: "Não foi possível aplicar as ferramentas", description: getVideoErrorMessage(error), variant: "destructive" });
     } finally { setSubmitting(false); }
@@ -129,7 +129,7 @@ export function VideoApplyPanel({ video }: { video: ProjectVideo }) {
       <div aria-live="polite">
         {items.length > 0 && <p className="text-sm">Resolução final: {Number.isFinite(dimensions.width) ? dimensions.width : "—"} × {Number.isFinite(dimensions.height) ? dimensions.height : "—"} px</p>}
         {invalid && <p className="mt-1 text-sm text-destructive">{invalid}</p>}
-        {noOperations && <p className="text-sm text-destructive">Atingiu o limite diário de operações. Com o plano Premium não tem limite diário.</p>}
+        {noOperations && <p className="text-sm text-destructive">Atingiu o limite de 5 operações diárias. Com o plano Premium não tem limite diário.</p>}
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-xs text-muted-foreground">
