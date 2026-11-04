@@ -16,3 +16,7 @@ backups/
 __pycache__/
 *.py[cod]
 .venv/
+
+# Fase 1 deliverable archives (the code is in the fase1-entrega tag)
+Docs/fase1/PL5-G5.zip
+Docs/fase1/PL5-G5/*.zip
