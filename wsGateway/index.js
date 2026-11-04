@@ -61,7 +61,17 @@ function process_msg() {
 
         console.log('Received msg:', JSON.stringify(msg_content));
 
-        if (/update-client-preview/.test(msg_id)) {
+        // Video editing progress, as a percentage
+        if (/update-client-video-progress/.test(msg_id)) {
+            io.to(user).emit("video-progress", {
+                projectId: msg_content.projectId,
+                imgId: msg_content.imgId,
+                preview: msg_content.preview,
+                percent: msg_content.percent,
+            });
+        }
+
+        else if (/update-client-preview/.test(msg_id)) {
             if (status == "error") {
                 const error_code = msg_content.errorCode;
                 const error_msg = msg_content.errorMsg;
@@ -88,13 +98,6 @@ function process_msg() {
             }
 
             io.to(user).emit("process-update", msg_id);
-        }
-
-        // UC-VID-001: state/progress of a video tool request, to its owner
-        else if (msg_content.type === "video-job-update") {
-            if (user && msg_content.job) {
-                io.to(user).emit("video-job-update", msg_content.job);
-            }
         }
 
         else if (msg_content.type === "project-op") {

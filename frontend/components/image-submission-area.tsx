@@ -1,22 +1,24 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import AppDropzone from "./app-dropzone";
-import { FileImage, Film, ImagePlus, Plus, X } from "lucide-react";
+import { FileImage, ImagePlus, Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { HoverCard, HoverCardTrigger } from "./ui/hover-card";
 import { HoverCardContent } from "@radix-ui/react-hover-card";
 import ImagePreview from "./image-preview";
 import { extractZipImages } from "@/lib/utils";
-import { hasVideoExtension } from "@/lib/videos";
 
 export default function ImageSubmissionArea({
   receivedFiles = [],
   onDrop,
-  acceptVideos = false,
+  onFilesChange,
 }: {
   receivedFiles?: File[];
-  onDrop: (files: File[]) => void;
-  acceptVideos?: boolean;
+  // Called with only the files added by each drop (e.g. to upload them right away).
+  onDrop?: (files: File[]) => void;
+  // Called with the complete current list whenever it changes (drop, removal or
+  // receivedFiles), for callers that submit everything at the end.
+  onFilesChange?: (files: File[]) => void;
 }) {
   const [files, setFiles] = useState<File[]>([]);
 
@@ -26,6 +28,9 @@ export default function ImageSubmissionArea({
       "image/jpeg",
       "image/jpg",
       "application/zip",
+      "video/mp4",
+      "video/quicktime",
+      "video/webm",
     ];
 
     // Extract images from zip files and filter out incompatible files
@@ -34,10 +39,7 @@ export default function ImageSubmissionArea({
       if (file.type === "application/zip") {
         const extractedFiles = await extractZipImages(file);
         compatibleFiles.push(...extractedFiles);
-      } else if (
-        compatibleFileTypes.includes(file.type) ||
-        (acceptVideos && hasVideoExtension(file.name))
-      ) {
+      } else if (compatibleFileTypes.includes(file.type)) {
         compatibleFiles.push(file);
       }
     }
@@ -58,14 +60,17 @@ export default function ImageSubmissionArea({
       return file;
     });
 
-    setFiles((prevFiles) => [...prevFiles, ...uniqueFiles]);
-    onDrop(uniqueFiles);
+    const nextFiles = [...files, ...uniqueFiles];
+    setFiles(nextFiles);
+    onDrop?.(uniqueFiles);
+    onFilesChange?.(nextFiles);
   };
 
   useEffect(() => {
     if (receivedFiles.length > 0) {
       setFiles(receivedFiles);
-      onDrop(receivedFiles);
+      onDrop?.(receivedFiles);
+      onFilesChange?.(receivedFiles);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [receivedFiles]);
@@ -74,13 +79,11 @@ export default function ImageSubmissionArea({
     <div>
       {files.length <= 0 ? (
         <div className="h-64">
-          <AppDropzone onDrop={handleDrop} acceptVideos={acceptVideos}>
+          <AppDropzone onDrop={handleDrop}>
             <div className="flex flex-col gap-4 items-center justify-center max-w-[20rem]">
               <ImagePlus size={64} />
               <p className="font-medium text-lg">
-                {acceptVideos
-                  ? "Drag and drop images, a video or a .zip"
-                  : "Drag and drop images or a .zip"}
+                Drag and drop images, videos or a .zip
               </p>
             </div>
           </AppDropzone>
@@ -97,21 +100,16 @@ export default function ImageSubmissionArea({
                   >
                     <CardContent className="py-2 px-3 relative">
                       <div className="flex flex-col items-center justify-center pointer-events-none">
-                        {hasVideoExtension(file.name) ? (
-                          <Film className="w-10 h-7 text-primary mb-1" />
-                        ) : (
-                          <FileImage className="w-10 h-7 text-primary mb-1" />
-                        )}
+                        <FileImage className="w-10 h-7 text-primary mb-1" />
                         <p className="text-xs text-center truncate w-full">
                           {file.name}
                         </p>
                       </div>
                       <button
                         onClick={() => {
-                          setFiles((prevFiles) =>
-                            prevFiles.filter((_, i) => i !== index),
-                          );
-                          onDrop(files.filter((_, i) => i !== index));
+                          const nextFiles = files.filter((_, i) => i !== index);
+                          setFiles(nextFiles);
+                          onFilesChange?.(nextFiles);
                         }}
                         className="absolute top-0 right-0 text-foreground/50 hover:text-foreground p-1"
                       >
@@ -120,15 +118,13 @@ export default function ImageSubmissionArea({
                     </CardContent>
                   </Card>
                 </HoverCardTrigger>
-                {!hasVideoExtension(file.name) && (
-                  <HoverCardContent className="h-48 w-64 z-50">
-                    <ImagePreview file={file} />
-                  </HoverCardContent>
-                )}
+                <HoverCardContent className="h-48 w-64 z-50">
+                  <ImagePreview file={file} />
+                </HoverCardContent>
               </HoverCard>
             ))}
             <div>
-              <AppDropzone onDrop={handleDrop} acceptVideos={acceptVideos}>
+              <AppDropzone onDrop={handleDrop}>
                 <Plus />
               </AppDropzone>
             </div>

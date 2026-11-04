@@ -1,0 +1,19 @@
+Para evitar atrasos, todo o material deve estar pronto a ser apresentado num único computador. Isto implica que:
+
+os slides estão abertos;
+a aplicação está a executar em background;
+todos os dados da aplicação estão carregados - nomeadamente utilizadores e projetos com multimédia e ferramentas;
+a autenticação do(s) utilizador(es) foi feito de antemão num browser em execução em background.
+
+Pedimos também que todos os elementos dos grupos estejam junto à sala, prontos para iniciar, com 5 minutos de antecedência face à hora agendada.
+
+docker compose start
+docker compose stop
+
+User registado: 
+registado@picturas.local	
+Defesa2026!
+
+User premium: 
+premium@picturas.local	
+Defesa2026!

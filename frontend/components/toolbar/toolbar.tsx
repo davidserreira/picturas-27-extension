@@ -31,8 +31,11 @@ import {
 import { Eraser } from "lucide-react";
 import { useState } from "react";
 import ExpandAITool from "./expand-ai-tool";
-import { VideoTools } from "./video-tools";
-import { useCurrentVideo } from "@/providers/current-video-provider";
+import TrimTool from "./trim-tool";
+import SpeedTool from "./speed-tool";
+import SubtitlesTool from "./subtitles-tool";
+import ExtractFramesTool from "./extract-frames-tool";
+import { isVideo } from "@/lib/projects";
 
 export function Toolbar() {
   const searchParams = useSearchParams();
@@ -44,9 +47,10 @@ export function Toolbar() {
 
   const project = useProjectInfo();
   const session = useSession();
-  // a video open in the carousel: its tools replace the image tools
-  const { video } = useCurrentVideo();
-  const showVideoTools = !!video && view === "carousel" && mode === "edit";
+
+  // Projects with videos only show the effects the video worker supports
+  // (AI tools and watermark are image-only) and only when a media item is selected
+  const hasVideos = project.imgs.some((i) => isVideo(i));
 
   const [open, setOpen] = useState<boolean>(false);
   const ownerParam = searchParams.get("owner") ?? session.user._id;
@@ -60,22 +64,27 @@ export function Toolbar() {
     shareId,
   );
 
+  if (hasVideos && view === "grid") return null;
+
   return (
     <div className="flex h-full w-24 flex-col justify-between items-stretch border-r bg-background p-2">
       <div className="flex flex-col gap-2 items-center">
         <span className="text-sm text-gray-500">Tools</span>
-        {showVideoTools ? (
-          <VideoTools />
-        ) : (
+        <BrightnessTool disabled={disabled} />
+        <ContrastTool disabled={disabled} />
+        <SaturationTool disabled={disabled} />
+        <BinarizationTool disabled={disabled} />
+        <RotateTool disabled={disabled} />
+        <CropTool disabled={disabled} />
+        <ResizeTool disabled={disabled} />
+        <BorderTool disabled={disabled} />
+        {/* Only shown when the project has videos */}
+        <TrimTool disabled={disabled} />
+        <SpeedTool disabled={disabled} />
+        {hasVideos && <SubtitlesTool disabled={disabled} />}
+        {hasVideos && <ExtractFramesTool disabled={disabled} />}
+        {!hasVideos && (
           <>
-            <BrightnessTool disabled={disabled} />
-            <ContrastTool disabled={disabled} />
-            <SaturationTool disabled={disabled} />
-            <BinarizationTool disabled={disabled} />
-            <RotateTool disabled={disabled} />
-            <CropTool disabled={disabled} />
-            <ResizeTool disabled={disabled} />
-            <BorderTool disabled={disabled} />
             <WatermarkTool disabled={disabled} />
             <BgRemovalAITool disabled={disabled} />
             <CropAITool disabled={disabled} />
@@ -84,45 +93,43 @@ export function Toolbar() {
             <TextAITool disabled={disabled} />
             <ExpandAITool disabled={disabled} />
             <UpgradeAITool disabled={disabled} />
-            <AppliedToolsList />
           </>
         )}
+        <AppliedToolsList />
       </div>
-      {!showVideoTools && (
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button
+            variant="outline"
+            className="text-red-400 size-8"
+            disabled={project.tools.length === 0}
+          >
+            <Eraser />
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Clear Tools?</DialogTitle>
+            <DialogDescription>
+              This will remove <b>all</b> edits from the current project.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
             <Button
-              variant="outline"
-              className="text-red-400 size-8"
-              disabled={project.tools.length === 0}
+              variant="destructive"
+              onClick={() => {
+                clearTools.mutate({
+                  toolIds: project.tools.map((t) => t._id),
+                  projectVersion: project.version,
+                });
+                setOpen(false);
+              }}
             >
-              <Eraser />
+              Clear
             </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Clear Tools?</DialogTitle>
-              <DialogDescription>
-                This will remove <b>all</b> edits from the current project.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button
-                variant="destructive"
-                onClick={() => {
-                  clearTools.mutate({
-                    toolIds: project.tools.map((t) => t._id),
-                    projectVersion: project.version,
-                  });
-                  setOpen(false);
-                }}
-              >
-                Clear
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

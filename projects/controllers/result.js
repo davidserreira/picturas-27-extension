@@ -42,3 +42,7 @@ module.exports.getAllByToken = async (user_id, project_id, token) => {
 module.exports.deleteByToken = async (user_id, project_id, token) => {
   return await Result.deleteMany({ user_id, project_id, token }).exec();
 };
+
+module.exports.deleteById = (user_id, project_id, id) => {
+  return Result.deleteOne({ user_id, project_id, _id: id }).exec();
+};

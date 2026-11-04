@@ -28,15 +28,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import ProjectText from "./project-text";
 import { getAiErrorMessage } from "@/lib/error-messages"; 
 import { usePreview } from "@/providers/project-provider";
-import { ProjectVideoSlide, ProjectVideoTiles } from "./project-video-tiles";
-import { useGetProjectVideos } from "@/lib/queries/videos";
-import { useCurrentVideo } from "@/providers/current-video-provider";
 
 export function ProjectImageList({
   setCurrentImageId,
   results,
 }: {
-  setCurrentImageId: (img: ProjectTypes.ProjectImage | null) => void;
+  setCurrentImageId: (img: ProjectTypes.ProjectImage) => void;
   results: {
     imgs: ProjectTypes.ProjectImage[];
     texts: ProjectTypes.ProjectImageText[];
@@ -48,51 +45,30 @@ export function ProjectImageList({
   const mode = searchParams.get("mode") ?? "edit";
   const owner = searchParams.get("owner");
   const share = searchParams.get("share");  
-  // set when a video of the grid was clicked: the carousel opens on it
-  const videoParam = searchParams.get("video");
 
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
   const [jumpTo, setJumpTo] = useState<number | null>(null);
+  const previewVideoRef = useRef<HTMLVideoElement>(null);
   const [previewOpen, setPreviewOpen] = useState<boolean>(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [previewText, setPreviewText] = useState<string[] | null>(null);
+  const [previewIsVideo, setPreviewIsVideo] = useState<boolean>(false);
+
+  useEffect(() => {
+    const video = previewVideoRef.current;
+    return () => video?.pause();
+  }, [previewOpen, previewImage]);
 
   const project = useProjectInfo();
+  const mediaItems = mode === "results" ? results.imgs : project.imgs;
   const session = useSession();
   const { toast } = useToast();
   const preview = usePreview();
 
   const qc = useQueryClient();
   const socket = useGetSocket(session.token);
-
-  // os vídeos aparecem na mesma grelha das imagens; a biblioteca de vídeo é só do dono
-  const showVideos =
-    mode === "edit" && !share && session.user.type !== "anonymous";
-  const videos = useGetProjectVideos(
-    session.user._id,
-    project._id,
-    session.token,
-    showVideos,
-  );
-  const hasVideos = showVideos && (videos.data?.videos.length ?? 0) > 0;
-
-  // in the carousel the available videos come after the images
-  const carouselVideos =
-    hasVideos && mode === "edit"
-      ? videos.data!.videos.filter((v) => v.state === "available")
-      : [];
-  const carouselVideoIds = carouselVideos.map((v) => v._id).join(",");
-  const { video: currentVideo, setVideo: setCurrentVideo } = useCurrentVideo();
-  const jumpedToVideo = useRef<string | null>(null);
-
-  // a tool result replaces the video in place: keep the open one up to date
-  useEffect(() => {
-    if (!currentVideo) return;
-    const fresh = videos.data?.videos.find((v) => v._id === currentVideo._id);
-    if (fresh && fresh !== currentVideo) setCurrentVideo(fresh);
-  }, [videos.data, currentVideo, setCurrentVideo]);
 
 
 useEffect(() => {
@@ -142,9 +118,16 @@ useEffect(() => {
           const msg_content = JSON.parse(msg) as {
             imageUrl: string;
             textResults: string[];
+            mediaType?: "video";
           };
           const url = msg_content.imageUrl;
           const textResults = msg_content.textResults;
+          // fall back to the file extension (signed URLs carry a query string)
+          const path = (url ?? "").split("?")[0].toLowerCase();
+          setPreviewIsVideo(
+            msg_content.mediaType === "video" ||
+              [".mp4", ".mov", ".webm"].some((ext) => path.endsWith(ext)),
+          );
           setPreviewImage(url);
           setPreviewText(textResults);
           setPreviewOpen(true);
@@ -165,9 +148,8 @@ useEffect(() => {
     if (view === "grid") {
       setApi(undefined);
       setJumpTo(null);
-      setCurrentVideo(null);
     }
-  }, [view, setCurrentVideo]);
+  }, [view]);
 
   useEffect(() => {
     if (!api) {
@@ -175,22 +157,14 @@ useEffect(() => {
     }
 
     const handleSelect = () => {
-      const index = api.selectedScrollSnap();
       setCount(api.scrollSnapList().length);
-      setCurrent(index + 1);
-
-      // edit mode: images first, then the videos
-      const video =
-        mode === "edit" && index >= project.imgs.length
-          ? carouselVideos[index - project.imgs.length]
-          : undefined;
-      setCurrentVideo(video ?? null);
-      setCurrentImageId(video ? null : (project.imgs[index] ?? null));
+      setCurrent(api.selectedScrollSnap() + 1);
+      if (mediaItems[api.selectedScrollSnap()])
+        setCurrentImageId(mediaItems[api.selectedScrollSnap()]);
     };
 
     handleSelect();
     api.on("select", handleSelect);
-    // the videos arrive after the images: the slides change under the api
     api.on("reInit", handleSelect);
 
     if (jumpTo !== null && jumpTo !== api.selectedScrollSnap()) {
@@ -202,59 +176,28 @@ useEffect(() => {
       api.off("select", handleSelect);
       api.off("reInit", handleSelect);
     };
-    // carouselVideoIds stands for carouselVideos (a new array every render)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [api, jumpTo, mode, project.imgs, carouselVideoIds, setCurrentImageId, setCurrentVideo]);
-
-  // opened from a video of the grid: go to its slide once it is there
-  useEffect(() => {
-    if (!videoParam) {
-      jumpedToVideo.current = null;
-      return;
-    }
-    if (!api || jumpedToVideo.current === videoParam) return;
-
-    const position = carouselVideoIds.split(",").indexOf(videoParam);
-    if (position < 0) return;
-    const index = project.imgs.length + position;
-
-    const jump = () => {
-      if (index >= api.slideNodes().length) return;
-      jumpedToVideo.current = videoParam;
-      api.scrollTo(index, true);
-    };
-
-    jump();
-    api.on("reInit", jump);
-    return () => {
-      api.off("reInit", jump);
-    };
-  }, [api, videoParam, carouselVideoIds, project.imgs.length]);
+  }, [api, jumpTo, mediaItems, setCurrentImageId]);
 
   return (
     <Dialog
       open={previewOpen}
       onOpenChange={() => {
+        previewVideoRef.current?.pause();
         setPreviewOpen(false);
         setPreviewImage(null);
       }}
     >
       <div className="size-full">
-        {view === "grid" ||
-        project.imgs.length + carouselVideos.length <= 0 ? (
+        {view === "grid" || project.imgs.length <= 0 ? (
           // Grid view
           <div className="size-full flex flex-col items-center">
-            {(mode === "edit" && (project.imgs.length > 0 || hasVideos)) ||
+            {(mode === "edit" && project.imgs.length > 0) ||
             (mode === "results" &&
               (results.imgs.length > 0 || results.texts.length > 0)) ? (
               <>
                 {mode !== "results" && (
                   <div className="relative pt-4 pb-2 text-gray-500 text-sm after:h-2 after:bg-gradient-to-b after:from-background after:to-background/10 after:w-full after:absolute after:bottom-0 after:translate-y-2 after:z-50 w-full text-center flex flex-col">
-                    {project.imgs.length > 0 &&
-                      "To start editing, select an image from the grid."}
-                    {project.imgs.length > 0 && hasVideos && " "}
-                    {hasVideos &&
-                      "Hover over a video to preview it, or click it to open it."}
+                    To start editing, select an image from the grid.
                   </div>
                 )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 p-2 overflow-scroll overflow-x-hidden h-fit">
@@ -283,7 +226,6 @@ useEffect(() => {
                       </button>
                     ),
                   )}
-                  {showVideos && <ProjectVideoTiles />}
                   {mode === "results" &&
                     results.texts.map((text, index) => (
                       <button
@@ -318,7 +260,7 @@ useEffect(() => {
                 <p className="text-gray-500 text-xl">
                   {mode === "results"
                     ? "No results found. Apply your changes and try again."
-                    : "Add some images or a video to start."}
+                    : "Add some images to start."}
                 </p>
               </div>
             )}
@@ -326,36 +268,20 @@ useEffect(() => {
         ) : (
           // Carousel view
           <div className="size-full px-2 sm:px-16 py-2">
-            <Carousel
-              setApi={setApi}
-              // dragging on a video or on its tracks is seeking it, not changing slide
-              opts={{
-                watchDrag: (_, event) =>
-                  !(event.target instanceof HTMLVideoElement) &&
-                  !(event.target as Element).closest?.("[data-video-tracks]"),
-              }}
-            >
+            <Carousel setApi={setApi}>
               <CarouselContent className="aspect-auto h-[calc(100vh-99px-0.5rem-36px)] xl:h-[calc(100vh-55px-0.5rem-36px)]">
                 {mode === "edit" &&
                   project.imgs.length > 0 &&
-                  project.imgs.map((image) => (
+                  project.imgs.map((image, index) => (
                     <CarouselItem key={image._id}>
-                      <ProjectImage image={image} animation={false} />
+                      <ProjectImage image={image} animation={false} active={index === current - 1} />
                     </CarouselItem>
                   ))}
-                {carouselVideos.map((video) => (
-                  <CarouselItem key={video._id}>
-                    <ProjectVideoSlide
-                      video={video}
-                      active={currentVideo?._id === video._id}
-                    />
-                  </CarouselItem>
-                ))}
                 {mode === "results" &&
                   results.imgs.length > 0 &&
-                  results.imgs.map((image) => (
+                  results.imgs.map((image, index) => (
                     <CarouselItem key={image._id}>
-                      <ProjectImage image={image} animation={false} />
+                      <ProjectImage image={image} animation={false} active={index === current - 1} />
                     </CarouselItem>
                   ))}
                 {mode === "results" &&
@@ -377,10 +303,21 @@ useEffect(() => {
       </div>
       <DialogContent className="max-w-[80%] mt-4 overflow-y-scroll overflow-x-hidden">
         <DialogHeader>
-          <DialogTitle>Image Preview</DialogTitle>
+          <DialogTitle>
+            {previewIsVideo ? "Video Preview (first seconds)" : "Image Preview"}
+          </DialogTitle>
         </DialogHeader>
         <div className="flex justify-center items-center">
-          {previewImage && (
+          {previewOpen && previewImage && previewIsVideo && (
+            <video
+              ref={previewVideoRef}
+              src={previewImage}
+              controls
+              playsInline
+              className="rounded-md w-full max-h-[80vh] bg-black"
+            />
+          )}
+          {previewImage && !previewIsVideo && (
             <Image
               src={previewImage}
               width={500}

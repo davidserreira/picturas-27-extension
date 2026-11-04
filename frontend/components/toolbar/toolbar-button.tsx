@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "../ui/dropdown-menu";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   useCurrentImage,
   usePreview,
@@ -36,12 +36,17 @@ interface ToolbarButtonProps {
   icon: LucideIcon;
   label: string;
   disabled?: boolean;
+  previewDisabled?: boolean;
+  saveDisabled?: boolean;
   isDefault?: boolean;
   isPremium?: boolean;
   tool: Omit<ProjectTool, "position">;
   children?: React.ReactNode;
   noParams?: boolean;
   onDefault?: () => void;
+  // How to find this tool in the pipeline (default: by procedure).
+  // Trim uses it to match the trim of the selected video only.
+  matchTool?: (t: ProjectToolResponse) => boolean;
 }
 
 export function ToolbarButton({
@@ -51,13 +56,19 @@ export function ToolbarButton({
   icon: Icon,
   label,
   disabled = false,
+  previewDisabled = false,
+  saveDisabled = false,
   isDefault = false,
   isPremium = false,
   tool,
   children,
   noParams = false,
   onDefault = () => {},
+  matchTool,
 }: ToolbarButtonProps) {
+  const isThisTool = (t: ProjectToolResponse) =>
+    matchTool ? matchTool(t) : t.procedure === tool.procedure;
+
   const router = useRouter();
   const session = useSession();
   const project = useProjectInfo();
@@ -98,7 +109,7 @@ export function ToolbarButton({
   };
 
   const variant =
-    project.tools.find((t) => t.procedure === tool.procedure) !== undefined
+    project.tools.find(isThisTool) !== undefined
       ? "default"
       : "outline";
 
@@ -138,7 +149,13 @@ export function ToolbarButton({
 
   const [prevTool, setPrevTool] = useState<ProjectToolResponse | undefined>(undefined);
   const [waiting, setWaiting] = useState(false);
-  const [timedout, setTimedout] = useState(false);
+  const previewTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clearPreviewTimer = () => {
+    if (previewTimer.current !== null) clearTimeout(previewTimer.current);
+    previewTimer.current = null;
+  };
+
+  useEffect(() => () => clearPreviewTimer(), []);
 
   function handleDeleteTool() {
     if (!canEdit) return;
@@ -159,16 +176,36 @@ export function ToolbarButton({
   function handlePreview() {
 
     if (!canEdit) return;
+    clearPreviewTimer();
+    // Start waiting before sending: a cached preview can arrive before HTTP success.
+    setWaiting(true);
+    preview.setWaiting(tool.procedure);
+    const hasSubtitles = tool.procedure === "subtitles" ||
+      project.tools.some((item) => item.procedure === "subtitles");
+    const hasExtraction = tool.procedure === "extract_frames" ||
+      project.tools.some((item) => item.procedure === "extract_frames");
+    const timeoutMs = hasSubtitles || hasExtraction ? 10 * 60 * 1000 : 10000 * (project.tools.length + 1);
+    previewTimer.current = setTimeout(() => {
+      previewTimer.current = null;
+      setWaiting(false);
+      preview.setWaiting("");
+      toast({
+        title: "Preview timed out",
+        description: hasSubtitles
+          ? "Subtitles are taking longer than expected. The worker may still be downloading the speech model or processing another video. Try again later."
+          : hasExtraction
+            ? "Frame extraction may process the complete edited video. The worker may still be busy. Try again later."
+            : "The preview took too long to load.",
+        variant: "destructive",
+      });
+    }, timeoutMs);
     previewEdits.mutate(
       { imageId: currentImage?._id ?? "", projectVersion: project.version },
       {
-        onSuccess: () => {
-          setWaiting(true);
-          preview.setWaiting(tool.procedure);
-
-          setTimeout(() => setTimedout(true), 10000 * (project.tools.length + 1));
-        },
         onError: (error) => {
+          clearPreviewTimer();
+          setWaiting(false);
+          preview.setWaiting("");
           if (handleProjectConflict(error)) return;
           const { title, description } = getErrorMessage("project-process", error);
           toast({ title, description, variant: "destructive" });
@@ -237,40 +274,28 @@ export function ToolbarButton({
   }
 
   useEffect(() => {
-    if (!timedout) return;
-
-    if (waiting) {
-      setWaiting(false);
-      preview.setWaiting("");
-      toast({
-        title: "Ups! An error occurred.",
-        description: "The preview took too long to load.",
-        variant: "destructive",
-      });
-    }
-
-    setTimedout(false);
-  }, [timedout, waiting, preview]);
-
-  useEffect(() => {
     const s = socket.data;
     if (!s) return;
 
     const onPreviewReady = () => {
+      clearPreviewTimer();
       setWaiting(false);
       preview.setWaiting("");
     };
 
     s.on("preview-ready", onPreviewReady);
+    s.on("preview-error", onPreviewReady);
 
     return () => {
       s.off("preview-ready", onPreviewReady);
+      s.off("preview-error", onPreviewReady);
     };
   }, [socket.data, preview]);
 
   useEffect(() => {
-    setPrevTool(project.tools.find((t) => t.procedure === tool.procedure));
-  }, [project.tools, tool.procedure]);
+    setPrevTool(project.tools.find(isThisTool));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project.tools, tool.procedure, matchTool]);
 
   const locked = !canEdit;
 
@@ -367,14 +392,14 @@ export function ToolbarButton({
             variant="outline"
             onClick={() => handleAddTool(true)}
             className="h-6 text-xs"
-            disabled={isDefault}
+            disabled={isDefault || previewDisabled || saveDisabled}
           >
             Preview
           </Button>
 
           <Button
             onClick={() => handleAddTool(false)}
-            disabled={isDefault}
+            disabled={isDefault || saveDisabled}
             className="h-6 text-xs w-full"
           >
             Save

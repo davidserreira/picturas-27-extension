@@ -1,11 +1,11 @@
 # PictuRAS
 
-**Your personal, intuitive and powerful image editor.**
+**Your personal, intuitive and powerful image and video editor.**
 
-PictuRAS is a web-based image editing platform that combines traditional image processing with AI-powered tools. It is built as a **microservices architecture** orchestrated with Docker Compose, and it is the code base for the group project of the curricular unit _Requisitos e Arquitetura de Software_ (RAS), University of Minho.
+PictuRAS is a web-based image and video editing platform that combines traditional image processing with AI-powered tools. It is built as a **microservices architecture** orchestrated with Docker Compose, and it is the code base for the group project of the curricular unit _Requisitos e Arquitetura de Software_ (RAS), University of Minho.
 
 > **This repository is a starting point, not a finished product.**
-> It is the result of two previous academic years of student work (see [Authors](#-authors)). It contains working features, known limitations and technical debt — finding, documenting and improving those is part of your job this semester.
+> It is the result of two previous academic years of student work (see [AUTHORS.md](AUTHORS.md)). It contains working features, known limitations and technical debt — finding, documenting and improving those is part of your job this semester.
 
 ---
 
@@ -18,9 +18,9 @@ PictuRAS is a web-based image editing platform that combines traditional image p
 - [HTTPS and Certificates](#-https-and-certificates)
 - [Configuration](#-configuration)
 - [Project Structure](#-project-structure)
+- [Video Tools](#-video-tools)
 - [Development Workflow](#-development-workflow)
 - [Troubleshooting](#-troubleshooting)
-- [Video tools — UC-VID-003](#video-tools--uc-vid-003)
 - [Authors](#-authors)
 - [License](#-license)
 - [Contributing](#-contributing)
@@ -35,6 +35,21 @@ PictuRAS is a web-based image editing platform that combines traditional image p
 - **Geometric Operations**: resize, rotate, crop
 - **Filters and Effects**: binarization, borders, watermark
 - **Bulk Processing**: apply a pipeline of tools to multiple images
+
+### Video Editing
+
+- **Upload and playback**: MP4, MOV and WebM videos, validated on upload (container, codec,
+  duration, size, resolution) with per-plan limits — free 60 s / 100 MB, premium 600 s / 1 GB
+- **Video-only tools**: `trim` (start/end in seconds) and `speed` (factor 0.25–5)
+- **Automatic subtitles**: local speech recognition (Faster-Whisper), captions burned into the
+  video in the spoken language — see [Video Tools](#-video-tools)
+- **Extract frames**: turn every video into up to 100 PNG/JPEG stills, by count or interval,
+  as the last pipeline step
+- **Shared effects**: brightness, contrast, saturation, binarization, border, resize, rotate and
+  crop also apply to every frame of a video
+- **Fast preview**: previews render only the first 3 s (`VIDEO_PREVIEW_SECONDS`)
+- **Export**: always MP4 (H.264 + AAC), keeping the original audio
+- AI tools, watermark and PDF export are image-only and hidden in projects that contain videos
 
 ### AI-Powered Tools
 
@@ -95,7 +110,7 @@ are **not** published to the host unless noted otherwise — they talk to each o
    └────────┘ └────────┘ │     └────────┘   │
                          │                  │
                     ┌────▼──────────────────┴────┐
-                    │      RabbitMQ  :5672       │◄─── 16 tool microservices
+                    │      RabbitMQ  :5672       │◄─── 16 image tools + video_tool
                     │    exchange "picturas"     │     (one queue per tool)
                     └────────────────────────────┘
 ```
@@ -117,7 +132,7 @@ has no link to any other microservice. Note that **`subscriptions` means paid me
 | ------------------------- | -------------- | ----------------------------------------------- |
 | **API Gateway**           | 8000           | Single entry point for the REST API, JWT checks |
 | **User Service**          | 10001          | Registration, authentication, user profile      |
-| **Project Service**       | 9001           | Projects, image pipelines, tool orchestration   |
+| **Project Service**       | 9001           | Projects, media pipelines, tool orchestration   |
 | **Subscription Service**  | 11001          | Plans, payments (mock), usage limits            |
 | **Image Storage Service** | 11000          | Upload/download façade in front of SeaweedFS    |
 | **WebSocket Gateway**     | 4000           | Real-time progress events to the browser        |
@@ -135,6 +150,15 @@ exchange:
 > The `watermark` tool runs from a pre-built public image
 > (`prcsousa/picturas-watermark-tool-ms`) instead of being built from this repository — it is a
 > deliberate example of integrating a third-party service.
+
+**Videos** are handled by a single worker, `video_tool` (`Tools/video/`), instead of the image
+tools. For each video, `projects` sends **one** message with the whole pipeline to
+`video_queue`; the worker probes the file with `ffprobe`, decodes it once, applies the frame
+effects (`Tools/video/effects.py`, the same PIL operations as the image tools), encodes once to
+MP4/H.264 + AAC and reports progress as `video-progress` events on `ws_queue`. It acknowledges
+the message only at the end and leaves no partial output on failure. `ffmpeg` is installed only
+inside this container. Automatic subtitles and frame extraction run as ordered stages of the
+same worker (`Tools/video/subtitles.py`, `Tools/video/frame_extraction.py`).
 
 ### Infrastructure
 
@@ -169,6 +193,21 @@ exchange:
 
 On Docker Desktop, raise the memory limit in **Settings → Resources** if the AI tools get
 OOM-killed.
+
+> ⚠️ **Replacing your own Phase 1 version with this one?** Wipe your old Docker data first.
+> Both versions use the same Compose project name (`picturas`), so this stack would reuse your
+> old volumes — and the object storage layout changed (all files now live in one shared bucket,
+> `users/<id>/…`, instead of one bucket per user). Old data is **not migrated**: with stale
+> volumes, uploads and existing projects break in confusing ways.
+>
+> In the directory of your **old** checkout, before starting this one:
+>
+> ```bash
+> docker compose down -v --remove-orphans   # deletes your old accounts, projects and files
+> ```
+>
+> Then follow the installation below. This is needed only once. If you want to keep anything
+> from your old instance, export it before running the command.
 
 ### Installation
 
@@ -212,7 +251,7 @@ OOM-killed.
 
 1. Open <https://localhost:8080> and accept the certificate.
 2. Register an account, or use the anonymous mode.
-3. Create a project and upload an image.
+3. Create a project and upload an image or a video (samples in `samples/video/`).
 4. Build a pipeline with the toolbar (filters, geometry, AI tools) and run it.
 5. Watch the progress arrive live over the WebSocket, then download the results.
 
@@ -325,12 +364,19 @@ All configuration currently lives as `environment:` entries in `docker-compose.y
 | `SECRET_KEY`                                  | `card_secret_key`             | subscriptions          | Payment-data encryption key                  |
 | `S3_ENDPOINT`                                 | `seaweedfs:9000`              | img_storage            | Object storage endpoint                      |
 | `S3_ACCESS_KEY` / `S3_SECRET_KEY`             | `admin` / `admin123`          | seaweedfs, img_storage | Object storage credentials                   |
+| `S3_BUCKET`                                   | `picturas`                    | img_storage            | Shared bucket for all files (`users/<id>/…`) |
 | `S3_KEK_PASSPHRASE`                           | `picturas-kek-...`            | seaweedfs              | Protects the key used for encryption at rest |
 | `RABBITMQ_DEFAULT_USER` / `_PASS`             | `user` / `password`           | rabbitmq               | Broker credentials                           |
 | `RABBITMQ_HOST` / `_PORT` / `_USER` / `_PASS` | `rabbitmq` / `5672` / ...     | tools, projects, ws    | Broker connection                            |
 | `FRONTEND_URL`                                | `https://localhost:8080`      | img_storage            | CORS / redirect origin                       |
 | `NEXT_PUBLIC_API_BASE_URL`                    | `/api-gateway/`               | frontend               | Relative API base (keep it relative!)        |
 | `GEN_EXPAND_URL`                              | `http://generative-mock:7860` | expand_ai              | Generative image API endpoint                |
+| `VIDEO_FREE_MAX_DURATION_S` / `_MAX_SIZE_MB`  | `60` / `100`                  | projects               | Video upload limits for free accounts        |
+| `VIDEO_PREMIUM_MAX_DURATION_S` / `_SIZE_MB`   | `600` / `1024`                | projects               | Video upload limits for premium accounts     |
+| `VIDEO_PREVIEW_SECONDS`                       | `3`                           | video_tool             | Length of a video preview render             |
+| `WHISPER_MODEL`                               | `small`                       | video_tool             | Faster-Whisper model for automatic subtitles |
+| `WHISPER_CACHE_DIR`                           | `/models/whisper`             | video_tool             | Model cache (the `whisper_models` volume)    |
+| `WHISPER_CPU_THREADS`                         | `2`                           | video_tool             | CPU threads for speech recognition           |
 
 ⚠️ If you change `JWT_SECRET_KEY`, change it in **all three** services (`users`, `api_gateway`,
 `ws_gateway`) or authentication silently breaks.
@@ -338,8 +384,8 @@ All configuration currently lives as `environment:` entries in `docker-compose.y
 ### Persistent data
 
 Named Docker volumes: `user_data`, `project_data`, `subscription_data`, `image_data`,
-`seaweedfs_data`, `rabbitmq_data`. Database dumps are written to the host at `./backups/mongo`
-(git-ignored). `docker compose down -v` deletes every volume — the dumps survive.
+`seaweedfs_data`, `rabbitmq_data`, `whisper_models` (speech model weights). Database dumps are
+written to the host at `./backups/mongo` (git-ignored). `docker compose down -v` deletes every volume — the dumps survive.
 
 ### Scaling
 
@@ -371,11 +417,13 @@ picturas-27/
 ├── imageStorageService/      # Image storage service: S3 façade in front of SeaweedFS
 ├── wsGateway/                # WebSocket gateway (Socket.IO)
 ├── generative-mock/          # Mock of the Stable Diffusion WebUI API (for expand_ai)
-├── Tools/                    # Image processing microservices
+├── Tools/                    # Image and video processing microservices
 │   ├── utils/                #   shared helpers (RabbitMQ, image I/O, messages)
 │   ├── models/               #   pre-downloaded ML weights (e.g. yolov5su.pt)
 │   ├── bg_remove_ai/  cut_ai/  expand_ai/  obj_ai/  people_ai/  text_ai/  upgrade_ai/
-│   └── binarization/  border/  brightness/  contrast/  cut/  resize/  rotate/  saturation/
+│   ├── binarization/  border/  brightness/  contrast/  cut/  resize/  rotate/  saturation/
+│   └── video/                #   video_tool: ffmpeg worker for whole video pipelines
+├── samples/video/            # Sample videos for manual tests (valid, MOV, too long, corrupted)
 ├── rabbitMQ/                 # Broker image with queue/exchange definitions
 ├── nginx/nginx.conf          # Reverse proxy, TLS, CORS, WebSocket routing
 ├── certs/                    # Self-signed TLS certificate for Nginx
@@ -384,6 +432,59 @@ picturas-27/
 ├── docker-compose.yaml       # Service orchestration — the single source of truth
 └── LICENSE                   # CC BY-NC-SA 4.0
 ```
+
+---
+
+## 🎬 Video Tools
+
+Besides `trim` and `speed`, projects with videos have two project-wide, video-only tools. Both
+run inside the existing `video_tool` worker; images in the same project skip them.
+
+### Automatic subtitles
+
+Choose **Automatic subtitles** in the toolbar and **Save**. **Apply** burns captions into every
+video of the project, in the detected spoken language (no translation). Videos without audio or
+without detected speech are left unchanged by this step, and original uploads are never
+overwritten.
+
+- Recognition runs locally with [Faster-Whisper](https://github.com/SYSTRAN/faster-whisper)
+  `small` on CPU/int8 — no external API or key. The first use downloads the model weights into
+  the `whisper_models` volume; later runs reuse them.
+- Order matters: tools placed after subtitles also change the captioned video, so put subtitles
+  after `trim`/`speed` and other edits.
+- Preview shows the first 3 s of the final timeline. Subtitle previews may take up to ten
+  minutes on first use (model download, queued CPU work).
+- Transcription can contain errors. Captions are not editable and there is no SRT export.
+- Configured with `WHISPER_MODEL`, `WHISPER_CACHE_DIR` and `WHISPER_CPU_THREADS` (see
+  [Configuration](#-configuration)). The worker image ships Noto fonts for multilingual captions.
+
+Adapted from the Phase 1 submission of group **PL2-G5** (see [AUTHORS.md](AUTHORS.md)), which
+exported text tracks instead of burning captions into the video.
+
+### Extract frames
+
+Choose **Extract frames**, pick either a number of evenly spaced frames (1–100) or one frame
+every _N_ seconds, choose PNG or JPEG, and **Save**. **Apply** turns every video of the project
+into still images.
+
+- Extraction is always the **last** step and appears at most once; new effects are inserted
+  before it and invalid reorderings are rejected. Trim, speed, subtitles and other preceding
+  edits are reflected in the frames.
+- Sampling starts at 0 s on the edited timeline and excludes its end. At most 100 frames per
+  video: an interval that would produce more is rejected rather than silently truncated.
+- **Preview** shows a contact sheet of up to six samples across the whole edited video (which
+  can be slow when there are preceding effects). **Results** lists each frame as a separate
+  image with a unique name, for individual download or in the project ZIP.
+- With no preceding effects, frames are read directly from the original, without re-encoding.
+
+Adapted from the Phase 1 submissions of groups **PL2-G5** (interval sampling, bounded output)
+and **PL5-G6** (count-based PNG/JPEG extraction, frame manifest with timestamps) — see
+[AUTHORS.md](AUTHORS.md).
+
+### Playback
+
+Videos never autoplay or loop: they play only when started, and pause when you leave their
+carousel slide or close the preview.
 
 ---
 
@@ -419,6 +520,30 @@ Python tools have no bind mount — rebuild them after every change:
 ```bash
 docker compose up -d --build border_tool
 ```
+
+### Testing the video worker
+
+The tests run on the host, with no image to build. They only need Python 3.11+ and
+`ffmpeg`/`ffprobe` on the `PATH` (`brew install ffmpeg`, `apt install ffmpeg`, ...):
+
+```bash
+cd Tools/video
+python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt   # once
+.venv/bin/python -m pytest -q tests
+```
+
+Without ffmpeg on the host, run them in the already-built worker image instead:
+`docker compose run --rm video_tool sh -c "pip install -q pytest && python -m pytest -q tests"`.
+
+The media tests use real FFmpeg; speech recognition is simulated, so no model is downloaded.
+The orchestration tests for the video pipeline and frame extraction run inside `projects`:
+
+```bash
+docker compose run --rm --no-deps projects sh -c "node --test tests/*.test.js"
+```
+
+For manual tests, `samples/video/` has a valid 10 s 720p MP4, a MOV, a 90 s video that the free
+plan must reject and a corrupted file — see its `README.md` for the expected result of each.
 
 ### Adding a new tool
 
@@ -471,6 +596,15 @@ Check `docker compose logs <tool>_tool`. The usual causes are RabbitMQ not being
 Some models are downloaded or warmed up on first use. `Tools/models/yolov5su.pt` is committed,
 but other weights are fetched at runtime — the first request needs network access.
 
+**A video upload is rejected**
+The response gives the reason: check the plan limits (free 60 s / 100 MB) and that the file
+is a valid MP4, MOV or WebM. Videos must go to `POST /:user/:project/video`; the image
+endpoint rejects them.
+
+**A video stays at 0% or never finishes**
+There is a single `video_tool` with no replicas, so videos are processed one at a time. Check
+`docker compose logs -f video_tool` and the depth of `video_queue` in RabbitMQ.
+
 **`expand_ai` fails**
 It depends on `generative-mock` being healthy. Check <http://localhost:7860> and
 `docker compose logs generative-mock`.
@@ -493,81 +627,46 @@ local data**, so use it deliberately.
 
 ---
 
-## Video support — Phase 1 (UC-VID-001, UC-VID-002, UC-VID-003)
-
-Registered and Premium users can **import** MP4 (H.264) and MOV videos into a project
-(**Add Video**, chunked upload with resume; repeated names become "name (2).mp4"), see their
-video and audio **tracks** under the player, and apply two tools from the **Tools** bar on the
-left: **Recortar** (keep or remove an interval, selected in the panel or by dragging its ends on
-the tracks) and **Aplicar ferramentas** (Resize, Binarize and Rotate on every frame, audio
-preserved). Jobs run in the background with state, progress and cancel; when a job completes,
-its result **replaces** the video (same name). A completed job uses one daily operation.
-
-Limits (registered / Premium): videos up to 5 min and 200 MB / 30 min and 2 GB; library of
-1 GB / 10 GB; 1 / 3 active jobs. Aplicar ferramentas: 2 min, 200 MB, 1920 × 1080 / 10 min,
-2 GB, 3840 × 2160. Anonymous users have no access to video.
-
-Start or update the stack with `docker compose up -d --build` (the `video_trim_tool` and
-`video_apply_tool` services and their queues are created automatically).
-
-**Documentation:** Phase 1 report in `Docs/fase1/relatorio` (Typst; `typst compile --font-path
-fonts main.typ doc-ext-requisitos.pdf`), defence slides in `Docs/fase1/apresentacao`, AI
-records in `Docs/registo-ia-trim.md` and `Docs/registo-ia-apply.md`, known defects in
-`Docs/defeitos-conhecidos.md`.
-
-**Tests** (full instructions in Annex A of the report):
-
-```bash
-# with the stack running
-python3 tests/uc-vid-001/test_trim_requirements.py --reset-quota   # trim, 36 cases
-python3 tests/uc-vid-002/test_import_requirements.py                # import, 12 cases
-python3 tests/qualidade/test_quality_requirements.py --fila         # security, jobs, quality
-python3 tests/browser/test_browser.py                               # UI tests (Playwright)
-# isolated (ffmpeg on PATH; npm install in projects, apiGateway, users, frontend)
-python3 -m pip install -r Tools/video_apply/requirements.txt
-python3 -m unittest discover -s tests/uc-vid-003 -p 'test_*.py' -v
-node --test tests/uc-vid-003/*.test.cjs tests/video-tracks/*.test.cjs
-```
-
 ## 👥 Authors
 
 PictuRAS is a cumulative effort of several generations of students of _Requisitos e Arquitetura
-de Software_ at the **University of Minho**. Please keep this section growing rather than
-replacing it.
+de Software_ at the **University of Minho**, from the original 2024/2025 implementation to the
+current year. The full history — who contributed what, and when — is in
+[AUTHORS.md](AUTHORS.md). Add your group there as you start working on the project.
 
-### Original authors — Group A, 2024/2025
+The latest contributions, from 2026/2027 (Phase 1), are:
 
-The initial design and implementation:
+### Video support — Group PL1-G4, 2026/2027
 
-- **PG55926** — Carlos Alberto Ribeiro
-- **PG55932** — Diogo Cardoso Ferreira
-- **PG55934** — Diogo Gomes Matos
-- **PG55946** — Guilherme João Fernandes Barbosa
-- **PG57558** — João Henrique Costa Ferreira
-- **PG55958** — João Manuel Matos Fernandes
-- **PG55969** — José Filipe Ribeiro Rodrigues
-- **PG55973** — Juciano Gomes Farias Junior
-- **PG55989** — Nuno Ricardo Silva Gomes
+Contributed video support as an MVP: video upload with validation and per-plan limits, the
+`video_tool` ffmpeg worker, the video-only `trim` and `speed` tools, and the frontend for video
+upload, playback and editing:
 
-### Evolution — Group PL3-G, 2025/2026
+- **PG61468** — José Nuno Fernandes do Vale Taveira Campelo
+- **PG62409** — Martim Pereira Ribeiro
+- **PG63966** — Gonçalo José Vieira de Castro
+- **PG64019** — Pedro Miguel Cardoso Ribeiro
 
-Contributed HTTPS/TLS termination, encryption at rest and field-level encryption, automated
-database backups, the generative expand tool with its local mock, third-party watermark tool
-integration, and assorted frontend and service improvements:
+### Phase 1 ideas — Groups PL2-G5 and PL5-G6, 2026/2027
 
-- **PG60259** — Gabriel Veloso Antunes
-- **PG60263** — Guilherme Pinto Pinho
-- **PG60284** — Miguel Freixo Machado
-- **PG61515** — Diogo Miguel Pinto
-- **PG61534** — Mariana Miguel Pinto
+Automatic subtitles and frame extraction were adapted by the lecturers from these groups'
+Phase 1 submissions (see [Video Tools](#-video-tools)); they are not wholesale imports.
 
-### Continuation — Group PL?-?, 2026/2027
+**PL2-G5** — automatic subtitles with local Faster-Whisper, speech/no-audio handling, and
+interval-based frame sampling with bounded output:
 
-That is you. Add your names here as you start working on the project:
+- **PG63933** — Cláudio Rafael Oliveira Ferreira
+- **PG63948** — Diogo Linhares Campos
+- **PG64003** — Marco António Ferreira Abreu
+- **PG64010** — Nelson Daniel Araújo Sousa
 
-- **PG?????** — _name_
+**PL5-G6** — count-based PNG/JPEG frame extraction, frame manifests with timestamps and atomic
+output:
 
-_Note: minor improvements and adjustments have also been introduced by the course lecturers._
+- **PG64011** — Nuno Daniel Abreu da Silva
+- **PG64042** — Vicente Alexandre Fernandes da Silva
+- **PG64044** — Vítor Hugo Inácio Mina
+- **PG65418** — João Pedro Belece Bernardo
 
 ---
 

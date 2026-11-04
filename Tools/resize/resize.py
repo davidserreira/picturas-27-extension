@@ -1,4 +1,3 @@
-from utils import image_operations
 import sys
 import json
 import datetime
@@ -27,7 +26,7 @@ class Resize:
     
     def resize_image(self, img_path, store_img_path, dimensions):
         img = self._img_handler.get_img(img_path)
-        new_img = image_operations.resize(img, dimensions)
+        new_img = img.resize(dimensions)
         self._img_handler.store_img(new_img, store_img_path)
             
     def resize_callback(self, ch, method, properties, body):

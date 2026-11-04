@@ -201,6 +201,11 @@ export function ProjectProvider({
         // aplica operação
         switch (op.type) {
           case "TOOL_ADDED": {
+            // Inserting before frame extraction also changes existing positions.
+            if (Array.isArray(op.payload?.tools)) {
+              setTools(op.payload.tools);
+              break;
+            }
             const tool = op.payload?.tool;
             if (tool) {
               setTools((prev) => {

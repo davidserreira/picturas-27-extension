@@ -140,6 +140,11 @@ services:
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: user
       RABBITMQ_PASS: password
+      # Per-profile video limits
+      VIDEO_FREE_MAX_DURATION_S: 60
+      VIDEO_FREE_MAX_SIZE_MB: 100
+      VIDEO_PREMIUM_MAX_DURATION_S: 600
+      VIDEO_PREMIUM_MAX_SIZE_MB: 1024
     networks:
       - elk
     volumes:
@@ -246,6 +251,26 @@ services:
         condition: service_healthy
     volumes:
       - image_data:/app/images
+
+  # Video worker (ffmpeg isolated in the container)
+  video_tool:
+    build:
+      context: ./Tools
+      dockerfile: video/Dockerfile
+    restart: on-failure
+    environment:
+      VIDEO_PREVIEW_SECONDS: 3
+      WHISPER_MODEL: small
+      WHISPER_CACHE_DIR: /models/whisper
+      WHISPER_CPU_THREADS: 2
+    networks:
+      - elk
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    volumes:
+      - image_data:/app/images
+      - whisper_models:/models/whisper
 
   border_tool:
     build:
@@ -363,44 +388,6 @@ services:
         condition: service_healthy
     volumes:
       - image_data:/app/images
-
-  # UC-VID-001: trims videos (ffmpeg); see Tools/video_trim/video_trim.py
-  video_trim_tool:
-    build:
-      context: ./Tools
-      dockerfile: video_trim/Dockerfile
-    restart: on-failure
-    networks:
-      - elk
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    environment:
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_PORT: 5672
-      RABBITMQ_USERNAME: user
-      RABBITMQ_PASSWORD: password
-      IMG_STORAGE_URL: http://img_storage:11000
-      PROJECTS_URL: https://projects:9001
-
-  # UC-VID-003: shared image operations on every decoded frame
-  video_apply_tool:
-    build:
-      context: ./Tools
-      dockerfile: video_apply/Dockerfile
-    restart: on-failure
-    networks:
-      - elk
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    environment:
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_PORT: 5672
-      RABBITMQ_USERNAME: user
-      RABBITMQ_PASSWORD: password
-      IMG_STORAGE_URL: http://img_storage:11000
-      PROJECTS_URL: https://projects:9001
 
   saturation_tool:
     build:
@@ -571,6 +558,7 @@ networks:
     driver: bridge
 
 volumes:
+  whisper_models:
   rabbitmq_data:
   project_data:
   user_data:

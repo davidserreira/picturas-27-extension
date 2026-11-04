@@ -240,9 +240,9 @@ export const useProcessProject = (
         runnerUserId: uid,
       }),
 
-    onSuccess: async (newVersionHeader) => {
+    onSuccess: async (result) => {
       // 1) atualizar a versão local (se vier header)
-      bumpProjectVersion(qc, projectKey, newVersionHeader);
+      bumpProjectVersion(qc, projectKey, result.version);
 
       // 2) invalidar queries que certamente mudam
       qc.invalidateQueries({ queryKey: projectKey, refetchType: "all" });

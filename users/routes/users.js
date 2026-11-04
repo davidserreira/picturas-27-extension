@@ -218,12 +218,10 @@ router.post("/", function (req, res, next) {
 
 // Login user
 router.post("/:email/login", function (req, res, next) {
-  User.getOneEmail(req.params.email)
+  User.getOneEmailWithPassword(req.params.email)
     .then(async (user) => {
-      // unknown e-mail or missing password: same answer as a wrong password
-      if (!user || !user.password_hash || typeof req.body?.password !== "string") {
+      if (!user || !user.password_hash)
         return res.status(401).jsonp("The provided credentials are incorrect");
-      }
       const correct_pass = await auth.authenticate(req.body.password, user);
       if (correct_pass) {
         const userResponse = removeSensitiveInfo(user);
@@ -325,22 +323,6 @@ router.post("/:user/process/refund/:advanced_tools", async function (req, res) {
 
     if (!Number.isFinite(op_num) || op_num <= 0) {
       return res.status(400).jsonp("Invalid operations number");
-    }
-
-    // Video jobs supply a stable key and the day on which they reserved quota.
-    // The legacy image refund contract (empty body) remains available.
-    if (req.body?.jobId !== undefined) {
-      const jobId = req.body.jobId;
-      const dayText = req.body.day;
-      const day = new Date(dayText);
-      if (typeof jobId !== "string" || !/^[a-f0-9]{24}$/i.test(jobId) ||
-          typeof dayText !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(dayText) ||
-          !Number.isFinite(day.getTime()) || day.toISOString().slice(0, 10) !== dayText || op_num !== 1) {
-        return res.status(400).jsonp("Invalid video refund");
-      }
-      if (!user) return res.status(404).jsonp("User not found");
-      await User.refundVideoOperation(req.params.user, jobId, day, op_num);
-      return res.status(200).jsonp(true);
     }
 
     // premium não precisa de refund (não tem limite diário)

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { getImageDimensions } from "@/lib/utils";
+import { isVideo } from "@/lib/projects";
 import { useCurrentImage, useProjectInfo, useUnsavedChanges } from "@/providers/project-provider";
 import { ResizeToolParams } from "@/lib/tool-types";
 
@@ -21,7 +22,9 @@ export default function ResizeTool({ disabled }: { disabled: boolean }) {
   useEffect(() => {
     const fetchImageDimensions = async () => {
       if (currentImage) {
-        const { width, height } = await getImageDimensions(currentImage.url);
+        const { width, height } = isVideo(currentImage) && currentImage.video
+          ? currentImage.video
+          : await getImageDimensions(currentImage.url);
         setDefaultWidth(width);
         setDefaultHeight(height);
       }

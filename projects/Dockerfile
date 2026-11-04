@@ -1,8 +1,7 @@
 from node
-workdir /app
-
-# ffprobe, used to validate imported videos
+# ffprobe to validate videos on upload
 run apt-get update && apt-get install -y --no-install-recommends ffmpeg && rm -rf /var/lib/apt/lists/*
+workdir /app
 
 copy . .
 run npm install

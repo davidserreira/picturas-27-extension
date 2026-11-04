@@ -5,6 +5,7 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { useCurrentImage, useProjectInfo } from "@/providers/project-provider";
 import { getImageDimensions } from "@/lib/utils";
+import { isVideo } from "@/lib/projects";
 import { CropToolParams } from "@/lib/tool-types";
 import { useUnsavedChanges } from "@/providers/project-provider";
 
@@ -26,7 +27,9 @@ export default function CropTool({ disabled }: { disabled: boolean }) {
   useEffect(() => {
     const fetchImageDimensions = async () => {
       if (currentImage) {
-        const { width, height } = await getImageDimensions(currentImage.url);
+        const { width, height } = isVideo(currentImage) && currentImage.video
+          ? currentImage.video
+          : await getImageDimensions(currentImage.url);
         setWidth(width);
         setHeight(height);
       }

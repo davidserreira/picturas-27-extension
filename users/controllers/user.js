@@ -23,12 +23,15 @@ module.exports.getOne = async (user_id) => {
   return user ? user.toJSON() : null;
 };
 
-// Used by login: toJSON() removes password_hash (so it never reaches the
-// client), but authentication needs it, so it is added back here. The login
-// route strips it again (removeSensitiveInfo) before answering.
-// T-03 (corrective maintenance): without this, every login by email failed
-// with 701, because bcrypt.compare() received an undefined hash.
 module.exports.getOneEmail = async (email) => {
+  const emailHash = hashEmail(email);
+  const user = await User.findOne({ email_hash: emailHash }).exec();
+  return user ? user.toJSON() : null;
+};
+
+// Like getOneEmail, but keeps password_hash (which toJSON strips) so the
+// password can be checked on login. Never send the result to a client as is.
+module.exports.getOneEmailWithPassword = async (email) => {
   const emailHash = hashEmail(email);
   const user = await User.findOne({ email_hash: emailHash }).exec();
   return user ? { ...user.toJSON(), password_hash: user.password_hash } : null;
@@ -62,8 +65,3 @@ module.exports.update = async (user_id, user) => {
 module.exports.delete = (user_id) => {
   return User.deleteOne({ _id: user_id });
 };
-
-// Refund and remember its key in the same document update. Safe to retry when
-// the HTTP response was lost. Use the reservation day, including across midnight.
-module.exports.refundVideoOperation = async (user_id, jobId, day, count) =>
-  User.refundVideoOperation(user_id, jobId, day, count);

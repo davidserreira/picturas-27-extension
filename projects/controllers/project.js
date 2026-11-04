@@ -89,3 +89,12 @@ module.exports.updateRaw = async (user_id, project_id, update) => {
   ).exec();
 };
 
+
+// Commit only if cancellation/new processing has not changed the active run.
+module.exports.commitRunIfActive = async (user_id, project_id, token, tools) => {
+  return Project.findOneAndUpdate(
+    { user_id, _id: project_id, activeToken: token },
+    { $set: { committedToken: token, resultsToken: token, committedTools: tools } },
+    { new: true }
+  ).exec();
+};
