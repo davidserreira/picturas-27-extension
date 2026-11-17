@@ -1,0 +1,31 @@
+{
+  "suite": "ui",
+  "modo": "passos/passo-5",
+  "quando": "2026-11-17T14:51:43.164Z",
+  "commit": {
+    "hash": "f1a6e0fe0641c08ffd0ea363b231244e93f835af",
+    "codeChanges": [
+      "M nginx/nginx.conf"
+    ]
+  },
+  "testes": [
+    {
+      "id": "U01",
+      "nome": "Importar uma imagem pela interface",
+      "estado": "passou",
+      "segundos": 4.7
+    },
+    {
+      "id": "U02",
+      "nome": "Aplicar um pipeline pela interface e ver os resultados",
+      "estado": "passou",
+      "segundos": 6.3
+    },
+    {
+      "id": "U03",
+      "nome": "Cancelar pela interface uma execução em curso",
+      "estado": "passou",
+      "segundos": 37.4
+    }
+  ]
+}

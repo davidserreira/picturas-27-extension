@@ -1,0 +1,20 @@
+14:47:24 C1.5 sample_10s_720p.mp4: 204 
+14:47:24 C1.5 sample_6s.mov: 204 
+14:47:24 C1.5 speech_mandela_177s_1080p.webm: 400 "The video is 176.6 s long and your profile limit is 60 s"
+14:47:24 C1.5 too_long_90s.mp4 (acima do limite do perfil gratuito): 400 "The video is 90.0 s long and your profile limit is 60 s"
+14:47:25 C1.5 corrupted.mp4: 400 "Unreadable or corrupted video file"
+14:47:25 C1.5 imagem enviada como video: 400 "Only video files (.mp4, .mov, .webm) can be uploaded here."
+14:47:26 C1.5 upload-100MiB.mp4 (tamanho no limite gratuito): 400 "The video is 100.1 MB and your profile limit is 100 MB"
+[medicao] gravado Docs\fase2\medicoes\passos\passo-5\rnf1-c15-c17.json
+14:47:52 C1.7 sample_10s_720p.mp4: 204, 1 objeto(s) em src/ (esperado 1)
+14:47:52 C1.7 sample_6s.mov: 204, 1 objeto(s) em src/ (esperado 1)
+14:47:52 C1.7 speech_mandela_177s_1080p.webm: 400, 0 objeto(s) em src/ (esperado 0)
+14:47:52 C1.7 too_long_90s.mp4 (acima do limite do perfil gratuito): 400, 0 objeto(s) em src/ (esperado 0)
+14:47:52 C1.7 corrupted.mp4: 400, 0 objeto(s) em src/ (esperado 0)
+14:47:52 C1.7 imagem enviada como video: 400, 0 objeto(s) em src/ (esperado 0)
+14:47:52 C1.7 upload-100MiB.mp4 (tamanho no limite gratuito): 400, 0 objeto(s) em src/ (esperado 0)
+14:47:52 C1.7 conflito de versão (segundo envio com versão antiga): 204, 409, 1 objeto(s) em src/ (esperado 1)
+14:47:52 C1.7 envio de 100 MiB interrompido a meio: interrompido, 0 objeto(s) em src/ (esperado 0)
+14:47:52 C1.7 envios em partes abertos: 0 -> 0; sem órfãos: true
+[medicao] gravado Docs\fase2\medicoes\passos\passo-5\rnf1-c15-c17.json
+[medicao] gravado Docs\fase2\medicoes\passos\passo-5\rnf1-c15-c17.json
