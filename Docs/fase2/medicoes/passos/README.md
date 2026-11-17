@@ -7,6 +7,7 @@ atribuir a cada passo a redução que provoca e não substituem a medição fina
 | --- | --- |
 | `passo-0/` | C1.7 na base, antes de qualquer alteração |
 | `passo-1/` a `passo-5/` | M1.1, C1.1, C1.2 e C1.4 com 100 e 500 MiB (duas repetições); nos passos 3 a 5, também C1.5 e C1.7; nos passos 4 e 5, C1.3; no passo 5, 10 MiB e C1.6 |
+| `passo-5b/` | A afinação adotada: M1.1 com 100, 500 e 1000 MiB, C1.3 a C1.5 e C1.7; tempos com 10 e 100 MiB (3 repetições) |
 | `afinacao/` | Variantes de configuração dos serviços Node testadas depois do passo 5 (ver ADR-01, secção 7) |
 
 A regressão completa de cada passo está em `../../regressao/passos/`.
@@ -29,3 +30,7 @@ antes disso registam os hashes antigos:
 | Passo 3 | `7061250` | `847e0dc` |
 | Passo 4 | `f1a6e0f` | `0130073` |
 | Passo 5 | `e7db5a9` | `a394a9a` |
+| *Merge* feito pelo VS Code com os commits antigos do `origin`, sem alterações ao conteúdo (retirado do ramo) | `7c2ab1e` | `a394a9a` (o mesmo conteúdo) |
+
+As variantes de `afinacao/` e as medições do passo 5b correram sobre o conteúdo do passo 5, com as
+alterações por versionar registadas em cada JSON.
