@@ -1,0 +1,188 @@
+{
+  "medida": "RNF-F2-01 M1.1 e controlos C1.1-C1.7",
+  "quando": "2026-11-17T14:58:35.456Z",
+  "commit": {
+    "hash": "a394a9a132ddcd2441b13e6d21ef2514c4879a60",
+    "codeChanges": []
+  },
+  "repeticoes": 2,
+  "tamanhosMiB": [
+    500
+  ],
+  "servicosAmostrados": [
+    "nginx",
+    "api_gateway",
+    "projects",
+    "img_storage",
+    "seaweedfs"
+  ],
+  "servicosNoCriterio": [
+    "nginx",
+    "api_gateway",
+    "projects",
+    "img_storage"
+  ],
+  "m11": {
+    "500": [
+      {
+        "rep": 1,
+        "project": "6afc6bb189c4b22a6a6a9e04",
+        "valid": true,
+        "crashed": [],
+        "status": 204,
+        "body": "",
+        "transferS": 3.084744200000001,
+        "acceptS": 0.6346464999999989,
+        "totalS": 3.7193907,
+        "perService": {
+          "nginx": {
+            "idleMiB": 11.1,
+            "peakMiB": 17.8,
+            "increaseMiB": 6.7,
+            "samples": 10
+          },
+          "api_gateway": {
+            "idleMiB": 68.3,
+            "peakMiB": 111.1,
+            "increaseMiB": 42.8,
+            "samples": 10
+          },
+          "projects": {
+            "idleMiB": 66.8,
+            "peakMiB": 81.3,
+            "increaseMiB": 14.5,
+            "samples": 10
+          },
+          "img_storage": {
+            "idleMiB": 48.1,
+            "peakMiB": 127.5,
+            "increaseMiB": 79.4,
+            "samples": 10
+          },
+          "seaweedfs": {
+            "idleMiB": 2078.7,
+            "peakMiB": 2148.4,
+            "increaseMiB": 69.6,
+            "samples": 10
+          }
+        }
+      },
+      {
+        "rep": 2,
+        "project": "6afc6bcc7779298d58c6d282",
+        "valid": true,
+        "crashed": [],
+        "status": 204,
+        "body": "",
+        "transferS": 4.389879800000003,
+        "acceptS": 0.527411199999995,
+        "totalS": 4.917290999999998,
+        "perService": {
+          "nginx": {
+            "idleMiB": 12.7,
+            "peakMiB": 23.8,
+            "increaseMiB": 11.1,
+            "samples": 12
+          },
+          "api_gateway": {
+            "idleMiB": 69.4,
+            "peakMiB": 113.3,
+            "increaseMiB": 43.9,
+            "samples": 12
+          },
+          "projects": {
+            "idleMiB": 70.4,
+            "peakMiB": 91.8,
+            "increaseMiB": 21.3,
+            "samples": 12
+          },
+          "img_storage": {
+            "idleMiB": 49,
+            "peakMiB": 142.9,
+            "increaseMiB": 93.9,
+            "samples": 12
+          },
+          "seaweedfs": {
+            "idleMiB": 1982.5,
+            "peakMiB": 2128.9,
+            "increaseMiB": 146.4,
+            "samples": 12
+          }
+        }
+      }
+    ]
+  },
+  "c11": {
+    "500": {
+      "n": 2,
+      "mean": 0.58,
+      "sd": 0.08,
+      "median": 0.58,
+      "min": 0.53,
+      "max": 0.63
+    }
+  },
+  "c12": {
+    "500": {
+      "n": 2,
+      "mean": 4.32,
+      "sd": 0.85,
+      "median": 4.32,
+      "min": 3.72,
+      "max": 4.92
+    }
+  },
+  "c13": null,
+  "c14": {},
+  "c15": null,
+  "c16": null,
+  "resumo": {
+    "500": {
+      "nginx": {
+        "n": 2,
+        "mean": 8.9,
+        "sd": 3.11,
+        "median": 8.9,
+        "min": 6.7,
+        "max": 11.1
+      },
+      "api_gateway": {
+        "n": 2,
+        "mean": 43.35,
+        "sd": 0.78,
+        "median": 43.35,
+        "min": 42.8,
+        "max": 43.9
+      },
+      "projects": {
+        "n": 2,
+        "mean": 17.9,
+        "sd": 4.81,
+        "median": 17.9,
+        "min": 14.5,
+        "max": 21.3
+      },
+      "img_storage": {
+        "n": 2,
+        "mean": 86.65,
+        "sd": 10.25,
+        "median": 86.65,
+        "min": 79.4,
+        "max": 93.9
+      },
+      "seaweedfs": {
+        "n": 2,
+        "mean": 108,
+        "sd": 54.31,
+        "median": 108,
+        "min": 69.6,
+        "max": 146.4
+      },
+      "piorServicoNoCriterio": {
+        "servico": "img_storage",
+        "maxIncreaseMiB": 93.9
+      },
+      "repeticoesValidas": 2
+    }
+  }
+}

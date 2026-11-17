@@ -1,0 +1,18 @@
+14:57:07 M1.1 500 MiB rep 1/2
+14:57:18   -> 204 valida {
+  nginx: 10.5,
+  api_gateway: 37,
+  projects: 29.6,
+  img_storage: 60.6,
+  seaweedfs: 215
+}
+14:57:37 M1.1 500 MiB rep 2/2
+14:57:46   -> 204 valida {
+  nginx: 11,
+  api_gateway: 42.3,
+  projects: 22.2,
+  img_storage: 63.3,
+  seaweedfs: 109.6
+}
+[medicao] gravado Docs\fase2\medicoes\passos\afinacao\malloc-heap96.json
+[medicao] gravado Docs\fase2\medicoes\passos\afinacao\malloc-heap96.json

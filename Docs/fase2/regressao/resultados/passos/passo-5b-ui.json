@@ -1,0 +1,32 @@
+{
+  "suite": "ui",
+  "modo": "passos/passo-5b",
+  "quando": "2026-11-17T15:11:23.752Z",
+  "commit": {
+    "hash": "7c2ab1e9043e4d177507a92d683453ccc0b61da3",
+    "codeChanges": [
+      "M docker-compose.yaml",
+      " M imageStorageService/services/uploadImage.js"
+    ]
+  },
+  "testes": [
+    {
+      "id": "U01",
+      "nome": "Importar uma imagem pela interface",
+      "estado": "passou",
+      "segundos": 5.9
+    },
+    {
+      "id": "U02",
+      "nome": "Aplicar um pipeline pela interface e ver os resultados",
+      "estado": "passou",
+      "segundos": 6.3
+    },
+    {
+      "id": "U03",
+      "nome": "Cancelar pela interface uma execução em curso",
+      "estado": "passou",
+      "segundos": 37.7
+    }
+  ]
+}

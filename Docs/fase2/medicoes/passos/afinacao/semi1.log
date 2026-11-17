@@ -1,0 +1,18 @@
+14:58:57 M1.1 500 MiB rep 1/2
+14:59:05   -> 204 valida {
+  nginx: 6.7,
+  api_gateway: 42.8,
+  projects: 14.5,
+  img_storage: 79.4,
+  seaweedfs: 69.6
+}
+14:59:25 M1.1 500 MiB rep 2/2
+14:59:34   -> 204 valida {
+  nginx: 11.1,
+  api_gateway: 43.9,
+  projects: 21.3,
+  img_storage: 93.9,
+  seaweedfs: 146.4
+}
+[medicao] gravado Docs\fase2\medicoes\passos\afinacao\semi1.json
+[medicao] gravado Docs\fase2\medicoes\passos\afinacao\semi1.json

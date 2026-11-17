@@ -6,7 +6,10 @@ const { v4: uuidv4 } = require("uuid");
 // multipart upload. The SDK keeps at most QUEUE_SIZE parts of PART_SIZE bytes in
 // memory, so memory use no longer grows with the file size (Phase 2, ADR-01).
 const PART_SIZE = 5 * 1024 * 1024; // smallest part size S3 accepts
-const QUEUE_SIZE = 4; // parts sent in parallel
+// Parts sent in parallel. 2 rather than the SDK default of 4: half the parts
+// held in memory, with the same upload time to the local SeaweedFS (measured
+// in Docs/fase2/medicoes/passos/afinacao/).
+const QUEUE_SIZE = 2;
 
 async function uploadImage(userId, projectId, file, stage, { onStart } = {}) {
   await ensureBucket();

@@ -1,0 +1,58 @@
+15:02:53 M1.1 100 MiB rep 1/2
+15:03:00   -> 204 valida {
+  nginx: 7.7,
+  api_gateway: 28.2,
+  projects: 37,
+  img_storage: 37.3,
+  seaweedfs: 392.2
+}
+15:03:01   C1.4 100 MiB sha igual=true
+15:03:19 M1.1 100 MiB rep 2/2
+15:03:27   -> 204 valida {
+  nginx: 6.4,
+  api_gateway: 28.1,
+  projects: 19.6,
+  img_storage: 40.1,
+  seaweedfs: 271.4
+}
+[medicao] gravado Docs\fase2\medicoes\passos\passo-5b\rnf1-memoria.json
+15:03:46 M1.1 500 MiB rep 1/2
+15:03:57   -> 204 valida {
+  nginx: 10.8,
+  api_gateway: 41,
+  projects: 17.6,
+  img_storage: 50.7,
+  seaweedfs: 0
+}
+15:04:11   C1.4 500 MiB sha igual=true
+15:04:31 M1.1 500 MiB rep 2/2
+15:04:40   -> 204 valida {
+  nginx: 6,
+  api_gateway: 37.4,
+  projects: 18.3,
+  img_storage: 42.6,
+  seaweedfs: 1
+}
+[medicao] gravado Docs\fase2\medicoes\passos\passo-5b\rnf1-memoria.json
+15:04:58 M1.1 1000 MiB rep 1/2
+15:05:15   -> 204 valida {
+  nginx: 9.1,
+  api_gateway: 42.1,
+  projects: 12.8,
+  img_storage: 50.5,
+  seaweedfs: 148.5
+}
+15:05:50   C1.4 1000 MiB sha igual=true
+15:06:09 M1.1 1000 MiB rep 2/2
+15:06:22   -> 204 valida {
+  nginx: 10.8,
+  api_gateway: 38.4,
+  projects: 18.6,
+  img_storage: 51.8,
+  seaweedfs: 1
+}
+[medicao] gravado Docs\fase2\medicoes\passos\passo-5b\rnf1-memoria.json
+15:06:40 C1.3 envio de 500 MiB sem JWT
+15:06:46   -> 401, api_gateway +20.2 MiB
+[medicao] gravado Docs\fase2\medicoes\passos\passo-5b\rnf1-memoria.json
+[medicao] gravado Docs\fase2\medicoes\passos\passo-5b\rnf1-memoria.json

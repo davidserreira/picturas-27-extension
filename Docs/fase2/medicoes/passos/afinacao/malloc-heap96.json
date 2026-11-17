@@ -1,0 +1,188 @@
+{
+  "medida": "RNF-F2-01 M1.1 e controlos C1.1-C1.7",
+  "quando": "2026-11-17T14:56:46.683Z",
+  "commit": {
+    "hash": "a394a9a132ddcd2441b13e6d21ef2514c4879a60",
+    "codeChanges": []
+  },
+  "repeticoes": 2,
+  "tamanhosMiB": [
+    500
+  ],
+  "servicosAmostrados": [
+    "nginx",
+    "api_gateway",
+    "projects",
+    "img_storage",
+    "seaweedfs"
+  ],
+  "servicosNoCriterio": [
+    "nginx",
+    "api_gateway",
+    "projects",
+    "img_storage"
+  ],
+  "m11": {
+    "500": [
+      {
+        "rep": 1,
+        "project": "6afc6b430361d3e7bef7e5e7",
+        "valid": true,
+        "crashed": [],
+        "status": 204,
+        "body": "",
+        "transferS": 4.662947600000003,
+        "acceptS": 0.5642801,
+        "totalS": 5.227227700000003,
+        "perService": {
+          "nginx": {
+            "idleMiB": 11.2,
+            "peakMiB": 21.6,
+            "increaseMiB": 10.5,
+            "samples": 13
+          },
+          "api_gateway": {
+            "idleMiB": 58.3,
+            "peakMiB": 95.3,
+            "increaseMiB": 37,
+            "samples": 13
+          },
+          "projects": {
+            "idleMiB": 59.7,
+            "peakMiB": 89.3,
+            "increaseMiB": 29.6,
+            "samples": 13
+          },
+          "img_storage": {
+            "idleMiB": 40.4,
+            "peakMiB": 101,
+            "increaseMiB": 60.6,
+            "samples": 13
+          },
+          "seaweedfs": {
+            "idleMiB": 2004,
+            "peakMiB": 2219,
+            "increaseMiB": 215,
+            "samples": 13
+          }
+        }
+      },
+      {
+        "rep": 2,
+        "project": "6afc6b60163a49082887e388",
+        "valid": true,
+        "crashed": [],
+        "status": 204,
+        "body": "",
+        "transferS": 3.9071216999999963,
+        "acceptS": 0.7652479000000021,
+        "totalS": 4.672369599999998,
+        "perService": {
+          "nginx": {
+            "idleMiB": 13.1,
+            "peakMiB": 24.2,
+            "increaseMiB": 11,
+            "samples": 12
+          },
+          "api_gateway": {
+            "idleMiB": 61.6,
+            "peakMiB": 103.9,
+            "increaseMiB": 42.3,
+            "samples": 12
+          },
+          "projects": {
+            "idleMiB": 65,
+            "peakMiB": 87.3,
+            "increaseMiB": 22.2,
+            "samples": 12
+          },
+          "img_storage": {
+            "idleMiB": 43.9,
+            "peakMiB": 107.2,
+            "increaseMiB": 63.3,
+            "samples": 12
+          },
+          "seaweedfs": {
+            "idleMiB": 2039.8,
+            "peakMiB": 2149.4,
+            "increaseMiB": 109.6,
+            "samples": 12
+          }
+        }
+      }
+    ]
+  },
+  "c11": {
+    "500": {
+      "n": 2,
+      "mean": 0.66,
+      "sd": 0.14,
+      "median": 0.66,
+      "min": 0.56,
+      "max": 0.77
+    }
+  },
+  "c12": {
+    "500": {
+      "n": 2,
+      "mean": 4.95,
+      "sd": 0.39,
+      "median": 4.95,
+      "min": 4.67,
+      "max": 5.23
+    }
+  },
+  "c13": null,
+  "c14": {},
+  "c15": null,
+  "c16": null,
+  "resumo": {
+    "500": {
+      "nginx": {
+        "n": 2,
+        "mean": 10.75,
+        "sd": 0.35,
+        "median": 10.75,
+        "min": 10.5,
+        "max": 11
+      },
+      "api_gateway": {
+        "n": 2,
+        "mean": 39.65,
+        "sd": 3.75,
+        "median": 39.65,
+        "min": 37,
+        "max": 42.3
+      },
+      "projects": {
+        "n": 2,
+        "mean": 25.9,
+        "sd": 5.23,
+        "median": 25.9,
+        "min": 22.2,
+        "max": 29.6
+      },
+      "img_storage": {
+        "n": 2,
+        "mean": 61.95,
+        "sd": 1.91,
+        "median": 61.95,
+        "min": 60.6,
+        "max": 63.3
+      },
+      "seaweedfs": {
+        "n": 2,
+        "mean": 162.3,
+        "sd": 74.53,
+        "median": 162.3,
+        "min": 109.6,
+        "max": 215
+      },
+      "piorServicoNoCriterio": {
+        "servico": "img_storage",
+        "maxIncreaseMiB": 63.3
+      },
+      "repeticoesValidas": 2
+    }
+  }
+}

@@ -1,0 +1,18 @@
+14:54:39 M1.1 500 MiB rep 1/2
+14:54:51   -> 204 valida {
+  nginx: 11.2,
+  api_gateway: 77.1,
+  projects: 87.3,
+  img_storage: 82.7,
+  seaweedfs: 16.4
+}
+14:55:10 M1.1 500 MiB rep 2/2
+14:55:20   -> 204 valida {
+  nginx: 11.4,
+  api_gateway: 76.9,
+  projects: 81.5,
+  img_storage: 65.9,
+  seaweedfs: 110.6
+}
+[medicao] gravado Docs\fase2\medicoes\passos\afinacao\malloc.json
+[medicao] gravado Docs\fase2\medicoes\passos\afinacao\malloc.json

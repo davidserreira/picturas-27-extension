@@ -86,6 +86,15 @@ services:
       S3_ACCESS_KEY: ${S3_ACCESS_KEY:-admin}
       S3_SECRET_KEY: ${S3_SECRET_KEY:-admin123}
       FRONTEND_URL: "https://localhost:8080"
+      # Phase 2, ADR-01: memory of streamed uploads. A smaller young generation
+      # makes V8 collect the buffers already passed on sooner, and glibc returns
+      # freed memory to the system instead of keeping it in its arenas.
+      # The old-space cap also makes V8 run full collections sooner, freeing the
+      # 5 MiB S3 parts already sent; this small service stays far below it.
+      NODE_OPTIONS: "--max-semi-space-size=1 --max-old-space-size=96"
+      MALLOC_ARENA_MAX: "2"
+      MALLOC_MMAP_THRESHOLD_: "131072"
+      MALLOC_TRIM_THRESHOLD_: "131072"
     networks:
       - elk
 
@@ -145,6 +154,13 @@ services:
       VIDEO_FREE_MAX_SIZE_MB: 100
       VIDEO_PREMIUM_MAX_DURATION_S: 600
       VIDEO_PREMIUM_MAX_SIZE_MB: 1024
+      # Phase 2, ADR-01: memory of streamed uploads. A smaller young generation
+      # makes V8 collect the buffers already passed on sooner, and glibc returns
+      # freed memory to the system instead of keeping it in its arenas.
+      NODE_OPTIONS: "--max-semi-space-size=1"
+      MALLOC_ARENA_MAX: "2"
+      MALLOC_MMAP_THRESHOLD_: "131072"
+      MALLOC_TRIM_THRESHOLD_: "131072"
     networks:
       - elk
     volumes:
@@ -220,6 +236,13 @@ services:
     restart: on-failure
     environment:
       - JWT_SECRET_KEY=lisan_al_gaib
+      # Phase 2, ADR-01: memory of streamed uploads. A smaller young generation
+      # makes V8 collect the buffers already passed on sooner, and glibc returns
+      # freed memory to the system instead of keeping it in its arenas.
+      - NODE_OPTIONS=--max-semi-space-size=1
+      - MALLOC_ARENA_MAX=2
+      - MALLOC_MMAP_THRESHOLD_=131072
+      - MALLOC_TRIM_THRESHOLD_=131072
     networks:
       - elk
     volumes:

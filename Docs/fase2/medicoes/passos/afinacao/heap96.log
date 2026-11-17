@@ -1,0 +1,18 @@
+14:55:55 M1.1 500 MiB rep 1/2
+14:56:03   -> 204 valida {
+  nginx: 10.4,
+  api_gateway: 42.2,
+  projects: 17.1,
+  img_storage: 80.5,
+  seaweedfs: 0
+}
+14:56:23 M1.1 500 MiB rep 2/2
+14:56:32   -> 204 valida {
+  nginx: 5.7,
+  api_gateway: 41.3,
+  projects: 16.6,
+  img_storage: 70.8,
+  seaweedfs: 133.1
+}
+[medicao] gravado Docs\fase2\medicoes\passos\afinacao\heap96.json
+[medicao] gravado Docs\fase2\medicoes\passos\afinacao\heap96.json

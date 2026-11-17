@@ -1,0 +1,14 @@
+ Container picturas-img_storage-run-ce2546aecb4b Creating 
+ Container picturas-img_storage-run-ce2546aecb4b Created 
+✔ the file reaches storage byte for byte and the answer keeps its shape (60.258013ms)
+✔ an invalid stage is refused before anything is stored (4.555807ms)
+✔ a storage failure answers 500 with the error message, as before (4.065499ms)
+✔ a client that goes away midway aborts the storage upload (47.635503ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 310.279474
