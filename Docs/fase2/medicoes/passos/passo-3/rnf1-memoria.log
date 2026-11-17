@@ -1,0 +1,37 @@
+14:25:47 M1.1 100 MiB rep 1/2
+14:25:54   -> 204 valida {
+  nginx: 3.5,
+  api_gateway: 307.8,
+  projects: 40.3,
+  img_storage: 79.1,
+  seaweedfs: 417.2
+}
+14:25:55   C1.4 100 MiB sha igual=true
+14:26:13 M1.1 100 MiB rep 2/2
+14:26:19   -> 204 valida {
+  nginx: 3.6,
+  api_gateway: 307.4,
+  projects: 41,
+  img_storage: 49,
+  seaweedfs: 209.9
+}
+[medicao] gravado Docs\fase2\medicoes\passos\passo-3\rnf1-memoria.json
+14:26:37 M1.1 500 MiB rep 1/2
+14:26:53   -> 204 valida {
+  nginx: 19,
+  api_gateway: 1627.3,
+  projects: 49.9,
+  img_storage: 107.9,
+  seaweedfs: 96.3
+}
+14:27:02   C1.4 500 MiB sha igual=true
+14:27:22 M1.1 500 MiB rep 2/2
+14:27:35   -> 204 valida {
+  nginx: 19.1,
+  api_gateway: 1726.8,
+  projects: 45.8,
+  img_storage: 111.1,
+  seaweedfs: 0
+}
+[medicao] gravado Docs\fase2\medicoes\passos\passo-3\rnf1-memoria.json
+[medicao] gravado Docs\fase2\medicoes\passos\passo-3\rnf1-memoria.json

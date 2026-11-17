@@ -26,7 +26,9 @@ async function get_image_public_url(user, project, type, img) {
   );
 }
 
-async function post_image(user, project, type, file) {
+// `signal` (optional) cancels the upload, e.g. when the client that is
+// streaming the file to projects goes away (utils/mediaUpload.js).
+async function post_image(user, project, type, file, { signal } = {}) {
   return await axios.post(
     `${img_storage_ms}/upload/${user}/${project}/${type}`,
     file /* , { httpsAgent: httpsAgent } */,
@@ -36,7 +38,7 @@ async function post_image(user, project, type, file) {
     // replay the body after a redirect: with maxBodyLength Infinity, a second
     // copy of the whole file in memory (Phase 2, ADR-01). img_storage never
     // redirects.
-    { maxRedirects: 0, maxBodyLength: Infinity, maxContentLength: Infinity, headers: file.getHeaders ? file.getHeaders() : undefined },
+    { maxRedirects: 0, maxBodyLength: Infinity, maxContentLength: Infinity, headers: file.getHeaders ? file.getHeaders() : undefined, signal },
   );
 }
 

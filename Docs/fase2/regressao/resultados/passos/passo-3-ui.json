@@ -1,0 +1,35 @@
+{
+  "suite": "ui",
+  "modo": "passos/passo-3",
+  "quando": "2026-11-17T14:32:13.435Z",
+  "commit": {
+    "hash": "ad6b5c4e43ec96c31c0ff0aed7fbbcc6018fa3fe",
+    "codeChanges": [
+      "M projects/routes/projects.js",
+      " M projects/utils/imageStorage.js",
+      " M projects/utils/video.js",
+      "?? projects/tests/media-upload.test.js",
+      "?? projects/utils/mediaUpload.js"
+    ]
+  },
+  "testes": [
+    {
+      "id": "U01",
+      "nome": "Importar uma imagem pela interface",
+      "estado": "passou",
+      "segundos": 5.6
+    },
+    {
+      "id": "U02",
+      "nome": "Aplicar um pipeline pela interface e ver os resultados",
+      "estado": "passou",
+      "segundos": 6.4
+    },
+    {
+      "id": "U03",
+      "nome": "Cancelar pela interface uma execução em curso",
+      "estado": "passou",
+      "segundos": 37.6
+    }
+  ]
+}

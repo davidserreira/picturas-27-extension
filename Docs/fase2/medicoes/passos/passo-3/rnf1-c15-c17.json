@@ -1,0 +1,137 @@
+{
+  "medida": "RNF-F2-01 M1.1 e controlos C1.1-C1.7",
+  "quando": "2026-11-17T14:27:35.247Z",
+  "commit": {
+    "hash": "ad6b5c4e43ec96c31c0ff0aed7fbbcc6018fa3fe",
+    "codeChanges": [
+      "M projects/routes/projects.js",
+      " M projects/utils/imageStorage.js",
+      " M projects/utils/video.js",
+      "?? projects/tests/media-upload.test.js",
+      "?? projects/utils/mediaUpload.js"
+    ]
+  },
+  "repeticoes": 5,
+  "tamanhosMiB": [
+    100
+  ],
+  "servicosAmostrados": [
+    "nginx",
+    "api_gateway",
+    "projects",
+    "img_storage",
+    "seaweedfs"
+  ],
+  "servicosNoCriterio": [
+    "nginx",
+    "api_gateway",
+    "projects",
+    "img_storage"
+  ],
+  "m11": {},
+  "c11": {},
+  "c12": {},
+  "c13": null,
+  "c14": {},
+  "c15": [
+    {
+      "caso": "sample_10s_720p.mp4",
+      "status": 204,
+      "resposta": ""
+    },
+    {
+      "caso": "sample_6s.mov",
+      "status": 204,
+      "resposta": ""
+    },
+    {
+      "caso": "speech_mandela_177s_1080p.webm",
+      "status": 400,
+      "resposta": "\"The video is 176.6 s long and your profile limit is 60 s\""
+    },
+    {
+      "caso": "too_long_90s.mp4 (acima do limite do perfil gratuito)",
+      "status": 400,
+      "resposta": "\"The video is 90.0 s long and your profile limit is 60 s\""
+    },
+    {
+      "caso": "corrupted.mp4",
+      "status": 400,
+      "resposta": "\"Unreadable or corrupted video file\""
+    },
+    {
+      "caso": "imagem enviada como video",
+      "status": 400,
+      "resposta": "\"Only video files (.mp4, .mov, .webm) can be uploaded here.\""
+    },
+    {
+      "caso": "upload-100MiB.mp4 (tamanho no limite gratuito)",
+      "status": 400,
+      "resposta": "\"The video is 100.1 MB and your profile limit is 100 MB\""
+    }
+  ],
+  "c16": null,
+  "c17": {
+    "casos": [
+      {
+        "caso": "sample_10s_720p.mp4",
+        "status": 204,
+        "objetosSrc": 1,
+        "esperado": 1
+      },
+      {
+        "caso": "sample_6s.mov",
+        "status": 204,
+        "objetosSrc": 1,
+        "esperado": 1
+      },
+      {
+        "caso": "speech_mandela_177s_1080p.webm",
+        "status": 400,
+        "objetosSrc": 0,
+        "esperado": 0
+      },
+      {
+        "caso": "too_long_90s.mp4 (acima do limite do perfil gratuito)",
+        "status": 400,
+        "objetosSrc": 0,
+        "esperado": 0
+      },
+      {
+        "caso": "corrupted.mp4",
+        "status": 400,
+        "objetosSrc": 0,
+        "esperado": 0
+      },
+      {
+        "caso": "imagem enviada como video",
+        "status": 400,
+        "objetosSrc": 0,
+        "esperado": 0
+      },
+      {
+        "caso": "upload-100MiB.mp4 (tamanho no limite gratuito)",
+        "status": 400,
+        "objetosSrc": 0,
+        "esperado": 0
+      },
+      {
+        "caso": "conflito de versão (segundo envio com versão antiga)",
+        "status": "204, 409",
+        "objetosSrc": 1,
+        "esperado": 1
+      },
+      {
+        "caso": "envio de 100 MiB interrompido a meio",
+        "status": "interrompido",
+        "objetosSrc": 0,
+        "esperado": 0
+      }
+    ],
+    "envioEmPartesAbertos": {
+      "antes": 0,
+      "depois": 0
+    },
+    "semOrfaos": true
+  }
+}
