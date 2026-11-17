@@ -30,8 +30,13 @@ async function post_image(user, project, type, file) {
   return await axios.post(
     `${img_storage_ms}/upload/${user}/${project}/${type}`,
     file /* , { httpsAgent: httpsAgent } */,
-    // Videos can be hundreds of MB
-    { maxBodyLength: Infinity, maxContentLength: Infinity, headers: file.getHeaders ? file.getHeaders() : undefined },
+    // Videos can be hundreds of MB.
+    // maxRedirects: 0 makes axios send through Node's http module. By default it
+    // uses follow-redirects, which keeps a copy of every byte sent so it can
+    // replay the body after a redirect: with maxBodyLength Infinity, a second
+    // copy of the whole file in memory (Phase 2, ADR-01). img_storage never
+    // redirects.
+    { maxRedirects: 0, maxBodyLength: Infinity, maxContentLength: Infinity, headers: file.getHeaders ? file.getHeaders() : undefined },
   );
 }
 
