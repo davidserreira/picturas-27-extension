@@ -1,0 +1,7 @@
+node_modules/
+# Generated test media and downloaded outputs
+dados/
+tmp/
+# Trial runs
+ensaio*
+resultados/ensaio-*

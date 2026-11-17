@@ -1,0 +1,6 @@
+# Generated test data (about 1.7 GB), recreated by gerar-dados.mjs
+dados/
+# Playwright and its browser
+rnf2/node_modules/
+# Screen recordings of the browser runs (large; kept locally as evidence)
+*/videos/

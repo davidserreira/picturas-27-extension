@@ -1,0 +1,181 @@
+{
+  "T01": {
+    "login": 201,
+    "validate": 200
+  },
+  "T02": {
+    "media_type": "image",
+    "igual": true
+  },
+  "T03": {
+    "sample_10s_720p.mp4": {
+      "duracao": 10,
+      "w": 1280,
+      "h": 720,
+      "codec": "h264"
+    },
+    "sample_6s.mov": {
+      "duracao": 6,
+      "w": 640,
+      "h": 480,
+      "codec": "h264"
+    }
+  },
+  "T04": {
+    "videoNoEndpointDeImagem": {
+      "status": 400,
+      "mensagem": "Videos must be uploaded through the /video endpoint."
+    },
+    "imagemNoEndpointDeVideo": {
+      "status": 400,
+      "mensagem": "Only video files (.mp4, .mov, .webm) can be uploaded here."
+    },
+    "corrompido": {
+      "status": 400,
+      "mensagem": "Unreadable or corrupted video file"
+    },
+    "nomeRepetido": {
+      "status": 400,
+      "mensagem": "This project already has an image with that name."
+    },
+    "gratuito90s": {
+      "status": 400,
+      "mensagem": "The video is 90.0 s long and your profile limit is 60 s"
+    },
+    "anonimoVideo": {
+      "status": 400,
+      "mensagem": "Anonymous users cannot upload videos. Create an account to edit video."
+    }
+  },
+  "T05": {
+    "brightness": "91cea070a195bde03e67d371f63abaa6329f90ad3bb9f9791ec0c24e4191a2f3",
+    "contrast": "0bff9a5313ed3676dfe2eee799546908adce962dd3286051dca4938b90cfc6bd",
+    "saturation": "f5bdbc70a2167989432946dcdd8597bad8df79f83bc46e4702b816a9b0b24cb6",
+    "binarization": "495598b8b4d0845b8b202a94c0b003ce27b26a5005492938c6fe39fb36d39740",
+    "rotate": "8765e87c68d58134a28498672552db4fa5dfc299b084882eb4054389c2530dae",
+    "resize": "f07421656480d355aba7c74a01174d96b6bf85599c837011d273be4952df4d6f",
+    "cut": "21cb45b052356909ba915b4a6571206b048b00052afb0d129c4b3b304895628f",
+    "border": "fbe4963dec3aaa69bf195d9afa85cfdc424a923ec22a5767a8a03ce92db71a9d",
+    "watermark": {
+      "formato": "png",
+      "largura": 1280,
+      "altura": 720
+    }
+  },
+  "T06": {
+    "imagem-p2.png": "65e72f1a82ae46330665832671d1d0950a300384e23b000421505328568f25ce",
+    "imagem-p1.png": "56619c61c9c10b05e8f1c0ec7ddebdc1f1899a8efe7fb9aa1ca3f496833d61f9"
+  },
+  "T07": {
+    "ficheiros": 2
+  },
+  "T08": {
+    "image": {
+      "mediaType": "image"
+    },
+    "video": {
+      "mediaType": "video"
+    }
+  },
+  "T09": {
+    "cor": {
+      "duracaoS": 10,
+      "largura": 1280,
+      "altura": 720,
+      "codec": "h264",
+      "audio": "aac"
+    },
+    "geometria": {
+      "duracaoS": 10,
+      "largura": 320,
+      "altura": 520,
+      "codec": "h264",
+      "audio": "aac"
+    }
+  },
+  "T10": {
+    "duracaoS": 3,
+    "largura": 1280,
+    "altura": 720,
+    "codec": "h264",
+    "audio": "aac"
+  },
+  "T11": {
+    "fala-25s.mp4": {
+      "duracaoS": 25,
+      "largura": 1280,
+      "altura": 720,
+      "codec": "h264",
+      "audio": "aac"
+    },
+    "sem-som-8s.mp4": {
+      "duracaoS": 8,
+      "largura": 640,
+      "altura": 360,
+      "codec": "h264",
+      "audio": null
+    }
+  },
+  "T12": {
+    "contagem": {
+      "fotogramas": 5,
+      "tipos": [
+        "image"
+      ],
+      "extensao": [
+        ".png"
+      ]
+    },
+    "intervalo": {
+      "fotogramas": 5,
+      "tipos": [
+        "image"
+      ],
+      "extensao": [
+        ".jpg"
+      ]
+    }
+  },
+  "T13": {
+    "ordem": [
+      "brightness",
+      "extract_frames"
+    ],
+    "reordenarInvalido": 400,
+    "segundaExtracao": 400
+  },
+  "T14": {
+    "imagemIgualAoProjetoSoImagem": true,
+    "video": {
+      "duracaoS": 4,
+      "largura": 1280,
+      "altura": 720,
+      "codec": "h264",
+      "audio": "aac"
+    }
+  },
+  "T15": {
+    "misto": [
+      400,
+      "Effects not available for video: watermark"
+    ],
+    "soImagens": [
+      400,
+      "The pipeline only has video effects and the project has no videos"
+    ]
+  },
+  "T16": {
+    "cancelar": 204,
+    "resultadosDepois": 0,
+    "novaExecucao": 2
+  },
+  "T17": {
+    "restantesDepoisDe3": 2,
+    "segunda": 403
+  },
+  "T18": {
+    "projeto": 401,
+    "media": 401,
+    "semJwt": 401
+  }
+}

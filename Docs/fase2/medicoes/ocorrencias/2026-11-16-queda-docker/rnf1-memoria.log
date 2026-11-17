@@ -1,0 +1,156 @@
+14:39:21 M1.1 10 MiB rep 1/5
+14:39:28   -> 204 valida {
+  nginx: 0.9,
+  api_gateway: 33.8,
+  projects: 28.3,
+  img_storage: 23.1,
+  seaweedfs: 83.9
+}
+14:39:28   C1.4 10 MiB sha igual=true
+14:39:47 M1.1 10 MiB rep 2/5
+14:39:53   -> 204 valida {
+  nginx: 1.2,
+  api_gateway: 34.4,
+  projects: 25.3,
+  img_storage: 23.1,
+  seaweedfs: 0
+}
+14:40:13 M1.1 10 MiB rep 3/5
+14:40:19   -> 204 valida {
+  nginx: 1.2,
+  api_gateway: 35.6,
+  projects: 24.5,
+  img_storage: 23.7,
+  seaweedfs: 62.9
+}
+14:40:39 M1.1 10 MiB rep 4/5
+14:40:50   -> 204 valida {
+  nginx: 2.8,
+  api_gateway: 34.1,
+  projects: 35.6,
+  img_storage: 25.7,
+  seaweedfs: 53.3
+}
+14:41:15 M1.1 10 MiB rep 5/5
+14:41:21   -> 204 valida {
+  nginx: 1.2,
+  api_gateway: 40.9,
+  projects: 25.3,
+  img_storage: 23.4,
+  seaweedfs: 1.4
+}
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-memoria.json
+14:41:41 M1.1 100 MiB rep 1/5
+14:41:50   -> 204 valida {
+  nginx: 7.1,
+  api_gateway: 307,
+  projects: 210.2,
+  img_storage: 204.6,
+  seaweedfs: 166.1
+}
+14:41:51   C1.4 100 MiB sha igual=true
+14:42:12 M1.1 100 MiB rep 2/5
+14:42:22   -> 204 valida {
+  nginx: 3.5,
+  api_gateway: 304.4,
+  projects: 210.6,
+  img_storage: 206.1,
+  seaweedfs: 198.6
+}
+14:42:41 M1.1 100 MiB rep 3/5
+14:42:50   -> 204 valida {
+  nginx: 3,
+  api_gateway: 303.5,
+  projects: 221.2,
+  img_storage: 208.6,
+  seaweedfs: 66.5
+}
+14:43:09 M1.1 100 MiB rep 4/5
+14:43:18   -> 204 valida {
+  nginx: 7.1,
+  api_gateway: 304,
+  projects: 208.9,
+  img_storage: 204.5,
+  seaweedfs: 2.1
+}
+14:43:37 M1.1 100 MiB rep 5/5
+14:43:46   -> 204 valida {
+  nginx: 6.5,
+  api_gateway: 304.5,
+  projects: 209.9,
+  img_storage: 204.6,
+  seaweedfs: 2.5
+}
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-memoria.json
+14:44:06 M1.1 500 MiB rep 1/5
+14:45:17   -> 504 INVALIDA {
+  nginx: 17.6,
+  api_gateway: 1916.5,
+  projects: 1034,
+  img_storage: 990.7,
+  seaweedfs: 14.9
+}
+14:45:46 M1.1 500 MiB rep 2/5
+14:46:45   -> 204 valida {
+  nginx: 18.9,
+  api_gateway: 1993.3,
+  projects: 1057.5,
+  img_storage: 1008.2,
+  seaweedfs: 27.1
+}
+14:47:28   C1.4 500 MiB sha igual=true
+14:47:55 M1.1 500 MiB rep 3/5
+14:48:33   -> 204 valida {
+  nginx: 18.6,
+  api_gateway: 1670.6,
+  projects: 1039.6,
+  img_storage: 1007,
+  seaweedfs: 0
+}
+14:48:57 M1.1 500 MiB rep 4/5
+14:49:35   -> 204 valida {
+  nginx: 18.5,
+  api_gateway: 1620.3,
+  projects: 1063.6,
+  img_storage: 1011,
+  seaweedfs: 0.5
+}
+14:49:58 M1.1 500 MiB rep 5/5
+14:50:36   -> 204 valida {
+  nginx: 20.1,
+  api_gateway: 1750.1,
+  projects: 1029.2,
+  img_storage: 1013.2,
+  seaweedfs: 65.7
+}
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-memoria.json
+14:51:00 M1.1 1000 MiB rep 1/5
+node:internal/errors:985
+  const err = new Error(message);
+              ^
+
+Error: Command failed: docker inspect -f {{.State.OOMKilled}} {{.RestartCount}} {{.State.Status}} {{.State.StartedAt}} picturas-nginx-1
+request returned 500 Internal Server Error for API route and version http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.56/containers/picturas-nginx-1/json, check if the server supports the requested API version
+
+    at genericNodeError (node:internal/errors:985:15)
+    at wrappedFn (node:internal/errors:539:14)
+    at checkExecSyncError (node:child_process:925:11)
+    at execFileSync (node:child_process:961:15)
+    at docker (file:///C:/Users/david/Documents/GitHub/picturas-27-extension/Docs/fase2/medicoes/lib/comum.mjs:246:10)
+    at containerState (file:///C:/Users/david/Documents/GitHub/picturas-27-extension/Docs/fase2/medicoes/lib/comum.mjs:256:15)
+    at file:///C:/Users/david/Documents/GitHub/picturas-27-extension/Docs/fase2/medicoes/rnf1/medir-memoria.mjs:104:67
+    at Array.map (<anonymous>)
+    at file:///C:/Users/david/Documents/GitHub/picturas-27-extension/Docs/fase2/medicoes/rnf1/medir-memoria.mjs:104:52 {
+  status: 1,
+  signal: null,
+  output: [
+    null,
+    '\n',
+    'request returned 500 Internal Server Error for API route and version http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.56/containers/picturas-nginx-1/json, check if the server supports the requested API version\n'
+  ],
+  pid: 33472,
+  stdout: '\n',
+  stderr: 'request returned 500 Internal Server Error for API route and version http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.56/containers/picturas-nginx-1/json, check if the server supports the requested API version\n'
+}
+
+Node.js v24.11.1

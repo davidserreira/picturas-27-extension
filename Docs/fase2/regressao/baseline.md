@@ -1,0 +1,80 @@
+# Regressão — solução de base
+
+Corrida a 2026-11-17 13:35 UTC sobre o commit `43a2e08`, sem alterações ao código.
+Máquina: 12th Gen Intel(R) Core(TM) i5-12450H, Docker 29.9.3 com 12 CPUs e 7.59 GiB (a mesma das medições).
+
+## Resumo
+
+| Suite | O que cobre | Resultado |
+| --- | --- | --- |
+| Worker de vídeo (pytest, existente) | `Tools/video/tests`: processamento, corte, velocidade, legendas e extração, com FFmpeg real e reconhecimento de fala simulado | 74/74 (74 passed in 39.58s) |
+| Orquestrador (node --test, existente) | `projects/tests`: lote, cancelamento, pipeline de vídeo e extração | 8/8 |
+| Ponta a ponta (nova) | `e2e.mjs`: a stack completa através do nginx, da API e do WebSocket | 18/18 |
+| Interface (nova) | `ui.mjs`: importar, aplicar e cancelar no browser | 3/3 |
+
+## Ponta a ponta
+
+| ID | Área | Teste | Resultado | Tempo |
+| --- | --- | --- | --- | --- |
+| T01 | Contas | Registo e início de sessão devolvem um JWT válido | passou | 0.2 s |
+| T02 | Carregamento | Carregar imagem PNG: aceite, listada e guardada sem alteração | passou | 0.5 s |
+| T03 | Carregamento | Carregar vídeos MP4 e MOV: aceites, com metadados lidos por ffprobe | passou | 0.5 s |
+| T04 | Carregamento | Recusas: vídeo no endpoint de imagem, imagem no de vídeo, ficheiro corrompido, nome repetido, limites do perfil gratuito, anónimo | passou | 0.8 s |
+| T05 | Pipeline de imagem | Cada ferramenta de imagem (8 + watermark) aplicada sozinha produz o resultado de referência | passou | 21.3 s |
+| T06 | Pipeline de imagem | Pipeline encadeado em lote (brilho, contraste, rotação, redimensionamento) em duas imagens | passou | 2.6 s |
+| T07 | Pipeline de imagem | Transferência dos resultados em ZIP | passou | 0 s |
+| T08 | Pré-visualização | Pré-visualização de imagem e de vídeo chega pelo WebSocket | passou | 3 s |
+| T09 | Vídeo | Efeitos de fotograma em vídeo: cor (brilho, contraste, saturação, binarização) e geometria (rotação, recorte, redimensionamento, moldura) | passou | 23.5 s |
+| T10 | Vídeo | Corte no tempo e velocidade: duração e som do resultado | passou | 4.5 s |
+| T11 | Vídeo | Legendagem automática: vídeo com fala legendado; vídeo sem som inalterado na duração | passou | 114.4 s |
+| T12 | Vídeo | Extração de fotogramas: por número (PNG) e por intervalo (JPEG), cada fotograma como resultado | passou | 19.2 s |
+| T13 | Vídeo | Regras do pipeline: extração só no fim e uma vez; acrescentar efeito vai para antes da extração | passou | 0.5 s |
+| T14 | Projetos mistos | Projeto com imagem e vídeo: o mesmo efeito aplica-se aos dois; o corte de vídeo não toca na imagem | passou | 11.7 s |
+| T15 | Projetos mistos | Ferramentas incompatíveis: só-imagem num projeto com vídeo e só-vídeo num projeto só com imagens são recusadas | passou | 0.6 s |
+| T16 | Cancelamento | Cancelar uma execução: sem resultados, operações não ficam comprometidas e o projeto volta a processar | passou | 66.5 s |
+| T17 | Quotas | Perfil gratuito: cada efeito em cada vídeo conta uma operação e o limite diário de 5 recusa a execução seguinte | passou | 10.3 s |
+| T18 | Acesso | Um utilizador não acede aos projetos nem aos media de outro | passou | 0.2 s |
+
+## Interface
+
+| ID | Teste | Resultado | Tempo |
+| --- | --- | --- | --- |
+| U01 | Importar uma imagem pela interface | passou | 4.9 s |
+| U02 | Aplicar um pipeline pela interface e ver os resultados | passou | 6.2 s |
+| U03 | Cancelar pela interface uma execução em curso | passou | 37.7 s |
+
+## Testes unitários existentes
+
+### Orquestrador
+
+- passou: extraction is project-wide and terminal, with ordinary effects inserted before it
+- passou: extraction validates active mode parameters and disallows targeted/potentially unbounded inputs
+- passou: manifest validation rejects escaped, duplicate and oversized frame output before upload
+- passou: all extracted images retain the source ID and run token; upload failure rolls back only this batch
+- passou: a fast first worker cannot commit while later sources are still being scheduled
+- passou: registration failure starts no workers and rolls back only newly registered jobs
+- passou: a cancelled run cannot overwrite the committed results with a delayed commit
+- passou: captions apply to all videos, while images skip them and trim stays targeted
+
+### Worker de vídeo
+
+- `tests/test_frame_extraction.py`: 33/33 passaram
+- `tests/test_subtitles.py`: 12/12 passaram
+- `tests/test_video_processor.py`: 29/29 passaram
+
+## Referência para a comparação final
+
+Cada teste ponta a ponta guarda uma impressão do que produziu (SHA-256 das imagens, duração, resolução, codec e som dos vídeos, número e tipo dos fotogramas, códigos e mensagens de recusa). Ficam em `referencia.json`. Na corrida final (`REGRESSAO=final`), um teste que passe mas produza uma impressão diferente fica marcado como "diferente da referência" e tem de ser analisado.
+
+## Estabilidade da suite
+
+Logo a seguir à corrida da base, a suite ponta a ponta voltou a correr sobre a mesma stack, sem
+alterações (`resultados/repeticao-e2e.json`), e comparou as impressões com `referencia.json`. Os
+18 testes passaram e os 18 deram impressões iguais à referência. Uma diferença na corrida final
+indica, por isso, uma mudança de comportamento e não ruído da suite.
+
+Numa primeira tentativa desta verificação, dois testes deram diferenças sem nada ter mudado:
+
+- **T11:** os resultados chegavam da API por outra ordem. A comparação passou a ignorar a ordem.
+- **T05, watermark:** a ferramenta `watermark` é uma imagem pública de terceiros e não produz
+  sempre os mesmos bytes. Para ela comparam-se o formato e as dimensões, e não o SHA-256.

@@ -1,0 +1,106 @@
+{
+  "medida": "RNF-F2-02 M2.2",
+  "quando": "2026-11-17T01:47:42.865Z",
+  "commit": {
+    "hash": "43a2e08ad4d426c9a3257ab4e562aec864b203c9",
+    "codeChanges": []
+  },
+  "video": "p-video-120s.mp4",
+  "duracaoReferenciaS": 200,
+  "execucoes": [
+    {
+      "execucao": 1,
+      "P": "6afbb242c143900c8698066a",
+      "R": [
+        {
+          "momento": 0.25,
+          "progressoAntes": 90,
+          "recuperaS": null,
+          "valorDepois": null,
+          "naoRecupera": true,
+          "aposLoadS": 60
+        },
+        {
+          "momento": 0.6,
+          "progressoAntes": null,
+          "recuperaS": null,
+          "valorDepois": null,
+          "naoRecupera": true,
+          "aposLoadS": 60
+        }
+      ],
+      "F": {
+        "notificaS": null,
+        "naoRecupera": true
+      }
+    },
+    {
+      "execucao": 2,
+      "P": "6afbb33ec143900c8698086c",
+      "R": [
+        {
+          "momento": 0.25,
+          "progressoAntes": 90,
+          "recuperaS": null,
+          "valorDepois": null,
+          "naoRecupera": true,
+          "aposLoadS": 60
+        },
+        {
+          "momento": 0.6,
+          "progressoAntes": null,
+          "recuperaS": null,
+          "valorDepois": null,
+          "naoRecupera": true,
+          "aposLoadS": 60.1
+        }
+      ],
+      "F": {
+        "notificaS": null,
+        "naoRecupera": true
+      }
+    },
+    {
+      "execucao": 3,
+      "P": "6afbb43ac143900c86980a86",
+      "R": [
+        {
+          "momento": 0.25,
+          "progressoAntes": 90,
+          "recuperaS": null,
+          "valorDepois": null,
+          "naoRecupera": true,
+          "aposLoadS": 60
+        },
+        {
+          "momento": 0.6,
+          "progressoAntes": null,
+          "recuperaS": null,
+          "valorDepois": null,
+          "naoRecupera": true,
+          "aposLoadS": 60
+        }
+      ],
+      "F": {
+        "notificaS": null,
+        "naoRecupera": true
+      }
+    }
+  ],
+  "resumo": {
+    "R": {
+      "valores": 6,
+      "naoRecupera": 6,
+      "tempos": {
+        "n": 0
+      }
+    },
+    "F": {
+      "valores": 3,
+      "naoRecupera": 3,
+      "tempos": {
+        "n": 0
+      }
+    }
+  }
+}

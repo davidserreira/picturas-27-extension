@@ -1,0 +1,10 @@
+{
+  "name": "picturas-regressao",
+  "private": true,
+  "type": "module",
+  "description": "End-to-end regression suite for Phase 2 (API, WebSocket and a UI smoke test)",
+  "dependencies": {
+    "playwright": "1.55.0",
+    "socket.io-client": "4.8.1"
+  }
+}

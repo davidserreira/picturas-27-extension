@@ -1,0 +1,140 @@
+01:34:41 M1.1 10 MiB rep 1/5
+01:34:46   -> 204 valida {
+  nginx: 0.6,
+  api_gateway: 23.2,
+  projects: 34.4,
+  img_storage: 23.4,
+  seaweedfs: 81.1
+}
+01:34:47   C1.4 10 MiB sha igual=true
+01:35:04 M1.1 10 MiB rep 2/5
+01:35:09   -> 204 valida {
+  nginx: 1.2,
+  api_gateway: 35,
+  projects: 24.4,
+  img_storage: 23.4,
+  seaweedfs: 35.7
+}
+01:35:27 M1.1 10 MiB rep 3/5
+01:35:32   -> 204 valida {
+  nginx: 1,
+  api_gateway: 23.8,
+  projects: 24.5,
+  img_storage: 23.6,
+  seaweedfs: 66.7
+}
+01:35:50 M1.1 10 MiB rep 4/5
+01:35:55   -> 204 valida {
+  nginx: 1.2,
+  api_gateway: 34.5,
+  projects: 29.9,
+  img_storage: 0,
+  seaweedfs: 0
+}
+01:36:13 M1.1 10 MiB rep 5/5
+01:36:18   -> 204 valida {
+  nginx: 0.6,
+  api_gateway: 23.5,
+  projects: 24.8,
+  img_storage: 24,
+  seaweedfs: 0.6
+}
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-memoria.json
+01:36:35 M1.1 100 MiB rep 1/5
+01:36:42   -> 204 valida {
+  nginx: 5.1,
+  api_gateway: 303.8,
+  projects: 217.6,
+  img_storage: 205.1,
+  seaweedfs: 238.7
+}
+01:36:43   C1.4 100 MiB sha igual=true
+01:37:01 M1.1 100 MiB rep 2/5
+01:37:08   -> 204 valida {
+  nginx: 3.3,
+  api_gateway: 304.4,
+  projects: 216.4,
+  img_storage: 206.1,
+  seaweedfs: 63
+}
+01:37:26 M1.1 100 MiB rep 3/5
+01:37:33   -> 204 valida {
+  nginx: 3.6,
+  api_gateway: 304.1,
+  projects: 217,
+  img_storage: 204.5,
+  seaweedfs: 64.7
+}
+01:37:51 M1.1 100 MiB rep 4/5
+01:37:58   -> 204 valida {
+  nginx: 3.8,
+  api_gateway: 304.8,
+  projects: 221,
+  img_storage: 205.4,
+  seaweedfs: 10.4
+}
+01:38:16 M1.1 100 MiB rep 5/5
+01:38:24   -> 204 valida {
+  nginx: 7.1,
+  api_gateway: 307.9,
+  projects: 225,
+  img_storage: 204.9,
+  seaweedfs: 10.6
+}
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-memoria.json
+01:38:43 M1.1 500 MiB rep 1/5
+01:39:11   -> 204 valida {
+  nginx: 18.8,
+  api_gateway: 2001,
+  projects: 1035.9,
+  img_storage: 990.1,
+  seaweedfs: 5
+}
+01:39:24   C1.4 500 MiB sha igual=true
+01:39:44 M1.1 500 MiB rep 2/5
+01:40:01   -> 204 valida {
+  nginx: 17.8,
+  api_gateway: 1791.1,
+  projects: 951.4,
+  img_storage: 926.6,
+  seaweedfs: 0
+}
+01:40:20 M1.1 500 MiB rep 3/5
+01:40:33   -> 204 valida {
+  nginx: 15.6,
+  api_gateway: 1513.4,
+  projects: 1042.2,
+  img_storage: 1009,
+  seaweedfs: 7.2
+}
+01:40:52 M1.1 500 MiB rep 4/5
+01:41:06   -> 204 valida {
+  nginx: 18.6,
+  api_gateway: 1560.8,
+  projects: 1040.8,
+  img_storage: 1013.4,
+  seaweedfs: 56
+}
+01:41:25 M1.1 500 MiB rep 5/5
+01:41:40   -> 204 valida {
+  nginx: 17.9,
+  api_gateway: 1593.8,
+  projects: 1044.3,
+  img_storage: 1016.2,
+  seaweedfs: 0.2
+}
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-memoria.json
+01:41:59 C1.3 envio de 500 MiB sem JWT
+01:42:07   -> 401, api_gateway +1006.4 MiB
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-memoria.json
+01:42:07 C1.5 sample_10s_720p.mp4: 204 
+01:42:07 C1.5 sample_6s.mov: 204 
+01:42:07 C1.5 speech_mandela_177s_1080p.webm: 400 "The video is 176.6 s long and your profile limit is 60 s"
+01:42:08 C1.5 too_long_90s.mp4 (acima do limite do perfil gratuito): 400 "The video is 90.0 s long and your profile limit is 60 s"
+01:42:08 C1.5 corrupted.mp4: 400 "Unreadable or corrupted video file"
+01:42:08 C1.5 imagem enviada como video: 400 "Only video files (.mp4, .mov, .webm) can be uploaded here."
+01:42:09 C1.5 upload-100MiB.mp4 (tamanho no limite gratuito): 400 "The video is 100.1 MB and your profile limit is 100 MB"
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-memoria.json
+01:42:43 C1.6 {"before":{"api_gateway":544,"projects":544,"img_storage":544},"complete":{"status":204,"tmpFiles":{"api_gateway":544,"projects":544,"img_storage":544}},"interrupted":{"aborted":true,"tmpFiles":{"api_gateway":544,"projects":544,"img_storage":544}}}
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-memoria.json
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-memoria.json

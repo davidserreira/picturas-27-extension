@@ -1,0 +1,32 @@
+04:11:05 a aplicar Docs/fase2/medicoes/rnf1/compose.limites.yaml
+04:11:30 M1.2 10 MiB rep 1/3
+04:11:33   -> 204 sucesso=true reiniciados=-
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-limite.json
+04:11:51 M1.2 10 MiB rep 2/3
+04:11:55   -> 204 sucesso=true reiniciados=-
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-limite.json
+04:12:13 M1.2 10 MiB rep 3/3
+04:12:17   -> 204 sucesso=true reiniciados=-
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-limite.json
+04:12:34 M1.2 100 MiB rep 1/3
+04:12:40   -> 204 sucesso=true reiniciados=-
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-limite.json
+04:12:58 M1.2 100 MiB rep 2/3
+04:13:03   -> 204 sucesso=true reiniciados=-
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-limite.json
+04:13:22 M1.2 100 MiB rep 3/3
+04:13:28   -> 204 sucesso=true reiniciados=-
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-limite.json
+04:13:46 M1.2 500 MiB rep 1/3
+04:13:52   -> 502 sucesso=false reiniciados=api_gateway
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-limite.json
+04:17:13 M1.2 500 MiB rep 2/3
+04:17:19   -> 502 sucesso=false reiniciados=api_gateway
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-limite.json
+04:20:39 M1.2 500 MiB rep 3/3
+04:20:44   -> 502 sucesso=false reiniciados=api_gateway
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-limite.json
+04:23:47 serie parada em 500 MiB
+04:23:47 maior ficheiro aceite: 100 MiB
+04:23:47 a repor a stack sem limites
+[medicao] gravado Docs\fase2\medicoes\baseline\rnf1-limite.json

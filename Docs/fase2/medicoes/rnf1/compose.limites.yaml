@@ -1,0 +1,16 @@
+# Measurement-only override for RNF-F2-01 M1.2: caps the memory of the four
+# services an upload goes through. Not part of the solution. Applied with:
+#   docker compose -f docker-compose.yaml -f Docs/fase2/medicoes/rnf1/compose.limites.yaml up -d nginx api_gateway projects img_storage
+services:
+  nginx:
+    mem_limit: 512m
+    memswap_limit: 512m
+  api_gateway:
+    mem_limit: 512m
+    memswap_limit: 512m
+  projects:
+    mem_limit: 512m
+    memswap_limit: 512m
+  img_storage:
+    mem_limit: 512m
+    memswap_limit: 512m

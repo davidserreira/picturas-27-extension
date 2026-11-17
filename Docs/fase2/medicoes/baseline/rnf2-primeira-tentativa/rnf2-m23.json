@@ -1,0 +1,155 @@
+{
+  "medida": "RNF-F2-02 M2.3",
+  "quando": "2026-11-17T02:00:21.813Z",
+  "commit": {
+    "hash": "43a2e08ad4d426c9a3257ab4e562aec864b203c9",
+    "codeChanges": []
+  },
+  "video": "p-video-120s.mp4",
+  "tentativas": [
+    {
+      "forma": "A",
+      "tentativa": 1,
+      "P": "6afbb535c143900c86980cb8",
+      "oferecido": false,
+      "oferecidoS": null,
+      "parou": false,
+      "parouS": null,
+      "resultadosIguais": null,
+      "nota": "locator.waitFor: Timeout 10000ms exceeded.",
+      "sucesso": false,
+      "canceladoPelaApi": 204
+    },
+    {
+      "forma": "A",
+      "tentativa": 2,
+      "P": "6afbb594c143900c86980e16",
+      "oferecido": false,
+      "oferecidoS": null,
+      "parou": false,
+      "parouS": null,
+      "resultadosIguais": null,
+      "nota": "locator.waitFor: Timeout 10000ms exceeded.",
+      "sucesso": false,
+      "canceladoPelaApi": 204
+    },
+    {
+      "forma": "A",
+      "tentativa": 3,
+      "P": "6afbb5eec143900c86980f83",
+      "oferecido": false,
+      "oferecidoS": null,
+      "parou": false,
+      "parouS": null,
+      "resultadosIguais": null,
+      "nota": "locator.waitFor: Timeout 10000ms exceeded.",
+      "sucesso": false,
+      "canceladoPelaApi": 204
+    },
+    {
+      "forma": "A",
+      "tentativa": 4,
+      "P": "6afbb648c143900c869810ff",
+      "oferecido": false,
+      "oferecidoS": null,
+      "parou": false,
+      "parouS": null,
+      "resultadosIguais": null,
+      "nota": "locator.waitFor: Timeout 10000ms exceeded.",
+      "sucesso": false,
+      "canceladoPelaApi": 204
+    },
+    {
+      "forma": "A",
+      "tentativa": 5,
+      "P": "6afbb6a2c143900c8698128a",
+      "oferecido": false,
+      "oferecidoS": null,
+      "parou": false,
+      "parouS": null,
+      "resultadosIguais": null,
+      "nota": "locator.waitFor: Timeout 10000ms exceeded.",
+      "sucesso": false,
+      "canceladoPelaApi": 204
+    },
+    {
+      "forma": "B",
+      "tentativa": 1,
+      "P": "6afbb6fcc143900c86981424",
+      "oferecido": false,
+      "oferecidoS": null,
+      "parou": false,
+      "parouS": null,
+      "resultadosIguais": null,
+      "nota": "locator.waitFor: Timeout 10000ms exceeded.",
+      "sucesso": false,
+      "canceladoPelaApi": 204
+    },
+    {
+      "forma": "B",
+      "tentativa": 2,
+      "P": "6afbb75bc143900c869815f0",
+      "oferecido": false,
+      "oferecidoS": null,
+      "parou": false,
+      "parouS": null,
+      "resultadosIguais": null,
+      "nota": "locator.waitFor: Timeout 10000ms exceeded.",
+      "sucesso": false,
+      "canceladoPelaApi": 204
+    },
+    {
+      "forma": "B",
+      "tentativa": 3,
+      "P": "6afbb7bac143900c869817d2",
+      "oferecido": false,
+      "oferecidoS": null,
+      "parou": false,
+      "parouS": null,
+      "resultadosIguais": null,
+      "nota": "locator.waitFor: Timeout 10000ms exceeded.",
+      "sucesso": false,
+      "canceladoPelaApi": 204
+    },
+    {
+      "forma": "B",
+      "tentativa": 4,
+      "P": "6afbb819c143900c869819c6",
+      "oferecido": false,
+      "oferecidoS": null,
+      "parou": false,
+      "parouS": null,
+      "resultadosIguais": null,
+      "nota": "locator.waitFor: Timeout 10000ms exceeded.",
+      "sucesso": false,
+      "canceladoPelaApi": 204
+    },
+    {
+      "forma": "B",
+      "tentativa": 5,
+      "P": "6afbb878c143900c86981bd0",
+      "oferecido": false,
+      "oferecidoS": null,
+      "parou": false,
+      "parouS": null,
+      "resultadosIguais": null,
+      "nota": "locator.waitFor: Timeout 10000ms exceeded.",
+      "sucesso": false,
+      "canceladoPelaApi": 204
+    }
+  ],
+  "resumo": {
+    "A": {
+      "sucessos": 0,
+      "tentativas": 5
+    },
+    "B": {
+      "sucessos": 0,
+      "tentativas": 5
+    },
+    "total": {
+      "sucessos": 0,
+      "tentativas": 10
+    }
+  }
+}

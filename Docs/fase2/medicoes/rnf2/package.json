@@ -1,0 +1,9 @@
+{
+  "name": "picturas-medicoes-rnf2",
+  "private": true,
+  "type": "module",
+  "description": "Browser measurements for RNF-F2-02 (Playwright, Chromium)",
+  "dependencies": {
+    "playwright": "1.55.0"
+  }
+}

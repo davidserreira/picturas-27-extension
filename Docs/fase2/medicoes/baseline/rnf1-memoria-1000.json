@@ -1,0 +1,76 @@
+{
+  "medida": "RNF-F2-01 M1.1 e controlos C1.1-C1.6",
+  "quando": "2026-11-17T02:26:01.251Z",
+  "commit": {
+    "hash": "43a2e08ad4d426c9a3257ab4e562aec864b203c9",
+    "codeChanges": []
+  },
+  "repeticoes": 5,
+  "tamanhosMiB": [
+    1000
+  ],
+  "servicosAmostrados": [
+    "nginx",
+    "api_gateway",
+    "projects",
+    "img_storage",
+    "seaweedfs"
+  ],
+  "servicosNoCriterio": [
+    "nginx",
+    "api_gateway",
+    "projects",
+    "img_storage"
+  ],
+  "m11": {
+    "1000": [
+      {
+        "rep": 1,
+        "project": "6afbbb4e95482881736f9fa2",
+        "valid": false,
+        "dockerEngineDown": true,
+        "status": 504,
+        "body": "<html>\r\n<head><title>504 Gateway Time-out</title></head>\r\n<body>\r\n<center><h1>504 Gateway Time-out</h1></center>\r\n<hr><center>nginx/1.31.8</center>\r\n</body>\r\n</html>\r\n",
+        "erro": "Command failed: docker inspect -f {{.State.OOMKilled}} {{.RestartCount}} {{.State.Status}} {{.State.StartedAt}} picturas-nginx-1",
+        "perService": {
+          "nginx": {
+            "idleMiB": 11.2,
+            "peakMiB": 44.4,
+            "increaseMiB": 33.2,
+            "samples": 29
+          },
+          "api_gateway": {
+            "idleMiB": 75.2,
+            "peakMiB": 3529.7,
+            "increaseMiB": 3454.5,
+            "samples": 29
+          },
+          "projects": {
+            "idleMiB": 80.2,
+            "peakMiB": 2061.3,
+            "increaseMiB": 1981.1,
+            "samples": 29
+          },
+          "img_storage": {
+            "idleMiB": 56.9,
+            "peakMiB": 339.3,
+            "increaseMiB": 282.4,
+            "samples": 29
+          },
+          "seaweedfs": {
+            "idleMiB": 1992.7,
+            "peakMiB": 1992.7,
+            "increaseMiB": 0,
+            "samples": 29
+          }
+        }
+      }
+    ]
+  },
+  "c11": {},
+  "c12": {},
+  "c13": null,
+  "c14": {},
+  "c15": null,
+  "c16": null
+}
