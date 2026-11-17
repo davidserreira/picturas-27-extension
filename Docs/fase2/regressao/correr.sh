@@ -3,11 +3,12 @@
 # Docs/fase2/regressao/$REGRESSAO.md (baseline or final).
 #
 #   REGRESSAO=baseline ./correr.sh
+#   REGRESSAO=passos/passo-1 ./correr.sh   intermediate run, kept under passos/
 set -u
 cd "$(dirname "$0")"
 export REGRESSAO="${REGRESSAO:-baseline}"
 REPO="$(cd ../../.. && pwd)"
-mkdir -p resultados
+mkdir -p "resultados/$(dirname "$REGRESSAO")" "$(dirname "$REGRESSAO")"
 
 echo "=== $(date +%H:%M:%S) unitarios: worker de video (pytest)"
 (cd "$REPO" && docker compose run --rm --no-deps -T video_tool sh -c \

@@ -1,0 +1,14 @@
+ Container picturas-img_storage-run-df9008231cba Creating 
+ Container picturas-img_storage-run-df9008231cba Created 
+✔ the file reaches storage byte for byte and the answer keeps its shape (46.230782ms)
+✔ an invalid stage is refused before anything is stored (6.871332ms)
+✔ a storage failure answers 500 with the error message, as before (7.590112ms)
+✔ a client that goes away midway aborts the storage upload (53.015825ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 291.683279

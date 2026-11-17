@@ -1,0 +1,18 @@
+ Container picturas-projects-run-9800f8cd89f0 Creating 
+ Container picturas-projects-run-9800f8cd89f0 Created 
+✔ extraction is project-wide and terminal, with ordinary effects inserted before it (2.01749ms)
+✔ extraction validates active mode parameters and disallows targeted/potentially unbounded inputs (0.317765ms)
+✔ manifest validation rejects escaped, duplicate and oversized frame output before upload (4.900047ms)
+✔ all extracted images retain the source ID and run token; upload failure rolls back only this batch (2.738424ms)
+✔ a fast first worker cannot commit while later sources are still being scheduled (1.421437ms)
+✔ registration failure starts no workers and rolls back only newly registered jobs (1.119418ms)
+✔ a cancelled run cannot overwrite the committed results with a delayed commit (2.973367ms)
+✔ captions apply to all videos, while images skip them and trim stays targeted (1.317889ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 96.428936
