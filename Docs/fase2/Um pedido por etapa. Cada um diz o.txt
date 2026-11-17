@@ -1,0 +1,109 @@
+Um pedido por etapa. Cada um diz o que tem de ficar em ficheiro, para que o pedido seguinte possa começar numa conversa nova. Antes de colar cada um, escolhe o modelo indicado com `/model`.
+
+---
+
+### 1. Diagnóstico da base — **Fable 5.2, esforço alto** -Feito
+
+```
+Fase 2 do projeto. Lê Docs/fase2/fase-2-guidelines.pdf e Docs/fase2/doc-ext-requisitos-2627.pdf,
+o README.md e o AGENTS.md. A main está no commit oficial 0523102 (upstream picturas-um/picturas-27).
+
+Estuda a solução de base: arquitetura (docker-compose, serviços, filas), como é orquestrado o
+processamento em lote de imagens e vídeos e como se distinguem os dois tipos de media.
+Para cada uma das 5 ideias das diretrizes (usabilidade de pipelines, modularidade do vídeo,
+elasticidade, trabalho em segundo plano, upload de ficheiros grandes, segurança) e para outras
+fragilidades que encontres, recolhe evidência concreta (ficheiro:linha, componentes envolvidos)
+e o impacto nos stakeholders.
+
+Não alteres código. Escreve tudo em Docs/fase2/diagnostico.md e termina com uma tabela
+que compare os candidatos em pertinência, complexidade técnica, facilidade de medir e risco
+(tendo em conta que a entrega é a 20/11). Recomenda 2 requisitos não funcionais e justifica.
+```
+
+### 2. Especificação dos 2 requisitos — **Fable 5.2, esforço alto** - Feito
+
+```
+Lê Docs/fase2/diagnostico.md. Os requisitos não funcionais escolhidos são: <RNF A> e <RNF B>.
+Para cada um, escreve em Docs/fase2/requisitos-nf.md:
+- classificação ISO/IEC 25010:2011 (característica e subcaracterística);
+- enunciado verificável;
+- escala (o que se mede e em que unidade), método de medição (cenário, carga, dados,
+  ambiente, instrumento), valor-alvo e valor mínimo aceitável, com a origem de cada valor
+  (fonte, norma, benchmark ou justificação);
+- pré-requisitos e efeitos colaterais noutros requisitos não funcionais, e como os vamos
+  medir/controlar.
+Deixa o "valor medido na base" por preencher; é preenchido na etapa 3.
+```
+
+### 3. Scripts e medição inicial — **Opus 5.5, esforço médio** - Feito
+
+```
+Lê Docs/fase2/requisitos-nf.md. Implementa o método de medição de cada requisito
+como scripts reprodutíveis em Docs/fase2/medicoes/ (com README: pré-requisitos,
+ambiente, como correr, dados de teste usados). Arranca a solução de base (docker compose,
+volumes limpos) na main sem alterações e corre as medições (várias repetições,
+regista média/desvio). Guarda os resultados em bruto em Docs/fase2/medicoes/baseline/
+e preenche o valor de base em requisitos-nf.md. Regista hardware/SO/versões usadas.
+Não alteres código da aplicação.
+```
+
+### 4. Testes de regressão (rede de segurança) — **Opus 5.5, esforço médio**
+
+```
+Antes do refactoring, garante uma suite de regressão que cubra a funcionalidade
+existente de imagem e vídeo (upload, pipelines de imagem, ferramentas de vídeo,
+legendagem automática, extração de fotogramas, cancelamento, projetos com media mistos).
+Reaproveita os testes que já existam no repositório. Corre-a na base e guarda o resultado
+em Docs/fase2/regressao/baseline.md. Não alteres código da aplicação.
+```
+
+### 5. Decisões arquiteturais — **Fable 5.2, esforço alto** (um pedido por requisito)
+
+```
+Lê Docs/fase2/diagnostico.md, requisitos-nf.md e os resultados da baseline.
+Para o <RNF A>: propõe 2–3 alternativas arquiteturais, com consequências (incluindo
+noutros requisitos não funcionais e no comportamento funcional, que tem de se manter igual),
+escolhe uma e justifica. Escreve um ADR em Docs/fase2/adr/ADR-01-<nome>.md e um plano
+de refactoring por passos pequenos e testáveis (ficheiros a alterar, ordem, como validar
+cada passo). Não implementes ainda.
+```
+
+### 6. Implementação do refactoring — **Opus 5.5, esforço médio** (sobe para alto se encravar)
+
+```
+Cria o ramo fase2/<rnf-a> a partir da main. Implementa o plano de
+Docs/fase2/adr/ADR-01-<nome>.md passo a passo, com um commit por passo e a suite de
+regressão a correr no fim de cada um. Sem funcionalidades novas. Documenta no código
+(comentários/AGENTS.md) e em Docs/fase2/ia.md o uso de IA: ferramenta, tarefas apoiadas
+e validação feita. No fim, mostra-me o diff resumido e os resultados dos testes.
+```
+
+### 7. Medição final e análise — **Opus 5.5, esforço médio** (análise crítica em Fable alto, se tiveres limite)
+
+```
+No ramo fase2/<rnf-a> (e depois com os dois requisitos juntos), repete exatamente
+as medições de Docs/fase2/medicoes/ nas mesmas condições da baseline. Guarda
+em Docs/fase2/medicoes/final/. Corre a suite de regressão e guarda o resultado em
+Docs/fase2/regressao/final.md. Escreve Docs/fase2/analise.md: base vs. final vs.
+alvo/mínimo, o que melhorou, o que não foi atingido e porquê, e se outros requisitos
+não funcionais pioraram (medidos, não supostos).
+```
+
+### 8. Relatório — **Opus 5.5, esforço médio**
+
+```
+Escreve os capítulos da Fase 2 no relatório Typst a partir de Docs/fase2/
+(diagnostico, requisitos-nf, medicoes, adr, analise, regressao, ia). Identifica o
+commit de partida 0523102. Para cada requisito não funcional: diagnóstico,
+quantificação, baseline, decisões e refactoring, medição final e análise,
+preservação funcional. Inclui a secção de uso de IA. Compila e verifica que não
+há erros.
+```
+
+---
+
+**Dicas para usar os pedidos:**
+- **Os pedidos 1, 2 e 5 decidem a qualidade do trabalho**, por isso vale a pena usar o Fable. Os outros são sobretudo execução.
+- **Revê o resultado de cada etapa antes de passares à seguinte**, sobretudo o `diagnostico.md` e o `requisitos-nf.md`. As diretrizes dizem que a escolha e a justificação são da equipa.
+- **Começa uma conversa nova (`/clear`) entre etapas.** Como tudo fica guardado em ficheiros, poupas contexto e limite.
+- **Os pedidos 5–7 fazem-se uma vez por requisito.** Faz o requisito A até ao fim e só depois o B; assim, se o tempo apertar, tens pelo menos um completo.
