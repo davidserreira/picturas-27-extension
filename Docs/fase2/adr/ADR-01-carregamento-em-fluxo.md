@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 | --- | --- |
-| Estado | Proposto, para validação pela equipa |
+| Estado | Implementado no ramo `fase2/rnf-f2-01-carregamento` (secção 7); a aguardar a medição final e a validação pela equipa |
 | Data | 17 de novembro de 2026 |
 | Requisito | RNF-F2-01 — Carregamento de ficheiros grandes com memória limitada (`../requisitos-nf.md`, secção 2) |
 | Base | Commit `0523102` (no nosso repositório, `43a2e08`) |
@@ -309,3 +309,73 @@ não substituem a medição final.
 | 4 | `api_gateway` | Médio | 3 h | `api_gateway` −1670 MiB |
 | 5 | `nginx` | Baixo | 0,5 h | Tempos (C1.1, C1.2) |
 | 6 | — | — | Série de cerca de 3 h, a correr sozinha | Medição final |
+
+## 7. Implementação
+
+Feita a 17 de novembro de 2026, no ramo `fase2/rnf-f2-01-carregamento`, com um commit por passo e
+um passo de afinação (5b) que o plano previa como possível (secção 4.3). Depois de cada passo
+correram os testes unitários do serviço alterado, a regressão completa
+(`../regressao/passos/`) e a M1.1 com 100 e 500 MiB, com duas repetições (`../medicoes/passos/`).
+São medições intermédias: o valor de cada requisito é o da medição final.
+
+### 7.1 Resultados por passo
+
+Acréscimo máximo de memória com 500 MiB (máximo das repetições; na base, de 5) e tempos do envio
+(mediana):
+
+| Passo | `nginx` | `api_gateway` | `projects` | `img_storage` | C1.1 aceitação | C1.2 envio completo | Regressão |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Base | 19 | 2001 | 1044 | 1016 | 8,96 s | 10,22 s | 74/74, 8/8, 18/18, 3/3 |
+| 1. `img_storage` em fluxo | 19 | 1922 | 1039 | **96** | 16,49 s | 17,61 s | 74/74, 8/8, 18/18, 3/3 |
+| 2. `projects` sem `follow-redirects` | 19 | 1986 | 1048 | 90 | 8,43 s | 9,61 s | 74/74, 8/8, 18/18, 3/3 |
+| 3. `projects` em fluxo | 19 | 1727 | **50** | 111 | 7,77 s | 9,10 s | 74/74, 13/13, 18/18, 3/3 |
+| 4. `api_gateway` em fluxo | 98 | **75** | 95 | 108 | 4,96 s | 6,44 s | 74/74, 13/13, 18/18, 3/3 |
+| 5. nginx sem guardar o corpo | **10** | 82 | 98 | 101 | **1,11 s** | 5,13 s | 74/74, 13/13, 18/18, 3/3 |
+| 5b. Afinação | 11 | **41** | **18** | **51** | 0,65 s | 5,04 s | 74/74, 13/13, 18/18, 3/3 |
+| 5b, com 1000 MiB | 11 | 42 | 19 | 52 | 0,77 s | 10,26 s | |
+
+Em todos os passos, as 18 impressões da regressão ponta a ponta são iguais às da base. Nos passos 3
+a 5b, as sete decisões e mensagens do C1.5 são iguais às da base, e o C1.7 não encontra objetos
+órfãos nem envios em partes abertos. O C1.3 passou de 401 com +1006 MiB para 401 com +41 MiB (passo 4)
+e +20 MiB (passo 5b). Os 13 testes do `projects` incluem os 8 existentes. Os tempos do passo 1 estão
+dentro da variação da base (desvio-padrão de 5,9 s).
+
+### 7.2 Afinação (passo 5b)
+
+Depois do passo 5, nenhum serviço guardava o ficheiro, mas os três serviços Node ainda subiam 80 a
+100 MiB com 500 MiB, acima do alvo de 64 MiB. A causa não eram cópias do ficheiro, e sim a recolha
+tardia dos buffers já enviados: o V8 só recolhe os blocos de memória externa ao fim de dezenas de MiB,
+e a glibc guarda a memória libertada nas suas *arenas*. Seis variantes, medidas com o mesmo método
+(500 MiB, duas repetições, `../medicoes/passos/afinacao/`):
+
+| Variante | `api_gateway` | `projects` | `img_storage` |
+| --- | --- | --- | --- |
+| Sem afinação | 80 | 86 | 99 |
+| glibc devolve a memória (`MALLOC_*`) | 77 | 87 | 83 |
+| Geração nova do V8 menor (`--max-semi-space-size=1`) | 44 | 21 | 94 |
+| As duas | 42 | 16 | 71 |
+| Geração nova menor e *old space* de 96 MiB | 42 | 17 | 81 |
+| As três | 42 | 30 | 63 |
+
+Adotou-se a geração nova menor e as opções da glibc nos três serviços, através do
+`docker-compose.yaml`. No `img_storage`, que é pequeno e guarda partes de 5 MiB, juntou-se o limite
+da *old space* de 96 MiB e o envio de 2 partes em paralelo em vez de 4 (a primeira afinação da
+secção 4.3). O limite da *old space* não se aplicou ao `projects`, que monta ZIPs e usa o `sharp`
+e poderia ficar sem memória. Custo medido: o envio completo de 100 MiB demora cerca de 0,3 s mais
+do que no passo 5 (1,2 a 1,5 s; base 1,9 s), pela recolha de lixo mais frequente.
+
+### 7.3 Desvios ao plano
+
+| Desvio | Porquê |
+| --- | --- |
+| O passo 2 não baixou o pico do `projects` | A previsão estava errada: na base, o pico de 2× vinha também da cópia temporária para o `ffprobe`, que conta como cache de páginas e tem o mesmo tamanho. A cópia do `follow-redirects` saiu no passo 2, mas o pico só caiu no passo 3 |
+| O `projects` não chega a guardar um ficheiro do tipo errado para o endpoint (imagem em `/video`, vídeo em `/img`) | O motor de armazenamento lê esse ficheiro e descarta-o, porque a rota o recusa de qualquer maneira. Menos escritas e menos órfãos possíveis; a resposta é a mesma |
+| Um pedido sem JWT válido não ocupa memória, mas o gateway lê o corpo até ao fim e descarta-o antes de responder 401 | É o comportamento que o cliente via na base, que só recebia a resposta depois de enviar tudo. Responder a meio do envio dava ao browser um erro de rede em vez da mensagem |
+| Passo 5b, não previsto como passo | Previsto como afinação possível na secção 4.3. Os valores dos passos 3 a 5 ficavam acima do alvo |
+| O `nodemon` do `api_gateway` não deu pelas alterações | Montagem de pastas do Docker Desktop no Windows; o serviço foi reiniciado à mão antes de medir. Nota no `AGENTS.md` |
+
+### 7.4 O que falta
+
+- Medição final com o método completo (`MEDICAO=final ./correr-tudo.sh`, 5 repetições, com a M1.2 e
+  os 512 MiB por contentor) e regressão final (`REGRESSAO=final ./correr.sh`).
+- Revisão pela equipa (`../ia.md`) e passagem do estado deste ADR a "Aceite".

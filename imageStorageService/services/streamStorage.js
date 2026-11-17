@@ -12,6 +12,8 @@ const path = require("path");
 // If the client goes away before the end of the body, the file stream is
 // destroyed and the S3 upload aborted, so no incomplete object or open
 // multipart upload is left behind.
+//
+// Written with AI assistance (Claude Code) and validated by tests; see Docs/fase2/ia.md.
 function createStreamStorage({ upload, remove }) {
   return {
     _handleFile(req, file, cb) {

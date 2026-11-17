@@ -9,6 +9,8 @@
 // What the client sees does not change: the answer is sent only once the
 // client has sent the whole body (as when the gateway read it all first), with
 // the status codes and bodies that forwardAxiosError produced.
+//
+// Written with AI assistance (Claude Code) and validated by tests; see Docs/fase2/ia.md.
 const https = require("https");
 
 // Runs `fn` once the client has sent the whole request body; whatever is still

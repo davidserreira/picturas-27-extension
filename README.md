@@ -39,7 +39,9 @@ PictuRAS is a web-based image and video editing platform that combines tradition
 ### Video Editing
 
 - **Upload and playback**: MP4, MOV and WebM videos, validated on upload (container, codec,
-  duration, size, resolution) with per-plan limits — free 60 s / 100 MB, premium 600 s / 1 GB
+  duration, size, resolution) with per-plan limits — free 60 s / 100 MB, premium 600 s / 1 GB.
+  Uploads are streamed through Nginx, the gateway and the project service straight to object
+  storage, so memory use does not grow with the file size
 - **Video-only tools**: `trim` (start/end in seconds) and `speed` (factor 0.25–5)
 - **Automatic subtitles**: local speech recognition (Faster-Whisper), captions burned into the
   video in the spoken language — see [Video Tools](#-video-tools)
@@ -599,7 +601,8 @@ but other weights are fetched at runtime — the first request needs network acc
 **A video upload is rejected**
 The response gives the reason: check the plan limits (free 60 s / 100 MB) and that the file
 is a valid MP4, MOV or WebM. Videos must go to `POST /:user/:project/video`; the image
-endpoint rejects them.
+endpoint rejects them. A rejected file is stored only while it is validated and is deleted
+before the answer.
 
 **A video stays at 0% or never finishes**
 There is a single `video_tool` with no replicas, so videos are processed one at a time. Check

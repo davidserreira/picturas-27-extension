@@ -1,5 +1,7 @@
 // Streaming storage engine for project media (Phase 2, ADR-01), with
 // img_storage replaced by fakes.
+//
+// Written with AI assistance (Claude Code) and validated by tests; see Docs/fase2/ia.md.
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');

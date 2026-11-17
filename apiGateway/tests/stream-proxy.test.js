@@ -1,5 +1,7 @@
 // Streaming upload proxy of the gateway (Phase 2, ADR-01), against a local
 // HTTPS server that plays the projects service. Run: node --test tests/
+//
+// Written with AI assistance (Claude Code) and validated by tests; see Docs/fase2/ia.md.
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const crypto = require("node:crypto");

@@ -13,6 +13,8 @@
 // fileName)` deletes a stored file (delete_image). `accept(file)` decides from
 // the name and type whether the file is worth storing: a file the route will
 // refuse anyway (wrong media type) is read and dropped instead.
+//
+// Written with AI assistance (Claude Code) and validated by tests; see Docs/fase2/ia.md.
 const crypto = require("crypto");
 const path = require("path");
 const { Transform } = require("stream");

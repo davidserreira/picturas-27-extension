@@ -13,6 +13,10 @@ A equipa é responsável por todo o conteúdo entregue.
 Não foram usadas *skills* nem servidores MCP no trabalho sobre o repositório. O agente não tem
 acesso ao GitHub nem faz *push*: os commits ficam locais até a equipa os rever e publicar.
 
+Por decisão da equipa, as mensagens dos commits não levam linhas de coautoria da ferramenta. O uso
+de IA fica registado aqui, nos comentários do código alterado (que remetem para o ADR) e no
+`AGENTS.md`.
+
 ## Método
 
 1. Um pedido escrito por etapa (diagnóstico, especificação, medição, regressão, decisão, implementação,
@@ -34,7 +38,7 @@ acesso ao GitHub nem faz *push*: os commits ficam locais até a equipa os rever 
 | 3. Medição da base (`medicoes/`) | A confirmar pela equipa | Escreveu os scripts e correu a série completa sobre a base, com volumes limpos | Repetições com média e desvio-padrão; ambiente registado; a queda do motor do Docker com 1000 MiB ficou registada em `medicoes/ocorrencias/`, e não descartada. Duas correções aos scripts depois de resultados anómalos: o 409 ao aplicar logo depois de abrir o projeto e a deriva da calibração do vídeo, com a primeira tentativa guardada em `baseline/rnf2-primeira-tentativa/` |
 | 4. Regressão (`regressao/`) | A confirmar pela equipa | Reaproveitou os testes existentes (pytest e node) e escreveu as suites ponta a ponta (18 testes) e de interface (3) | Duas corridas na base com impressões iguais (`resultados/repeticao-e2e.json`). As diferenças falsas da primeira repetição (ordem das chaves, bytes do watermark) foram corrigidas na comparação, não escondidas |
 | 5. Decisão (`adr/ADR-01-carregamento-em-fluxo.md`) | Claude Opus 5.5 | Propôs três alternativas, escolheu uma e escreveu o plano por passos | Causa da segunda cópia em memória confirmada no código instalado nos contentores (`follow-redirects`). Revisão da equipa: a preencher |
-| 6. Implementação do ADR-01 (ramo `fase2/rnf-f2-01-carregamento`) | Claude Opus 5.5 | Implementou os passos 0 a 5, um commit por passo, com testes unitários novos | Ver a secção seguinte |
+| 6. Implementação do ADR-01 (ramo `fase2/rnf-f2-01-carregamento`) | Claude Opus 5.5 | Implementou os passos 0 a 5 e uma afinação da memória (5b), um commit por passo, com testes unitários novos | Ver a secção seguinte |
 
 ## Implementação do ADR-01
 
@@ -48,6 +52,7 @@ Ficheiros novos ou alterados com apoio de IA, todos com um comentário que remet
 | 3 | `projects/utils/mediaUpload.js`, `utils/video.js`, `utils/imageStorage.js`, `routes/projects.js` (só a receção de media) | `projects/tests/media-upload.test.js` |
 | 4 | `apiGateway/utils/streamProxy.js`, `routes/projects.js` (só as duas rotas de carregamento) | `apiGateway/tests/stream-proxy.test.js` |
 | 5 | `nginx/nginx.conf` | — (coberto pela regressão) |
+| 5b | `docker-compose.yaml` (opções do V8 e da glibc nos três serviços Node), `imageStorageService/services/uploadImage.js` (`QUEUE_SIZE`) | — (coberto pela regressão) |
 
 Validação feita em cada passo, com os resultados em `medicoes/passos/` e `regressao/passos/`:
 
@@ -57,6 +62,16 @@ Validação feita em cada passo, com os resultados em `medicoes/passos/` e `regr
 - nos passos que mexem na validação (3) e no fim, os controlos C1.5 e C1.7.
 
 O resultado de cada passo está na secção "Implementação" do ADR-01.
+
+Problemas encontrados pela validação durante a implementação, e como foram tratados:
+
+| Problema | Como apareceu | Tratamento |
+| --- | --- | --- |
+| A previsão do passo 2 estava errada: o pico do `projects` não desceu | M1.1 do passo 2 igual à do passo 1 | A cópia temporária para o `ffprobe` (cache de páginas) dava um pico do mesmo tamanho. Registado no commit e no ADR; o pico desapareceu no passo 3 |
+| Um teste unitário novo falhava por uma promessa rejeitada sem tratamento no próprio teste | Primeira corrida de `media-upload.test.js` | Corrigido o teste; o código não mudou |
+| O `nodemon` do `api_gateway` não dá pelas alterações feitas no Windows (montagem de pastas do Docker Desktop) | Sem reinício nos registos depois de alterar o código | Reinício explícito do contentor antes de medir; a nota ficou no `AGENTS.md` |
+| Os três serviços ficavam entre 80 e 100 MiB com 500 MiB, acima do alvo de 64 | M1.1 dos passos 3 a 5 | Seis variantes de configuração medidas com o mesmo método (`medicoes/passos/afinacao/`). A causa é a recolha tardia dos buffers já enviados, e não cópias do ficheiro. Escolhida a afinação do passo 5b |
+| Commit não pedido (`cf4b5be`), feito fora do agente durante a implementação, com a mensagem do passo 0 | Revisão do histórico do ramo | Mantido; assinalado à equipa |
 
 ### Revisão pela equipa (a preencher)
 
@@ -68,3 +83,4 @@ O resultado de cada passo está na secção "Implementação" do ADR-01.
 | 3 | | | |
 | 4 | | | |
 | 5 | | | |
+| 5b | | | |
