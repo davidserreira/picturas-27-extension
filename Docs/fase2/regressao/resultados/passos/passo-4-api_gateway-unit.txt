@@ -1,0 +1,17 @@
+✔ the body reaches projects unchanged, with the same headers, and success answers 204 with the version (54.603962ms)
+[API-GW] 409 mensagem fallback { data: { message: 'Project version conflict', serverVersion: 3 } }
+✔ an error from projects is answered with the same status, body and version (14.788988ms)
+[API-GW] 428 mensagem fallback { data: 'Missing X-Project-Version header' }
+✔ an early answer from projects reaches the client only after the whole body was sent (38.887317ms)
+[API-GW] 500 mensagem fallback { data: 'Projects service unavailable' }
+✔ projects down answers 500 "Projects service unavailable" (5.845285ms)
+✔ a missing or invalid JWT is refused with 401 without contacting projects (25.998503ms)
+✔ a client that goes away midway cancels the request to projects (327.343525ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 700.388236

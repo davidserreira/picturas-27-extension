@@ -1,0 +1,19 @@
+14:38:33 T01 PASSOU (0.1 s) Registo e início de sessão devolvem um JWT válido
+14:38:33 T02 PASSOU (0.1 s) Carregar imagem PNG: aceite, listada e guardada sem alteração
+14:38:33 T03 PASSOU (0.4 s) Carregar vídeos MP4 e MOV: aceites, com metadados lidos por ffprobe
+14:38:34 T04 PASSOU (1 s) Recusas: vídeo no endpoint de imagem, imagem no de vídeo, ficheiro corrompido, nome repetido, limites do perfil gratuito, anónimo
+14:38:56 T05 PASSOU (21.3 s) Cada ferramenta de imagem (8 + watermark) aplicada sozinha produz o resultado de referência
+14:38:59 T06 PASSOU (3.1 s) Pipeline encadeado em lote (brilho, contraste, rotação, redimensionamento) em duas imagens
+14:38:59 T07 PASSOU (0 s) Transferência dos resultados em ZIP
+14:39:02 T08 PASSOU (2.9 s) Pré-visualização de imagem e de vídeo chega pelo WebSocket
+14:39:25 T09 PASSOU (23.2 s) Efeitos de fotograma em vídeo: cor (brilho, contraste, saturação, binarização) e geometria (rotação, recorte, redimensionamento, moldura)
+14:39:29 T10 PASSOU (4.4 s) Corte no tempo e velocidade: duração e som do resultado
+14:40:01 T11 PASSOU (31.5 s) Legendagem automática: vídeo com fala legendado; vídeo sem som inalterado na duração
+14:40:25 T12 PASSOU (24.2 s) Extração de fotogramas: por número (PNG) e por intervalo (JPEG), cada fotograma como resultado
+14:40:26 T13 PASSOU (0.8 s) Regras do pipeline: extração só no fim e uma vez; acrescentar efeito vai para antes da extração
+14:40:40 T14 PASSOU (14.2 s) Projeto com imagem e vídeo: o mesmo efeito aplica-se aos dois; o corte de vídeo não toca na imagem
+14:40:41 T15 PASSOU (0.7 s) Ferramentas incompatíveis: só-imagem num projeto com vídeo e só-vídeo num projeto só com imagens são recusadas
+14:41:52 T16 PASSOU (71.1 s) Cancelar uma execução: sem resultados, operações não ficam comprometidas e o projeto volta a processar
+14:42:02 T17 PASSOU (10.4 s) Perfil gratuito: cada efeito em cada vídeo conta uma operação e o limite diário de 5 recusa a execução seguinte
+14:42:02 T18 PASSOU (0.1 s) Um utilizador não acede aos projetos nem aos media de outro
+14:42:02 e2e: 18 passaram, 0 diferentes, 0 falharam, 0 com erro

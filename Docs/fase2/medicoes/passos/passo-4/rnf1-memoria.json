@@ -1,0 +1,394 @@
+{
+  "medida": "RNF-F2-01 M1.1 e controlos C1.1-C1.7",
+  "quando": "2026-11-17T14:34:37.297Z",
+  "commit": {
+    "hash": "7061250c6e282ab32571be132285b25192eba3fa",
+    "codeChanges": [
+      "M apiGateway/routes/projects.js",
+      "?? apiGateway/tests/",
+      "?? apiGateway/utils/"
+    ]
+  },
+  "repeticoes": 2,
+  "tamanhosMiB": [
+    100,
+    500
+  ],
+  "servicosAmostrados": [
+    "nginx",
+    "api_gateway",
+    "projects",
+    "img_storage",
+    "seaweedfs"
+  ],
+  "servicosNoCriterio": [
+    "nginx",
+    "api_gateway",
+    "projects",
+    "img_storage"
+  ],
+  "m11": {
+    "100": [
+      {
+        "rep": 1,
+        "project": "6afc6612404f1143a26675cd",
+        "valid": true,
+        "crashed": [],
+        "status": 204,
+        "body": "",
+        "transferS": 0.2695198999999993,
+        "acceptS": 1.0569547999999995,
+        "totalS": 1.3264746999999988,
+        "perService": {
+          "nginx": {
+            "idleMiB": 11.1,
+            "peakMiB": 14.7,
+            "increaseMiB": 3.6,
+            "samples": 4
+          },
+          "api_gateway": {
+            "idleMiB": 73.6,
+            "peakMiB": 112.9,
+            "increaseMiB": 39.3,
+            "samples": 4
+          },
+          "projects": {
+            "idleMiB": 80.3,
+            "peakMiB": 123.9,
+            "increaseMiB": 43.6,
+            "samples": 4
+          },
+          "img_storage": {
+            "idleMiB": 54,
+            "peakMiB": 136.3,
+            "increaseMiB": 82.3,
+            "samples": 4
+          },
+          "seaweedfs": {
+            "idleMiB": 1715.2,
+            "peakMiB": 1811.5,
+            "increaseMiB": 96.3,
+            "samples": 4
+          }
+        }
+      },
+      {
+        "rep": 2,
+        "project": "6afc662b00212d12bc54615c",
+        "valid": true,
+        "crashed": [],
+        "status": 204,
+        "body": "",
+        "transferS": 0.22693989999999759,
+        "acceptS": 0.8487928000000029,
+        "totalS": 1.0757327000000005,
+        "perService": {
+          "nginx": {
+            "idleMiB": 11.2,
+            "peakMiB": 14.7,
+            "increaseMiB": 3.6,
+            "samples": 5
+          },
+          "api_gateway": {
+            "idleMiB": 74,
+            "peakMiB": 114,
+            "increaseMiB": 40,
+            "samples": 5
+          },
+          "projects": {
+            "idleMiB": 78.9,
+            "peakMiB": 130.3,
+            "increaseMiB": 51.4,
+            "samples": 5
+          },
+          "img_storage": {
+            "idleMiB": 56,
+            "peakMiB": 128.1,
+            "increaseMiB": 72.1,
+            "samples": 5
+          },
+          "seaweedfs": {
+            "idleMiB": 1852.4,
+            "peakMiB": 2016.3,
+            "increaseMiB": 163.8,
+            "samples": 5
+          }
+        }
+      }
+    ],
+    "500": [
+      {
+        "rep": 1,
+        "project": "6afc6643a274f5a2577c4645",
+        "valid": true,
+        "crashed": [],
+        "status": 204,
+        "body": "",
+        "transferS": 1.2973395000000019,
+        "acceptS": 5.460271200000003,
+        "totalS": 6.757610700000004,
+        "perService": {
+          "nginx": {
+            "idleMiB": 10.8,
+            "peakMiB": 30.3,
+            "increaseMiB": 19.5,
+            "samples": 16
+          },
+          "api_gateway": {
+            "idleMiB": 73.5,
+            "peakMiB": 144.5,
+            "increaseMiB": 71,
+            "samples": 16
+          },
+          "projects": {
+            "idleMiB": 79,
+            "peakMiB": 173.6,
+            "increaseMiB": 94.6,
+            "samples": 16
+          },
+          "img_storage": {
+            "idleMiB": 56.1,
+            "peakMiB": 144.4,
+            "increaseMiB": 88.3,
+            "samples": 16
+          },
+          "seaweedfs": {
+            "idleMiB": 2016.3,
+            "peakMiB": 2128.9,
+            "increaseMiB": 112.6,
+            "samples": 16
+          }
+        }
+      },
+      {
+        "rep": 2,
+        "project": "6afc666d3b7b435b362b64cb",
+        "valid": true,
+        "crashed": [],
+        "status": 204,
+        "body": "",
+        "transferS": 1.6711582000000054,
+        "acceptS": 4.451328999999998,
+        "totalS": 6.122487200000003,
+        "perService": {
+          "nginx": {
+            "idleMiB": 12.8,
+            "peakMiB": 111.3,
+            "increaseMiB": 98.5,
+            "samples": 14
+          },
+          "api_gateway": {
+            "idleMiB": 78.5,
+            "peakMiB": 153,
+            "increaseMiB": 74.5,
+            "samples": 14
+          },
+          "projects": {
+            "idleMiB": 82.3,
+            "peakMiB": 146.4,
+            "increaseMiB": 64.1,
+            "samples": 14
+          },
+          "img_storage": {
+            "idleMiB": 55.2,
+            "peakMiB": 162.8,
+            "increaseMiB": 107.6,
+            "samples": 14
+          },
+          "seaweedfs": {
+            "idleMiB": 2853.9,
+            "peakMiB": 2853.9,
+            "increaseMiB": 0,
+            "samples": 14
+          }
+        }
+      }
+    ]
+  },
+  "c11": {
+    "100": {
+      "n": 2,
+      "mean": 0.95,
+      "sd": 0.15,
+      "median": 0.95,
+      "min": 0.85,
+      "max": 1.06
+    },
+    "500": {
+      "n": 2,
+      "mean": 4.96,
+      "sd": 0.71,
+      "median": 4.96,
+      "min": 4.45,
+      "max": 5.46
+    }
+  },
+  "c12": {
+    "100": {
+      "n": 2,
+      "mean": 1.2,
+      "sd": 0.18,
+      "median": 1.2,
+      "min": 1.08,
+      "max": 1.33
+    },
+    "500": {
+      "n": 2,
+      "mean": 6.44,
+      "sd": 0.45,
+      "median": 6.44,
+      "min": 6.12,
+      "max": 6.76
+    }
+  },
+  "c13": {
+    "status": 401,
+    "body": "\"Please provide a JWT token\"",
+    "transferS": 1.3288277999999991,
+    "apiGatewayIncreaseMiB": 40.6,
+    "perService": {
+      "nginx": {
+        "idleMiB": 11.5,
+        "peakMiB": 26.9,
+        "increaseMiB": 15.4,
+        "samples": 5
+      },
+      "api_gateway": {
+        "idleMiB": 75.8,
+        "peakMiB": 116.4,
+        "increaseMiB": 40.6,
+        "samples": 5
+      },
+      "projects": {
+        "idleMiB": 83.1,
+        "peakMiB": 83.1,
+        "increaseMiB": 0,
+        "samples": 5
+      },
+      "img_storage": {
+        "idleMiB": 56.6,
+        "peakMiB": 56.6,
+        "increaseMiB": 0,
+        "samples": 5
+      },
+      "seaweedfs": {
+        "idleMiB": 1636.4,
+        "peakMiB": 1636.4,
+        "increaseMiB": 0,
+        "samples": 5
+      }
+    }
+  },
+  "c14": {
+    "100": {
+      "sent": "045bbd59410532b4a6ad12134d02c232e056280908a202d296090869aa7f1970",
+      "stored": "045bbd59410532b4a6ad12134d02c232e056280908a202d296090869aa7f1970",
+      "storedBytes": 104991030,
+      "equal": true
+    },
+    "500": {
+      "sent": "cb4b921e76e3f635f712426c6f8e7704ae06d971fe71f3da44a2b9ef400927d5",
+      "stored": "cb4b921e76e3f635f712426c6f8e7704ae06d971fe71f3da44a2b9ef400927d5",
+      "storedBytes": 524355135,
+      "equal": true
+    }
+  },
+  "c15": null,
+  "c16": null,
+  "resumo": {
+    "100": {
+      "nginx": {
+        "n": 2,
+        "mean": 3.6,
+        "sd": 0,
+        "median": 3.6,
+        "min": 3.6,
+        "max": 3.6
+      },
+      "api_gateway": {
+        "n": 2,
+        "mean": 39.65,
+        "sd": 0.49,
+        "median": 39.65,
+        "min": 39.3,
+        "max": 40
+      },
+      "projects": {
+        "n": 2,
+        "mean": 47.5,
+        "sd": 5.52,
+        "median": 47.5,
+        "min": 43.6,
+        "max": 51.4
+      },
+      "img_storage": {
+        "n": 2,
+        "mean": 77.2,
+        "sd": 7.21,
+        "median": 77.2,
+        "min": 72.1,
+        "max": 82.3
+      },
+      "seaweedfs": {
+        "n": 2,
+        "mean": 130.05,
+        "sd": 47.73,
+        "median": 130.05,
+        "min": 96.3,
+        "max": 163.8
+      },
+      "piorServicoNoCriterio": {
+        "servico": "img_storage",
+        "maxIncreaseMiB": 82.3
+      },
+      "repeticoesValidas": 2
+    },
+    "500": {
+      "nginx": {
+        "n": 2,
+        "mean": 59,
+        "sd": 55.86,
+        "median": 59,
+        "min": 19.5,
+        "max": 98.5
+      },
+      "api_gateway": {
+        "n": 2,
+        "mean": 72.75,
+        "sd": 2.47,
+        "median": 72.75,
+        "min": 71,
+        "max": 74.5
+      },
+      "projects": {
+        "n": 2,
+        "mean": 79.35,
+        "sd": 21.57,
+        "median": 79.35,
+        "min": 64.1,
+        "max": 94.6
+      },
+      "img_storage": {
+        "n": 2,
+        "mean": 97.95,
+        "sd": 13.65,
+        "median": 97.95,
+        "min": 88.3,
+        "max": 107.6
+      },
+      "seaweedfs": {
+        "n": 2,
+        "mean": 56.3,
+        "sd": 79.62,
+        "median": 56.3,
+        "min": 0,
+        "max": 112.6
+      },
+      "piorServicoNoCriterio": {
+        "servico": "img_storage",
+        "maxIncreaseMiB": 107.6
+      },
+      "repeticoesValidas": 2
+    }
+  }
+}
