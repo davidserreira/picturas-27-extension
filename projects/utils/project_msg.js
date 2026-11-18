@@ -109,4 +109,20 @@ function send_msg_project_op({ projectId, ownerId, op }) {
   send_rabbit_msg(msg, queue);
 }
 
-module.exports = { send_msg_tool, send_msg_client, send_msg_client_error, send_msg_client_preview, send_msg_client_preview_error, read_msg, send_msg_project_op };
+// RNF-F2-02: the state of a processing run, for every page of the user that
+// started it (and of the owner, when it was started through a share link).
+function send_msg_client_run(run) {
+    const queue = queues['ws'];
+    const users = [...new Set([run.ownerId, run.runnerId].filter(Boolean))];
+    const msg = {
+        "messageId": `update-client-run-${run.projectId}-${run.token}`,
+        "timestamp": new Date().toISOString(),
+        "type": "run-update",
+        "users": users,
+        "run": run
+    };
+
+    send_rabbit_msg(msg, queue);
+}
+
+module.exports = { send_msg_client_run, send_msg_tool, send_msg_client, send_msg_client_error, send_msg_client_preview, send_msg_client_preview_error, read_msg, send_msg_project_op };

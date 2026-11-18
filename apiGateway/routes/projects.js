@@ -294,6 +294,46 @@ router.get(
   }
 );
 
+/**
+ * RNF-F2-02: state of the latest processing run of a project
+ * @returns { run: { state, percent, ... } | null }
+ */
+router.get("/:user/:project/process/status", auth.checkToken, (req, res) => {
+  const ownerId = req.query.owner || req.params.user;
+  const callerId = req.authUserId || req.params.user;
+
+  axios
+    .get(projectsURL + `${ownerId}/${req.params.project}/process/status`, {
+      httpsAgent,
+      params: req.query.share ? { share: req.query.share } : undefined,
+      headers: {
+        Authorization: req.headers["authorization"],
+        "X-Caller-Id": callerId,
+      },
+    })
+    .then((resp) => res.status(200).jsonp(resp.data))
+    .catch((err) => forwardAxiosError(res, err, "Error acquiring the processing state"));
+});
+
+/**
+ * RNF-F2-02: processing runs of the user that are running (or just ended)
+ * @returns { runs: [...] }
+ */
+router.get("/:user/runs/active", auth.checkToken, (req, res) => {
+  const callerId = req.authUserId || req.params.user;
+
+  axios
+    .get(projectsURL + `${req.params.user}/runs/active`, {
+      httpsAgent,
+      headers: {
+        Authorization: req.headers["authorization"],
+        "X-Caller-Id": callerId,
+      },
+    })
+    .then((resp) => res.status(200).jsonp(resp.data))
+    .catch((err) => forwardAxiosError(res, err, "Error acquiring the processing state"));
+});
+
   // Cancelar processamento de um projeto
 router.delete("/:user/:project/process", auth.checkToken, (req, res) => {
   const ownerId = req.query.owner || req.params.user;

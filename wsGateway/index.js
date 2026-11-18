@@ -61,8 +61,15 @@ function process_msg() {
 
         console.log('Received msg:', JSON.stringify(msg_content));
 
+        // RNF-F2-02: state of a processing run, stored by the orchestrator
+        if (msg_content.type === "run-update") {
+            for (const u of msg_content.users || []) {
+                io.to(String(u)).emit("run-update", msg_content.run);
+            }
+        }
+
         // Video editing progress, as a percentage
-        if (/update-client-video-progress/.test(msg_id)) {
+        else if (/update-client-video-progress/.test(msg_id)) {
             io.to(user).emit("video-progress", {
                 projectId: msg_content.projectId,
                 imgId: msg_content.imgId,

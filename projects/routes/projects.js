@@ -24,10 +24,14 @@ const {
   send_msg_client_preview_error,
   read_msg,
   send_msg_project_op,   
+  send_msg_client_run,
 } = require("../utils/project_msg");
 
 const Project = require("../controllers/project");
 const Process = require("../controllers/process");
+// RNF-F2-02: state of each processing run, owned by the orchestrator
+const Run = require("../controllers/run");
+const { runUnits, serializeRun } = require("../utils/runProgress");
 const Result = require("../controllers/result");
 const Preview = require("../controllers/preview");
 const jwt = require("jsonwebtoken");
@@ -165,6 +169,30 @@ function toolsEqual(a, b) {
 }
 
 
+// RNF-F2-02: sends the current state of a run to the browsers of its user.
+function publishRun(run) {
+  if (!run) return;
+  try {
+    send_msg_client_run(serializeRun(run));
+  } catch (err) {
+    console.error("[RUN] could not publish run state:", err.message);
+  }
+}
+
+// RNF-F2-02: progress of a video, sent by the video worker to this queue
+// (and no longer straight to the WebSocket), so it is stored with the run.
+async function handleVideoProgress(msg_content) {
+  const process = await Process.getOneByMsgId(msg_content.correlationId);
+  if (!process) return;
+  const run = await Run.setVideoPercent(
+    process.project_id,
+    process.token || 0,
+    String(process.img_id),
+    msg_content.percent,
+  );
+  publishRun(run);
+}
+
 // TODO process message according to type of output
 function process_msg() {
   read_msg(async (msg) => {
@@ -179,6 +207,11 @@ function process_msg() {
     try {
       const msg_content = JSON.parse(msg.content.toString());
       const msg_id = msg_content.correlationId;
+
+      if (msg_content.type === "video-progress") {
+        await handleVideoProgress(msg_content);
+        return;
+      }
 
       const process = await Process.getOneByMsgId(msg_id);
       if (!process) return;
@@ -221,6 +254,10 @@ function process_msg() {
             runnerId,   
             msg_content.error.code,
             msg_content.error.msg
+          );
+          // RNF-F2-02: the run ends as failed, for every page of the user
+          publishRun(
+            await Run.finish(process.project_id, process.token || 0, "failed", msg_content.error.msg || null)
           );
         }
         return;
@@ -421,6 +458,9 @@ if (/preview/.test(msg_id) && isLast) {
         await Result.create(result);
       }
 
+      // RNF-F2-02: set when this reply completes the whole run
+      let runCompleted = false;
+
       // Se esta imagem acabou o pipeline, pode ser que a execução tenha terminado
       if (!/preview/.test(msg_id) && isLast) {
 
@@ -456,6 +496,7 @@ if (/preview/.test(msg_id) && isLast) {
               process.user_id, process.project_id, process.token || 0, toolsSnapshot
             );
             if (!committed) return;
+            runCompleted = true;
 
             console.log(`[COMMIT] project=${process.project_id} committedToken=${process.token || 0}`);
 
@@ -474,12 +515,20 @@ if (/preview/.test(msg_id) && isLast) {
       }
 
       // Notify only after the result is stored and the completed run is committed.
-      if (!/preview/.test(msg_id))
+      if (!/preview/.test(msg_id)) {
         send_msg_client(
           user_msg_id,
           timestamp,
           runnerId
         );
+
+        // RNF-F2-02: one more step done (or this video done), stored with the run
+        let run = sourceIsVideo
+          ? await Run.setVideoPercent(process.project_id, process.token || 0, String(img_id), 100)
+          : await Run.addImageStep(process.project_id, process.token || 0);
+        if (runCompleted) run = (await Run.finish(process.project_id, process.token || 0, "completed")) || run;
+        publishRun(run);
+      }
 
       if (chainEnd) return;
 
@@ -563,6 +612,9 @@ async function deleteProjectAndResources(userId, projectId) {
     await delete_image(userId, projectId, "preview", p.img_key);
     await Preview.delete(p.user_id, p.project_id, p.img_id);
   }
+
+  // RNF-F2-02: runs of the project
+  await Run.deleteByProject(projectId);
 
   // apagar o próprio projeto
   await Project.delete(userId, projectId);
@@ -811,6 +863,33 @@ router.delete("/:user/:project/share/:shareId", requireOwner, enforcePresenceLim
 
 
 // ================== FIM SHARING ==================
+
+// RNF-F2-02: state of the latest processing run of a project. Only the owner,
+// or someone with a share link to the project, may read it.
+router.get("/:user/:project/process/status", checkSharePermission, async (req, res) => {
+  try {
+    if (!req.sharedPermission && String(getCallerId(req)) !== String(req.params.user)) {
+      return res.status(403).jsonp("Not allowed");
+    }
+    const run = await Run.getLatest(req.params.user, req.params.project);
+    res.status(200).jsonp({ run: serializeRun(run) });
+  } catch (err) {
+    console.error("[RUN] status error:", err.message);
+    res.status(500).jsonp("Error acquiring the processing state");
+  }
+});
+
+// RNF-F2-02: runs of the user being processed now (and the ones that ended
+// in the last minute), for the sidebar and the notifications on any page.
+router.get("/:user/runs/active", requireOwner, async (req, res) => {
+  try {
+    const runs = await Run.getActiveByUser(req.params.user, 60 * 1000);
+    res.status(200).jsonp({ runs: runs.map(serializeRun) });
+  } catch (err) {
+    console.error("[RUN] active runs error:", err.message);
+    res.status(500).jsonp("Error acquiring the processing state");
+  }
+});
 
 // Get list of all projects from a user
 router.get("/:user", (req, res, next) => {
@@ -1659,7 +1738,29 @@ router.post("/:user/:project/process", checkSharePermission, requireEditPermissi
             token: runToken,
           };
 
-          pendingJobs.push({ process, msg_id, timestamp, og_img_uri, new_img_uri, tool_name, params });
+          pendingJobs.push({
+            process, msg_id, timestamp, og_img_uri, new_img_uri, tool_name, params,
+            // RNF-F2-02: what the run's progress is made of
+            isVideo: isVideoMedia(img), imgId: String(img._id), duration: img.video?.duration,
+          });
+        }
+
+        // RNF-F2-02: the run exists in the server before any worker can reply,
+        // so its progress can be asked for from any page or session.
+        let run = null;
+        try {
+          const units = runUnits(pendingJobs, imageTools(project).length);
+          run = await Run.create({
+            user_id: ownerId,
+            project_id: req.params.project,
+            project_name: project.name,
+            runner_id: runnerUserId ? String(runnerUserId) : null,
+            token: runToken,
+            ...units,
+          });
+        } catch (error) {
+          console.error("[RUN] could not register the run:", error.message);
+          return res.status(603).jsonp("Could not start all processing requests. Please try again.");
         }
 
         // Register the complete batch before dispatching anything. Otherwise a
@@ -1671,8 +1772,10 @@ router.post("/:user/:project/process", checkSharePermission, requireEditPermissi
             send: (job) => send_msg_tool(job.msg_id, job.timestamp, job.og_img_uri, job.new_img_uri, job.tool_name, job.params),
           });
         } catch (error) {
+          publishRun(await Run.finish(req.params.project, runToken, "failed", "Could not start the processing"));
           return res.status(603).jsonp("Could not start all processing requests. Please try again.");
         }
+        publishRun(run);
         res.sendStatus(201);
       };
 
@@ -2316,6 +2419,13 @@ router.delete(
           message: "Project version conflict",
           serverVersion: fresh?.version ?? null,
         });
+      }
+
+      // RNF-F2-02: the run ends as cancelled, for every page of the user
+      try {
+        publishRun(await Run.finish(projectId, cancelTok, "cancelled"));
+      } catch (err) {
+        console.error("[RUN] could not mark the run as cancelled:", err.message);
       }
 
       // apagar apenas resultados da execução cancelada
