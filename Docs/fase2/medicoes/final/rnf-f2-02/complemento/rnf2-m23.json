@@ -1,0 +1,69 @@
+{
+  "medida": "RNF-F2-02 M2.3",
+  "quando": "2026-11-18T20:43:23.854Z",
+  "commit": {
+    "hash": "ed34cd78a205894819c2861d5cbf72d2929c575e",
+    "codeChanges": []
+  },
+  "video": "p-video-330s.mp4",
+  "tentativas": [
+    {
+      "forma": "A",
+      "tentativa": 1,
+      "P": "6afe0decd6b59ddc1a314e20",
+      "oferecido": true,
+      "oferecidoS": 0.34,
+      "parou": true,
+      "parouS": 0.02,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "A",
+      "tentativa": 2,
+      "P": "6afe0f10d6b59ddc1a3150dd",
+      "oferecido": true,
+      "oferecidoS": 0.27,
+      "parou": true,
+      "parouS": 0.01,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "B",
+      "tentativa": 1,
+      "P": "6afe1028d6b59ddc1a3153a8",
+      "oferecido": true,
+      "oferecidoS": 0.45,
+      "parou": true,
+      "parouS": 0.02,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "B",
+      "tentativa": 2,
+      "P": "6afe1162d6b59ddc1a3156ba",
+      "oferecido": true,
+      "oferecidoS": 1,
+      "parou": true,
+      "parouS": 0.03,
+      "resultadosIguais": true,
+      "sucesso": true
+    }
+  ],
+  "resumo": {
+    "A": {
+      "sucessos": 2,
+      "tentativas": 2
+    },
+    "B": {
+      "sucessos": 2,
+      "tentativas": 2
+    },
+    "total": {
+      "sucessos": 4,
+      "tentativas": 4
+    }
+  }
+}

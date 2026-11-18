@@ -8,6 +8,10 @@
 //   node rnf2/medir.mjs m23  [--tentativas 5]    M2.3 cancel after losing the page (A and B)
 //   node rnf2/medir.mjs controlos [--execucoes 3] C2.1, C2.2 (UI), C2.3, C2.4, C2.5 (API)
 //                                 [--so c21]     only C2.1 and C2.2
+//                                 [--so c23]     only C2.3
+//
+// C2.3 reads the state route from PICTURAS_STATE_PATH. From Git Bash, also set
+// MSYS_NO_PATHCONV=1, or MSYS turns the value into a Windows path.
 //
 // The P video is chosen with --video <seconds> or the PICTURAS_P_VIDEO env var
 // (file dados/p-video-<s>s.mp4, made by gerar-dados.mjs --video <s>).
@@ -458,8 +462,11 @@ async function controlos(browser, user) {
   const execs = Number(args.execucoes ?? 3);
   const out = { medida: "RNF-F2-02 controlos C2.1-C2.5", quando: new Date().toISOString(), commit: gitCommit(), video: path.basename(P_VIDEO), c21c22: [], c23: null, c24: null, c25: null };
 
+  // --so c23: only C2.3 (repeated in final/rnf-f2-02/complemento/c23, see its README).
+  const onlyC23 = args.so === "c23";
+
   // C2.1 + C2.2: watch a run without interacting.
-  for (let e = 1; e <= execs; e++) {
+  for (let e = 1; e <= (onlyC23 ? 0 : execs); e++) {
     await waitVideoWorkerIdle();
     const P = await setupP(user, `c21-${e}`);
     const context = await newContext(browser);
@@ -495,6 +502,10 @@ async function controlos(browser, user) {
 
   // C2.3: the base has no endpoint for the state of a run. The final measurement
   // passes it as PICTURAS_STATE_PATH (e.g. "/projects/{user}/{project}/process/status").
+  // From Git Bash, run with MSYS_NO_PATHCONV=1: otherwise MSYS rewrites the value into a
+  // Windows path ("C:/Program Files/Git/projects/...") before node sees it.
+  // A refusal only counts if the owner gets 200 from the same URL; a wrong URL gives 404
+  // to everyone and used to look like a refusal.
   const statePath = process.env.PICTURAS_STATE_PATH;
   if (!statePath) out.c23 = { aplicavel: false, nota: "a base nao expoe o estado de uma execucao; nao ha nada a pedir" };
   else {
@@ -504,8 +515,10 @@ async function controlos(browser, user) {
     const own = await request("GET", url, { token: user.token });
     const other = await request("GET", url, { token: intruder.token });
     const none = await request("GET", url, {});
-    out.c23 = { aplicavel: true, url: statePath, dono: own.status, outroUtilizador: other.status, semJwt: none.status, recusadoNosDois: other.status >= 400 && none.status >= 400 };
+    const urlValido = own.status === 200;
+    out.c23 = { aplicavel: true, url: statePath, dono: own.status, outroUtilizador: other.status, semJwt: none.status, urlValido, recusadoNosDois: urlValido && other.status >= 400 && none.status >= 400 };
   }
+  if (onlyC23) { save("rnf2-controlos.json", out); return out; }
 
   // C2.4: P and Q overlapped vs. separately (API).
   await waitVideoWorkerIdle();

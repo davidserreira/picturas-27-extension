@@ -1,0 +1,21 @@
+video_tool-1  | 2026-11-18T20:41:36.755503810Z [video] waiting for jobs on video_queue
+video_tool-1  | 2026-11-18T20:43:34.207953154Z [video] msg=request-188932c4-451f-4dfa-b4a0-bd1344a064cf preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-18T20:48:09.357832659Z [video] msg=request-188932c4-451f-4dfa-b4a0-bd1344a064cf ok frames=9900 t=275.2s
+video_tool-1  | 2026-11-18T20:48:24.076553704Z [video] msg=request-a0ea316c-a659-438d-955a-229e48feef1d preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-18T20:52:53.039489536Z [video] msg=request-a0ea316c-a659-438d-955a-229e48feef1d ok frames=9900 t=269.0s
+video_tool-1  | 2026-11-18T20:53:03.609346536Z [video] msg=request-7ddb18be-89ab-479f-b264-e3365562a515 preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-18T20:58:04.099376031Z [video] msg=request-7ddb18be-89ab-479f-b264-e3365562a515 ok frames=9900 t=300.5s
+video_tool-1  | 2026-11-18T20:58:19.298359243Z [video] msg=request-90c8b647-165f-483c-bebc-64500d36d469 preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-18T21:02:59.435097753Z [video] msg=request-90c8b647-165f-483c-bebc-64500d36d469 ok frames=9900 t=280.1s
+video_tool-1  | 2026-11-18T21:03:15.273577840Z [video] msg=request-2561d6fb-571e-4c25-9112-098dc5d29931 preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-18T21:08:43.958119183Z [video] msg=request-2561d6fb-571e-4c25-9112-098dc5d29931 ok frames=9900 t=328.7s
+video_tool-1  | 2026-11-18T21:08:57.887816926Z [video] msg=request-280ac25e-3804-447d-9f17-8bc60554a4c8 preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-18T21:14:32.666282046Z [video] msg=request-280ac25e-3804-447d-9f17-8bc60554a4c8 ok frames=9900 t=334.8s
+video_tool-1  | 2026-11-18T21:14:43.375646047Z [video] msg=request-121a8e42-1d0d-4709-9b6e-8f196b688478 preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-18T21:20:22.533479292Z [video] msg=request-121a8e42-1d0d-4709-9b6e-8f196b688478 ok frames=9900 t=339.2s
+video_tool-1  | 2026-11-18T21:20:30.518795185Z [video] msg=request-7c7f5a94-69d5-4bf2-b676-7d39ca7e0a45 preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-18T21:24:30.798388249Z [video] msg=request-7c7f5a94-69d5-4bf2-b676-7d39ca7e0a45 ok frames=9900 t=240.3s
+video_tool-1  | 2026-11-18T21:24:38.568402434Z [video] msg=request-ad1158e7-4be8-4382-b512-1e8b45cdf1f9 preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-18T21:28:39.311160475Z [video] msg=request-ad1158e7-4be8-4382-b512-1e8b45cdf1f9 ok frames=9900 t=240.7s
+video_tool-1  | 2026-11-18T21:28:49.004238343Z [video] msg=request-81fa02b1-61f2-49ab-beea-3469d0a6d24d preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-18T21:33:13.938396559Z [video] msg=request-81fa02b1-61f2-49ab-beea-3469d0a6d24d ok frames=9900 t=264.9s

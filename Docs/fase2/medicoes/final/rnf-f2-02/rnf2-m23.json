@@ -1,0 +1,99 @@
+{
+  "medida": "RNF-F2-02 M2.3",
+  "quando": "2026-11-18T16:01:17.747Z",
+  "commit": {
+    "hash": "77c9bf7c6830902d68fdf771f6a070b3b63bec48",
+    "codeChanges": []
+  },
+  "video": "p-video-330s.mp4",
+  "tentativas": [
+    {
+      "forma": "A",
+      "tentativa": 1,
+      "P": "6afdcbcf31cedd52ae623826",
+      "oferecido": true,
+      "oferecidoS": 0.34,
+      "parou": true,
+      "parouS": 0.03,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "A",
+      "tentativa": 2,
+      "P": "6afdcd1031cedd52ae623b08",
+      "oferecido": true,
+      "oferecidoS": 0.35,
+      "parou": true,
+      "parouS": 0.02,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "A",
+      "tentativa": 3,
+      "P": "6afdce3731cedd52ae623dd5",
+      "oferecido": true,
+      "oferecidoS": 0.38,
+      "parou": true,
+      "parouS": 0.02,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "A",
+      "tentativa": 4,
+      "P": "6afdcf5e31cedd52ae6240b4",
+      "oferecido": true,
+      "oferecidoS": 0.36,
+      "parou": true,
+      "parouS": 0.01,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "A",
+      "tentativa": 5,
+      "P": "6afdd07a31cedd52ae62439f",
+      "oferecido": true,
+      "oferecidoS": 0.36,
+      "parou": true,
+      "parouS": 0.02,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "B",
+      "tentativa": 1,
+      "P": "6afdd18f31cedd52ae624690",
+      "oferecido": true,
+      "oferecidoS": 0.52,
+      "parou": true,
+      "parouS": 0.02,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "B",
+      "tentativa": 2,
+      "P": "6afdd29631cedd52ae6249bd",
+      "oferecido": true,
+      "oferecidoS": 1.02,
+      "parou": true,
+      "parouS": 0.01,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "B",
+      "tentativa": 3,
+      "P": "6afdd3a031cedd52ae624cfc",
+      "oferecido": true,
+      "oferecidoS": 0.35,
+      "parou": true,
+      "parouS": 0.01,
+      "resultadosIguais": true,
+      "sucesso": true
+    }
+  ]
+}

@@ -13,7 +13,7 @@ inicial (`baseline/`) e para a final (`final/`). Só usam a interface pública d
 | `ambiente.mjs` | Regista máquina, sistema, versões e serviços em `<medição>/ambiente.json` |
 | `rnf1/medir-memoria.mjs` | RNF-F2-01: M1.1 e controlos C1.1 a C1.7 (o C1.7 lê o filer do SeaweedFS em `localhost:9090`) |
 | `rnf1/medir-limite.mjs` | RNF-F2-01: M1.2, com `rnf1/compose.limites.yaml` |
-| `rnf2/medir.mjs` | RNF-F2-02: `calibrar`, `m21`, `m22`, `m23`, `controlos` (C2.1 a C2.5; com `--so c21`, só o C2.1 e o C2.2) |
+| `rnf2/medir.mjs` | RNF-F2-02: `calibrar`, `m21`, `m22`, `m23`, `controlos` (C2.1 a C2.5; com `--so c21`, só o C2.1 e o C2.2; com `--so c23`, só o C2.3) |
 | `rnf2/estado.mjs` | Verificação intermédia dos passos do ADR-02, sem browser: segue uma execução de P pela rota de estado e pelos eventos `run-status`, e verifica o C2.3 |
 | `correr-tudo.sh` | Corre toda a série pela ordem certa |
 | `resumo.mjs` | Junta os resultados em bruto em `<medição>/resumo.md` |
@@ -151,7 +151,9 @@ Não usar a aplicação nem correr outras cargas pesadas na máquina durante a s
   o trabalho que uma anterior deixou no único worker de vídeo.
 - **C2.3.** A base não tem rota para o estado de uma execução, por isso o controlo não se aplica.
   Na medição final passa-se a rota com `PICTURAS_STATE_PATH`. Com o ADR-02 a rota é
-  `PICTURAS_STATE_PATH=/projects/{user}/{project}/process/status`.
+  `PICTURAS_STATE_PATH=/projects/{user}/{project}/process/status`. No Git Bash, junta-se
+  `MSYS_NO_PATHCONV=1`: sem isso, o MSYS converte o valor num caminho do Windows antes de o passar
+  ao node, e o pedido vai para um URL que não existe (`final/rnf-f2-02/README.md`).
 
 ### Se a interface mudar
 
