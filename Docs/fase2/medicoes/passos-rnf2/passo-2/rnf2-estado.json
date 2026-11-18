@@ -1,0 +1,74 @@
+{
+  "medida": "RNF-F2-02 verificação intermédia do ADR-02 (servidor)",
+  "quando": "2026-11-18T12:07:15.537Z",
+  "commit": {
+    "hash": "2982528501fa61b8277922695bf5097e6835a7c9",
+    "codeChanges": [
+      "M Tools/video/tests/test_video_processor.py",
+      " M Tools/video/video.py",
+      " M Tools/video/video_processor.py",
+      " M frontend/app/dashboard/[pid]/page.tsx",
+      " M frontend/app/dashboard/layout.tsx",
+      " M frontend/components/project-page/project-image.tsx",
+      " M frontend/components/ui/progress.tsx",
+      " M frontend/lib/projects.ts",
+      " M projects/routes/projects.js",
+      " M projects/utils/project_msg.js",
+      " M wsGateway/index.js",
+      "?? frontend/components/runs/",
+      "?? frontend/providers/runs-provider.tsx",
+      "?? wsGateway/tests/",
+      "?? wsGateway/utils/runStatus.js"
+    ]
+  },
+  "video": "p-video-120s.mp4",
+  "P": "6afd94f12ed2106473ba9fd5",
+  "antes": {
+    "status": "idle"
+  },
+  "arranque": 201,
+  "duracaoS": 95.7,
+  "estadoFinal": {
+    "projectId": "6afd94f12ed2106473ba9fd5",
+    "projectName": "P-estado-33301",
+    "ownerId": "6afd94f1d76a2a4eb9f3f1eb",
+    "runnerId": "6afd94f1d76a2a4eb9f3f1eb",
+    "token": 1,
+    "status": "done",
+    "progress": 100,
+    "startedAt": "2026-11-18T12:07:15.685Z",
+    "finishedAt": "2026-11-18T12:08:51.039Z",
+    "error": null
+  },
+  "aMeio": {
+    "progresso": 20,
+    "ativas": {
+      "status": 200,
+      "incluiP": true
+    },
+    "c23": {
+      "outroUtilizador": 401,
+      "semJwt": 401,
+      "recusadoNosDois": true
+    }
+  },
+  "rota": {
+    "amostras": 331,
+    "maiorIntervaloS": 2.06,
+    "mudancas": 107
+  },
+  "eventosRunStatus": {
+    "n": 0,
+    "maiorIntervaloS": 0,
+    "mudancas": 0,
+    "estados": []
+  },
+  "eventosVideoProgress": {
+    "n": 110,
+    "maiorIntervaloS": 1.96,
+    "mudancas": 101,
+    "inteiros": true
+  },
+  "eventosNoutroUtilizador": 0,
+  "primeiroProgressoS": 1
+}

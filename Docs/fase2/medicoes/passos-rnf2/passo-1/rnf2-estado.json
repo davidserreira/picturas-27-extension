@@ -1,0 +1,65 @@
+{
+  "medida": "RNF-F2-02 verificação intermédia do ADR-02 (servidor)",
+  "quando": "2026-11-18T11:55:46.807Z",
+  "commit": {
+    "hash": "f1714dcd0af7fe9a3e7c8df980a6c63dfc00b75c",
+    "codeChanges": [
+      "M apiGateway/routes/projects.js",
+      " M projects/routes/projects.js",
+      "?? projects/controllers/run.js",
+      "?? projects/models/run.js",
+      "?? projects/tests/run-state.test.js",
+      "?? projects/utils/runState.js"
+    ]
+  },
+  "video": "p-video-120s.mp4",
+  "P": "6afd923f92a874e985004add",
+  "antes": {
+    "status": "idle"
+  },
+  "arranque": 201,
+  "duracaoS": 107.2,
+  "estadoFinal": {
+    "projectId": "6afd923f92a874e985004add",
+    "projectName": "P-estado-43031",
+    "ownerId": "6afd923ed76a2a4eb9f3ef80",
+    "runnerId": "6afd923ed76a2a4eb9f3ef80",
+    "token": 1,
+    "status": "done",
+    "progress": 100,
+    "startedAt": "2026-11-18T11:55:47.177Z",
+    "finishedAt": "2026-11-18T11:57:33.855Z",
+    "error": null
+  },
+  "aMeio": {
+    "progresso": 0.1,
+    "ativas": {
+      "status": 200,
+      "incluiP": true
+    },
+    "c23": {
+      "outroUtilizador": 401,
+      "semJwt": 401,
+      "recusadoNosDois": true
+    }
+  },
+  "rota": {
+    "amostras": 367,
+    "maiorIntervaloS": 1.26,
+    "mudancas": 2
+  },
+  "eventosRunStatus": {
+    "n": 0,
+    "maiorIntervaloS": 0,
+    "mudancas": 0,
+    "estados": []
+  },
+  "eventosVideoProgress": {
+    "n": 51,
+    "maiorIntervaloS": 3.98,
+    "mudancas": 51,
+    "inteiros": true
+  },
+  "eventosNoutroUtilizador": 0,
+  "primeiroProgressoS": 2.01
+}

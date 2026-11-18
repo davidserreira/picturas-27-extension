@@ -1,0 +1,3 @@
+12:13:32 U01 PASSOU (5 s) Importar uma imagem pela interface
+12:13:39 U02 PASSOU (6.3 s) Aplicar um pipeline pela interface e ver os resultados
+12:14:17 U03 PASSOU (37.8 s) Cancelar pela interface uma execução em curso

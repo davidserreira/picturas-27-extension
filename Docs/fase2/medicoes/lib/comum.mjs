@@ -24,7 +24,22 @@ export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 export const now = () => performance.now();
 
 // Minimal JSON request over https, without external dependencies.
-export function request(method, url, { token, body, headers = {}, timeoutMs = 120000 } = {}) {
+// A GET whose connection is reset before any answer is repeated once: Docker
+// Desktop's port forwarding on Windows occasionally resets a connection before
+// it reaches nginx (regression of the RNF-F2-01 final series; M2.1 of ADR-02
+// step 4, where nginx logged no request). Other methods are never repeated.
+export async function request(method, url, opts = {}) {
+  try {
+    return await requestOnce(method, url, opts);
+  } catch (e) {
+    if (method !== "GET" || !["ECONNRESET", "EPIPE"].includes(e.code)) throw e;
+    console.log(`[medicao] GET repetido depois de ${e.code}: ${new URL(url).pathname}`);
+    await sleep(250);
+    return requestOnce(method, url, opts);
+  }
+}
+
+function requestOnce(method, url, { token, body, headers = {}, timeoutMs = 120000 } = {}) {
   return new Promise((resolve, reject) => {
     const u = new URL(url);
     const h = { ...headers };
@@ -37,6 +52,7 @@ export function request(method, url, { token, body, headers = {}, timeoutMs = 12
     if (token) h.Authorization = `Bearer ${token}`;
     const req = https.request(u, { method, agent, headers: h, timeout: timeoutMs }, (res) => {
       const chunks = [];
+      res.on("error", reject);
       res.on("data", (c) => chunks.push(c));
       res.on("end", () => {
         const text = Buffer.concat(chunks).toString();

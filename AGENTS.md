@@ -53,12 +53,21 @@ Behind the gateway:
   and messages as before.
 - **Images**: `projects` sends one message per (image, tool) step and advances the chain when
   the tool replies on `project_queue`. Progress goes to the browser through `ws_queue`.
+- **Run state** (Phase 2, ADR-02, `Docs/fase2/adr/`): `projects` keeps each run in the `runs`
+  collection (`models/run.js`, `controllers/run.js`, `utils/runState.js`). It opens with the
+  run's token, counts image steps and video progress in processed frames, and closes as
+  `done` on commit, `failed` on the first error or `cancelled` on cancel. Every change goes to
+  `ws_queue` as `run-status`, which `ws_gateway` sends to the owner's and the runner's rooms.
+  `GET /projects/:user/:project/process/status` and `GET /projects/:user/process/active`
+  return it, so the UI rebuilds a run after a reload or in another session.
 - **Videos**: `projects` sends **one** message per video carrying the whole pipeline to
   `video_queue`. The worker probes with ffprobe, decodes once, applies the frame effects
   (`Tools/video/effects.py`, same PIL operations as the image tools), and encodes once to
-  MP4/H.264 + AAC, keeping the audio. It reports progress as `video-progress` events on
-  `ws_queue`, acks only at the end and leaves no partial output on failure. Preview mode
-  renders only the first `VIDEO_PREVIEW_SECONDS` (3 s).
+  MP4/H.264 + AAC, keeping the audio. It reports progress (one decimal, about once per
+  second) to `projects` on `project_queue` (`type: "progress"`); `projects` stores it in the
+  run and forwards the same `video-progress` event to `ws_queue`. The worker acks only at the
+  end and leaves no partial output on failure. Preview mode renders only the first
+  `VIDEO_PREVIEW_SECONDS` (3 s).
 
 ### Media types
 
@@ -80,6 +89,10 @@ Behind the gateway:
   orchestrator saves each frame as a separate image Result with the source `img_id`
   and unique result ID/name. Register all batch Process records before dispatch.
 - In projects with videos the frontend hides image-only tools (AI, watermark) and PDF export.
+- Processing does not block the UI (ADR-02): the project page shows its run in a strip with
+  `Cancel`, and `RunsProvider` with `BackgroundRuns` (dashboard layout) shows the runs of other
+  projects and their end on every dashboard page. While a project runs, its pipeline and media
+  are read-only in the UI.
 
 ## Running and testing
 
@@ -155,6 +168,13 @@ Phase 2 regression suite and measurements: `Docs/fase2/regressao/` and `Docs/fas
 - `NODE_OPTIONS` and `MALLOC_*` of `api_gateway`, `projects` and `img_storage` in
   `docker-compose.yaml` keep upload memory bounded (measured in `Docs/fase2/medicoes/passos/`).
   Remeasure before removing them.
+- `project_queue` messages are handled concurrently: run-state updates must only match runs
+  still `running` with the same token (`projects/controllers/run.js`), or a late reply or
+  progress report reopens or rewinds a run. Run-state errors are logged and never stop a run.
+- Do not send run state or other private data to the `project:<id>` socket room:
+  `ws_gateway` lets any socket join it without an access check.
+- A cancelled video keeps the single `video_tool` busy until it ends (its output is
+  discarded by the token check); the next run waits in `video_queue`.
 
 ## Phase 2 refactorings (AI-assisted)
 

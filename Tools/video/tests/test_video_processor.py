@@ -5,6 +5,7 @@ Each test documents the behaviour it verifies.
 import hashlib
 import os
 import subprocess
+import time
 
 import pytest
 from PIL import Image, ImageStat
@@ -157,6 +158,20 @@ def test_progress_reported(sample_video, tmp_path):
                   progress_cb=seen.append)
     assert seen == sorted(seen)
     assert seen[-1] == 100 and len(seen) > 5
+
+
+# ADR-02: one decimal, increasing, at least every second or at each whole percent
+def test_progress_has_one_decimal_and_is_paced(sample_video, tmp_path):
+    seen = []
+    process_video(sample_video, str(tmp_path / "p.mp4"),
+                  [{"procedure": "brightness", "params": {"brightness": 1.1}}],
+                  progress_cb=lambda pct: seen.append((time.monotonic(), pct)))
+    values = [pct for _, pct in seen]
+    assert values[-1] == 100 and values == sorted(values) and len(set(values)) == len(values)
+    assert all(round(pct, 1) == pct for pct in values)
+    # every report before the final 100 % is a second after the previous one or a new whole percent
+    for (t1, a), (t2, b) in zip(seen[:-2], seen[1:-1]):
+        assert t2 - t1 >= 0.99 or int(b) > int(a)
 
 
 # Preview of the initial excerpt only

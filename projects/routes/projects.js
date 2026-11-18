@@ -22,6 +22,8 @@ const {
   send_msg_client_error,
   send_msg_client_preview,
   send_msg_client_preview_error,
+  send_msg_client_video_progress,
+  send_msg_run_status,
   read_msg,
   send_msg_project_op,   
 } = require("../utils/project_msg");
@@ -30,6 +32,8 @@ const Project = require("../controllers/project");
 const Process = require("../controllers/process");
 const Result = require("../controllers/result");
 const Preview = require("../controllers/preview");
+const Runs = require("../controllers/run");
+const { runMedia, runView } = require("../utils/runState");
 const jwt = require("jsonwebtoken");
 const { getCallerId } = require("../utils/caller");
 const { ensureEditorSlot, releaseEditorSlot } = require("../utils/presence");
@@ -162,6 +166,50 @@ function toolsEqual(a, b) {
   return true;
 }
 
+// Run state (ADR-02, Docs/fase2/adr/). Best effort: a failure here is logged
+// and never stops or changes the processing itself. Every run that changed is
+// pushed to the browser (run-status); an update that matched nothing (a late
+// message for a closed run) sends nothing.
+async function runState(label, fn) {
+  try {
+    const changed = await fn();
+    for (const run of [].concat(changed || [])) {
+      if (run && run.project_id) send_msg_run_status(runView(run));
+    }
+    return changed;
+  } catch (e) {
+    console.error(`[RUN-STATE] ${label}:`, e.message);
+    return null;
+  }
+}
+
+// Opens the state of a new run, right after its token is taken
+function openRun(project, ownerId, projectId, token, runnerId) {
+  return runState("open", () => Runs.create({
+    user_id: ownerId,
+    project_id: projectId,
+    project_name: project.name,
+    runner_id: runnerId ? String(runnerId) : null,
+    token,
+    media: runMedia(project),
+  }));
+}
+
+function failRun(projectId, token, code, message) {
+  return runState("fail", () => Runs.finish(projectId, token, "failed", { code, msg: message }));
+}
+
+// Video progress reported by the worker (ADR-02). The browser gets the same
+// video-progress event as in the base; a run (not a preview) also stores it.
+async function handleVideoProgress(msg) {
+  const p = msg.progress || {};
+  if (!p.user) return;
+  const percent = Number(msg.percent) || 0;
+  send_msg_client_video_progress(p.user, p.projectId, p.imgId, msg.preview, Math.floor(percent));
+  if (msg.preview || !p.projectId || p.token === undefined || p.token === null) return;
+  await runState("video", () => Runs.videoPercent(p.projectId, p.token, p.imgId, percent));
+}
+
 
 // TODO process message according to type of output
 function process_msg() {
@@ -173,16 +221,21 @@ function process_msg() {
     // variáveis “seguras” para usar no catch
     let runnerIdSafe = null;
     let ownerIdSafe = null;
+    let runSafe = null; // run of a non-preview message, closed as failed on an unexpected error
 
     try {
       const msg_content = JSON.parse(msg.content.toString());
       const msg_id = msg_content.correlationId;
+
+      // Progress reports are not job replies: handle them before looking up the job
+      if (msg_content.type === "progress") return await handleVideoProgress(msg_content);
 
       const process = await Process.getOneByMsgId(msg_id);
       if (!process) return;
 
       ownerIdSafe = process.user_id;
       runnerIdSafe = process.runner_id || process.user_id;
+      if (!/preview/.test(msg_id)) runSafe = { project_id: process.project_id, token: process.token || 0 };
 
        console.log(
         `[T-03][RABBIT] msg=${msg_id} status=${msg_content.status} outType=${msg_content?.output?.type} curPos=${process.cur_pos} key=${(process.cache_key||"").slice(0,8)}`
@@ -216,10 +269,12 @@ function process_msg() {
           send_msg_client_error(
             user_msg_id,
             timestamp,
-            runnerId,   
+            runnerId,
             msg_content.error.code,
             msg_content.error.msg
           );
+          // The UI stops following a run at its first error, as in the base
+          await failRun(process.project_id, process.token || 0, msg_content.error.code, msg_content.error.msg);
         }
         return;
       }
@@ -419,6 +474,13 @@ if (/preview/.test(msg_id) && isLast) {
         await Result.create(result);
       }
 
+      // Run state: this step is done (a video reply closes the whole video)
+      if (!/preview/.test(msg_id)) {
+        await runState("step", () => sourceIsVideo
+          ? Runs.videoPercent(process.project_id, tok, img_id, 100)
+          : Runs.imageStep(process.project_id, tok, img_id));
+      }
+
       // Se esta imagem acabou o pipeline, pode ser que a execução tenha terminado
       if (!/preview/.test(msg_id) && isLast) {
 
@@ -454,6 +516,9 @@ if (/preview/.test(msg_id) && isLast) {
               process.user_id, process.project_id, process.token || 0, toolsSnapshot
             );
             if (!committed) return;
+
+            // Run state: done once the results are committed (they are now in the API)
+            await runState("done", () => Runs.finish(process.project_id, process.token || 0, "done"));
 
             console.log(`[COMMIT] project=${process.project_id} committedToken=${process.token || 0}`);
 
@@ -533,6 +598,7 @@ if (/preview/.test(msg_id) && isLast) {
         "30000",
         "An error happened while processing the project"
       );
+      if (runSafe) await failRun(runSafe.project_id, runSafe.token, "30000", "An error happened while processing the project");
       return;
     }
   });
@@ -561,6 +627,9 @@ async function deleteProjectAndResources(userId, projectId) {
     await delete_image(userId, projectId, "preview", p.img_key);
     await Preview.delete(p.user_id, p.project_id, p.img_id);
   }
+
+  // apagar o estado das execuções (ADR-02)
+  await runState("delete", () => Runs.deleteProject(projectId));
 
   // apagar o próprio projeto
   await Project.delete(userId, projectId);
@@ -1046,6 +1115,27 @@ router.get("/:user/:project/process/url", checkSharePermission, async (req, res)
     return res.status(200).jsonp(ans);
   } catch (e) {
     return res.status(601).jsonp("Error acquiring project's processing result");
+  }
+});
+
+// State of the project's latest processing run (ADR-02). The UI rebuilds the
+// progress and the cancel control from it after a reload or in another session.
+router.get("/:user/:project/process/status", checkSharePermission, async (req, res) => {
+  try {
+    const run = await Runs.latest(req.params.user, req.params.project);
+    return res.status(200).jsonp(runView(run));
+  } catch (e) {
+    return res.status(500).jsonp("Error reading the processing state");
+  }
+});
+
+// Runs in progress of the user (ADR-02), shown on every page of the app
+router.get("/:user/process/active", requireOwner, async (req, res) => {
+  try {
+    const runs = await Runs.active(req.params.user);
+    return res.status(200).jsonp(runs.map(runView));
+  } catch (e) {
+    return res.status(500).jsonp("Error reading the processing state");
   }
 });
 
@@ -1634,6 +1724,7 @@ router.post("/:user/:project/process", checkSharePermission, requireEditPermissi
               img_resp.data.pipe(writer);
             });
           } catch (_) {
+            await failRun(req.params.project, runToken, "400", "Error acquiring source images");
             res.status(400).jsonp("Error acquiring source images");
             return;
           }
@@ -1651,7 +1742,8 @@ router.post("/:user/:project/process", checkSharePermission, requireEditPermissi
             params = {
               tools: videoPipeline(project, img._id),
               preview: false,
-              progress: { user: runnerUserId, projectId: req.params.project, imgId: String(img._id) },
+              // the token lets the orchestrator store this progress in the run (ADR-02)
+              progress: { user: runnerUserId, projectId: req.params.project, imgId: String(img._id), token: runToken },
             };
           } else {
             const tool = imageTools(project)[0];
@@ -1685,6 +1777,7 @@ router.post("/:user/:project/process", checkSharePermission, requireEditPermissi
             send: (job) => send_msg_tool(job.msg_id, job.timestamp, job.og_img_uri, job.new_img_uri, job.tool_name, job.params),
           });
         } catch (error) {
+          await failRun(req.params.project, runToken, "603", "Could not start all processing requests. Please try again.");
           return res.status(603).jsonp("Could not start all processing requests. Please try again.");
         }
         res.sendStatus(201);
@@ -1746,10 +1839,12 @@ router.post("/:user/:project/process", checkSharePermission, requireEditPermissi
 
           // token desta execução
           runToken = updated.activeToken;
+          await openRun(project, ownerId, req.params.project, runToken, runnerUserId);
 
           await startProcessing();
         } catch (e) {
           console.error("Error starting processing (no advanced tools):", e);
+          if (runToken !== null) await failRun(req.params.project, runToken, "500", "Error processing project");
           res.status(500).jsonp("Error processing project");
         }
         return;
@@ -1796,10 +1891,12 @@ router.post("/:user/:project/process", checkSharePermission, requireEditPermissi
             res.set("X-Project-Version", String(updated.version));
 
             runToken = updated.activeToken; // token desta execução
+            await openRun(project, ownerId, req.params.project, runToken, runnerUserId);
 
             await startProcessing();
           } catch (e) {
             console.error("Error starting processing (advanced tools):", e);
+            if (runToken !== null) await failRun(req.params.project, runToken, "500", "Error processing project");
             res.status(500).jsonp("Error processing project");
           }
         })
@@ -2331,6 +2428,9 @@ router.delete(
           serverVersion: fresh?.version ?? null,
         });
       }
+
+      // Run state (ADR-02): every open run of this project is cancelled
+      await runState("cancel", () => Runs.cancelOpen(projectId));
 
       // apagar apenas resultados da execução cancelada
       try {

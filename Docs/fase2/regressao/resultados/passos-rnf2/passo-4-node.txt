@@ -1,0 +1,24 @@
+ Container picturas-projects-run-632c826abd35 Creating 
+ Container picturas-projects-run-632c826abd35 Created 
+✔ extraction is project-wide and terminal, with ordinary effects inserted before it (2.747342ms)
+✔ extraction validates active mode parameters and disallows targeted/potentially unbounded inputs (0.664354ms)
+✔ manifest validation rejects escaped, duplicate and oversized frame output before upload (5.866605ms)
+✔ all extracted images retain the source ID and run token; upload failure rolls back only this batch (2.961923ms)
+✔ a fast first worker cannot commit while later sources are still being scheduled (2.186548ms)
+✔ registration failure starts no workers and rolls back only newly registered jobs (0.862468ms)
+✔ a cancelled run cannot overwrite the committed results with a delayed commit (1.640863ms)
+✔ an image counts one unit per image tool; video-only tools do not count (2.163862ms)
+✔ a video counts its frames; images are left out when there is no image tool (0.521876ms)
+✔ image-only run: steps done over total steps, as in the base (0.346449ms)
+✔ mixed run follows the video, which holds almost all the work (1.326968ms)
+✔ progress is clamped, rounded down, and only reaches 100 when done (0.404822ms)
+✔ view exposes the state without internal fields (0.228458ms)
+✔ captions apply to all videos, while images skip them and trim stays targeted (1.528296ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 124.954815

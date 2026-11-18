@@ -1,0 +1,60 @@
+{
+  "medida": "RNF-F2-02 verificação intermédia do ADR-02 (servidor)",
+  "quando": "2026-11-18T11:57:49.361Z",
+  "commit": {
+    "hash": "f1714dcd0af7fe9a3e7c8df980a6c63dfc00b75c",
+    "codeChanges": [
+      "M apiGateway/routes/projects.js",
+      " M projects/routes/projects.js",
+      "?? projects/controllers/run.js",
+      "?? projects/models/run.js",
+      "?? projects/tests/run-state.test.js",
+      "?? projects/utils/runState.js"
+    ]
+  },
+  "video": "p-video-120s.mp4",
+  "P": "6afd92bb92a874e98500522c",
+  "antes": {
+    "status": "idle"
+  },
+  "arranque": 201,
+  "cancelamento": {
+    "em": 0.1,
+    "status": 204,
+    "estadoCanceladoAposS": 0.27,
+    "resultadosDepois": 0
+  },
+  "duracaoS": null,
+  "estadoFinal": {
+    "projectId": "6afd92bb92a874e98500522c",
+    "projectName": "P-estado-67453",
+    "ownerId": "6afd92bbd76a2a4eb9f3ef96",
+    "runnerId": "6afd92bbd76a2a4eb9f3ef96",
+    "token": 1,
+    "status": "cancelled",
+    "progress": 0.1,
+    "startedAt": "2026-11-18T11:57:49.539Z",
+    "finishedAt": "2026-11-18T11:57:50.169Z",
+    "error": null
+  },
+  "aMeio": null,
+  "rota": {
+    "amostras": 3,
+    "maiorIntervaloS": 0.3,
+    "mudancas": 2
+  },
+  "eventosRunStatus": {
+    "n": 0,
+    "maiorIntervaloS": 0,
+    "mudancas": 0,
+    "estados": []
+  },
+  "eventosVideoProgress": {
+    "n": 6,
+    "maiorIntervaloS": 2.34,
+    "mudancas": 6,
+    "inteiros": true
+  },
+  "eventosNoutroUtilizador": 0,
+  "primeiroProgressoS": 0.63
+}

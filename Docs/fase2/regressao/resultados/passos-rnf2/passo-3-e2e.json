@@ -1,0 +1,350 @@
+{
+  "suite": "e2e",
+  "modo": "passos-rnf2/passo-3",
+  "quando": "2026-11-18T12:18:24.721Z",
+  "commit": {
+    "hash": "df7e1dc8e9c8145856864976f9c6d6476ea29429",
+    "codeChanges": [
+      "M AGENTS.md",
+      " M frontend/app/dashboard/[pid]/page.tsx",
+      " M frontend/app/dashboard/layout.tsx",
+      " M frontend/components/project-page/project-image.tsx",
+      " M frontend/components/ui/progress.tsx",
+      " M frontend/lib/projects.ts",
+      " M projects/routes/projects.js",
+      " M projects/utils/project_msg.js",
+      " M wsGateway/index.js",
+      "?? frontend/components/runs/",
+      "?? frontend/providers/runs-provider.tsx",
+      "?? wsGateway/tests/",
+      "?? wsGateway/utils/runStatus.js"
+    ]
+  },
+  "testes": [
+    {
+      "id": "T01",
+      "area": "Contas",
+      "nome": "Registo e início de sessão devolvem um JWT válido",
+      "estado": "passou",
+      "impressao": {
+        "login": 201,
+        "validate": 200
+      },
+      "detalhes": null,
+      "segundos": 0.2
+    },
+    {
+      "id": "T02",
+      "area": "Carregamento",
+      "nome": "Carregar imagem PNG: aceite, listada e guardada sem alteração",
+      "estado": "passou",
+      "impressao": {
+        "media_type": "image",
+        "igual": true
+      },
+      "detalhes": null,
+      "segundos": 0.2
+    },
+    {
+      "id": "T03",
+      "area": "Carregamento",
+      "nome": "Carregar vídeos MP4 e MOV: aceites, com metadados lidos por ffprobe",
+      "estado": "passou",
+      "impressao": {
+        "sample_10s_720p.mp4": {
+          "duracao": 10,
+          "w": 1280,
+          "h": 720,
+          "codec": "h264"
+        },
+        "sample_6s.mov": {
+          "duracao": 6,
+          "w": 640,
+          "h": 480,
+          "codec": "h264"
+        }
+      },
+      "detalhes": null,
+      "segundos": 0.9
+    },
+    {
+      "id": "T04",
+      "area": "Carregamento",
+      "nome": "Recusas: vídeo no endpoint de imagem, imagem no de vídeo, ficheiro corrompido, nome repetido, limites do perfil gratuito, anónimo",
+      "estado": "passou",
+      "impressao": {
+        "videoNoEndpointDeImagem": {
+          "status": 400,
+          "mensagem": "Videos must be uploaded through the /video endpoint."
+        },
+        "imagemNoEndpointDeVideo": {
+          "status": 400,
+          "mensagem": "Only video files (.mp4, .mov, .webm) can be uploaded here."
+        },
+        "corrompido": {
+          "status": 400,
+          "mensagem": "Unreadable or corrupted video file"
+        },
+        "nomeRepetido": {
+          "status": 400,
+          "mensagem": "This project already has an image with that name."
+        },
+        "gratuito90s": {
+          "status": 400,
+          "mensagem": "The video is 90.0 s long and your profile limit is 60 s"
+        },
+        "anonimoVideo": {
+          "status": 400,
+          "mensagem": "Anonymous users cannot upload videos. Create an account to edit video."
+        }
+      },
+      "detalhes": null,
+      "segundos": 1.5
+    },
+    {
+      "id": "T05",
+      "area": "Pipeline de imagem",
+      "nome": "Cada ferramenta de imagem (8 + watermark) aplicada sozinha produz o resultado de referência",
+      "estado": "passou",
+      "impressao": {
+        "brightness": "91cea070a195bde03e67d371f63abaa6329f90ad3bb9f9791ec0c24e4191a2f3",
+        "contrast": "0bff9a5313ed3676dfe2eee799546908adce962dd3286051dca4938b90cfc6bd",
+        "saturation": "f5bdbc70a2167989432946dcdd8597bad8df79f83bc46e4702b816a9b0b24cb6",
+        "binarization": "495598b8b4d0845b8b202a94c0b003ce27b26a5005492938c6fe39fb36d39740",
+        "rotate": "8765e87c68d58134a28498672552db4fa5dfc299b084882eb4054389c2530dae",
+        "resize": "f07421656480d355aba7c74a01174d96b6bf85599c837011d273be4952df4d6f",
+        "cut": "21cb45b052356909ba915b4a6571206b048b00052afb0d129c4b3b304895628f",
+        "border": "fbe4963dec3aaa69bf195d9afa85cfdc424a923ec22a5767a8a03ce92db71a9d",
+        "watermark": {
+          "formato": "png",
+          "largura": 1280,
+          "altura": 720
+        }
+      },
+      "detalhes": null,
+      "segundos": 21.8
+    },
+    {
+      "id": "T06",
+      "area": "Pipeline de imagem",
+      "nome": "Pipeline encadeado em lote (brilho, contraste, rotação, redimensionamento) em duas imagens",
+      "estado": "passou",
+      "impressao": {
+        "imagem-p1.png": "56619c61c9c10b05e8f1c0ec7ddebdc1f1899a8efe7fb9aa1ca3f496833d61f9",
+        "imagem-p2.png": "65e72f1a82ae46330665832671d1d0950a300384e23b000421505328568f25ce"
+      },
+      "detalhes": null,
+      "segundos": 3.1
+    },
+    {
+      "id": "T07",
+      "area": "Pipeline de imagem",
+      "nome": "Transferência dos resultados em ZIP",
+      "estado": "passou",
+      "impressao": {
+        "ficheiros": 2
+      },
+      "detalhes": null,
+      "segundos": 0
+    },
+    {
+      "id": "T08",
+      "area": "Pré-visualização",
+      "nome": "Pré-visualização de imagem e de vídeo chega pelo WebSocket",
+      "estado": "passou",
+      "impressao": {
+        "image": {
+          "mediaType": "image"
+        },
+        "video": {
+          "mediaType": "video"
+        }
+      },
+      "detalhes": null,
+      "segundos": 2.9
+    },
+    {
+      "id": "T09",
+      "area": "Vídeo",
+      "nome": "Efeitos de fotograma em vídeo: cor (brilho, contraste, saturação, binarização) e geometria (rotação, recorte, redimensionamento, moldura)",
+      "estado": "passou",
+      "impressao": {
+        "cor": {
+          "duracaoS": 10,
+          "largura": 1280,
+          "altura": 720,
+          "codec": "h264",
+          "audio": "aac"
+        },
+        "geometria": {
+          "duracaoS": 10,
+          "largura": 320,
+          "altura": 520,
+          "codec": "h264",
+          "audio": "aac"
+        }
+      },
+      "detalhes": null,
+      "segundos": 21
+    },
+    {
+      "id": "T10",
+      "area": "Vídeo",
+      "nome": "Corte no tempo e velocidade: duração e som do resultado",
+      "estado": "passou",
+      "impressao": {
+        "duracaoS": 3,
+        "largura": 1280,
+        "altura": 720,
+        "codec": "h264",
+        "audio": "aac"
+      },
+      "detalhes": null,
+      "segundos": 12.6
+    },
+    {
+      "id": "T11",
+      "area": "Vídeo",
+      "nome": "Legendagem automática: vídeo com fala legendado; vídeo sem som inalterado na duração",
+      "estado": "passou",
+      "impressao": {
+        "sem-som-8s.mp4": {
+          "duracaoS": 8,
+          "largura": 640,
+          "altura": 360,
+          "codec": "h264",
+          "audio": null
+        },
+        "fala-25s.mp4": {
+          "duracaoS": 25,
+          "largura": 1280,
+          "altura": 720,
+          "codec": "h264",
+          "audio": "aac"
+        }
+      },
+      "detalhes": {
+        "segundos": 23.6
+      },
+      "segundos": 26
+    },
+    {
+      "id": "T12",
+      "area": "Vídeo",
+      "nome": "Extração de fotogramas: por número (PNG) e por intervalo (JPEG), cada fotograma como resultado",
+      "estado": "passou",
+      "impressao": {
+        "contagem": {
+          "fotogramas": 5,
+          "tipos": [
+            "image"
+          ],
+          "extensao": [
+            ".png"
+          ]
+        },
+        "intervalo": {
+          "fotogramas": 5,
+          "tipos": [
+            "image"
+          ],
+          "extensao": [
+            ".jpg"
+          ]
+        }
+      },
+      "detalhes": null,
+      "segundos": 20.9
+    },
+    {
+      "id": "T13",
+      "area": "Vídeo",
+      "nome": "Regras do pipeline: extração só no fim e uma vez; acrescentar efeito vai para antes da extração",
+      "estado": "passou",
+      "impressao": {
+        "ordem": [
+          "brightness",
+          "extract_frames"
+        ],
+        "reordenarInvalido": 400,
+        "segundaExtracao": 400
+      },
+      "detalhes": null,
+      "segundos": 0.4
+    },
+    {
+      "id": "T14",
+      "area": "Projetos mistos",
+      "nome": "Projeto com imagem e vídeo: o mesmo efeito aplica-se aos dois; o corte de vídeo não toca na imagem",
+      "estado": "passou",
+      "impressao": {
+        "imagemIgualAoProjetoSoImagem": true,
+        "video": {
+          "duracaoS": 4,
+          "largura": 1280,
+          "altura": 720,
+          "codec": "h264",
+          "audio": "aac"
+        }
+      },
+      "detalhes": null,
+      "segundos": 17.4
+    },
+    {
+      "id": "T15",
+      "area": "Projetos mistos",
+      "nome": "Ferramentas incompatíveis: só-imagem num projeto com vídeo e só-vídeo num projeto só com imagens são recusadas",
+      "estado": "passou",
+      "impressao": {
+        "misto": [
+          400,
+          "Effects not available for video: watermark"
+        ],
+        "soImagens": [
+          400,
+          "The pipeline only has video effects and the project has no videos"
+        ]
+      },
+      "detalhes": null,
+      "segundos": 1
+    },
+    {
+      "id": "T16",
+      "area": "Cancelamento",
+      "nome": "Cancelar uma execução: sem resultados, operações não ficam comprometidas e o projeto volta a processar",
+      "estado": "passou",
+      "impressao": {
+        "cancelar": 204,
+        "resultadosDepois": 0,
+        "novaExecucao": 2
+      },
+      "detalhes": null,
+      "segundos": 76.7
+    },
+    {
+      "id": "T17",
+      "area": "Quotas",
+      "nome": "Perfil gratuito: cada efeito em cada vídeo conta uma operação e o limite diário de 5 recusa a execução seguinte",
+      "estado": "passou",
+      "impressao": {
+        "restantesDepoisDe3": 2,
+        "segunda": 403
+      },
+      "detalhes": null,
+      "segundos": 12.3
+    },
+    {
+      "id": "T18",
+      "area": "Acesso",
+      "nome": "Um utilizador não acede aos projetos nem aos media de outro",
+      "estado": "passou",
+      "impressao": {
+        "projeto": 401,
+        "media": 401,
+        "semJwt": 401
+      },
+      "detalhes": null,
+      "segundos": 0.2
+    }
+  ]
+}

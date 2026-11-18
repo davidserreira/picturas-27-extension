@@ -1,0 +1,56 @@
+{
+  "medida": "RNF-F2-02 M2.3",
+  "quando": "2026-11-18T12:41:56.384Z",
+  "commit": {
+    "hash": "54386ccaeee933c7d4581dc63f8de5a2509103b8",
+    "codeChanges": [
+      "M AGENTS.md",
+      " M frontend/app/dashboard/[pid]/page.tsx",
+      " M frontend/app/dashboard/layout.tsx",
+      " M frontend/components/project-page/project-image.tsx",
+      " M frontend/components/ui/progress.tsx",
+      " M frontend/lib/projects.ts",
+      "?? frontend/components/runs/",
+      "?? frontend/providers/runs-provider.tsx"
+    ]
+  },
+  "video": "p-video-330s.mp4",
+  "tentativas": [
+    {
+      "forma": "A",
+      "tentativa": 1,
+      "P": "6afd9d142fe383177f0df152",
+      "oferecido": true,
+      "oferecidoS": 0.36,
+      "parou": true,
+      "parouS": 0.01,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "B",
+      "tentativa": 1,
+      "P": "6afd9e252fe383177f0df406",
+      "oferecido": true,
+      "oferecidoS": 0.39,
+      "parou": true,
+      "parouS": 0.01,
+      "resultadosIguais": true,
+      "sucesso": true
+    }
+  ],
+  "resumo": {
+    "A": {
+      "sucessos": 1,
+      "tentativas": 1
+    },
+    "B": {
+      "sucessos": 1,
+      "tentativas": 1
+    },
+    "total": {
+      "sucessos": 2,
+      "tentativas": 2
+    }
+  }
+}

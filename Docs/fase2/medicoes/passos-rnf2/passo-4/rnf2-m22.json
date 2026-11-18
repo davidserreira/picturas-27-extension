@@ -1,0 +1,73 @@
+{
+  "medida": "RNF-F2-02 M2.2",
+  "quando": "2026-11-18T12:32:57.489Z",
+  "commit": {
+    "hash": "54386ccaeee933c7d4581dc63f8de5a2509103b8",
+    "codeChanges": [
+      "M AGENTS.md",
+      " M frontend/app/dashboard/[pid]/page.tsx",
+      " M frontend/app/dashboard/layout.tsx",
+      " M frontend/components/project-page/project-image.tsx",
+      " M frontend/components/ui/progress.tsx",
+      " M frontend/lib/projects.ts",
+      "?? frontend/components/runs/",
+      "?? frontend/providers/runs-provider.tsx"
+    ]
+  },
+  "video": "p-video-330s.mp4",
+  "duracaoReferenciaS": 222.8,
+  "execucoes": [
+    {
+      "execucao": 1,
+      "P": "6afd9ba62fe383177f0dc53e",
+      "R": [
+        {
+          "momento": 0.25,
+          "progressoAntes": 16.8,
+          "recuperaS": 0.35,
+          "valorDepois": 17,
+          "naoRecupera": false,
+          "aposLoadS": 0.3
+        },
+        {
+          "momento": 0.6,
+          "progressoAntes": 41.3,
+          "recuperaS": 0.57,
+          "valorDepois": 41.5,
+          "naoRecupera": false,
+          "aposLoadS": 0.6
+        }
+      ],
+      "F": {
+        "notificaS": 0.11,
+        "naoRecupera": false
+      }
+    }
+  ],
+  "resumo": {
+    "R": {
+      "valores": 2,
+      "naoRecupera": 0,
+      "tempos": {
+        "n": 2,
+        "mean": 0.46,
+        "sd": 0.16,
+        "median": 0.46,
+        "min": 0.35,
+        "max": 0.57
+      }
+    },
+    "F": {
+      "valores": 1,
+      "naoRecupera": 0,
+      "tempos": {
+        "n": 1,
+        "mean": 0.11,
+        "sd": 0,
+        "median": 0.11,
+        "min": 0.11,
+        "max": 0.11
+      }
+    }
+  }
+}

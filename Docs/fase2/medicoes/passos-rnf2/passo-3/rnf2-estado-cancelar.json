@@ -1,0 +1,70 @@
+{
+  "medida": "RNF-F2-02 verificação intermédia do ADR-02 (servidor)",
+  "quando": "2026-11-18T12:16:51.593Z",
+  "commit": {
+    "hash": "df7e1dc8e9c8145856864976f9c6d6476ea29429",
+    "codeChanges": [
+      "M AGENTS.md",
+      " M frontend/app/dashboard/[pid]/page.tsx",
+      " M frontend/app/dashboard/layout.tsx",
+      " M frontend/components/project-page/project-image.tsx",
+      " M frontend/components/ui/progress.tsx",
+      " M frontend/lib/projects.ts",
+      " M projects/routes/projects.js",
+      " M projects/utils/project_msg.js",
+      " M wsGateway/index.js",
+      "?? frontend/components/runs/",
+      "?? frontend/providers/runs-provider.tsx",
+      "?? wsGateway/tests/",
+      "?? wsGateway/utils/runStatus.js"
+    ]
+  },
+  "video": "p-video-120s.mp4",
+  "P": "6afd97322fe383177f0d961f",
+  "antes": {
+    "status": "idle"
+  },
+  "arranque": 201,
+  "cancelamento": {
+    "em": 5.1,
+    "status": 204,
+    "estadoCanceladoAposS": 0.27,
+    "resultadosDepois": 0
+  },
+  "duracaoS": null,
+  "estadoFinal": {
+    "projectId": "6afd97322fe383177f0d961f",
+    "projectName": "P-estado-10535",
+    "ownerId": "6afd9732d76a2a4eb9f3f452",
+    "runnerId": "6afd9732d76a2a4eb9f3f452",
+    "token": 1,
+    "status": "cancelled",
+    "progress": 5.1,
+    "startedAt": "2026-11-18T12:16:51.742Z",
+    "finishedAt": "2026-11-18T12:16:56.319Z",
+    "error": null
+  },
+  "aMeio": null,
+  "rota": {
+    "amostras": 17,
+    "maiorIntervaloS": 0.87,
+    "mudancas": 7
+  },
+  "eventosRunStatus": {
+    "n": 12,
+    "maiorIntervaloS": 0.81,
+    "mudancas": 7,
+    "estados": [
+      "running",
+      "cancelled"
+    ]
+  },
+  "eventosVideoProgress": {
+    "n": 21,
+    "maiorIntervaloS": 0.95,
+    "mudancas": 21,
+    "inteiros": true
+  },
+  "eventosNoutroUtilizador": 0,
+  "primeiroProgressoS": 0.54
+}

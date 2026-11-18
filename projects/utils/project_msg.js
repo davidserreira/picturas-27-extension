@@ -1,4 +1,5 @@
 const { send_rabbit_msg, read_rabbit_msg } = require('./rabbit_mq')
+const { v4: uuidv4 } = require('uuid')
 
 const queues = {
     'cut': 'cut_queue',
@@ -92,6 +93,39 @@ function send_msg_client_preview_error(msg_id, timestamp, user, error_code, erro
     send_rabbit_msg(msg, queue);
 }
 
+// The same video-progress message the video worker sent to ws_queue in the
+// base; the orchestrator now forwards it (ADR-02), with a whole percentage.
+function send_msg_client_video_progress(user, projectId, imgId, preview, percent) {
+    const queue = queues['ws'];
+    const msg = {
+        "messageId": `update-client-video-progress-${uuidv4()}`,
+        "timestamp": new Date().toISOString(),
+        "status": "success",
+        "user": user,
+        "projectId": projectId,
+        "imgId": imgId,
+        "preview": !!preview,
+        "percent": percent
+    };
+
+    send_rabbit_msg(msg, queue);
+}
+
+// State of a processing run (ADR-02, see utils/runState.js). The ws_gateway
+// delivers it as "run-status" to the project owner and to whoever started it.
+function send_msg_run_status(run) {
+    const queue = queues['ws'];
+    const msg = {
+        "messageId": `run-status-${uuidv4()}`,
+        "type": "run-status",
+        "timestamp": new Date().toISOString(),
+        "status": "success",
+        "run": run
+    };
+
+    send_rabbit_msg(msg, queue);
+}
+
 function read_msg(callback){
     read_rabbit_msg(queues['project'], callback);
 }
@@ -109,4 +143,4 @@ function send_msg_project_op({ projectId, ownerId, op }) {
   send_rabbit_msg(msg, queue);
 }
 
-module.exports = { send_msg_tool, send_msg_client, send_msg_client_error, send_msg_client_preview, send_msg_client_preview_error, read_msg, send_msg_project_op };
+module.exports = { send_msg_tool, send_msg_client, send_msg_client_error, send_msg_client_preview, send_msg_client_preview_error, send_msg_client_video_progress, send_msg_run_status, read_msg, send_msg_project_op };

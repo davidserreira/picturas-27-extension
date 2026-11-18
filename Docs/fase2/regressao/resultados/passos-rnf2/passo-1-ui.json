@@ -1,0 +1,47 @@
+{
+  "suite": "ui",
+  "modo": "passos-rnf2/passo-1",
+  "quando": "2026-11-18T12:04:12.675Z",
+  "commit": {
+    "hash": "f1714dcd0af7fe9a3e7c8df980a6c63dfc00b75c",
+    "codeChanges": [
+      "M Tools/video/tests/test_video_processor.py",
+      " M Tools/video/video.py",
+      " M Tools/video/video_processor.py",
+      " M apiGateway/routes/projects.js",
+      " M frontend/app/dashboard/[pid]/page.tsx",
+      " M frontend/app/dashboard/layout.tsx",
+      " M frontend/components/project-page/project-image.tsx",
+      " M frontend/components/ui/progress.tsx",
+      " M frontend/lib/projects.ts",
+      " M projects/routes/projects.js",
+      " M projects/utils/project_msg.js",
+      "?? frontend/components/runs/",
+      "?? frontend/providers/runs-provider.tsx",
+      "?? projects/controllers/run.js",
+      "?? projects/models/run.js",
+      "?? projects/tests/run-state.test.js",
+      "?? projects/utils/runState.js"
+    ]
+  },
+  "testes": [
+    {
+      "id": "U01",
+      "nome": "Importar uma imagem pela interface",
+      "estado": "passou",
+      "segundos": 6.4
+    },
+    {
+      "id": "U02",
+      "nome": "Aplicar um pipeline pela interface e ver os resultados",
+      "estado": "passou",
+      "segundos": 6.9
+    },
+    {
+      "id": "U03",
+      "nome": "Cancelar pela interface uma execução em curso",
+      "estado": "passou",
+      "segundos": 38
+    }
+  ]
+}

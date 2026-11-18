@@ -1,0 +1,24 @@
+ Container picturas-projects-run-29cf7ff5640c Creating 
+ Container picturas-projects-run-29cf7ff5640c Created 
+✔ extraction is project-wide and terminal, with ordinary effects inserted before it (3.516055ms)
+✔ extraction validates active mode parameters and disallows targeted/potentially unbounded inputs (0.792506ms)
+✔ manifest validation rejects escaped, duplicate and oversized frame output before upload (10.786392ms)
+✔ all extracted images retain the source ID and run token; upload failure rolls back only this batch (3.926365ms)
+✔ a fast first worker cannot commit while later sources are still being scheduled (3.416586ms)
+✔ registration failure starts no workers and rolls back only newly registered jobs (1.267556ms)
+✔ a cancelled run cannot overwrite the committed results with a delayed commit (4.2179ms)
+✔ an image counts one unit per image tool; video-only tools do not count (2.834441ms)
+✔ a video counts its frames; images are left out when there is no image tool (0.52243ms)
+✔ image-only run: steps done over total steps, as in the base (0.244344ms)
+✔ mixed run follows the video, which holds almost all the work (1.709996ms)
+✔ progress is clamped, rounded down, and only reaches 100 when done (0.427576ms)
+✔ view exposes the state without internal fields (0.433719ms)
+✔ captions apply to all videos, while images skip them and trim stays targeted (2.825407ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 194.125243

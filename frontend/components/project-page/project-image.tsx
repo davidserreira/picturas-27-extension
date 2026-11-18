@@ -24,6 +24,7 @@ import {
   useDownloadProjectImage,
 } from "@/lib/mutations/projects";
 import { useProjectInfo } from "@/providers/project-provider";
+import { useRuns } from "@/providers/runs-provider";
 import { useSession } from "@/providers/session-provider";
 import { useToast } from "@/hooks/use-toast";
 import { isVideo, type ProjectImage } from "@/lib/projects";
@@ -55,6 +56,8 @@ export function ProjectImage({ image, animation = true, active = true }: ImageIt
   const shareId = searchParams.get("share") ?? undefined;
 
   const projectInfo = useProjectInfo(); // para ter version também
+  // ADR-02: media of a project being processed cannot be deleted
+  const processing = useRuns().runs[pid as string]?.status === "running";
   const deleteImage = useDeleteProjectImages(
     session.user._id,
     pid as string,
@@ -128,7 +131,7 @@ export function ProjectImage({ image, animation = true, active = true }: ImageIt
         </ContextMenuTrigger>
         <ContextMenuContent>
           <DialogTrigger asChild onClick={(e) => e.stopPropagation()}>
-            {mode !== "results" && (
+            {mode !== "results" && !processing && (
               <ContextMenuItem
                 className="flex justify-between"
                 onClick={(e) => e.stopPropagation()}
