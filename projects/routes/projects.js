@@ -23,6 +23,7 @@ const {
   send_msg_client_preview,
   send_msg_client_preview_error,
   send_msg_client_video_progress,
+  send_msg_run_status,
   read_msg,
   send_msg_project_op,   
 } = require("../utils/project_msg");
@@ -168,10 +169,16 @@ function toolsEqual(a, b) {
 }
 
 // Run state (ADR-02, Docs/fase2/adr/). Best effort: a failure here is logged
-// and never stops or changes the processing itself.
+// and never stops or changes the processing itself. Every run that changed is
+// pushed to the browser (run-status); an update that matched nothing (a late
+// message for a closed run) sends nothing.
 async function runState(label, fn) {
   try {
-    return await fn();
+    const changed = await fn();
+    for (const run of [].concat(changed || [])) {
+      if (run && run.project_id) send_msg_run_status(runView(run));
+    }
+    return changed;
   } catch (e) {
     console.error(`[RUN-STATE] ${label}:`, e.message);
     return null;

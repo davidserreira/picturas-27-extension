@@ -60,7 +60,7 @@ coleção nova (`runs`): projeto, dono, quem a iniciou, *token*, estado (`runnin
 `cancelled`) e, por media, o trabalho total e o feito. O worker de vídeo passa a reportar o progresso
 ao orquestrador (pela `project_queue`) em vez de o mandar ao browser. O orquestrador atualiza o
 estado, reencaminha o evento antigo e publica um evento novo, `run-status`, que o `ws_gateway` entrega
-ao dono, a quem iniciou e a quem tem o projeto aberto. Duas rotas novas devolvem o estado: a de um
+ao dono e a quem a iniciou. Duas rotas novas devolvem o estado: a de um
 projeto e a lista das execuções em curso do utilizador. O frontend passa a ter um fornecedor de estado
 no *layout* do painel, um indicador que não bloqueia na página do projeto e uma lista de trabalho em
 segundo plano visível nas outras páginas.
@@ -164,6 +164,7 @@ percentagem inteira.
 | Novas rotas | — | `GET /projects/:user/:project/process/status` e `GET /projects/:user/process/active` | C2.3 e testes unitários |
 | Novo evento | — | `run-status`, com o estado da execução | Medição intermédia de cada passo |
 | Alterar o pipeline de P durante a execução | Pela API, aceite (C2.5); pela interface, impossível | Pela API, igual; pela interface, bloqueado | C2.5 |
+| Colaborador com ligação de partilha que não iniciou a execução | Não via nada: os eventos iam só para quem a iniciou | Vê o estado ao abrir a página do projeto; as atualizações em tempo real só chegam ao dono e a quem iniciou (secção 4.2, confidencialidade) | Revisão de código |
 | Cancelar logo depois de abrir o projeto | O `POST .../dirty` da abertura muda a versão; um pedido com a versão antiga recebe 409 | O cancelamento repete uma vez com a versão que o 409 devolve (`serverVersion`) | M2.3 |
 
 ### 4.2 Outros requisitos não funcionais
@@ -172,7 +173,7 @@ percentagem inteira.
 | --- | --- | --- |
 | Eficiência — comportamento temporal | Uma escrita no MongoDB por passo de imagem e cerca de uma por segundo por vídeo, e uma mensagem a mais por relatório de progresso (worker → orquestrador → `ws_queue`). Esperado: diferença na duração de P abaixo da variação entre execuções | C2.1 |
 | Usabilidade — operabilidade (REQ-VID-STATUS-003) | Progresso atualizado a cada segundo durante o vídeo, em vez de a cada 13 a 16 s | C2.2 |
-| Segurança — confidencialidade | A rota de estado passa pelo `auth.checkToken` do gateway (JWT do próprio dono, ou ligação de partilha válida). O evento só vai para as salas do dono, de quem iniciou e do projeto | C2.3 |
+| Segurança — confidencialidade | A rota de estado passa pelo `auth.checkToken` do gateway (JWT do próprio dono, ou ligação de partilha válida). O evento só vai para as salas do dono e de quem iniciou, que só se juntam com um JWT válido. A sala `project:<id>` fica de fora: no `ws_gateway`, qualquer socket entra nela sem verificação de acesso (fragilidade da base, que já expõe por ali os eventos `project-updated` e `project-op`) | C2.3 |
 | Adequação funcional — correção | Duas execuções em projetos diferentes passam a poder ser iniciadas pela interface | C2.4 |
 | Fiabilidade — recuperabilidade | O estado sobrevive à página, à sessão e ao reinício do `ws_gateway`. Se um worker morrer a meio, a execução fica "em curso", como os `Process` da base (C7, fora de âmbito); o cancelamento limpa-a | C2.6 (coberto por M2.2 e M2.3) |
 | Manutenibilidade — modificabilidade | Um modelo, um módulo de cálculo com testes unitários e um fornecedor de estado no frontend. A página do projeto perde a contagem de eventos (cerca de 150 linhas) | Revisão de código |
@@ -266,8 +267,8 @@ final e as respostas da rota com o JWT de outro utilizador e sem JWT. Os resulta
 | | |
 | --- | --- |
 | Ficheiros | `projects/utils/project_msg.js` (`send_msg_run_status`); `projects/routes/projects.js` (chamadas nos pontos do passo 1 e 2); `wsGateway/index.js`; novos `wsGateway/utils/runStatus.js` e `wsGateway/tests/run-status.test.js` |
-| Alteração | O orquestrador publica o estado na `ws_queue` sempre que muda. O `ws_gateway` entrega-o como `run-status` às salas do dono, de quem iniciou e do projeto, uma só vez por socket |
-| Testes unitários | Salas escolhidas para cada mensagem; mensagem sem projeto ignorada |
+| Alteração | O orquestrador publica o estado na `ws_queue` sempre que muda. O `ws_gateway` entrega-o como `run-status` às salas do dono e de quem iniciou, uma só vez por socket. Não o manda para a sala do projeto, onde qualquer socket entra sem verificação |
+| Testes unitários | Salas escolhidas para cada mensagem, nunca a do projeto; mensagem sem projeto ignorada |
 | Regressão | Suite completa |
 | Medição | `estado.mjs`: eventos recebidos pelo dono com a mesma cadência da rota; um socket de outro utilizador não recebe nenhum |
 | Reconstruir | `projects`, `ws_gateway` |

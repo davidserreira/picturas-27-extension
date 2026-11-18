@@ -1,0 +1,43 @@
+{
+  "suite": "ui",
+  "modo": "passos-rnf2/passo-3",
+  "quando": "2026-11-18T12:22:05.338Z",
+  "commit": {
+    "hash": "df7e1dc8e9c8145856864976f9c6d6476ea29429",
+    "codeChanges": [
+      "M AGENTS.md",
+      " M frontend/app/dashboard/[pid]/page.tsx",
+      " M frontend/app/dashboard/layout.tsx",
+      " M frontend/components/project-page/project-image.tsx",
+      " M frontend/components/ui/progress.tsx",
+      " M frontend/lib/projects.ts",
+      " M projects/routes/projects.js",
+      " M projects/utils/project_msg.js",
+      " M wsGateway/index.js",
+      "?? frontend/components/runs/",
+      "?? frontend/providers/runs-provider.tsx",
+      "?? wsGateway/tests/",
+      "?? wsGateway/utils/runStatus.js"
+    ]
+  },
+  "testes": [
+    {
+      "id": "U01",
+      "nome": "Importar uma imagem pela interface",
+      "estado": "passou",
+      "segundos": 5.8
+    },
+    {
+      "id": "U02",
+      "nome": "Aplicar um pipeline pela interface e ver os resultados",
+      "estado": "passou",
+      "segundos": 6.4
+    },
+    {
+      "id": "U03",
+      "nome": "Cancelar pela interface uma execução em curso",
+      "estado": "passou",
+      "segundos": 37.7
+    }
+  ]
+}
