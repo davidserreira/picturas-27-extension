@@ -218,7 +218,8 @@ def _process_video(input_path: str, output_path: str, tools: list,
             frames += 1
 
             pct = min(99, int(frames * 100 / expected_frames))
-            if progress_cb and pct != last_pct and (pct - last_pct >= 2 or pct == 99):
+            # every 1 %: a long video still updates its progress every few seconds
+            if progress_cb and pct > last_pct:
                 last_pct = pct
                 progress_cb(pct)
 
