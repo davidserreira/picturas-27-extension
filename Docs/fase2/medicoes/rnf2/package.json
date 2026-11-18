@@ -2,8 +2,9 @@
   "name": "picturas-medicoes-rnf2",
   "private": true,
   "type": "module",
-  "description": "Browser measurements for RNF-F2-02 (Playwright, Chromium)",
+  "description": "Browser measurements for RNF-F2-02 (Playwright, Chromium) and server-side checks of ADR-02 (socket.io-client)",
   "dependencies": {
-    "playwright": "1.55.0"
+    "playwright": "1.55.0",
+    "socket.io-client": "4.8.1"
   }
 }

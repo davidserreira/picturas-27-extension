@@ -348,6 +348,50 @@ router.get(
   }
 );
 
+/**
+ * State of the project's latest processing run (ADR-02, Docs/fase2/adr/)
+ * @body Empty
+ * @returns { projectId, projectName, ownerId, token, status, progress, ... } or { status: "idle" }
+ */
+router.get(
+  "/:user/:project/process/status",
+  auth.checkToken,
+  function (req, res, next) {
+    const ownerId = req.query.owner || req.params.user;
+    const callerId = req.authUserId || req.params.user;
+
+    axios
+      .get(projectsURL + `${ownerId}/${req.params.project}/process/status`, {
+        httpsAgent,
+        params: req.query.share ? { share: req.query.share } : undefined,
+        headers: {
+          Authorization: req.headers["authorization"],
+          "X-Caller-Id": callerId,
+        },
+      })
+      .then((resp) => res.status(200).send(resp.data))
+      .catch((err) => forwardAxiosError(res, err, "mensagem fallback"));
+  }
+);
+
+/**
+ * Processing runs in progress of the user (ADR-02, Docs/fase2/adr/)
+ * @body Empty
+ * @returns [{ projectId, projectName, ownerId, token, status, progress, ... }]
+ */
+router.get("/:user/process/active", auth.checkToken, function (req, res, next) {
+  axios
+    .get(projectsURL + `${req.params.user}/process/active`, {
+      httpsAgent,
+      headers: {
+        Authorization: req.headers["authorization"],
+        "X-Caller-Id": req.authUserId || req.params.user,
+      },
+    })
+    .then((resp) => res.status(200).send(resp.data))
+    .catch((err) => forwardAxiosError(res, err, "mensagem fallback"));
+});
+
 
 /**
  * Create new user's project
