@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 | --- | --- |
-| Estado | Implementado no ramo `fase2/rnf-f2-01-carregamento` (secção 7); a aguardar a medição final e a validação pela equipa |
+| Estado | Implementado e medido no ramo `fase2/rnf-f2-01-carregamento` (secção 7). Alvo atingido nas duas medidas principais (`../analise.md`). A aguardar a revisão pela equipa e a medição com o RNF-F2-02 integrado |
 | Data | 17 de novembro de 2026 |
 | Requisito | RNF-F2-01 — Carregamento de ficheiros grandes com memória limitada (`../requisitos-nf.md`, secção 2) |
 | Base | Commit `0523102` (no nosso repositório, `43a2e08`) |
@@ -374,8 +374,37 @@ do que no passo 5 (1,2 a 1,5 s; base 1,9 s), pela recolha de lixo mais frequente
 | Passo 5b, não previsto como passo | Previsto como afinação possível na secção 4.3. Os valores dos passos 3 a 5 ficavam acima do alvo |
 | O `nodemon` do `api_gateway` não deu pelas alterações | Montagem de pastas do Docker Desktop no Windows; o serviço foi reiniciado à mão antes de medir. Nota no `AGENTS.md` |
 
-### 7.4 O que falta
+### 7.4 Medição final
 
-- Medição final com o método completo (`MEDICAO=final ./correr-tudo.sh`, 5 repetições, com a M1.2 e
-  os 512 MiB por contentor) e regressão final (`REGRESSAO=final ./correr.sh`).
+Feita a 17 e 18 de novembro de 2026 com o método completo da base (`../medicoes/final/rnf-f2-01/`,
+análise em `../analise.md`):
+
+| Medida | Base | Final | Alvo | Mínimo |
+| --- | --- | --- | --- | --- |
+| M1.1 (1000 MiB, serviço que mais cresce) | Não mensurável (motor do Docker em baixo) | 56,3 MiB (`img_storage`) | ≤ 64 MiB | ≤ 128 MiB |
+| M1.2 | 100 MiB | 1000 MiB | 1000 MiB | 500 MiB |
+
+Os sete controlos C1.x cumprem o limite. A regressão final dá os mesmos resultados da base:
+- pytest 74/74;
+- `node --test` 13/13;
+- ponta a ponta 18/18, com as mesmas impressões;
+- interface 3/3.
+
+As medidas do RNF-F2-02 não mudaram. Uma comparação A/B na mesma sessão mostrou que o aumento do
+C2.1 na série final vinha da máquina e não deste ADR (`../analise.md`, 4.2). Das previsões da
+secção 4.3, só a do nginx se confirmou (18 → 10 MiB com 500 MiB). Nos três serviços Node, o
+máximo com 500 MiB ficou acima do previsto:
+
+| Serviço | Previsto | Medido |
+| --- | --- | --- |
+| `api_gateway` | < 20 MiB | 42,6 MiB |
+| `projects` | < 20 MiB | 42,7 MiB |
+| `img_storage` | < 40 MiB | 55,3 MiB |
+
+A previsão contava só com os buffers dos streams e não com a memória que o V8 e a glibc demoram a
+devolver (secção 7.2). Mesmo assim, os três ficam abaixo do alvo.
+
+### 7.5 O que falta
+
 - Revisão pela equipa (`../ia.md`) e passagem do estado deste ADR a "Aceite".
+- Medição com os dois requisitos integrados, quando o RNF-F2-02 estiver implementado.

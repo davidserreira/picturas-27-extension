@@ -10,8 +10,9 @@ A equipa é responsável por todo o conteúdo entregue.
 | --- | --- | --- |
 | Claude Code (extensão do VS Code, Windows 11) | Claude Opus 5.5 e Claude Fable 5.2, escolhidos por etapa (tabela seguinte) | Agente com acesso ao repositório, ao terminal (PowerShell e Git Bash) e ao Docker local. Lê código, corre a stack, escreve ficheiros e faz commits quando lhe é pedido |
 
-Não foram usadas *skills* nem servidores MCP no trabalho sobre o repositório. O agente não tem
-acesso ao GitHub nem faz *push*: os commits ficam locais até a equipa os rever e publicar.
+Não foram usadas *skills* nem servidores MCP no trabalho sobre o repositório. O agente só faz
+*push* quando a equipa o pede: uma vez, para publicar o ramo do RNF-F2-01 depois de reescrito
+(`medicoes/passos/README.md`).
 
 Por decisão da equipa, as mensagens dos commits não levam linhas de coautoria da ferramenta. O uso
 de IA fica registado aqui, nos comentários do código alterado (que remetem para o ADR) e no
@@ -39,6 +40,7 @@ de IA fica registado aqui, nos comentários do código alterado (que remetem par
 | 4. Regressão (`regressao/`) | A confirmar pela equipa | Reaproveitou os testes existentes (pytest e node) e escreveu as suites ponta a ponta (18 testes) e de interface (3) | Duas corridas na base com impressões iguais (`resultados/repeticao-e2e.json`). As diferenças falsas da primeira repetição (ordem das chaves, bytes do watermark) foram corrigidas na comparação, não escondidas |
 | 5. Decisão (`adr/ADR-01-carregamento-em-fluxo.md`) | Claude Opus 5.5 | Propôs três alternativas, escolheu uma e escreveu o plano por passos | Causa da segunda cópia em memória confirmada no código instalado nos contentores (`follow-redirects`). Revisão da equipa: a preencher |
 | 6. Implementação do ADR-01 (ramo `fase2/rnf-f2-01-carregamento`) | Claude Opus 5.5 | Implementou os passos 0 a 5 e uma afinação da memória (5b), um commit por passo, com testes unitários novos | Ver a secção seguinte |
+| 7. Medição final do RNF-F2-01 e análise (`medicoes/final/rnf-f2-01/`, `analise.md`) | Claude Opus 5.5 | Correu a série final com os scripts da base, repetiu de um arranque limpo as partes com ocorrências, fez uma comparação A/B do C2.1 entre a base e o ramo e escreveu a análise | As três ocorrências da série (regressão ponta a ponta interrompida, falha passageira do `docker inspect`, C2.1 mais lento) ficaram registadas com os registos que as explicam, e não foram descartadas. O aumento do C2.1 só foi atribuído à máquina depois da comparação A/B. A IA corrigiu uma afirmação sua sobre as previsões do ADR-01 ao conferi-la com os números. Revisão da equipa: a preencher |
 
 ## Implementação do ADR-01
 
