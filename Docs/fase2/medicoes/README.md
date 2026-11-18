@@ -14,10 +14,12 @@ inicial (`baseline/`) e para a final (`final/`). Só usam a interface pública d
 | `rnf1/medir-memoria.mjs` | RNF-F2-01: M1.1 e controlos C1.1 a C1.7 (o C1.7 lê o filer do SeaweedFS em `localhost:9090`) |
 | `rnf1/medir-limite.mjs` | RNF-F2-01: M1.2, com `rnf1/compose.limites.yaml` |
 | `rnf2/medir.mjs` | RNF-F2-02: `calibrar`, `m21`, `m22`, `m23`, `controlos` (C2.1 a C2.5) |
+| `rnf2/estado.mjs` | Verificação intermédia dos passos do ADR-02, sem browser: segue uma execução de P pela rota de estado e pelos eventos `run-status`, e verifica o C2.3 |
 | `correr-tudo.sh` | Corre toda a série pela ordem certa |
 | `resumo.mjs` | Junta os resultados em bruto em `<medição>/resumo.md` |
 | `lib/comum.mjs` | Pedidos à API, envio de ficheiros em fluxo, amostragem de memória, estatística |
 | `baseline/` | Resultados da medição inicial: JSON em bruto, `logs/`, `resumo.md` |
+| `passos-rnf2/` | Verificações intermédias de cada passo do ADR-02 (`rnf2/estado.mjs` e, no passo 4, as medidas do RNF-F2-02 com uma execução) |
 
 ## Pré-requisitos
 
@@ -146,7 +148,7 @@ Não usar a aplicação nem correr outras cargas pesadas na máquina durante a s
   mensagens por confirmar (API de gestão do RabbitMQ, porta 15672). Assim, uma execução não herda
   o trabalho que uma anterior deixou no único worker de vídeo.
 - **C2.3.** A base não tem rota para o estado de uma execução, por isso o controlo não se aplica.
-  Na medição final passa-se a rota com `PICTURAS_STATE_PATH`, por exemplo
+  Na medição final passa-se a rota com `PICTURAS_STATE_PATH`. Com o ADR-02 a rota é
   `PICTURAS_STATE_PATH=/projects/{user}/{project}/process/status`.
 
 ### Se a interface mudar
