@@ -22,6 +22,7 @@ const {
   send_msg_client_error,
   send_msg_client_preview,
   send_msg_client_preview_error,
+  send_msg_client_video_progress,
   read_msg,
   send_msg_project_op,   
 } = require("../utils/project_msg");
@@ -193,6 +194,17 @@ function failRun(projectId, token, code, message) {
   return runState("fail", () => Runs.finish(projectId, token, "failed", { code, msg: message }));
 }
 
+// Video progress reported by the worker (ADR-02). The browser gets the same
+// video-progress event as in the base; a run (not a preview) also stores it.
+async function handleVideoProgress(msg) {
+  const p = msg.progress || {};
+  if (!p.user) return;
+  const percent = Number(msg.percent) || 0;
+  send_msg_client_video_progress(p.user, p.projectId, p.imgId, msg.preview, Math.floor(percent));
+  if (msg.preview || !p.projectId || p.token === undefined || p.token === null) return;
+  await runState("video", () => Runs.videoPercent(p.projectId, p.token, p.imgId, percent));
+}
+
 
 // TODO process message according to type of output
 function process_msg() {
@@ -209,6 +221,9 @@ function process_msg() {
     try {
       const msg_content = JSON.parse(msg.content.toString());
       const msg_id = msg_content.correlationId;
+
+      // Progress reports are not job replies: handle them before looking up the job
+      if (msg_content.type === "progress") return await handleVideoProgress(msg_content);
 
       const process = await Process.getOneByMsgId(msg_id);
       if (!process) return;
@@ -1706,7 +1721,8 @@ router.post("/:user/:project/process", checkSharePermission, requireEditPermissi
             params = {
               tools: videoPipeline(project, img._id),
               preview: false,
-              progress: { user: runnerUserId, projectId: req.params.project, imgId: String(img._id) },
+              // the token lets the orchestrator store this progress in the run (ADR-02)
+              progress: { user: runnerUserId, projectId: req.params.project, imgId: String(img._id), token: runToken },
             };
           } else {
             const tool = imageTools(project)[0];

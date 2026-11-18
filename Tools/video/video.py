@@ -2,8 +2,8 @@
 
 Receives the video and the whole effect pipeline in a single message,
 processes it with video_processor and replies to the projects orchestrator on
-project_queue. Progress is sent straight to the WebSocket gateway (ws_queue),
-as a percentage.
+project_queue. Progress also goes to the orchestrator (project_queue), which
+keeps the run state and forwards it to the browser (ADR-02, Docs/fase2/adr/).
 
 Unlike the image tools, the message is only acknowledged after the job ends:
 if the worker dies midway, RabbitMQ redelivers it.
@@ -25,7 +25,6 @@ from video_processor import InvalidSpeed, InvalidTrim, InvalidVideo, process_vid
 EXCHANGE = "picturas"
 VIDEO_QUEUE = "video_queue"
 PROJECT_QUEUE = "project_queue"
-WS_QUEUE = "ws_queue"
 MICROSERVICE = "picturas-video-tool-ms"
 
 CODES = {
@@ -109,18 +108,19 @@ class VideoWorker:
             },
         })
 
-    def _progress(self, progress, preview, percent):
+    def _progress(self, msg_id, progress, preview, percent):
+        # ADR-02: the orchestrator owns the run state. It stores this progress
+        # and forwards the same video-progress event the browser got before.
         if not progress or not progress.get("user"):
             return
-        self._publish(WS_QUEUE, {
-            "messageId": f"update-client-video-progress-{uuid.uuid4()}",
+        self._publish(PROJECT_QUEUE, {
+            "messageId": f"video-progress-{uuid.uuid4()}",
+            "correlationId": msg_id,
+            "type": "progress",
             "timestamp": now().isoformat(),
-            "status": "success",
-            "user": progress["user"],
-            "projectId": progress.get("projectId"),
-            "imgId": progress.get("imgId"),
             "preview": bool(preview),
             "percent": percent,
+            "progress": progress,
         })
 
     def callback(self, ch, method, properties, body):
@@ -150,7 +150,7 @@ class VideoWorker:
             try:
                 result = process_video(
                     input_uri, output_uri, tools, preview=preview,
-                    progress_cb=lambda pct: self._progress(progress, preview, pct),
+                    progress_cb=lambda pct: self._progress(msg_id, progress, preview, pct),
                 )
                 self._reply_success(msg_id, started, output_uri, result)
                 print(f"[video] msg={msg_id} ok frames={result['frames']} "

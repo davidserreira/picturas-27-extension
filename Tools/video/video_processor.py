@@ -13,9 +13,11 @@ while decoding and the audio tempo is changed by the same factor, so both stay
 in sync. Trim times always refer to the original video.
 """
 import json
+import math
 import os
 import subprocess
 import tempfile
+import time
 from pathlib import Path
 from fractions import Fraction
 
@@ -25,6 +27,12 @@ from effects import SUPPORTED, UnsupportedEffect, apply_frame_effects
 
 # Preview: only the first seconds
 PREVIEW_SECONDS = float(os.getenv("VIDEO_PREVIEW_SECONDS", "3"))
+
+# Progress is reported with one decimal, at least once per second while frames
+# advance and at every whole percent (ADR-02: REQ-VID-STATUS-003 asks for
+# updates every 2 s at most; the base reported every 2 %, i.e. every 13-16 s on
+# a 5-minute video shown as one step of the project's bar).
+PROGRESS_INTERVAL_S = 1.0
 
 # Allowed playback speed factors
 MIN_SPEED = 0.25
@@ -168,7 +176,8 @@ def _process_video(input_path: str, output_path: str, tools: list,
                   progress_cb=None, preview: bool = False) -> dict:
     """Applies `tools` (ordered) to the video at `input_path` and writes MP4 to `output_path`.
 
-    `progress_cb(percent: int)` is called as frames are processed.
+    `progress_cb(percent: float)` is called as frames are processed (see
+    PROGRESS_INTERVAL_S), and with 100 at the end.
     On failure no partial file is left at `output_path`.
     The original is never modified.
     """
@@ -202,6 +211,7 @@ def _process_video(input_path: str, output_path: str, tools: list,
     encoder = None
     frames = 0
     last_pct = -1
+    last_report = None
 
     try:
         while True:
@@ -217,9 +227,13 @@ def _process_video(input_path: str, output_path: str, tools: list,
             encoder.stdin.write(out.tobytes())
             frames += 1
 
-            pct = min(99, int(frames * 100 / expected_frames))
-            if progress_cb and pct != last_pct and (pct - last_pct >= 2 or pct == 99):
+            pct = min(99.9, math.floor(frames * 1000 / expected_frames) / 10)
+            t = time.monotonic()
+            if progress_cb and pct > last_pct and (
+                    last_report is None or t - last_report >= PROGRESS_INTERVAL_S
+                    or int(pct) > int(last_pct)):
                 last_pct = pct
+                last_report = t
                 progress_cb(pct)
 
         decoder.stdout.close()
