@@ -1013,21 +1013,75 @@ export const cancelProjectProcess = async ({
 }) => {
   const query = buildQuery({ ownerId, shareId });
 
-  const response = await api.delete(
-    `/projects/${uid}/${pid}/process${query}`,
-    {
+  const send = (version: number) =>
+    api.delete(`/projects/${uid}/${pid}/process${query}`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "X-Project-Version": String(projectVersion),
+        "X-Project-Version": String(version),
       },
-    },
-  );
+    });
+
+  let response;
+  try {
+    response = await send(projectVersion);
+  } catch (error: unknown) {
+    // ADR-02: opening a project bumps its version (POST .../dirty), so a cancel
+    // right after a reload can carry the previous one. Cancelling is the same
+    // intent whatever the version: retry once with the server's version.
+    const serverVersion = axios.isAxiosError(error) && error.response?.status === 409
+      ? Number(error.response.data?.serverVersion)
+      : NaN;
+    if (!Number.isFinite(serverVersion)) throw error;
+    response = await send(serverVersion);
+  }
 
   if (response.status < 200 || response.status >= 300) {
     throw new Error("Failed to cancel project processing");
   }
 
   return response.headers?.["x-project-version"];
+};
+
+// ---------- processing runs (ADR-02, Docs/fase2/adr/) ----------
+
+// State of a processing run, as kept by the projects service
+export interface ProjectRun {
+  projectId: string;
+  projectName: string;
+  ownerId: string;
+  runnerId: string | null;
+  token: number;
+  status: "running" | "done" | "failed" | "cancelled";
+  progress: number; // 0-100, one decimal
+  startedAt: string | null;
+  finishedAt: string | null;
+  error: { code?: string; msg?: string } | null;
+}
+
+// Latest run of a project, or null if it was never processed
+export const fetchRunStatus = async (
+  uid: string,
+  pid: string,
+  token: string,
+  ownerId?: string,
+  shareId?: string,
+): Promise<ProjectRun | null> => {
+  const query = buildQuery({ ownerId, shareId });
+  const pathUid = pathUidFor(uid, ownerId, shareId);
+  const response = await api.get<ProjectRun | { status: "idle" }>(
+    `/projects/${pathUid}/${pid}/process/status${query}`,
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
+  const data = response.data;
+  return data && data.status !== "idle" ? (data as ProjectRun) : null;
+};
+
+// Runs in progress of the user, in any of their projects
+export const fetchActiveRuns = async (uid: string, token: string): Promise<ProjectRun[]> => {
+  const response = await api.get<ProjectRun[]>(`/projects/${uid}/process/active`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return Array.isArray(response.data) ? response.data : [];
 };
 
 export const assistantSuggest = async (params: {

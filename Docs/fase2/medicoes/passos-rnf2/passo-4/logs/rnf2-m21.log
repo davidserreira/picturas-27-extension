@@ -1,0 +1,24 @@
+12:31:38 M2.1 execucao 1: Apply em P-m21-1-90078
+12:32:12   1 Em P, alternar para o carrossel: a=true b=true 417ms 
+12:32:13   2 Em P, voltar a grelha e ver os tres media: a=true b=true 206ms 
+12:32:18   3 Em P, descarregar os media originais: a=true b=true 3939ms P-m21-1-90078.zip
+12:32:18   4 Em P, abrir o dialogo de partilha: a=true b=true 213ms 
+12:32:19   5 Abrir a pagina da conta: a=true b=true 536ms 
+12:32:20   6 Abrir o projeto Q pela barra lateral: a=true b=true 510ms 
+12:32:22   7 Carregar uma imagem para Q: a=true b=true 691ms 
+12:32:23   8 Acrescentar brilho ao pipeline de Q e guardar: a=true b=true 1134ms 
+12:32:25   9 Criar um projeto novo pela barra lateral: a=true b=true 823ms 
+12:32:25   10 Voltar a P: a=true b=true 145ms 
+[medicao] gravado Docs\fase2\medicoes\passos-rnf2\passo-4\rnf2-m21-apply.json
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: read ECONNRESET
+    at TLSWrap.onStreamRead (node:internal/stream_base_commons:216:20) {
+  errno: -4077,
+  code: 'ECONNRESET',
+  syscall: 'read'
+}
+
+Node.js v24.11.1

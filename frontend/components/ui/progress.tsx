@@ -11,6 +11,9 @@ const Progress = React.forwardRef<
 >(({ className, value, ...props }, ref) => (
   <ProgressPrimitive.Root
     ref={ref}
+    // The value also goes to the accessible element (aria-valuenow), which the
+    // base left out (ADR-02)
+    value={value}
     className={cn(
       "relative h-2 w-full overflow-hidden rounded-full bg-primary/20",
       className,
