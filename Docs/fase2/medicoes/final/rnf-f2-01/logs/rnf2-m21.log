@@ -1,0 +1,38 @@
+15:35:13 M2.1 execucao 1: Apply em P-m21-1-5894
+15:35:26   1 Em P, alternar para o carrossel: a=false b=true 10013ms locator.click: Timeout 10000ms exceeded.
+15:35:36   2 Em P, voltar a grelha e ver os tres media: a=false b=true 10008ms locator.click: Timeout 10000ms exceeded.
+15:35:47   3 Em P, descarregar os media originais: a=false b=true 10003ms locator.click: Timeout 10000ms exceeded.
+15:35:57   4 Em P, abrir o dialogo de partilha: a=false b=true 10008ms locator.click: Timeout 10000ms exceeded.
+15:35:58   5 Abrir a pagina da conta: a=true b=false 440ms 
+15:35:59   6 Abrir o projeto Q pela barra lateral: a=true b=false 416ms 
+15:36:01   7 Carregar uma imagem para Q: a=true b=false 688ms 
+15:36:02   8 Acrescentar brilho ao pipeline de Q e guardar: a=true b=false 1107ms 
+15:36:03   9 Criar um projeto novo pela barra lateral: a=true b=false 809ms 
+15:36:14   10 Voltar a P: a=false b=false 10104ms P nao mostra o progresso
+[medicao] gravado Docs\fase2\medicoes\final\rnf-f2-01\rnf2-m21.json
+15:39:53 M2.1 execucao 2: Apply em P-m21-2-87008
+15:40:04   1 Em P, alternar para o carrossel: a=false b=true 10009ms locator.click: Timeout 10000ms exceeded.
+15:40:15   2 Em P, voltar a grelha e ver os tres media: a=false b=true 10004ms locator.click: Timeout 10000ms exceeded.
+15:40:25   3 Em P, descarregar os media originais: a=false b=true 10004ms locator.click: Timeout 10000ms exceeded.
+15:40:36   4 Em P, abrir o dialogo de partilha: a=false b=true 10018ms locator.click: Timeout 10000ms exceeded.
+15:40:37   5 Abrir a pagina da conta: a=true b=false 475ms 
+15:40:38   6 Abrir o projeto Q pela barra lateral: a=true b=false 443ms 
+15:40:39   7 Carregar uma imagem para Q: a=true b=false 619ms 
+15:40:40   8 Acrescentar brilho ao pipeline de Q e guardar: a=true b=false 1004ms 
+15:40:41   9 Criar um projeto novo pela barra lateral: a=true b=false 601ms 
+15:40:52   10 Voltar a P: a=false b=false 10163ms P nao mostra o progresso
+[medicao] gravado Docs\fase2\medicoes\final\rnf-f2-01\rnf2-m21.json
+15:44:19 M2.1 execucao 3: Apply em P-m21-3-53512
+15:44:30   1 Em P, alternar para o carrossel: a=false b=true 10010ms locator.click: Timeout 10000ms exceeded.
+15:44:41   2 Em P, voltar a grelha e ver os tres media: a=false b=true 10014ms locator.click: Timeout 10000ms exceeded.
+15:44:51   3 Em P, descarregar os media originais: a=false b=true 10008ms locator.click: Timeout 10000ms exceeded.
+15:45:02   4 Em P, abrir o dialogo de partilha: a=false b=true 10014ms locator.click: Timeout 10000ms exceeded.
+15:45:03   5 Abrir a pagina da conta: a=true b=false 512ms 
+15:45:04   6 Abrir o projeto Q pela barra lateral: a=true b=false 484ms 
+15:45:05   7 Carregar uma imagem para Q: a=true b=false 676ms 
+15:45:06   8 Acrescentar brilho ao pipeline de Q e guardar: a=true b=false 1088ms 
+15:45:08   9 Criar um projeto novo pela barra lateral: a=true b=false 623ms 
+15:45:18   10 Voltar a P: a=false b=false 10115ms P nao mostra o progresso
+[medicao] gravado Docs\fase2\medicoes\final\rnf-f2-01\rnf2-m21.json
+[medicao] gravado Docs\fase2\medicoes\final\rnf-f2-01\rnf2-m21.json
+[medicao] gravado Docs\fase2\medicoes\final\rnf-f2-01\rnf2-m21-apply.json

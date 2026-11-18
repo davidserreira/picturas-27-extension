@@ -1,0 +1,40 @@
+video_tool-1  | 2026-11-17T22:28:10.845679188Z [video] waiting for jobs on video_queue
+video_tool-1  | 2026-11-17T22:30:04.571335591Z [video] msg=request-3887cb9e-a654-4e13-bfb4-ba4ddf9fe88b preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-17T22:36:40.039725278Z [video] msg=request-3887cb9e-a654-4e13-bfb4-ba4ddf9fe88b ok frames=9900 t=395.5s
+video_tool-1  | 2026-11-17T22:36:51.876253101Z [video] msg=request-d3e64faf-dfdb-454a-b4f0-c6ffb584f787 preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-17T22:44:12.696438443Z [video] msg=request-d3e64faf-dfdb-454a-b4f0-c6ffb584f787 ok frames=9900 t=440.8s
+video_tool-1  | 2026-11-17T22:44:26.632149917Z [video] msg=request-6fb72efd-4326-4d87-9874-8cb065d76167 preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-17T22:52:46.089219050Z [video] msg=request-6fb72efd-4326-4d87-9874-8cb065d76167 ok frames=9900 t=499.5s
+video_tool-1  | 2026-11-17T22:52:53.321453983Z [video] msg=request-c847672d-912c-461e-8a7b-0dd3fe158ac2 preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-17T22:57:13.374517912Z [video] msg=request-c847672d-912c-461e-8a7b-0dd3fe158ac2 ok frames=9900 t=260.1s
+video_tool-1  | 2026-11-17T22:57:21.383470053Z [video] msg=request-e301cb3e-1de8-486d-b247-e9f38b6982cb preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-17T23:01:54.991681767Z [video] msg=request-e301cb3e-1de8-486d-b247-e9f38b6982cb ok frames=9900 t=273.6s
+video_tool-1  | 2026-11-17T23:02:02.215521510Z [video] msg=request-b94d08b9-8496-407f-b5d1-b05af0f69e23 preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-17T23:07:21.804349085Z [video] msg=request-b94d08b9-8496-407f-b5d1-b05af0f69e23 ok frames=9900 t=319.6s
+video_tool-1  | 2026-11-17T23:09:06.195544504Z [video] msg=preview-ad1c0106-3951-4cfb-a0cd-db8d54285752 preview=True tools=['brightness']
+video_tool-1  | 2026-11-17T23:09:08.345884518Z [video] msg=preview-ad1c0106-3951-4cfb-a0cd-db8d54285752 ok frames=90 t=2.2s
+video_tool-1  | 2026-11-17T23:09:15.439897909Z [video] msg=request-afd2d28d-cb23-4070-987d-ec57a4f59222 preview=False tools=['brightness', 'contrast', 'saturation', 'binarization']
+video_tool-1  | 2026-11-17T23:09:25.249507424Z [video] msg=request-afd2d28d-cb23-4070-987d-ec57a4f59222 ok frames=300 t=9.8s
+video_tool-1  | 2026-11-17T23:09:34.567462651Z [video] msg=request-54b46ac2-2fb5-4153-8105-32d8282654fd preview=False tools=['rotate', 'cut', 'resize', 'border']
+video_tool-1  | 2026-11-17T23:09:37.927168582Z [video] msg=request-54b46ac2-2fb5-4153-8105-32d8282654fd ok frames=300 t=3.4s
+video_tool-1  | 2026-11-17T23:09:41.191005244Z [video] msg=request-fa72531b-27ee-435c-b2ae-a728f31b3f64 preview=False tools=['trim', 'speed']
+video_tool-1  | 2026-11-17T23:09:42.468825174Z [video] msg=request-fa72531b-27ee-435c-b2ae-a728f31b3f64 ok frames=90 t=1.3s
+video_tool-1  | 2026-11-17T23:09:45.736183528Z [video] msg=request-290f7cb3-ced6-4bf1-a316-808f4ddf4878 preview=False tools=['subtitles']
+video_tool-1  | 2026-11-17T23:09:46.634287216Z [video] msg=request-290f7cb3-ced6-4bf1-a316-808f4ddf4878 ok frames=200 t=0.9s
+video_tool-1  | 2026-11-17T23:09:46.635499567Z [video] msg=request-a36ec3bf-e56e-4a80-82d5-248a459e469d preview=False tools=['subtitles']
+video_tool-1  | 2026-11-17T23:09:54.095067996Z Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+video_tool-1  | 2026-11-17T23:10:25.420124038Z [video] msg=request-a36ec3bf-e56e-4a80-82d5-248a459e469d ok frames=625 t=38.8s
+video_tool-1  | 2026-11-17T23:10:35.848021238Z [video] msg=request-221d9501-91f1-4146-b25d-1a3aa6f8ff0a preview=False tools=['brightness', 'extract_frames']
+video_tool-1  | 2026-11-17T23:10:41.929274725Z [video] msg=request-221d9501-91f1-4146-b25d-1a3aa6f8ff0a ok frames=[{'file': '/app/images/users/6afcde763677a92e5a823bdc/projects/6afcdeebf109d7715a81c1cd/out/sample_10s_720p-frames-b0e242200c46453ab02196ae98a15e83/frame-0001-000000000ms.png', 'time': 0.0}, {'file': '/app/images/users/6afcde763677a92e5a823bdc/projects/6afcdeebf109d7715a81c1cd/out/sample_10s_720p-frames-b0e242200c46453ab02196ae98a15e83/frame-0002-000002000ms.png', 'time': 2.0}, {'file': '/app/images/users/6afcde763677a92e5a823bdc/projects/6afcdeebf109d7715a81c1cd/out/sample_10s_720p-frames-b0e242200c46453ab02196ae98a15e83/frame-0003-000004000ms.png', 'time': 4.0}, {'file': '/app/images/users/6afcde763677a92e5a823bdc/projects/6afcdeebf109d7715a81c1cd/out/sample_10s_720p-frames-b0e242200c46453ab02196ae98a15e83/frame-0004-000006000ms.png', 'time': 6.0}, {'file': '/app/images/users/6afcde763677a92e5a823bdc/projects/6afcdeebf109d7715a81c1cd/out/sample_10s_720p-frames-b0e242200c46453ab02196ae98a15e83/frame-0005-000008000ms.png', 'time': 8.0}] t=6.1s
+video_tool-1  | 2026-11-17T23:10:50.359783928Z [video] msg=request-a2b578ba-8fe0-4f91-adfd-cb925b70ed69 preview=False tools=['brightness', 'extract_frames']
+video_tool-1  | 2026-11-17T23:10:56.430240453Z [video] msg=request-a2b578ba-8fe0-4f91-adfd-cb925b70ed69 ok frames=[{'file': '/app/images/users/6afcde763677a92e5a823bdc/projects/6afcdef9f109d7715a81c278/out/sample_10s_720p-frames-4380efa557774c478f79facde01ddc62/frame-0001-000000000ms.jpg', 'time': 0}, {'file': '/app/images/users/6afcde763677a92e5a823bdc/projects/6afcdef9f109d7715a81c278/out/sample_10s_720p-frames-4380efa557774c478f79facde01ddc62/frame-0002-000002000ms.jpg', 'time': 2}, {'file': '/app/images/users/6afcde763677a92e5a823bdc/projects/6afcdef9f109d7715a81c278/out/sample_10s_720p-frames-4380efa557774c478f79facde01ddc62/frame-0003-000004000ms.jpg', 'time': 4}, {'file': '/app/images/users/6afcde763677a92e5a823bdc/projects/6afcdef9f109d7715a81c278/out/sample_10s_720p-frames-4380efa557774c478f79facde01ddc62/frame-0004-000006000ms.jpg', 'time': 6}, {'file': '/app/images/users/6afcde763677a92e5a823bdc/projects/6afcdef9f109d7715a81c278/out/sample_10s_720p-frames-4380efa557774c478f79facde01ddc62/frame-0005-000008000ms.jpg', 'time': 8}] t=6.1s
+video_tool-1  | 2026-11-17T23:11:07.687384994Z [video] msg=request-2e468681-6ab2-4368-afce-614aff308c0a preview=False tools=['brightness', 'trim']
+video_tool-1  | 2026-11-17T23:11:10.118647727Z [video] msg=request-2e468681-6ab2-4368-afce-614aff308c0a ok frames=120 t=2.4s
+video_tool-1  | 2026-11-17T23:11:14.708499967Z [video] msg=request-fdf39ec0-e66c-4806-be05-d42710d85ad7 preview=False tools=['brightness']
+video_tool-1  | 2026-11-17T23:11:48.568951683Z [video] msg=request-fdf39ec0-e66c-4806-be05-d42710d85ad7 ok frames=1800 t=33.9s
+video_tool-1  | 2026-11-17T23:11:59.075554183Z [video] msg=request-d241fb38-67a7-43be-8809-d3c9efd12eba preview=False tools=['brightness']
+video_tool-1  | 2026-11-17T23:12:29.391476099Z [video] msg=request-d241fb38-67a7-43be-8809-d3c9efd12eba ok frames=1800 t=30.3s
+video_tool-1  | 2026-11-17T23:12:40.132736020Z [video] msg=request-465f25fa-76de-47c0-88ac-8cf5cb14c055 preview=False tools=['brightness', 'contrast', 'saturation']
+video_tool-1  | 2026-11-17T23:12:41.973464934Z [video] msg=request-465f25fa-76de-47c0-88ac-8cf5cb14c055 ok frames=150 t=1.8s
+video_tool-1  | 2026-11-17T23:13:03.793957312Z [video] msg=request-02f77d7a-0dfc-47b4-8eb4-8a1ba5e53ff0 preview=False tools=['brightness']
+video_tool-1  | 2026-11-17T23:13:35.299903286Z [video] msg=request-02f77d7a-0dfc-47b4-8eb4-8a1ba5e53ff0 ok frames=1800 t=31.5s

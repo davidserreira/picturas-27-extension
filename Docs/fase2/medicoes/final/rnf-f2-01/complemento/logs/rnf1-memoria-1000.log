@@ -1,0 +1,43 @@
+23:15:30 M1.1 1000 MiB rep 1/5
+23:15:47   -> 204 valida {
+  nginx: 10.4,
+  api_gateway: 43.9,
+  projects: 14.6,
+  img_storage: 56.3,
+  seaweedfs: 522.4
+}
+23:16:25   C1.4 1000 MiB sha igual=true
+23:16:45 M1.1 1000 MiB rep 2/5
+23:17:01   -> 204 valida {
+  nginx: 8.5,
+  api_gateway: 39.8,
+  projects: 49.1,
+  img_storage: 55.2,
+  seaweedfs: 8.2
+}
+23:17:20 M1.1 1000 MiB rep 3/5
+23:17:39   -> 204 valida {
+  nginx: 11.6,
+  api_gateway: 45,
+  projects: 26.9,
+  img_storage: 53.7,
+  seaweedfs: 207.9
+}
+23:17:57 M1.1 1000 MiB rep 4/5
+23:18:13   -> 204 valida {
+  nginx: 9.1,
+  api_gateway: 41,
+  projects: 20.4,
+  img_storage: 51.6,
+  seaweedfs: 0
+}
+23:18:31 M1.1 1000 MiB rep 5/5
+23:18:46   -> 204 valida {
+  nginx: 11,
+  api_gateway: 40.7,
+  projects: 15.1,
+  img_storage: 56.1,
+  seaweedfs: 88.1
+}
+[medicao] gravado Docs\fase2\medicoes\final\rnf-f2-01\complemento\rnf1-memoria-1000.json
+[medicao] gravado Docs\fase2\medicoes\final\rnf-f2-01\complemento\rnf1-memoria-1000.json

@@ -1,0 +1,7 @@
+variante: B (ramo fase2/rnf-f2-01-carregamento 7740230)
+projects image=sha256:87762c0f60da99d4d3ed67e55442ecc5e827dd5868ceeb6b8135402694bc3628 NODE_OPTIONS=--max-semi-space-size=1 MALLOC_ARENA_MAX=2
+img_storage image=sha256:bc36b25106e61daceaf54ec2e3dcae981cc2c17e70ae30e93935370e87a0fedb NODE_OPTIONS=--max-semi-space-size=1 --max-old-space-size=96 MALLOC_ARENA_MAX=2
+api_gateway image=sha256:dc02ea4ccabf78ef7fa273274a3bfa68eb815590baa592230fc605dc0eec919b NODE_OPTIONS=--max-semi-space-size=1 MALLOC_ARENA_MAX=2
+projects mediaUpload.js: utils/mediaUpload.js
+grep: C:/Program Files/Git/etc/nginx/nginx.conf: No such file or directory
+streamProxy.js

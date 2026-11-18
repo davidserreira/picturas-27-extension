@@ -1,0 +1,28 @@
+17:27:30 M1.1 1000 MiB rep 1/5
+17:27:43   -> 204 valida {
+  nginx: 10.7,
+  api_gateway: 42.3,
+  projects: 17.4,
+  img_storage: 51.2,
+  seaweedfs: 2
+}
+17:28:16   C1.4 1000 MiB sha igual=true
+17:28:35 M1.1 1000 MiB rep 2/5
+17:28:47   -> 204 valida {
+  nginx: 7.2,
+  api_gateway: 42.8,
+  projects: 16.5,
+  img_storage: 47.1,
+  seaweedfs: 0
+}
+17:29:05 M1.1 1000 MiB rep 3/5
+17:29:20   -> 204 valida {
+  nginx: 11.8,
+  api_gateway: 39.1,
+  projects: 38.8,
+  img_storage: 52.9,
+  seaweedfs: 59.4
+}
+17:29:39 M1.1 1000 MiB rep 4/5
+17:29:54   -> o motor do Docker deixou de responder durante o envio
+[medicao] gravado Docs\fase2\medicoes\final\rnf-f2-01\rnf1-memoria-1000.json

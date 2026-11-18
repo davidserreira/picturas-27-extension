@@ -1,0 +1,7 @@
+variante: A (main 43a2e08 nos servicos nginx, api_gateway, projects e img_storage; resto do ramo, igual)
+projects image=sha256:b9ad0401c09412e49ffdb20ed04b2035e8a9f2a8dd9272e6956aa45db115295a NODE_OPTIONS= MALLOC_ARENA_MAX=
+img_storage image=sha256:9a7a23ac9005fab56d6033b90df5f8c8642d14277e8268388ac23ed9ac5174cd NODE_OPTIONS= MALLOC_ARENA_MAX=
+api_gateway image=sha256:5edded3e18629c776e9a6e07049c3d4ce5bbba8521f49a483cf5666f4010cf9d NODE_OPTIONS= MALLOC_ARENA_MAX=
+projects mediaUpload.js: ls: cannot access 'utils/mediaUpload.js': No such file or directory
+grep: C:/Program Files/Git/etc/nginx/nginx.conf: No such file or directory
+ls: cannot access 'utils': No such file or directory

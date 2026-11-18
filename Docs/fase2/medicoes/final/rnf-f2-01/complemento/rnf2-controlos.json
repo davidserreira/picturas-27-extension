@@ -1,0 +1,177 @@
+{
+  "medida": "RNF-F2-02 controlos C2.1-C2.5",
+  "quando": "2026-11-17T22:29:54.649Z",
+  "commit": {
+    "hash": "77402300488173ef757868c4696dfe0b2d9f8ebc",
+    "codeChanges": []
+  },
+  "video": "p-video-330s.mp4",
+  "c21c22": [
+    {
+      "execucao": 1,
+      "P": "6afcd562f109d7715a814ad1",
+      "duracaoS": 398.8,
+      "maiorIntervaloProgressoS": 36.89,
+      "mudancasDeProgresso": 26,
+      "ultimoValor": 100
+    },
+    {
+      "execucao": 2,
+      "P": "6afcd6faf109d7715a815f90",
+      "duracaoS": 444.1,
+      "maiorIntervaloProgressoS": 37.75,
+      "mudancasDeProgresso": 25,
+      "ultimoValor": 80
+    },
+    {
+      "execucao": 3,
+      "P": "6afcd8c2f109d7715a817632",
+      "duracaoS": 502.6,
+      "maiorIntervaloProgressoS": 37.05,
+      "mudancasDeProgresso": 25,
+      "ultimoValor": 100
+    }
+  ],
+  "c23": {
+    "aplicavel": false,
+    "nota": "a base nao expoe o estado de uma execucao; nao ha nada a pedir"
+  },
+  "c24": {
+    "arranque": {
+      "P": 201,
+      "Q": 201
+    },
+    "separado": {
+      "P": {
+        "n": 3,
+        "tipos": [
+          "image",
+          "image",
+          "video"
+        ],
+        "sha": {
+          "imagem-p1.png": {
+            "type": "image",
+            "sha256": "c436478363d5c224d237a437bd92257faec4c5b6ba790c4547ff7068216e9cfc",
+            "bytes": 89699
+          },
+          "imagem-p2.png": {
+            "type": "image",
+            "sha256": "8416f6d917b640df0a7e5a6c934f71238a63e651e6f790c1386c3b9bea4ebc5c",
+            "bytes": 4638
+          },
+          "p-video-330s.mp4": {
+            "type": "video",
+            "sha256": "ec43d8110a8370a989a15e752283710fb1d570ed8c60d2f131bee33c25cdfcfe",
+            "bytes": 109424533
+          }
+        }
+      },
+      "Q": {
+        "n": 1,
+        "tipos": [
+          "image"
+        ],
+        "sha": {
+          "imagem-q.png": {
+            "type": "image",
+            "sha256": "6a092a6e290ed1aec4245b35e564b22fcb08c67c0a36d09177d1b51128f64aae",
+            "bytes": 402628
+          }
+        }
+      }
+    },
+    "sobreposto": {
+      "P": {
+        "n": 3,
+        "tipos": [
+          "image",
+          "image",
+          "video"
+        ],
+        "sha": {
+          "imagem-p2.png": {
+            "type": "image",
+            "sha256": "8416f6d917b640df0a7e5a6c934f71238a63e651e6f790c1386c3b9bea4ebc5c",
+            "bytes": 4638
+          },
+          "imagem-p1.png": {
+            "type": "image",
+            "sha256": "c436478363d5c224d237a437bd92257faec4c5b6ba790c4547ff7068216e9cfc",
+            "bytes": 89699
+          },
+          "p-video-330s.mp4": {
+            "type": "video",
+            "sha256": "ec43d8110a8370a989a15e752283710fb1d570ed8c60d2f131bee33c25cdfcfe",
+            "bytes": 109424533
+          }
+        }
+      },
+      "Q": {
+        "n": 1,
+        "tipos": [
+          "image"
+        ],
+        "sha": {
+          "imagem-q.png": {
+            "type": "image",
+            "sha256": "6a092a6e290ed1aec4245b35e564b22fcb08c67c0a36d09177d1b51128f64aae",
+            "bytes": 402628
+          }
+        }
+      }
+    },
+    "iguais": {
+      "P": true,
+      "Q": true
+    }
+  },
+  "c25": {
+    "adicionarFerramenta": {
+      "status": 201,
+      "resposta": ""
+    },
+    "resultados": {
+      "n": 3,
+      "tipos": [
+        "image",
+        "image",
+        "video"
+      ],
+      "sha": {
+        "imagem-p2.png": {
+          "type": "image",
+          "sha256": "8416f6d917b640df0a7e5a6c934f71238a63e651e6f790c1386c3b9bea4ebc5c",
+          "bytes": 4638
+        },
+        "imagem-p1.png": {
+          "type": "image",
+          "sha256": "c436478363d5c224d237a437bd92257faec4c5b6ba790c4547ff7068216e9cfc",
+          "bytes": 89699
+        },
+        "p-video-330s.mp4": {
+          "type": "video",
+          "sha256": "ec43d8110a8370a989a15e752283710fb1d570ed8c60d2f131bee33c25cdfcfe",
+          "bytes": 109424533
+        }
+      }
+    },
+    "iguaisAExecucaoSemAlteracao": true
+  },
+  "resumoC21": {
+    "n": 3,
+    "mean": 448.5,
+    "sd": 52.04,
+    "median": 444.1,
+    "min": 398.8,
+    "max": 502.6
+  },
+  "resumoC22": {
+    "n": 3,
+    "mean": 37.23,
+    "sd": 0.46,
+    "median": 37.05,
+    "min": 36.89,
+    "max": 37.75
+  }
+}

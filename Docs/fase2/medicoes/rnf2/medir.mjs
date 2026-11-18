@@ -7,6 +7,7 @@
 //   node rnf2/medir.mjs m22  [--execucoes 3]     M2.2 time to reflect state (reload, end)
 //   node rnf2/medir.mjs m23  [--tentativas 5]    M2.3 cancel after losing the page (A and B)
 //   node rnf2/medir.mjs controlos [--execucoes 3] C2.1, C2.2 (UI), C2.3, C2.4, C2.5 (API)
+//                                 [--so c21]     only C2.1 and C2.2
 //
 // The P video is chosen with --video <seconds> or the PICTURAS_P_VIDEO env var
 // (file dados/p-video-<s>s.mp4, made by gerar-dados.mjs --video <s>).
@@ -489,6 +490,8 @@ async function controlos(browser, user) {
   }
   out.resumoC21 = stats(out.c21c22.map((x) => x.duracaoS));
   out.resumoC22 = stats(out.c21c22.map((x) => x.maiorIntervaloProgressoS));
+  // --so c21: stop here (A/B check of C2.1 between two versions, see final/rnf-f2-01/ab/).
+  if (args.so === "c21") { save("rnf2-controlos.json", out); return; }
 
   // C2.3: the base has no endpoint for the state of a run. The final measurement
   // passes it as PICTURAS_STATE_PATH (e.g. "/projects/{user}/{project}/process/status").

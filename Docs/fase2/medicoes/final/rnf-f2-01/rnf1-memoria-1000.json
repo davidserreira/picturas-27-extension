@@ -1,0 +1,212 @@
+{
+  "medida": "RNF-F2-01 M1.1 e controlos C1.1-C1.7",
+  "quando": "2026-11-17T17:27:09.649Z",
+  "commit": {
+    "hash": "77402300488173ef757868c4696dfe0b2d9f8ebc",
+    "codeChanges": []
+  },
+  "repeticoes": 5,
+  "tamanhosMiB": [
+    1000
+  ],
+  "servicosAmostrados": [
+    "nginx",
+    "api_gateway",
+    "projects",
+    "img_storage",
+    "seaweedfs"
+  ],
+  "servicosNoCriterio": [
+    "nginx",
+    "api_gateway",
+    "projects",
+    "img_storage"
+  ],
+  "m11": {
+    "1000": [
+      {
+        "rep": 1,
+        "project": "6afc8e82cf1d892c81537be1",
+        "valid": true,
+        "crashed": [],
+        "status": 204,
+        "body": "",
+        "transferS": 6.9454362000000005,
+        "acceptS": 0.6328486000000012,
+        "totalS": 7.578284800000001,
+        "perService": {
+          "nginx": {
+            "idleMiB": 11.2,
+            "peakMiB": 21.9,
+            "increaseMiB": 10.7,
+            "samples": 17
+          },
+          "api_gateway": {
+            "idleMiB": 64.6,
+            "peakMiB": 106.9,
+            "increaseMiB": 42.3,
+            "samples": 17
+          },
+          "projects": {
+            "idleMiB": 64.9,
+            "peakMiB": 82.3,
+            "increaseMiB": 17.4,
+            "samples": 17
+          },
+          "img_storage": {
+            "idleMiB": 40.8,
+            "peakMiB": 92,
+            "increaseMiB": 51.2,
+            "samples": 17
+          },
+          "seaweedfs": {
+            "idleMiB": 3764.2,
+            "peakMiB": 3766.3,
+            "increaseMiB": 2,
+            "samples": 17
+          }
+        }
+      },
+      {
+        "rep": 2,
+        "project": "6afc8ec3223c5f8ffafec6d4",
+        "valid": true,
+        "crashed": [],
+        "status": 204,
+        "body": "",
+        "transferS": 6.978597399999999,
+        "acceptS": 0.5219337000000087,
+        "totalS": 7.500531100000007,
+        "perService": {
+          "nginx": {
+            "idleMiB": 12.3,
+            "peakMiB": 19.5,
+            "increaseMiB": 7.2,
+            "samples": 17
+          },
+          "api_gateway": {
+            "idleMiB": 69.2,
+            "peakMiB": 112,
+            "increaseMiB": 42.8,
+            "samples": 17
+          },
+          "projects": {
+            "idleMiB": 76.8,
+            "peakMiB": 93.3,
+            "increaseMiB": 16.5,
+            "samples": 17
+          },
+          "img_storage": {
+            "idleMiB": 45.6,
+            "peakMiB": 92.7,
+            "increaseMiB": 47.1,
+            "samples": 17
+          },
+          "seaweedfs": {
+            "idleMiB": 3929.1,
+            "peakMiB": 3929.1,
+            "increaseMiB": 0,
+            "samples": 17
+          }
+        }
+      },
+      {
+        "rep": 3,
+        "project": "6afc8ee189ba5cb242e7803b",
+        "valid": true,
+        "crashed": [],
+        "status": 204,
+        "body": "",
+        "transferS": 8.021103199999997,
+        "acceptS": 1.5479429999999994,
+        "totalS": 9.569046199999997,
+        "perService": {
+          "nginx": {
+            "idleMiB": 11.2,
+            "peakMiB": 23,
+            "increaseMiB": 11.8,
+            "samples": 21
+          },
+          "api_gateway": {
+            "idleMiB": 64.9,
+            "peakMiB": 104,
+            "increaseMiB": 39.1,
+            "samples": 21
+          },
+          "projects": {
+            "idleMiB": 64.5,
+            "peakMiB": 103.3,
+            "increaseMiB": 38.8,
+            "samples": 21
+          },
+          "img_storage": {
+            "idleMiB": 40.5,
+            "peakMiB": 93.4,
+            "increaseMiB": 52.9,
+            "samples": 21
+          },
+          "seaweedfs": {
+            "idleMiB": 3126.3,
+            "peakMiB": 3185.7,
+            "increaseMiB": 59.4,
+            "samples": 21
+          }
+        }
+      },
+      {
+        "rep": 4,
+        "project": "6afc8f03fbd76419675257db",
+        "valid": false,
+        "dockerEngineDown": true,
+        "status": 204,
+        "body": "",
+        "erro": "Command failed: docker inspect -f {{.State.OOMKilled}} {{.RestartCount}} {{.State.Status}} {{.State.StartedAt}} picturas-nginx-1",
+        "perService": {
+          "nginx": {
+            "idleMiB": 12.8,
+            "peakMiB": 24.8,
+            "increaseMiB": 12,
+            "samples": 24
+          },
+          "api_gateway": {
+            "idleMiB": 70.4,
+            "peakMiB": 113.5,
+            "increaseMiB": 43.1,
+            "samples": 24
+          },
+          "projects": {
+            "idleMiB": 78.9,
+            "peakMiB": 98.9,
+            "increaseMiB": 20,
+            "samples": 24
+          },
+          "img_storage": {
+            "idleMiB": 41.8,
+            "peakMiB": 96,
+            "increaseMiB": 54.3,
+            "samples": 24
+          },
+          "seaweedfs": {
+            "idleMiB": 2776.1,
+            "peakMiB": 2963.5,
+            "increaseMiB": 187.4,
+            "samples": 24
+          }
+        }
+      }
+    ]
+  },
+  "c11": {},
+  "c12": {},
+  "c13": null,
+  "c14": {
+    "1000": {
+      "sent": "b1f46f109369a9a3240492af14ca2cb6e2331c04d04048579aa97b5c7a7152e2",
+      "stored": "b1f46f109369a9a3240492af14ca2cb6e2331c04d04048579aa97b5c7a7152e2",
+      "storedBytes": 1032982560,
+      "equal": true
+    }
+  },
+  "c15": null,
+  "c16": null
+}

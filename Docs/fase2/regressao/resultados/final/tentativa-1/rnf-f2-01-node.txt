@@ -1,0 +1,23 @@
+ Container picturas-projects-run-5edd8fdbbdd4 Creating 
+ Container picturas-projects-run-5edd8fdbbdd4 Created 
+✔ extraction is project-wide and terminal, with ordinary effects inserted before it (2.47897ms)
+✔ extraction validates active mode parameters and disallows targeted/potentially unbounded inputs (0.414086ms)
+✔ manifest validation rejects escaped, duplicate and oversized frame output before upload (10.294329ms)
+✔ all extracted images retain the source ID and run token; upload failure rolls back only this batch (3.446353ms)
+✔ the file is passed on to img_storage whole, with the same size and SHA-256 as the bytes sent (53.573875ms)
+✔ a file the route will refuse by type is read and dropped, not stored (7.114751ms)
+✔ a storage failure is marked so the route keeps its 501 answer (4.975036ms)
+✔ a client that goes away midway cancels the request to img_storage (45.440732ms)
+✔ multer cleanup removes the stored file by its key (0.562882ms)
+✔ a fast first worker cannot commit while later sources are still being scheduled (1.462034ms)
+✔ registration failure starts no workers and rolls back only newly registered jobs (0.524635ms)
+✔ a cancelled run cannot overwrite the committed results with a delayed commit (4.534729ms)
+✔ captions apply to all videos, while images skip them and trim stays targeted (2.216376ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 377.658747

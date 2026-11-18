@@ -1,0 +1,72 @@
+[2026-11-17T17:29:21.462996600Z][com.docker.backend.exe.ports] exposer.Remove(ff21920f06f36aba266d6656c9a6baed0e62b712459d21456994a07c5c5dbec0)
+[2026-11-17T17:29:21.465054400Z][com.docker.backend.exe.vpnkitcontrol] removing docker-containers/ff21920f06f36aba266d6656c9a6baed0e62b712459d21456994a07c5c5dbec0 tcp forward from 0.0.0.0:9002 to 172.18.0.32:9001
+[2026-11-17T17:29:21.466559400Z][com.docker.backend.exe.wsl] [2026-11-17T17:29:21.466231549Z][wsl-bootstrap.vpnkitcontrol] removing docker-containers/ff21920f06f36aba266d6656c9a6baed0e62b712459d21456994a07c5c5dbec0 tcp forward from 0.0.0.0:9002 to 172.18.0.32:9001
+[2026-11-17T17:29:21.578186500Z][com.docker.backend.exe.ports] exposer.Remove(efdece7db19b414ecd84c94cf37166393bc5ae2cc93654ca3cbfc6909e6126dc)
+[2026-11-17T17:29:21.642534800Z][com.docker.backend.exe.ports] exposer.Remove(db7d4e5368bcbe9f7d4a22d520805e45207b30b6c6d659bb28d278fc7bacc3c5)
+[2026-11-17T17:29:21.643696900Z][com.docker.backend.exe.vpnkitcontrol] removing docker-containers/db7d4e5368bcbe9f7d4a22d520805e45207b30b6c6d659bb28d278fc7bacc3c5 tcp forward from 0.0.0.0:11000 to 172.18.0.9:11000
+[2026-11-17T17:29:21.646865000Z][com.docker.backend.exe.wsl] [2026-11-17T17:29:21.645521729Z][wsl-bootstrap.vpnkitcontrol] removing docker-containers/db7d4e5368bcbe9f7d4a22d520805e45207b30b6c6d659bb28d278fc7bacc3c5 tcp forward from 0.0.0.0:11000 to 172.18.0.9:11000
+[2026-11-17T17:29:21.725470800Z][com.docker.backend.exe.ports] exposer.Add(ff21920f06f36aba266d6656c9a6baed0e62b712459d21456994a07c5c5dbec0, /picturas-projects-1, [TCP 0.0.0.0:9002 -> 172.18.0.32:9001])
+[2026-11-17T17:29:21.735893500Z][com.docker.backend.exe.vpnkitcontrol] adding docker-containers/ff21920f06f36aba266d6656c9a6baed0e62b712459d21456994a07c5c5dbec0 tcp forward from 0.0.0.0:9002 to 172.18.0.32:9001
+[2026-11-17T17:29:21.737525700Z][com.docker.backend.exe.wsl] [2026-11-17T17:29:21.737511023Z][wsl-bootstrap.vpnkitcontrol] adding docker-containers/ff21920f06f36aba266d6656c9a6baed0e62b712459d21456994a07c5c5dbec0 tcp forward from 0.0.0.0:9002 to 172.18.0.32:9001
+[2026-11-17T17:29:21.817218300Z][com.docker.backend.exe.ports] exposer.Add(efdece7db19b414ecd84c94cf37166393bc5ae2cc93654ca3cbfc6909e6126dc, /picturas-api_gateway-1, [])
+[2026-11-17T17:29:21.912602500Z][com.docker.backend.exe.ports] exposer.Add(db7d4e5368bcbe9f7d4a22d520805e45207b30b6c6d659bb28d278fc7bacc3c5, /picturas-img_storage-1, [TCP 0.0.0.0:11000 -> 172.18.0.17:11000])
+[2026-11-17T17:29:21.920498100Z][com.docker.backend.exe.vpnkitcontrol] adding docker-containers/db7d4e5368bcbe9f7d4a22d520805e45207b30b6c6d659bb28d278fc7bacc3c5 tcp forward from 0.0.0.0:11000 to 172.18.0.17:11000
+[2026-11-17T17:29:21.922704800Z][com.docker.backend.exe.wsl] [2026-11-17T17:29:21.922617547Z][wsl-bootstrap.vpnkitcontrol] adding docker-containers/db7d4e5368bcbe9f7d4a22d520805e45207b30b6c6d659bb28d278fc7bacc3c5 tcp forward from 0.0.0.0:11000 to 172.18.0.17:11000
+[2026-11-17T17:29:22.868510000Z][com.docker.backend.exe.ports] exposer.Remove(ff21a7589693197a2eaccb60eaecc9196a472a4a5594ef77d69c4bbc7de8739c)
+[2026-11-17T17:29:22.869586000Z][com.docker.backend.exe.analytics.tracker] sending event: eventContainerRunV2 cfef5f47-5612-433c-a068-22ec9b999011
+[2026-11-17T17:29:22.869586000Z][com.docker.backend.exe.analytics.tracker] sending event: eventContainerRunV2 cfef5f47-5612-433c-a068-22ec9b999011
+[2026-11-17T17:29:22.870609500Z][com.docker.backend.exe.vpnkitcontrol] removing docker-containers/ff21a7589693197a2eaccb60eaecc9196a472a4a5594ef77d69c4bbc7de8739c tcp forward from 0.0.0.0:8080 to 172.18.0.33:443
+[2026-11-17T17:29:22.872463800Z][com.docker.backend.exe.wsl] [2026-11-17T17:29:22.872124073Z][wsl-bootstrap.vpnkitcontrol] removing docker-containers/ff21a7589693197a2eaccb60eaecc9196a472a4a5594ef77d69c4bbc7de8739c tcp forward from 0.0.0.0:8080 to 172.18.0.33:443
+[2026-11-17T17:29:23.079189600Z][com.docker.backend.exe.ports] exposer.Add(ff21a7589693197a2eaccb60eaecc9196a472a4a5594ef77d69c4bbc7de8739c, /picturas-nginx-1, [TCP 0.0.0.0:8080 -> 172.18.0.33:443])
+[2026-11-17T17:29:23.088636800Z][com.docker.backend.exe.vpnkitcontrol] adding docker-containers/ff21a7589693197a2eaccb60eaecc9196a472a4a5594ef77d69c4bbc7de8739c tcp forward from 0.0.0.0:8080 to 172.18.0.33:443
+[2026-11-17T17:29:23.090281900Z][com.docker.backend.exe.wsl] [2026-11-17T17:29:23.090511232Z][wsl-bootstrap.vpnkitcontrol] adding docker-containers/ff21a7589693197a2eaccb60eaecc9196a472a4a5594ef77d69c4bbc7de8739c tcp forward from 0.0.0.0:8080 to 172.18.0.33:443
+[2026-11-17T17:29:23.103854900Z][com.docker.backend.exe.wsl] [2026-11-17T17:29:23.104061983Z][wsl-bootstrap.vpnkitcontrol][E] unable to connect on docker-containers/ff21a7589693197a2eaccb60eaecc9196a472a4a5594ef77d69c4bbc7de8739c tcp forward from 0.0.0.0:8080 to 172.18.0.33:443: dial tcp 172.18.0.33:443: connect: connection refused
+[2026-11-17T17:29:27.424809300Z][com.docker.backend.exe.idle] event handler 9361fa2d-ebd3-4f86-9a67-1c2399fe0a9a: request: GET /v1.56/events?filters=%7B%22type%22%3A%7B%22container%22%3Atrue%7D%7D
+[2026-11-17T17:29:27.474847600Z][com.docker.backend.exe.idle] event handler 8f36d16d-e9f1-4023-ad34-8d7d5af1a88e: request: GET /v1.56/events?filters=%7B%22type%22%3A%7B%22container%22%3Atrue%7D%7D
+[2026-11-17T17:29:29.037568800Z][com.docker.backend.exe.idle] event handler 9361fa2d-ebd3-4f86-9a67-1c2399fe0a9a: request cancelled by client
+[2026-11-17T17:29:29.039301900Z][com.docker.backend.exe.idle] event handler 9361fa2d-ebd3-4f86-9a67-1c2399fe0a9a: event streamer: error: EOF
+[2026-11-17T17:29:29.048015800Z][com.docker.backend.exe.idle] event handler 8f36d16d-e9f1-4023-ad34-8d7d5af1a88e: request cancelled by client
+[2026-11-17T17:29:29.049579700Z][com.docker.backend.exe.idle] event handler 8f36d16d-e9f1-4023-ad34-8d7d5af1a88e: event streamer: error: EOF
+[2026-11-17T17:29:32.528159200Z][com.docker.backend.exe.ipc] (235b1a86-1824) a6d434ab-BackendAPI S<-C bcdf803f-time GET /time
+[2026-11-17T17:29:32.528712400Z][com.docker.backend.exe.ipc] (235b1a86-1824) a6d434ab-BackendAPI S->C bcdf803f-time GET /time (0s): 2026-11-17 17:29:32.5281592 +0000 GMT m=+59235.212695701
+[2026-11-17T17:29:37.419512500Z][com.docker.backend.exe.idle] event handler b1f233aa-b9d3-4896-ac53-3df7108d588e: request: GET /v1.56/events?filters=%7B%22type%22%3A%7B%22container%22%3Atrue%7D%7D
+[2026-11-17T17:29:37.496047800Z][com.docker.backend.exe.idle] event handler 29ce3cf1-6174-4caa-a5c8-9390abc09fef: request: GET /v1.56/events?filters=%7B%22type%22%3A%7B%22container%22%3Atrue%7D%7D
+[2026-11-17T17:29:39.210274000Z][com.docker.backend.exe.idle] event handler 29ce3cf1-6174-4caa-a5c8-9390abc09fef: request cancelled by client
+[2026-11-17T17:29:39.211921200Z][com.docker.backend.exe.idle] event handler 29ce3cf1-6174-4caa-a5c8-9390abc09fef: event streamer: error: EOF
+[2026-11-17T17:29:39.220078500Z][com.docker.backend.exe.idle] event handler b1f233aa-b9d3-4896-ac53-3df7108d588e: request cancelled by client
+[2026-11-17T17:29:39.221703200Z][com.docker.backend.exe.idle] event handler b1f233aa-b9d3-4896-ac53-3df7108d588e: event streamer: error: EOF
+[2026-11-17T17:29:47.484979000Z][com.docker.backend.exe.idle] event handler e01d1c91-172d-42c3-a747-d680d0fefbac: request: GET /v1.56/events?filters=%7B%22type%22%3A%7B%22container%22%3Atrue%7D%7D
+[2026-11-17T17:29:47.562963500Z][com.docker.backend.exe.idle] event handler efa162f1-82d6-4602-8b10-9af2bd0fbf81: request: GET /v1.56/events?filters=%7B%22type%22%3A%7B%22container%22%3Atrue%7D%7D
+[2026-11-17T17:29:49.720315800Z][com.docker.backend.exe.idle] event handler efa162f1-82d6-4602-8b10-9af2bd0fbf81: request cancelled by client
+[2026-11-17T17:29:49.722474100Z][com.docker.backend.exe.idle] event handler efa162f1-82d6-4602-8b10-9af2bd0fbf81: event streamer: error: EOF
+[2026-11-17T17:29:49.737368600Z][com.docker.backend.exe.idle] event handler e01d1c91-172d-42c3-a747-d680d0fefbac: request cancelled by client
+[2026-11-17T17:29:49.740163500Z][com.docker.backend.exe.idle] event handler e01d1c91-172d-42c3-a747-d680d0fefbac: event streamer: error: EOF
+[2026-11-17T17:29:56.884916200Z][com.docker.backend.exe.apiproxy] usage ContainerCreateComposeLinux + 1
+[2026-11-17T17:29:57.202454900Z][com.docker.backend.exe.apiproxy] usage ContainerStartComposeLinux + 1
+[2026-11-17T17:29:57.210884300Z][com.docker.backend.exe.analytics.tracker] sending event: eventImageRegistry cdf6ece3-c4a9-4a70-ad39-a82f09dbc1ef
+[2026-11-17T17:29:57.211550200Z][com.docker.backend.exe.analytics.tracker] sending event: eventImageRegistry cdf6ece3-c4a9-4a70-ad39-a82f09dbc1ef
+[2026-11-17T17:29:57.216312900Z][com.docker.backend.exe.analytics.cache][E] entry without sessionId: <nil>
+[2026-11-17T17:29:57.216854600Z][com.docker.backend.exe.analytics.tracker] sending event: imageRegistryView 74da6e94-d59e-4dba-a0c0-dace5d0239be
+[2026-11-17T17:29:57.216854600Z][com.docker.backend.exe.volumesharer] noopApprover.Approve([host=,VM=picturas_image_data,dst=/app/images,option=rw host=,VM=picturas_whisper_models,dst=/models/whisper,option=rw])
+[2026-11-17T17:29:57.217503700Z][com.docker.backend.exe.ports] exposer.Approve(d17dafd680781a973b22a78374e1ab74f435d5cd725ba8bc6c215442d056e4a5, /picturas-video_tool-run-721df2d977d8, [])
+[2026-11-17T17:29:57.220956700Z][com.docker.backend.exe.ports] exposer.Add(d17dafd680781a973b22a78374e1ab74f435d5cd725ba8bc6c215442d056e4a5, /picturas-video_tool-run-721df2d977d8, [])
+[2026-11-17T17:29:57.220956700Z][com.docker.backend.exe.ports] exposer.Remove(d17dafd680781a973b22a78374e1ab74f435d5cd725ba8bc6c215442d056e4a5)
+[2026-11-17T17:29:57.524326100Z][com.docker.backend.exe.idle] event handler 1863a158-f2d3-48a0-bdad-62f03d5fb229: request: GET /v1.56/events?filters=%7B%22type%22%3A%7B%22container%22%3Atrue%7D%7D
+[2026-11-17T17:29:57.609666700Z][com.docker.backend.exe] uploaded event batch
+[2026-11-17T17:29:57.620276500Z][com.docker.backend.exe.idle] event handler 198015a8-4ed3-49e0-927c-74430149ff91: request: GET /v1.56/events?filters=%7B%22type%22%3A%7B%22container%22%3Atrue%7D%7D
+[2026-11-17T17:29:57.683391100Z][com.docker.backend.exe.ports] exposer.Add(d17dafd680781a973b22a78374e1ab74f435d5cd725ba8bc6c215442d056e4a5, /picturas-video_tool-run-721df2d977d8, [])
+[2026-11-17T17:29:57.699454100Z][com.docker.backend.exe.ipc] (8851d1e3-361) a6d434ab-BackendAPI S<-C 481659cd-init PUT /forwards/expose-container
+[2026-11-17T17:29:57.699454100Z][com.docker.backend.exe.ipc] (8851d1e3-361) a6d434ab-BackendAPI S<-C 481659cd-init bind: {"containerId":"..."}
+[2026-11-17T17:29:57.701078700Z][com.docker.backend.exe.ipc] (8851d1e3-361) a6d434ab-BackendAPI S->C 481659cd-init PUT /forwards/expose-container (1.6246ms): OK
+[2026-11-17T17:29:59.912156300Z][com.docker.backend.exe.idle] event handler 198015a8-4ed3-49e0-927c-74430149ff91: request cancelled by client
+[2026-11-17T17:29:59.913934500Z][com.docker.backend.exe.idle] event handler 198015a8-4ed3-49e0-927c-74430149ff91: event streamer: error: EOF
+[2026-11-17T17:29:59.922720800Z][com.docker.backend.exe.idle] event handler 1863a158-f2d3-48a0-bdad-62f03d5fb229: request cancelled by client
+[2026-11-17T17:29:59.924335800Z][com.docker.backend.exe.idle] event handler 1863a158-f2d3-48a0-bdad-62f03d5fb229: event streamer: error: EOF
+[2026-11-17T17:30:02.530670800Z][com.docker.backend.exe.ipc] (235b1a86-1825) a6d434ab-BackendAPI S<-C bcdf803f-time GET /time
+[2026-11-17T17:30:02.530670800Z][com.docker.backend.exe.ipc] (235b1a86-1825) a6d434ab-BackendAPI S->C bcdf803f-time GET /time (0s): 2026-11-17 17:30:02.5306708 +0000 GMT m=+59265.215207301
+[2026-11-17T17:30:07.456234700Z][com.docker.backend.exe.idle] event handler a0ad952a-8bc3-4204-bf58-8557c4d109bb: request: GET /v1.56/events?filters=%7B%22type%22%3A%7B%22container%22%3Atrue%7D%7D
+[2026-11-17T17:30:07.537731400Z][com.docker.backend.exe.idle] event handler 45ff4268-4f39-4945-9826-d285e025824b: request: GET /v1.56/events?filters=%7B%22type%22%3A%7B%22container%22%3Atrue%7D%7D
+[2026-11-17T17:30:09.805385600Z][com.docker.backend.exe.idle] event handler a0ad952a-8bc3-4204-bf58-8557c4d109bb: request cancelled by client
+[2026-11-17T17:30:09.807427300Z][com.docker.backend.exe.idle] event handler a0ad952a-8bc3-4204-bf58-8557c4d109bb: event streamer: error: EOF
+[2026-11-17T17:30:09.816386400Z][com.docker.backend.exe.idle] event handler 45ff4268-4f39-4945-9826-d285e025824b: request cancelled by client
+[2026-11-17T17:30:09.818389800Z][com.docker.backend.exe.idle] event handler 45ff4268-4f39-4945-9826-d285e025824b: event streamer: error: EOF

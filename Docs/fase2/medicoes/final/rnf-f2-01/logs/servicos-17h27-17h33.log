@@ -1,0 +1,793 @@
+nginx-1        | 2026-11-17T17:27:08.404676794Z /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+nginx-1        | 2026-11-17T17:27:08.404730242Z /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+nginx-1        | 2026-11-17T17:27:08.410235749Z /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+nginx-1        | 2026-11-17T17:27:08.429036413Z 10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf
+projects-1     | 2026-11-17T17:27:07.971764036Z 
+img_storage-1  | 2026-11-17T17:27:07.806661027Z 
+img_storage-1  | 2026-11-17T17:27:07.806710426Z > image-storage-service@0.0.0 start
+img_storage-1  | 2026-11-17T17:27:07.806715734Z > node ./server.js
+img_storage-1  | 2026-11-17T17:27:07.806717673Z 
+img_storage-1  | 2026-11-17T17:27:08.635301720Z Servidor rodando na porta 11000
+img_storage-1  | 2026-11-17T17:27:08.636148921Z (node:19) NOTE: The AWS SDK for JavaScript (v2) has reached end-of-support.
+img_storage-1  | 2026-11-17T17:27:08.636177632Z It will no longer receive updates or releases.
+img_storage-1  | 2026-11-17T17:27:08.636181657Z 
+img_storage-1  | 2026-11-17T17:27:08.636183249Z Please migrate your code to use AWS SDK for JavaScript (v3).
+img_storage-1  | 2026-11-17T17:27:08.636185825Z For more information, check the blog post at https://a.co/cUPnyil
+img_storage-1  | 2026-11-17T17:27:08.636187516Z (Use `node --trace-warnings ...` to show where the warning was created)
+img_storage-1  | 2026-11-17T17:27:13.764054032Z npm error path /app
+img_storage-1  | 2026-11-17T17:27:13.764077421Z npm error command failed
+img_storage-1  | 2026-11-17T17:27:13.764078314Z npm error signal SIGTERM
+img_storage-1  | 2026-11-17T17:27:13.764162746Z npm error command sh -c node ./server.js
+api_gateway-1  | 2026-11-17T17:27:08.282021122Z 
+img_storage-1  | 2026-11-17T17:27:13.765806230Z npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-17T17_27_07_725Z-debug-0.log
+img_storage-1  | 2026-11-17T17:27:14.434291047Z 
+img_storage-1  | 2026-11-17T17:27:14.434324134Z > image-storage-service@0.0.0 start
+img_storage-1  | 2026-11-17T17:27:14.434327679Z > node ./server.js
+img_storage-1  | 2026-11-17T17:27:14.434329750Z 
+img_storage-1  | 2026-11-17T17:27:14.706676294Z Servidor rodando na porta 11000
+projects-1     | 2026-11-17T17:27:07.971799495Z > projects@0.0.0 start
+projects-1     | 2026-11-17T17:27:07.971801291Z > node ./bin/www
+projects-1     | 2026-11-17T17:27:07.971803217Z 
+projects-1     | 2026-11-17T17:27:08.866136393Z (node:20) [MONGOOSE] Warning: Duplicate schema index on {"lastSeenAt":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+projects-1     | 2026-11-17T17:27:08.866161920Z (Use `node --trace-warnings ...` to show where the warning was created)
+projects-1     | 2026-11-17T17:27:08.866364868Z (node:20) [MONGODB DRIVER] Warning: useNewUrlParser is a deprecated option: useNewUrlParser has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+projects-1     | 2026-11-17T17:27:08.866373046Z (node:20) [MONGODB DRIVER] Warning: useUnifiedTopology is a deprecated option: useUnifiedTopology has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+projects-1     | 2026-11-17T17:27:08.876800274Z Mongodb connection successful
+img_storage-1  | 2026-11-17T17:27:14.707444834Z (node:19) NOTE: The AWS SDK for JavaScript (v2) has reached end-of-support.
+projects-1     | 2026-11-17T17:27:09.959686322Z [0mGET /6afc8e6d5799776ca1f68138 [32m200[0m 9.814 ms - 2[0m
+projects-1     | 2026-11-17T17:27:13.775651822Z npm error path /app
+nginx-1        | 2026-11-17T17:27:08.449411120Z 10-listen-on-ipv6-by-default.sh: info: Enabled listen on IPv6 in /etc/nginx/conf.d/default.conf
+nginx-1        | 2026-11-17T17:27:08.449822404Z /docker-entrypoint.sh: Sourcing /docker-entrypoint.d/15-local-resolvers.envsh
+nginx-1        | 2026-11-17T17:27:08.450246486Z /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+nginx-1        | 2026-11-17T17:27:08.457932293Z /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+img_storage-1  | 2026-11-17T17:27:14.707454948Z It will no longer receive updates or releases.
+img_storage-1  | 2026-11-17T17:27:14.707456523Z 
+img_storage-1  | 2026-11-17T17:27:14.707457227Z Please migrate your code to use AWS SDK for JavaScript (v3).
+img_storage-1  | 2026-11-17T17:27:14.707458666Z For more information, check the blog post at https://a.co/cUPnyil
+img_storage-1  | 2026-11-17T17:27:14.707459394Z (Use `node --trace-warnings ...` to show where the warning was created)
+img_storage-1  | 2026-11-17T17:28:17.248591715Z npm error path /app
+img_storage-1  | 2026-11-17T17:28:17.249017289Z npm error command failed
+img_storage-1  | 2026-11-17T17:28:17.249023830Z npm error signal SIGTERM
+img_storage-1  | 2026-11-17T17:28:17.249943372Z npm error command sh -c node ./server.js
+img_storage-1  | 2026-11-17T17:28:17.251623578Z npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-17T17_27_14_387Z-debug-0.log
+img_storage-1  | 2026-11-17T17:28:18.185005177Z 
+img_storage-1  | 2026-11-17T17:28:18.185027033Z > image-storage-service@0.0.0 start
+img_storage-1  | 2026-11-17T17:28:18.185029395Z > node ./server.js
+img_storage-1  | 2026-11-17T17:28:18.185031366Z 
+img_storage-1  | 2026-11-17T17:28:18.535532350Z Servidor rodando na porta 11000
+img_storage-1  | 2026-11-17T17:28:18.536238274Z (node:19) NOTE: The AWS SDK for JavaScript (v2) has reached end-of-support.
+img_storage-1  | 2026-11-17T17:28:18.536263697Z It will no longer receive updates or releases.
+img_storage-1  | 2026-11-17T17:28:18.536266160Z 
+img_storage-1  | 2026-11-17T17:28:18.536267483Z Please migrate your code to use AWS SDK for JavaScript (v3).
+img_storage-1  | 2026-11-17T17:28:18.536269178Z For more information, check the blog post at https://a.co/cUPnyil
+api_gateway-1  | 2026-11-17T17:27:08.282079677Z > api_gateway@0.0.0 start
+img_storage-1  | 2026-11-17T17:28:18.536270385Z (Use `node --trace-warnings ...` to show where the warning was created)
+nginx-1        | 2026-11-17T17:27:08.460930138Z /docker-entrypoint.sh: Configuration complete; ready for start up
+nginx-1        | 2026-11-17T17:27:09.386562169Z /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+nginx-1        | 2026-11-17T17:27:09.386594246Z /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+projects-1     | 2026-11-17T17:27:13.775670308Z npm error command failed
+projects-1     | 2026-11-17T17:27:13.775771667Z npm error signal SIGTERM
+projects-1     | 2026-11-17T17:27:13.776637009Z npm error command sh -c node ./bin/www
+projects-1     | 2026-11-17T17:27:13.777718803Z npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-17T17_27_07_919Z-debug-0.log
+projects-1     | 2026-11-17T17:27:14.606793502Z 
+projects-1     | 2026-11-17T17:27:14.606824667Z > projects@0.0.0 start
+img_storage-1  | 2026-11-17T17:28:48.768583717Z npm error path /app
+img_storage-1  | 2026-11-17T17:28:48.768701261Z npm error command failed
+nginx-1        | 2026-11-17T17:27:09.387624609Z /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+nginx-1        | 2026-11-17T17:27:09.390609697Z 10-listen-on-ipv6-by-default.sh: info: IPv6 listen already enabled
+nginx-1        | 2026-11-17T17:27:09.390717824Z /docker-entrypoint.sh: Sourcing /docker-entrypoint.d/15-local-resolvers.envsh
+projects-1     | 2026-11-17T17:27:14.606828034Z > node ./bin/www
+projects-1     | 2026-11-17T17:27:14.606830001Z 
+img_storage-1  | 2026-11-17T17:28:48.768769540Z npm error signal SIGTERM
+nginx-1        | 2026-11-17T17:27:09.390723293Z /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+api_gateway-1  | 2026-11-17T17:27:08.282083900Z > nodemon ./bin/www
+api_gateway-1  | 2026-11-17T17:27:08.282086099Z 
+api_gateway-1  | 2026-11-17T17:27:08.451498309Z [33m[nodemon] 3.1.14[39m
+api_gateway-1  | 2026-11-17T17:27:08.454050277Z [33m[nodemon] to restart at any time, enter `rs`[39m
+nginx-1        | 2026-11-17T17:27:09.396113602Z /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+img_storage-1  | 2026-11-17T17:28:48.768948303Z npm error command sh -c node ./server.js
+img_storage-1  | 2026-11-17T17:28:48.770763825Z npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-17T17_28_18_106Z-debug-0.log
+img_storage-1  | 2026-11-17T17:28:49.456174415Z 
+img_storage-1  | 2026-11-17T17:28:49.456268055Z > image-storage-service@0.0.0 start
+nginx-1        | 2026-11-17T17:27:09.399372764Z /docker-entrypoint.sh: Configuration complete; ready for start up
+img_storage-1  | 2026-11-17T17:28:49.456274574Z > node ./server.js
+api_gateway-1  | 2026-11-17T17:27:08.454435531Z [33m[nodemon] watching path(s): *.*[39m
+api_gateway-1  | 2026-11-17T17:27:08.454449758Z [33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+api_gateway-1  | 2026-11-17T17:27:08.455081740Z [32m[nodemon] starting `node ./bin/www`[39m
+api_gateway-1  | 2026-11-17T17:27:09.924182227Z [0mPOST /users/ [32m201[0m 119.219 ms - 408[0m
+api_gateway-1  | 2026-11-17T17:27:09.959730554Z [0mGET /projects/6afc8e6d5799776ca1f68138 [32m200[0m 24.679 ms - 2[0m
+api_gateway-1  | 2026-11-17T17:27:13.771959336Z npm error path /app
+api_gateway-1  | 2026-11-17T17:27:13.771981244Z npm error command failed
+api_gateway-1  | 2026-11-17T17:27:13.771983331Z npm error signal SIGTERM
+api_gateway-1  | 2026-11-17T17:27:13.771994822Z npm error command sh -c nodemon ./bin/www
+api_gateway-1  | 2026-11-17T17:27:13.773890456Z npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-17T17_27_08_199Z-debug-0.log
+api_gateway-1  | 2026-11-17T17:27:14.506802144Z 
+api_gateway-1  | 2026-11-17T17:27:14.506837337Z > api_gateway@0.0.0 start
+api_gateway-1  | 2026-11-17T17:27:14.506840744Z > nodemon ./bin/www
+api_gateway-1  | 2026-11-17T17:27:14.506843956Z 
+api_gateway-1  | 2026-11-17T17:27:14.621078748Z [33m[nodemon] 3.1.14[39m
+api_gateway-1  | 2026-11-17T17:27:14.623172087Z [33m[nodemon] to restart at any time, enter `rs`[39m
+api_gateway-1  | 2026-11-17T17:27:14.623185158Z [33m[nodemon] watching path(s): *.*[39m
+api_gateway-1  | 2026-11-17T17:27:14.623186455Z [33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+api_gateway-1  | 2026-11-17T17:27:14.623600329Z [32m[nodemon] starting `node ./bin/www`[39m
+api_gateway-1  | 2026-11-17T17:27:15.623100902Z [0mGET /projects/6afc8e6d5799776ca1f68138 [32m200[0m 41.418 ms - 2[0m
+api_gateway-1  | 2026-11-17T17:27:30.677275401Z [0mPOST /projects/6afc8e6d5799776ca1f68138 [32m201[0m 42.185 ms - 383[0m
+api_gateway-1  | 2026-11-17T17:27:33.987702746Z [0mGET /projects/6afc8e6d5799776ca1f68138/6afc8e82cf1d892c81537be1 [32m200[0m 29.921 ms - 87[0m
+api_gateway-1  | 2026-11-17T17:27:41.566613619Z [0mPOST /projects/6afc8e6d5799776ca1f68138/6afc8e82cf1d892c81537be1/video [32m204[0m 7569.785 ms - -[0m
+api_gateway-1  | 2026-11-17T17:27:43.364990867Z [0mGET /projects/6afc8e6d5799776ca1f68138/6afc8e82cf1d892c81537be1/imgs [32m200[0m 20.538 ms - 516[0m
+api_gateway-1  | 2026-11-17T17:28:17.248479937Z npm error path /app
+api_gateway-1  | 2026-11-17T17:28:17.249011776Z npm error command failed
+api_gateway-1  | 2026-11-17T17:28:17.249024857Z npm error signal SIGTERM
+api_gateway-1  | 2026-11-17T17:28:17.249027993Z npm error command sh -c nodemon ./bin/www
+projects-1     | 2026-11-17T17:27:15.114328965Z (node:19) [MONGOOSE] Warning: Duplicate schema index on {"lastSeenAt":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+projects-1     | 2026-11-17T17:27:15.114351878Z (Use `node --trace-warnings ...` to show where the warning was created)
+projects-1     | 2026-11-17T17:27:15.114409519Z (node:19) [MONGODB DRIVER] Warning: useNewUrlParser is a deprecated option: useNewUrlParser has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+projects-1     | 2026-11-17T17:27:15.114416157Z (node:19) [MONGODB DRIVER] Warning: useUnifiedTopology is a deprecated option: useUnifiedTopology has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+api_gateway-1  | 2026-11-17T17:28:17.251627671Z npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-17T17_27_14_450Z-debug-0.log
+nginx-1        | 2026-11-17T17:27:09.923669588Z 172.18.0.1 - - [17/Nov/2026:17:27:09 +0000] "POST /api-gateway/users/ HTTP/1.1" 201 408 "-" "-"
+nginx-1        | 2026-11-17T17:27:09.959617996Z 172.18.0.1 - - [17/Nov/2026:17:27:09 +0000] "GET /api-gateway/projects/6afc8e6d5799776ca1f68138 HTTP/1.1" 200 2 "-" "-"
+nginx-1        | 2026-11-17T17:27:15.537235172Z /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+nginx-1        | 2026-11-17T17:27:15.537258027Z /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+nginx-1        | 2026-11-17T17:27:15.538268271Z /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+img_storage-1  | 2026-11-17T17:28:49.456277397Z 
+img_storage-1  | 2026-11-17T17:28:49.768959252Z Servidor rodando na porta 11000
+nginx-1        | 2026-11-17T17:27:15.540890651Z 10-listen-on-ipv6-by-default.sh: info: IPv6 listen already enabled
+nginx-1        | 2026-11-17T17:27:15.541800263Z /docker-entrypoint.sh: Sourcing /docker-entrypoint.d/15-local-resolvers.envsh
+projects-1     | 2026-11-17T17:27:15.124414877Z Mongodb connection successful
+api_gateway-1  | 2026-11-17T17:28:18.304276534Z 
+api_gateway-1  | 2026-11-17T17:28:18.304315507Z > api_gateway@0.0.0 start
+api_gateway-1  | 2026-11-17T17:28:18.304321014Z > nodemon ./bin/www
+api_gateway-1  | 2026-11-17T17:28:18.304324418Z 
+api_gateway-1  | 2026-11-17T17:28:18.532617320Z [33m[nodemon] 3.1.14[39m
+projects-1     | 2026-11-17T17:27:15.618423256Z [0mGET /6afc8e6d5799776ca1f68138 [32m200[0m 10.588 ms - 2[0m
+projects-1     | 2026-11-17T17:27:30.676154356Z [0mPOST /6afc8e6d5799776ca1f68138 [32m201[0m 28.298 ms - 383[0m
+img_storage-1  | 2026-11-17T17:28:49.769935753Z (node:19) NOTE: The AWS SDK for JavaScript (v2) has reached end-of-support.
+img_storage-1  | 2026-11-17T17:28:49.769972268Z It will no longer receive updates or releases.
+img_storage-1  | 2026-11-17T17:28:49.769975525Z 
+projects-1     | 2026-11-17T17:27:33.963368476Z [GET /:user/:project headers] {
+projects-1     | 2026-11-17T17:27:33.963398569Z   hasAuth: true,
+nginx-1        | 2026-11-17T17:27:15.541814494Z /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+nginx-1        | 2026-11-17T17:27:15.546880681Z /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+api_gateway-1  | 2026-11-17T17:28:18.534667119Z [33m[nodemon] to restart at any time, enter `rs`[39m
+projects-1     | 2026-11-17T17:27:33.963400638Z   authStart: 'Bearer eyJhbGciOiJIU',
+img_storage-1  | 2026-11-17T17:28:49.769977422Z Please migrate your code to use AWS SDK for JavaScript (v3).
+nginx-1        | 2026-11-17T17:27:15.549595127Z /docker-entrypoint.sh: Configuration complete; ready for start up
+api_gateway-1  | 2026-11-17T17:28:18.534697279Z [33m[nodemon] watching path(s): *.*[39m
+api_gateway-1  | 2026-11-17T17:28:18.534700156Z [33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+api_gateway-1  | 2026-11-17T17:28:18.535001776Z [32m[nodemon] starting `node ./bin/www`[39m
+nginx-1        | 2026-11-17T17:27:15.622060895Z 172.18.0.1 - - [17/Nov/2026:17:27:15 +0000] "GET /api-gateway/projects/6afc8e6d5799776ca1f68138 HTTP/1.1" 200 2 "-" "-"
+projects-1     | 2026-11-17T17:27:33.963403021Z   caller: '6afc8e6d5799776ca1f68138'
+projects-1     | 2026-11-17T17:27:33.963404221Z }
+projects-1     | 2026-11-17T17:27:33.986679254Z [0mGET /6afc8e6d5799776ca1f68138/6afc8e82cf1d892c81537be1 [32m200[0m 23.521 ms - 87[0m
+img_storage-1  | 2026-11-17T17:28:49.769980000Z For more information, check the blog post at https://a.co/cUPnyil
+projects-1     | 2026-11-17T17:27:41.282469263Z PROJECTS-MS /:user/:project/video HIT, file = true
+nginx-1        | 2026-11-17T17:27:30.677653285Z 172.18.0.1 - - [17/Nov/2026:17:27:30 +0000] "POST /api-gateway/projects/6afc8e6d5799776ca1f68138 HTTP/1.1" 201 383 "-" "-"
+api_gateway-1  | 2026-11-17T17:28:20.294866586Z [0mGET /projects/6afc8e6d5799776ca1f68138 [32m200[0m 43.382 ms - 68[0m
+nginx-1        | 2026-11-17T17:27:33.987750188Z 172.18.0.1 - - [17/Nov/2026:17:27:33 +0000] "GET /api-gateway/projects/6afc8e6d5799776ca1f68138/6afc8e82cf1d892c81537be1 HTTP/1.1" 200 87 "-" "-"
+img_storage-1  | 2026-11-17T17:28:49.769981945Z (Use `node --trace-warnings ...` to show where the warning was created)
+img_storage-1  | 2026-11-17T17:29:21.091210845Z npm error path /app
+img_storage-1  | 2026-11-17T17:29:21.091247523Z npm error command failed
+img_storage-1  | 2026-11-17T17:29:21.091251008Z npm error signal SIGTERM
+img_storage-1  | 2026-11-17T17:29:21.091330347Z npm error command sh -c node ./server.js
+img_storage-1  | 2026-11-17T17:29:21.093364391Z npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-17T17_28_49_402Z-debug-0.log
+img_storage-1  | 2026-11-17T17:29:22.091024638Z 
+img_storage-1  | 2026-11-17T17:29:22.091067209Z > image-storage-service@0.0.0 start
+img_storage-1  | 2026-11-17T17:29:22.091089309Z > node ./server.js
+projects-1     | 2026-11-17T17:27:41.563203439Z [0mPOST /6afc8e6d5799776ca1f68138/6afc8e82cf1d892c81537be1/video [32m204[0m 7556.438 ms - -[0m
+projects-1     | 2026-11-17T17:27:43.362754066Z [0mGET /6afc8e6d5799776ca1f68138/6afc8e82cf1d892c81537be1/imgs [32m200[0m 5.274 ms - 516[0m
+api_gateway-1  | 2026-11-17T17:28:35.345522547Z [0mPOST /projects/6afc8e6d5799776ca1f68138 [32m201[0m 36.888 ms - 383[0m
+api_gateway-1  | 2026-11-17T17:28:38.640780065Z [0mGET /projects/6afc8e6d5799776ca1f68138/6afc8ec3223c5f8ffafec6d4 [32m200[0m 31.486 ms - 87[0m
+api_gateway-1  | 2026-11-17T17:28:46.143634063Z [0mPOST /projects/6afc8e6d5799776ca1f68138/6afc8ec3223c5f8ffafec6d4/video [32m204[0m 7489.840 ms - -[0m
+projects-1     | 2026-11-17T17:28:17.252070485Z npm error path /app
+projects-1     | 2026-11-17T17:28:17.252498266Z npm error command failed
+img_storage-1  | 2026-11-17T17:29:22.091093304Z 
+img_storage-1  | 2026-11-17T17:29:22.554432594Z Servidor rodando na porta 11000
+nginx-1        | 2026-11-17T17:27:41.566568561Z 172.18.0.1 - - [17/Nov/2026:17:27:41 +0000] "POST /api-gateway/projects/6afc8e6d5799776ca1f68138/6afc8e82cf1d892c81537be1/video HTTP/1.1" 204 0 "-" "-"
+nginx-1        | 2026-11-17T17:27:43.364998659Z 172.18.0.1 - - [17/Nov/2026:17:27:43 +0000] "GET /api-gateway/projects/6afc8e6d5799776ca1f68138/6afc8e82cf1d892c81537be1/imgs HTTP/1.1" 200 516 "-" "-"
+api_gateway-1  | 2026-11-17T17:28:48.766274014Z npm error path /app
+api_gateway-1  | 2026-11-17T17:28:48.766306300Z npm error command failed
+api_gateway-1  | 2026-11-17T17:28:48.766308314Z npm error signal SIGTERM
+api_gateway-1  | 2026-11-17T17:28:48.766516618Z npm error command sh -c nodemon ./bin/www
+api_gateway-1  | 2026-11-17T17:28:48.768321839Z npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-17T17_28_18_225Z-debug-0.log
+projects-1     | 2026-11-17T17:28:17.253137924Z npm error signal SIGTERM
+nginx-1        | 2026-11-17T17:28:16.334053556Z 172.18.0.1 - - [17/Nov/2026:17:28:16 +0000] "GET /s3/picturas/users/6afc8e6d5799776ca1f68138/projects/6afc8e82cf1d892c81537be1/src/b2f04be7-917e-41dc-938c-b9179ab622c3.mp4?AWSAccessKeyId=admin&Expires=1794940063&Signature=bhMah3g2FxLszYDImMuEWb8pQFk%3D HTTP/1.1" 200 1032982560 "-" "-"
+nginx-1        | 2026-11-17T17:28:19.191767152Z /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+nginx-1        | 2026-11-17T17:28:19.191785142Z /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+nginx-1        | 2026-11-17T17:28:19.193617860Z /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+nginx-1        | 2026-11-17T17:28:19.204596084Z 10-listen-on-ipv6-by-default.sh: info: IPv6 listen already enabled
+nginx-1        | 2026-11-17T17:28:19.204918770Z /docker-entrypoint.sh: Sourcing /docker-entrypoint.d/15-local-resolvers.envsh
+projects-1     | 2026-11-17T17:28:17.253149329Z npm error command sh -c node ./bin/www
+api_gateway-1  | 2026-11-17T17:28:49.578294464Z 
+projects-1     | 2026-11-17T17:28:17.254190714Z npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-17T17_27_14_549Z-debug-0.log
+projects-1     | 2026-11-17T17:28:18.182763375Z 
+projects-1     | 2026-11-17T17:28:18.182800246Z > projects@0.0.0 start
+api_gateway-1  | 2026-11-17T17:28:49.578327960Z > api_gateway@0.0.0 start
+api_gateway-1  | 2026-11-17T17:28:49.578333158Z > nodemon ./bin/www
+api_gateway-1  | 2026-11-17T17:28:49.578336729Z 
+api_gateway-1  | 2026-11-17T17:28:49.718102061Z [33m[nodemon] 3.1.14[39m
+api_gateway-1  | 2026-11-17T17:28:49.720556468Z [33m[nodemon] to restart at any time, enter `rs`[39m
+api_gateway-1  | 2026-11-17T17:28:49.720709017Z [33m[nodemon] watching path(s): *.*[39m
+api_gateway-1  | 2026-11-17T17:28:49.720746653Z [33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+api_gateway-1  | 2026-11-17T17:28:49.721103008Z [32m[nodemon] starting `node ./bin/www`[39m
+api_gateway-1  | 2026-11-17T17:28:50.581235733Z [0mGET /projects/6afc8e6d5799776ca1f68138 [32m200[0m 43.829 ms - 135[0m
+api_gateway-1  | 2026-11-17T17:29:05.624813892Z [0mPOST /projects/6afc8e6d5799776ca1f68138 [32m201[0m 28.027 ms - 383[0m
+api_gateway-1  | 2026-11-17T17:29:08.917118895Z [0mGET /projects/6afc8e6d5799776ca1f68138/6afc8ee189ba5cb242e7803b [32m200[0m 29.028 ms - 87[0m
+api_gateway-1  | 2026-11-17T17:29:18.464318424Z [0mPOST /projects/6afc8e6d5799776ca1f68138/6afc8ee189ba5cb242e7803b/video [32m204[0m 9533.852 ms - -[0m
+api_gateway-1  | 2026-11-17T17:29:21.092880060Z npm error path /app
+api_gateway-1  | 2026-11-17T17:29:21.092900678Z npm error command failed
+api_gateway-1  | 2026-11-17T17:29:21.092903323Z npm error signal SIGTERM
+api_gateway-1  | 2026-11-17T17:29:21.093741979Z npm error command sh -c nodemon ./bin/www
+api_gateway-1  | 2026-11-17T17:29:21.094817680Z npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-17T17_28_49_511Z-debug-0.log
+api_gateway-1  | 2026-11-17T17:29:21.981456540Z 
+api_gateway-1  | 2026-11-17T17:29:21.981513041Z > api_gateway@0.0.0 start
+api_gateway-1  | 2026-11-17T17:29:21.981516450Z > nodemon ./bin/www
+api_gateway-1  | 2026-11-17T17:29:21.981518712Z 
+api_gateway-1  | 2026-11-17T17:29:22.241531767Z [33m[nodemon] 3.1.14[39m
+api_gateway-1  | 2026-11-17T17:29:22.248560845Z [33m[nodemon] to restart at any time, enter `rs`[39m
+nginx-1        | 2026-11-17T17:28:19.205395407Z /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+nginx-1        | 2026-11-17T17:28:19.212964069Z /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+img_storage-1  | 2026-11-17T17:29:22.554910966Z (node:19) NOTE: The AWS SDK for JavaScript (v2) has reached end-of-support.
+api_gateway-1  | 2026-11-17T17:29:22.248606891Z [33m[nodemon] watching path(s): *.*[39m
+api_gateway-1  | 2026-11-17T17:29:22.248609993Z [33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+api_gateway-1  | 2026-11-17T17:29:22.249953042Z [32m[nodemon] starting `node ./bin/www`[39m
+api_gateway-1  | 2026-11-17T17:29:24.254564356Z [0mGET /projects/6afc8e6d5799776ca1f68138 [32m200[0m 121.465 ms - 202[0m
+api_gateway-1  | 2026-11-17T17:29:39.310362868Z [0mPOST /projects/6afc8e6d5799776ca1f68138 [32m201[0m 38.788 ms - 383[0m
+projects-1     | 2026-11-17T17:28:18.182803814Z > node ./bin/www
+projects-1     | 2026-11-17T17:28:18.182806981Z 
+api_gateway-1  | 2026-11-17T17:29:42.614562609Z [0mGET /projects/6afc8e6d5799776ca1f68138/6afc8f03fbd76419675257db [32m200[0m 42.883 ms - 87[0m
+img_storage-1  | 2026-11-17T17:29:22.554962517Z It will no longer receive updates or releases.
+img_storage-1  | 2026-11-17T17:29:22.554964446Z 
+img_storage-1  | 2026-11-17T17:29:22.554965181Z Please migrate your code to use AWS SDK for JavaScript (v3).
+nginx-1        | 2026-11-17T17:28:19.216273951Z /docker-entrypoint.sh: Configuration complete; ready for start up
+api_gateway-1  | 2026-11-17T17:29:53.379159164Z [0mPOST /projects/6afc8e6d5799776ca1f68138/6afc8f03fbd76419675257db/video [32m204[0m 10750.310 ms - -[0m
+img_storage-1  | 2026-11-17T17:29:22.554966277Z For more information, check the blog post at https://a.co/cUPnyil
+nginx-1        | 2026-11-17T17:28:20.294200523Z 172.18.0.1 - - [17/Nov/2026:17:28:20 +0000] "GET /api-gateway/projects/6afc8e6d5799776ca1f68138 HTTP/1.1" 200 68 "-" "-"
+nginx-1        | 2026-11-17T17:28:35.346135208Z 172.18.0.1 - - [17/Nov/2026:17:28:35 +0000] "POST /api-gateway/projects/6afc8e6d5799776ca1f68138 HTTP/1.1" 201 383 "-" "-"
+nginx-1        | 2026-11-17T17:28:38.640772248Z 172.18.0.1 - - [17/Nov/2026:17:28:38 +0000] "GET /api-gateway/projects/6afc8e6d5799776ca1f68138/6afc8ec3223c5f8ffafec6d4 HTTP/1.1" 200 87 "-" "-"
+nginx-1        | 2026-11-17T17:28:46.143606196Z 172.18.0.1 - - [17/Nov/2026:17:28:46 +0000] "POST /api-gateway/projects/6afc8e6d5799776ca1f68138/6afc8ec3223c5f8ffafec6d4/video HTTP/1.1" 204 0 "-" "-"
+projects-1     | 2026-11-17T17:28:19.023064990Z (node:19) [MONGOOSE] Warning: Duplicate schema index on {"lastSeenAt":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+projects-1     | 2026-11-17T17:28:19.023118920Z (Use `node --trace-warnings ...` to show where the warning was created)
+projects-1     | 2026-11-17T17:28:19.024396493Z (node:19) [MONGODB DRIVER] Warning: useNewUrlParser is a deprecated option: useNewUrlParser has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+projects-1     | 2026-11-17T17:28:19.024419801Z (node:19) [MONGODB DRIVER] Warning: useUnifiedTopology is a deprecated option: useUnifiedTopology has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+img_storage-1  | 2026-11-17T17:29:22.554967350Z (Use `node --trace-warnings ...` to show where the warning was created)
+nginx-1        | 2026-11-17T17:28:50.480109177Z /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+nginx-1        | 2026-11-17T17:28:50.480128829Z /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+nginx-1        | 2026-11-17T17:28:50.481101477Z /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+projects-1     | 2026-11-17T17:28:19.043686530Z Mongodb connection successful
+api_gateway-1  | 2026-11-17T17:31:18.071460128Z [0mPOST /users/ [32m201[0m 75.518 ms - 424[0m
+nginx-1        | 2026-11-17T17:28:50.483590048Z 10-listen-on-ipv6-by-default.sh: info: IPv6 listen already enabled
+nginx-1        | 2026-11-17T17:28:50.483747723Z /docker-entrypoint.sh: Sourcing /docker-entrypoint.d/15-local-resolvers.envsh
+nginx-1        | 2026-11-17T17:28:50.483761702Z /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+nginx-1        | 2026-11-17T17:28:50.487080574Z /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+nginx-1        | 2026-11-17T17:28:50.491779976Z /docker-entrypoint.sh: Configuration complete; ready for start up
+nginx-1        | 2026-11-17T17:28:50.579800480Z 172.18.0.1 - - [17/Nov/2026:17:28:50 +0000] "GET /api-gateway/projects/6afc8e6d5799776ca1f68138 HTTP/1.1" 200 135 "-" "-"
+nginx-1        | 2026-11-17T17:29:05.625228091Z 172.18.0.1 - - [17/Nov/2026:17:29:05 +0000] "POST /api-gateway/projects/6afc8e6d5799776ca1f68138 HTTP/1.1" 201 383 "-" "-"
+nginx-1        | 2026-11-17T17:29:08.917117331Z 172.18.0.1 - - [17/Nov/2026:17:29:08 +0000] "GET /api-gateway/projects/6afc8e6d5799776ca1f68138/6afc8ee189ba5cb242e7803b HTTP/1.1" 200 87 "-" "-"
+nginx-1        | 2026-11-17T17:29:18.491504104Z 172.18.0.1 - - [17/Nov/2026:17:29:18 +0000] "POST /api-gateway/projects/6afc8e6d5799776ca1f68138/6afc8ee189ba5cb242e7803b/video HTTP/1.1" 204 0 "-" "-"
+nginx-1        | 2026-11-17T17:29:23.072512958Z /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+projects-1     | 2026-11-17T17:28:20.291687377Z [0mGET /6afc8e6d5799776ca1f68138 [32m200[0m 11.726 ms - 68[0m
+nginx-1        | 2026-11-17T17:29:23.072527876Z /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+api_gateway-1  | 2026-11-17T17:31:19.642923595Z [0mPOST /users/ [32m201[0m 61.179 ms - 336[0m
+api_gateway-1  | 2026-11-17T17:31:19.992515340Z [0mPOST /users/regressao-ui-1794936677952-749bc7@medicao.test/login [32m201[0m 71.233 ms - 424[0m
+api_gateway-1  | 2026-11-17T17:31:20.174176142Z [0mPOST /projects/6afc8f665799776ca1f68146 [32m201[0m 16.848 ms - 382[0m
+nginx-1        | 2026-11-17T17:29:23.074815534Z /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+nginx-1        | 2026-11-17T17:29:23.082636374Z 10-listen-on-ipv6-by-default.sh: info: IPv6 listen already enabled
+nginx-1        | 2026-11-17T17:29:23.082832139Z /docker-entrypoint.sh: Sourcing /docker-entrypoint.d/15-local-resolvers.envsh
+projects-1     | 2026-11-17T17:28:35.344344579Z [0mPOST /6afc8e6d5799776ca1f68138 [32m201[0m 17.668 ms - 383[0m
+projects-1     | 2026-11-17T17:28:38.615403764Z [GET /:user/:project headers] {
+projects-1     | 2026-11-17T17:28:38.615429151Z   hasAuth: true,
+projects-1     | 2026-11-17T17:28:38.615431029Z   authStart: 'Bearer eyJhbGciOiJIU',
+projects-1     | 2026-11-17T17:28:38.615432936Z   caller: '6afc8e6d5799776ca1f68138'
+projects-1     | 2026-11-17T17:28:38.615434408Z }
+projects-1     | 2026-11-17T17:28:38.639607778Z [0mGET /6afc8e6d5799776ca1f68138/6afc8ec3223c5f8ffafec6d4 [32m200[0m 24.564 ms - 87[0m
+projects-1     | 2026-11-17T17:28:45.925858736Z PROJECTS-MS /:user/:project/video HIT, file = true
+api_gateway-1  | 2026-11-17T17:31:20.198644675Z [0mGET /projects/6afc8f665799776ca1f68146 [32m200[0m 16.621 ms - 67[0m
+api_gateway-1  | 2026-11-17T17:31:20.560896521Z [0mGET /projects/6afc8f665799776ca1f68146 [32m200[0m 24.562 ms - 67[0m
+api_gateway-1  | 2026-11-17T17:31:20.572882801Z [0mGET /users/validate/6afc8f665799776ca1f68146 [32m200[0m 41.894 ms - 426[0m
+projects-1     | 2026-11-17T17:28:46.140923133Z [0mPOST /6afc8e6d5799776ca1f68138/6afc8ec3223c5f8ffafec6d4/video [32m204[0m 7481.019 ms - -[0m
+api_gateway-1  | 2026-11-17T17:31:20.595844351Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8/process/url [32m200[0m 42.573 ms - 22[0m
+api_gateway-1  | 2026-11-17T17:31:20.599827496Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8 [32m200[0m 53.128 ms - 86[0m
+projects-1     | 2026-11-17T17:28:48.778375465Z npm error path /app
+nginx-1        | 2026-11-17T17:29:23.083323025Z /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+nginx-1        | 2026-11-17T17:29:23.088901325Z /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+nginx-1        | 2026-11-17T17:29:23.090919044Z /docker-entrypoint.sh: Configuration complete; ready for start up
+nginx-1        | 2026-11-17T17:29:24.253809511Z 172.18.0.1 - - [17/Nov/2026:17:29:24 +0000] "GET /api-gateway/projects/6afc8e6d5799776ca1f68138 HTTP/1.1" 200 202 "-" "-"
+nginx-1        | 2026-11-17T17:29:39.310839876Z 172.18.0.1 - - [17/Nov/2026:17:29:39 +0000] "POST /api-gateway/projects/6afc8e6d5799776ca1f68138 HTTP/1.1" 201 383 "-" "-"
+api_gateway-1  | 2026-11-17T17:31:20.606046979Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8/presence?owner=6afc8f665799776ca1f68146 [32m204[0m 78.687 ms - -[0m
+api_gateway-1  | 2026-11-17T17:31:20.665506765Z [0mGET /users/6afc8f665799776ca1f68146/presets [32m200[0m 30.213 ms - 678[0m
+nginx-1        | 2026-11-17T17:29:42.614682258Z 172.18.0.1 - - [17/Nov/2026:17:29:42 +0000] "GET /api-gateway/projects/6afc8e6d5799776ca1f68138/6afc8f03fbd76419675257db HTTP/1.1" 200 87 "-" "-"
+nginx-1        | 2026-11-17T17:29:53.381775895Z 172.18.0.1 - - [17/Nov/2026:17:29:53 +0000] "POST /api-gateway/projects/6afc8e6d5799776ca1f68138/6afc8f03fbd76419675257db/video HTTP/1.1" 204 0 "-" "-"
+nginx-1        | 2026-11-17T17:31:18.072025856Z 172.18.0.1 - - [17/Nov/2026:17:31:18 +0000] "POST /api-gateway/users/ HTTP/1.1" 201 424 "-" "-"
+nginx-1        | 2026-11-17T17:31:19.230995009Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /login HTTP/1.1" 200 2667 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:19.307498601Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /_next/static/media/e4af272ccee01ff0-s.p.woff2 HTTP/1.1" 200 48432 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:19.319970858Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /_next/static/media/fad5e1188f09afdc-s.p.woff2 HTTP/1.1" 200 19100 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+api_gateway-1  | 2026-11-17T17:31:20.673764978Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8/share [32m200[0m 18.452 ms - 2[0m
+api_gateway-1  | 2026-11-17T17:31:20.690368255Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8/dirty [32m204[0m 38.747 ms - -[0m
+api_gateway-1  | 2026-11-17T17:31:23.994947150Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8 [32m200[0m 18.651 ms - 86[0m
+api_gateway-1  | 2026-11-17T17:31:24.059612641Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8/img [32m204[0m 63.714 ms - -[0m
+api_gateway-1  | 2026-11-17T17:31:24.120869944Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8 [32m200[0m 20.630 ms - 402[0m
+api_gateway-1  | 2026-11-17T17:31:24.530968147Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8 [32m200[0m 18.101 ms - 402[0m
+api_gateway-1  | 2026-11-17T17:31:24.556350212Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8 [32m200[0m 17.680 ms - 402[0m
+api_gateway-1  | 2026-11-17T17:31:24.947285552Z [0mPOST /users/ [32m201[0m 57.399 ms - 336[0m
+projects-1     | 2026-11-17T17:28:48.778510490Z npm error command failed
+projects-1     | 2026-11-17T17:28:48.778587957Z npm error signal SIGTERM
+api_gateway-1  | 2026-11-17T17:31:25.135603881Z [0mPOST /users/regressao-ui-1794936677952-749bc7@medicao.test/login [32m201[0m 65.955 ms - 424[0m
+api_gateway-1  | 2026-11-17T17:31:25.246158303Z [0mPOST /projects/6afc8f665799776ca1f68146 [32m201[0m 9.463 ms - 382[0m
+api_gateway-1  | 2026-11-17T17:31:25.253911798Z [0mGET /projects/6afc8f665799776ca1f68146 [32m200[0m 11.627 ms - 133[0m
+api_gateway-1  | 2026-11-17T17:31:25.278647069Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809 [32m200[0m 21.040 ms - 86[0m
+api_gateway-1  | 2026-11-17T17:31:25.354303875Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/img [32m204[0m 64.138 ms - -[0m
+nginx-1        | 2026-11-17T17:31:19.328003104Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /_next/static/chunks/webpack-1f3e85f08fb8e1fe.js HTTP/1.1" 200 1720 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+api_gateway-1  | 2026-11-17T17:31:25.384943865Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809 [32m200[0m 21.670 ms - 402[0m
+api_gateway-1  | 2026-11-17T17:31:25.423484545Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/tool [32m201[0m 31.154 ms - 2[0m
+api_gateway-1  | 2026-11-17T17:31:25.553138112Z [0mGET /users/validate/6afc8f665799776ca1f68146 [32m200[0m 19.118 ms - 426[0m
+api_gateway-1  | 2026-11-17T17:31:25.566480719Z [0mGET /projects/6afc8f665799776ca1f68146 [32m200[0m 25.847 ms - 133[0m
+api_gateway-1  | 2026-11-17T17:31:25.570716490Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/process/url [32m200[0m 29.330 ms - 22[0m
+nginx-1        | 2026-11-17T17:31:19.393793812Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /_next/static/chunks/main-app-ab6226b7eeb515d1.js HTTP/1.1" 200 473 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:19.398713231Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /_next/static/css/c710969e6fc32733.css HTTP/1.1" 200 11024 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+api_gateway-1  | 2026-11-17T17:31:25.574330003Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/presence?owner=6afc8f665799776ca1f68146 [32m204[0m 44.674 ms - -[0m
+nginx-1        | 2026-11-17T17:31:19.414183660Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /_next/static/chunks/517-67a593dbde3c6077.js HTTP/1.1" 200 51025 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:28:48.779245551Z npm error command sh -c node ./bin/www
+projects-1     | 2026-11-17T17:28:48.780944961Z npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-17T17_28_18_102Z-debug-0.log
+projects-1     | 2026-11-17T17:28:49.651954425Z 
+api_gateway-1  | 2026-11-17T17:31:25.586726293Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809 [32m200[0m 45.513 ms - 502[0m
+api_gateway-1  | 2026-11-17T17:31:25.642924463Z [0mGET /users/6afc8f665799776ca1f68146/presets [32m200[0m 16.189 ms - 678[0m
+api_gateway-1  | 2026-11-17T17:31:25.655040498Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/share [32m200[0m 11.655 ms - 2[0m
+api_gateway-1  | 2026-11-17T17:31:25.667806229Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/dirty [32m204[0m 28.110 ms - -[0m
+api_gateway-1  | 2026-11-17T17:31:28.780247504Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/process [32m201[0m 33.578 ms - 9[0m
+api_gateway-1  | 2026-11-17T17:31:28.826452827Z [0mGET /users/validate/6afc8f665799776ca1f68146 [32m200[0m 16.868 ms - 426[0m
+api_gateway-1  | 2026-11-17T17:31:28.828746233Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/process/url [32m200[0m 19.668 ms - 22[0m
+api_gateway-1  | 2026-11-17T17:31:28.841212766Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809 [32m200[0m 32.141 ms - 502[0m
+nginx-1        | 2026-11-17T17:31:19.416372365Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /_next/static/chunks/4bd1b696-6009e3f64d526505.js HTTP/1.1" 200 53136 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:19.426596484Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /_next/static/chunks/386-4062c41898e969d5.js HTTP/1.1" 200 41505 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:19.426633130Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /_next/static/chunks/173-86e44861db2516b8.js HTTP/1.1" 200 30884 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:19.427039239Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /_next/static/chunks/128-7bfa13fc44d49699.js HTTP/1.1" 200 6385 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:19.437324212Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /_next/static/chunks/50-b415b0af467e0c7d.js HTTP/1.1" 200 3287 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:28:49.651999948Z > projects@0.0.0 start
+projects-1     | 2026-11-17T17:28:49.652004564Z > node ./bin/www
+projects-1     | 2026-11-17T17:28:49.652008006Z 
+projects-1     | 2026-11-17T17:28:50.106226034Z (node:19) [MONGOOSE] Warning: Duplicate schema index on {"lastSeenAt":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+projects-1     | 2026-11-17T17:28:50.106252220Z (Use `node --trace-warnings ...` to show where the warning was created)
+nginx-1        | 2026-11-17T17:31:19.441295710Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /_next/static/chunks/818-3e4dcc35a9f625a2.js HTTP/1.1" 200 6752 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:28:50.106278472Z (node:19) [MONGODB DRIVER] Warning: useNewUrlParser is a deprecated option: useNewUrlParser has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+projects-1     | 2026-11-17T17:28:50.106336784Z (node:19) [MONGODB DRIVER] Warning: useUnifiedTopology is a deprecated option: useUnifiedTopology has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+api_gateway-1  | 2026-11-17T17:31:28.858301093Z [0mGET /users/validate/6afc8f665799776ca1f68146 [32m200[0m 8.840 ms - 426[0m
+api_gateway-1  | 2026-11-17T17:31:30.566614207Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/presence?owner=6afc8f665799776ca1f68146 [32m204[0m 21.997 ms - -[0m
+api_gateway-1  | 2026-11-17T17:31:31.023099987Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/process/url [32m200[0m 10.631 ms - 373[0m
+api_gateway-1  | 2026-11-17T17:31:31.104220645Z [0mDELETE /projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/presence?owner=6afc8f665799776ca1f68146 [32m204[0m 20.977 ms - -[0m
+api_gateway-1  | 2026-11-17T17:31:31.117285397Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/process/url [32m200[0m 16.286 ms - 373[0m
+api_gateway-1  | 2026-11-17T17:31:31.387366236Z [0mPOST /users/ [32m201[0m 52.939 ms - 336[0m
+api_gateway-1  | 2026-11-17T17:31:31.602645920Z [0mPOST /users/regressao-ui-1794936677952-749bc7@medicao.test/login [32m201[0m 55.708 ms - 424[0m
+api_gateway-1  | 2026-11-17T17:31:31.719216613Z [0mGET /projects/6afc8f665799776ca1f68146 [32m200[0m 14.547 ms - 133[0m
+api_gateway-1  | 2026-11-17T17:31:31.791896646Z [0mPOST /projects/6afc8f665799776ca1f68146 [32m201[0m 6.524 ms - 382[0m
+api_gateway-1  | 2026-11-17T17:31:31.818090423Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875 [32m200[0m 17.358 ms - 86[0m
+api_gateway-1  | 2026-11-17T17:31:32.251847092Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/video [32m204[0m 426.260 ms - -[0m
+api_gateway-1  | 2026-11-17T17:31:32.277938167Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875 [32m200[0m 18.173 ms - 593[0m
+api_gateway-1  | 2026-11-17T17:31:32.311682073Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/tool [32m201[0m 27.193 ms - 2[0m
+api_gateway-1  | 2026-11-17T17:31:32.422692698Z [0mGET /users/validate/6afc8f665799776ca1f68146 [32m200[0m 8.966 ms - 426[0m
+api_gateway-1  | 2026-11-17T17:31:32.447925569Z [0mGET /projects/6afc8f665799776ca1f68146 [32m200[0m 26.822 ms - 199[0m
+api_gateway-1  | 2026-11-17T17:31:32.449767225Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence?owner=6afc8f665799776ca1f68146 [32m204[0m 39.136 ms - -[0m
+nginx-1        | 2026-11-17T17:31:19.443532583Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /_next/static/chunks/652-1778f58ef0b22463.js HTTP/1.1" 200 4129 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:19.452033116Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /_next/static/chunks/app/layout-ebb1a006f7f264aa.js HTTP/1.1" 200 2381 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:28:50.115049050Z Mongodb connection successful
+nginx-1        | 2026-11-17T17:31:19.452253701Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /_next/static/chunks/554-e639605e9ec8695a.js HTTP/1.1" 200 3691 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:19.452590382Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /_next/static/chunks/79-e7c79bd804b0c736.js HTTP/1.1" 200 5607 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:19.455605278Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /_next/static/chunks/app/login/page-492439ac0e0fcd4d.js HTTP/1.1" 200 4755 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:19.642958401Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "POST /api-gateway/users/ HTTP/1.1" 201 336 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:19.976338555Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /register?_rsc=oth2v HTTP/1.1" 200 1844 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:19.980037596Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /?_rsc=oth2v HTTP/1.1" 200 1849 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:28:50.576333504Z [0mGET /6afc8e6d5799776ca1f68138 [32m200[0m 15.450 ms - 135[0m
+projects-1     | 2026-11-17T17:29:05.623692833Z [0mPOST /6afc8e6d5799776ca1f68138 [32m201[0m 13.757 ms - 383[0m
+api_gateway-1  | 2026-11-17T17:31:32.453591048Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/process/url [32m200[0m 24.664 ms - 22[0m
+api_gateway-1  | 2026-11-17T17:31:32.467805012Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875 [32m200[0m 43.983 ms - 693[0m
+api_gateway-1  | 2026-11-17T17:31:32.511494476Z [0mGET /users/6afc8f665799776ca1f68146/presets [32m200[0m 19.518 ms - 678[0m
+projects-1     | 2026-11-17T17:29:08.893842183Z [GET /:user/:project headers] {
+projects-1     | 2026-11-17T17:29:08.893871640Z   hasAuth: true,
+nginx-1        | 2026-11-17T17:31:19.981124803Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /terms-of-service?_rsc=oth2v HTTP/1.1" 200 3441 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:19.982771626Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /privacy-policy?_rsc=oth2v HTTP/1.1" 200 2700 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:19.992499573Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "POST /api-gateway/users/regressao-ui-1794936677952-749bc7@medicao.test/login HTTP/1.1" 201 424 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:19.999414164Z 172.18.0.1 - - [17/Nov/2026:17:31:19 +0000] "GET /_next/static/chunks/app/register/page-5a8587f9c1a9b85d.js HTTP/1.1" 200 4959 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.001260054Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/static/chunks/942-4c9d69a584f0e6ad.js HTTP/1.1" 200 10333 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.008176566Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/static/chunks/app/page-e2683bf2785eee20.js HTTP/1.1" 200 5297 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.017279531Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/static/chunks/980-996082b01fffcc4e.js HTTP/1.1" 200 6973 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.017568797Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/static/chunks/18-87b93934ca364884.js HTTP/1.1" 200 7257 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:29:08.893873612Z   authStart: 'Bearer eyJhbGciOiJIU',
+projects-1     | 2026-11-17T17:29:08.893875364Z   caller: '6afc8e6d5799776ca1f68138'
+api_gateway-1  | 2026-11-17T17:31:32.512934807Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/share [32m200[0m 15.973 ms - 2[0m
+api_gateway-1  | 2026-11-17T17:31:32.526195436Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/dirty [32m204[0m 28.068 ms - -[0m
+api_gateway-1  | 2026-11-17T17:31:35.774103198Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/process [32m201[0m 166.239 ms - 9[0m
+nginx-1        | 2026-11-17T17:31:20.029661808Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /dashboard?_rsc=ak96a HTTP/1.1" 200 2133 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.034456387Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/static/chunks/app/terms-of-service/page-2454ce5c6847d269.js HTTP/1.1" 200 2837 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:29:08.893876556Z }
+projects-1     | 2026-11-17T17:29:08.916128519Z [0mGET /6afc8e6d5799776ca1f68138/6afc8ee189ba5cb242e7803b [32m200[0m 22.595 ms - 87[0m
+projects-1     | 2026-11-17T17:29:17.531234075Z PROJECTS-MS /:user/:project/video HIT, file = true
+projects-1     | 2026-11-17T17:29:18.391817799Z [0mPOST /6afc8e6d5799776ca1f68138/6afc8ee189ba5cb242e7803b/video [32m204[0m 9444.113 ms - -[0m
+projects-1     | 2026-11-17T17:29:21.100099091Z npm error path /app
+projects-1     | 2026-11-17T17:29:21.100126308Z npm error command failed
+projects-1     | 2026-11-17T17:29:21.101404970Z npm error signal SIGTERM
+projects-1     | 2026-11-17T17:29:21.101706167Z npm error command sh -c node ./bin/www
+projects-1     | 2026-11-17T17:29:21.103659149Z npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-17T17_28_49_585Z-debug-0.log
+projects-1     | 2026-11-17T17:29:21.889776599Z 
+projects-1     | 2026-11-17T17:29:21.889803580Z > projects@0.0.0 start
+api_gateway-1  | 2026-11-17T17:31:35.813670809Z [0mGET /users/validate/6afc8f665799776ca1f68146 [32m200[0m 9.918 ms - 507[0m
+api_gateway-1  | 2026-11-17T17:31:35.816191722Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875 [32m200[0m 28.799 ms - 695[0m
+api_gateway-1  | 2026-11-17T17:31:35.817769754Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/process/url [32m200[0m 18.203 ms - 22[0m
+api_gateway-1  | 2026-11-17T17:31:35.839620822Z [0mGET /users/validate/6afc8f665799776ca1f68146 [32m200[0m 13.052 ms - 507[0m
+nginx-1        | 2026-11-17T17:31:20.037764997Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/static/chunks/app/privacy-policy/page-45aa1ea1199e75a9.js HTTP/1.1" 200 2837 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.046421368Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/static/chunks/165-01667c39c9e3a5b6.js HTTP/1.1" 200 3527 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:29:21.889806164Z > node ./bin/www
+projects-1     | 2026-11-17T17:29:21.889807948Z 
+api_gateway-1  | 2026-11-17T17:31:37.439953299Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence?owner=6afc8f665799776ca1f68146 [32m204[0m 27.691 ms - -[0m
+api_gateway-1  | 2026-11-17T17:31:38.904319761Z [0mDELETE /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/process [32m204[0m 38.600 ms - -[0m
+api_gateway-1  | 2026-11-17T17:31:38.961940217Z [0mGET /users/validate/6afc8f665799776ca1f68146 [32m200[0m 16.208 ms - 507[0m
+api_gateway-1  | 2026-11-17T17:31:38.963342243Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/process/url [32m200[0m 27.276 ms - 22[0m
+api_gateway-1  | 2026-11-17T17:31:38.977730419Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875 [32m200[0m 49.589 ms - 693[0m
+api_gateway-1  | 2026-11-17T17:31:42.436818886Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence?owner=6afc8f665799776ca1f68146 [32m204[0m 25.833 ms - -[0m
+nginx-1        | 2026-11-17T17:31:20.059483266Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/static/chunks/326-8ffd562c2e0be104.js HTTP/1.1" 200 18610 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.062106010Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/static/chunks/43-dd60343ce132b551.js HTTP/1.1" 200 3109 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+api_gateway-1  | 2026-11-17T17:31:47.451884827Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence?owner=6afc8f665799776ca1f68146 [32m204[0m 28.725 ms - -[0m
+api_gateway-1  | 2026-11-17T17:31:52.445645446Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence?owner=6afc8f665799776ca1f68146 [32m204[0m 32.861 ms - -[0m
+api_gateway-1  | 2026-11-17T17:31:57.448612257Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence?owner=6afc8f665799776ca1f68146 [32m204[0m 27.865 ms - -[0m
+api_gateway-1  | 2026-11-17T17:32:02.449912733Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence?owner=6afc8f665799776ca1f68146 [32m204[0m 27.271 ms - -[0m
+api_gateway-1  | 2026-11-17T17:32:07.454190553Z [0mPOST /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence?owner=6afc8f665799776ca1f68146 [32m204[0m 20.286 ms - -[0m
+api_gateway-1  | 2026-11-17T17:32:08.895039393Z [0mGET /projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/process/url [32m200[0m 7.621 ms - 22[0m
+projects-1     | 2026-11-17T17:29:22.760595363Z (node:19) [MONGOOSE] Warning: Duplicate schema index on {"lastSeenAt":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+projects-1     | 2026-11-17T17:29:22.760643853Z (Use `node --trace-warnings ...` to show where the warning was created)
+nginx-1        | 2026-11-17T17:31:20.067255255Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/static/chunks/460-58783612876d09d4.js HTTP/1.1" 200 24593 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.074727503Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/static/chunks/481-31ef86e65d02252a.js HTTP/1.1" 200 5261 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.088940666Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/static/chunks/582-42dcda755d02ed0e.js HTTP/1.1" 200 4555 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.089380920Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/static/chunks/app/dashboard/layout-8d488260ed45ae67.js HTTP/1.1" 200 6865 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:29:22.760649902Z (node:19) [MONGODB DRIVER] Warning: useNewUrlParser is a deprecated option: useNewUrlParser has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+projects-1     | 2026-11-17T17:29:22.760652126Z (node:19) [MONGODB DRIVER] Warning: useUnifiedTopology is a deprecated option: useUnifiedTopology has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+projects-1     | 2026-11-17T17:29:22.770902334Z Mongodb connection successful
+projects-1     | 2026-11-17T17:29:24.250481799Z [0mGET /6afc8e6d5799776ca1f68138 [32m200[0m 54.410 ms - 202[0m
+projects-1     | 2026-11-17T17:29:39.309264545Z [0mPOST /6afc8e6d5799776ca1f68138 [32m201[0m 16.754 ms - 383[0m
+projects-1     | 2026-11-17T17:29:42.581730167Z [GET /:user/:project headers] {
+projects-1     | 2026-11-17T17:29:42.581749049Z   hasAuth: true,
+projects-1     | 2026-11-17T17:29:42.581751797Z   authStart: 'Bearer eyJhbGciOiJIU',
+projects-1     | 2026-11-17T17:29:42.581754253Z   caller: '6afc8e6d5799776ca1f68138'
+nginx-1        | 2026-11-17T17:31:20.093179622Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/static/chunks/app/dashboard/page-c9c6f96aefe1e039.js HTTP/1.1" 200 1737 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:29:42.581756039Z }
+projects-1     | 2026-11-17T17:29:42.613365068Z [0mGET /6afc8e6d5799776ca1f68138/6afc8f03fbd76419675257db [32m200[0m 31.562 ms - 87[0m
+projects-1     | 2026-11-17T17:29:52.986994538Z PROJECTS-MS /:user/:project/video HIT, file = true
+projects-1     | 2026-11-17T17:29:53.362463062Z [0mPOST /6afc8e6d5799776ca1f68138/6afc8f03fbd76419675257db/video [32m204[0m 10718.021 ms - -[0m
+nginx-1        | 2026-11-17T17:31:20.099658513Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/static/chunks/71-e562b164a26b8ff1.js HTTP/1.1" 200 175224 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.174828853Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146 HTTP/1.1" 201 382 "-" "-"
+nginx-1        | 2026-11-17T17:31:20.198569896Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146 HTTP/1.1" 200 67 "https://localhost:8080/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.367957030Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /dashboard/6afc8f68fbd76419675257e8?_rsc=1bdos HTTP/1.1" 200 177 "https://localhost:8080/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.409472547Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /dashboard/6afc8f68fbd76419675257e8 HTTP/1.1" 200 3970 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.415421050Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/image?url=https%3A%2F%2Fpicsum.photos%2Fseed%2F6%2F1920%2F1080&w=1080&q=75 HTTP/1.1" 499 0 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.438081715Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/static/chunks/945-20c172e3f6003409.js HTTP/1.1" 200 7412 "https://localhost:8080/dashboard/6afc8f68fbd76419675257e8" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.444549797Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/static/chunks/823-023a903bb8c08eb5.js HTTP/1.1" 200 34807 "https://localhost:8080/dashboard/6afc8f68fbd76419675257e8" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:20.172775844Z [0mPOST /6afc8f665799776ca1f68146 [32m201[0m 6.092 ms - 382[0m
+projects-1     | 2026-11-17T17:31:20.196999992Z [0mGET /6afc8f665799776ca1f68146 [32m200[0m 4.220 ms - 67[0m
+projects-1     | 2026-11-17T17:31:20.554434203Z [0mGET /6afc8f665799776ca1f68146 [32m200[0m 5.014 ms - 67[0m
+projects-1     | 2026-11-17T17:31:20.566660867Z [GET /:user/:project headers] {
+nginx-1        | 2026-11-17T17:31:20.447222551Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /_next/static/chunks/app/dashboard/%5Bpid%5D/page-118433d3ade41141.js HTTP/1.1" 200 24018 "https://localhost:8080/dashboard/6afc8f68fbd76419675257e8" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.557884433Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /?_rsc=7pjtj HTTP/1.1" 200 1849 "https://localhost:8080/dashboard/6afc8f68fbd76419675257e8" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.559825342Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146 HTTP/1.1" 200 67 "https://localhost:8080/dashboard/6afc8f68fbd76419675257e8" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.572882794Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /api-gateway/users/validate/6afc8f665799776ca1f68146 HTTP/1.1" 200 426 "https://localhost:8080/dashboard/6afc8f68fbd76419675257e8" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.595925098Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8/process/url HTTP/1.1" 200 22 "https://localhost:8080/dashboard/6afc8f68fbd76419675257e8" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.599771815Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8 HTTP/1.1" 200 86 "https://localhost:8080/dashboard/6afc8f68fbd76419675257e8" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.606000616Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8/presence?owner=6afc8f665799776ca1f68146 HTTP/1.1" 204 0 "https://localhost:8080/dashboard/6afc8f68fbd76419675257e8" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.665396040Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /api-gateway/users/6afc8f665799776ca1f68146/presets HTTP/1.1" 200 678 "https://localhost:8080/dashboard/6afc8f68fbd76419675257e8" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.673818392Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8/share HTTP/1.1" 200 2 "https://localhost:8080/dashboard/6afc8f68fbd76419675257e8" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:20.690438024Z 172.18.0.1 - - [17/Nov/2026:17:31:20 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8/dirty HTTP/1.1" 204 0 "https://localhost:8080/dashboard/6afc8f68fbd76419675257e8" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:20.566702405Z   hasAuth: true,
+nginx-1        | 2026-11-17T17:31:23.994980899Z 172.18.0.1 - - [17/Nov/2026:17:31:23 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8 HTTP/1.1" 200 86 "-" "-"
+nginx-1        | 2026-11-17T17:31:24.059660937Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8/img HTTP/1.1" 204 0 "https://localhost:8080/dashboard/6afc8f68fbd76419675257e8" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:24.120804948Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8 HTTP/1.1" 200 402 "https://localhost:8080/dashboard/6afc8f68fbd76419675257e8" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:24.136762364Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /s3/picturas/users/6afc8f665799776ca1f68146/projects/6afc8f68fbd76419675257e8/src/bb69fb58-c8dd-4e04-9e90-031580e4f541.png?AWSAccessKeyId=admin&Expires=1794940284&Signature=DmyadhtAyKSL3Ct9p45%2FL%2FQ58yo%3D HTTP/1.1" 200 106840 "https://localhost:8080/dashboard/6afc8f68fbd76419675257e8" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:24.530943826Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8 HTTP/1.1" 200 402 "-" "-"
+nginx-1        | 2026-11-17T17:31:24.556375096Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8 HTTP/1.1" 200 402 "-" "-"
+nginx-1        | 2026-11-17T17:31:24.583146073Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 101 143 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:24.747160200Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /login HTTP/1.1" 200 2667 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:24.758431602Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /_next/static/media/e4af272ccee01ff0-s.p.woff2 HTTP/1.1" 200 48432 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:20.566706610Z   authStart: 'Bearer eyJhbGciOiJIU',
+projects-1     | 2026-11-17T17:31:20.566710914Z   caller: '6afc8f665799776ca1f68146'
+projects-1     | 2026-11-17T17:31:20.566713532Z }
+projects-1     | 2026-11-17T17:31:20.596319195Z [0mGET /6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8/process/url [32m200[0m 22.535 ms - 22[0m
+projects-1     | 2026-11-17T17:31:20.599023835Z [0mGET /6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8 [32m200[0m 32.980 ms - 86[0m
+projects-1     | 2026-11-17T17:31:20.605304928Z [0mPOST /6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8/presence [32m200[0m 70.213 ms - 60[0m
+projects-1     | 2026-11-17T17:31:20.672647512Z [0mGET /6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8/share [32m200[0m 4.133 ms - 2[0m
+projects-1     | 2026-11-17T17:31:20.689501411Z [0mPOST /6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8/dirty [32m204[0m 28.392 ms - -[0m
+projects-1     | 2026-11-17T17:31:23.980762729Z [GET /:user/:project headers] {
+nginx-1        | 2026-11-17T17:31:24.784143423Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /_next/static/media/fad5e1188f09afdc-s.p.woff2 HTTP/1.1" 200 19100 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:23.980787074Z   hasAuth: true,
+projects-1     | 2026-11-17T17:31:23.980789453Z   authStart: 'Bearer eyJhbGciOiJIU',
+projects-1     | 2026-11-17T17:31:23.980791075Z   caller: '6afc8f665799776ca1f68146'
+projects-1     | 2026-11-17T17:31:23.980792244Z }
+nginx-1        | 2026-11-17T17:31:24.786973576Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /_next/static/chunks/4bd1b696-6009e3f64d526505.js HTTP/1.1" 200 53136 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:24.791577265Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /_next/static/chunks/main-app-ab6226b7eeb515d1.js HTTP/1.1" 200 473 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:23.994223449Z [0mGET /6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8 [32m200[0m 12.913 ms - 86[0m
+projects-1     | 2026-11-17T17:31:24.051892752Z PROJECTS-MS /:user/:project/img HIT, file = true
+projects-1     | 2026-11-17T17:31:24.058770625Z [0mPOST /6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8/img [32m204[0m 56.984 ms - -[0m
+nginx-1        | 2026-11-17T17:31:24.794596124Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /_next/static/chunks/webpack-1f3e85f08fb8e1fe.js HTTP/1.1" 200 1720 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:24.798696968Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /_next/static/css/c710969e6fc32733.css HTTP/1.1" 200 11024 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:24.804872410Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /_next/static/chunks/173-86e44861db2516b8.js HTTP/1.1" 200 30891 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:24.806381689Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /_next/static/chunks/386-4062c41898e969d5.js HTTP/1.1" 200 41498 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:24.808530930Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /_next/static/chunks/128-7bfa13fc44d49699.js HTTP/1.1" 200 6391 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:24.105511704Z [GET /:user/:project headers] {
+projects-1     | 2026-11-17T17:31:24.105535371Z   hasAuth: true,
+projects-1     | 2026-11-17T17:31:24.105537550Z   authStart: 'Bearer eyJhbGciOiJIU',
+projects-1     | 2026-11-17T17:31:24.105539554Z   caller: '6afc8f665799776ca1f68146'
+nginx-1        | 2026-11-17T17:31:24.808676330Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /_next/static/chunks/517-67a593dbde3c6077.js HTTP/1.1" 200 51025 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:24.810343023Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /_next/static/chunks/50-b415b0af467e0c7d.js HTTP/1.1" 200 3287 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:24.817435413Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /_next/static/chunks/818-3e4dcc35a9f625a2.js HTTP/1.1" 200 6752 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:24.819586181Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /_next/static/chunks/app/layout-ebb1a006f7f264aa.js HTTP/1.1" 200 2381 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:24.820181743Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /_next/static/chunks/652-1778f58ef0b22463.js HTTP/1.1" 200 4129 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:24.822017787Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /_next/static/chunks/554-e639605e9ec8695a.js HTTP/1.1" 200 3691 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:24.822041192Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /_next/static/chunks/79-e7c79bd804b0c736.js HTTP/1.1" 200 5607 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:24.822199342Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /_next/static/chunks/app/login/page-492439ac0e0fcd4d.js HTTP/1.1" 200 4749 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:24.947267356Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "POST /api-gateway/users/ HTTP/1.1" 201 336 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.000473999Z 172.18.0.1 - - [17/Nov/2026:17:31:24 +0000] "GET /register?_rsc=oth2v HTTP/1.1" 200 1844 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.000949168Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /?_rsc=oth2v HTTP/1.1" 200 1849 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.001297654Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /privacy-policy?_rsc=oth2v HTTP/1.1" 200 2700 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.001461012Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /terms-of-service?_rsc=oth2v HTTP/1.1" 200 3441 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:24.105540755Z }
+projects-1     | 2026-11-17T17:31:24.120181473Z [0mGET /6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8 [32m200[0m 14.801 ms - 402[0m
+projects-1     | 2026-11-17T17:31:24.517265369Z [GET /:user/:project headers] {
+projects-1     | 2026-11-17T17:31:24.517299233Z   hasAuth: true,
+projects-1     | 2026-11-17T17:31:24.517301168Z   authStart: 'Bearer eyJhbGciOiJIU',
+projects-1     | 2026-11-17T17:31:24.517302979Z   caller: '6afc8f665799776ca1f68146'
+projects-1     | 2026-11-17T17:31:24.517304417Z }
+nginx-1        | 2026-11-17T17:31:25.014494545Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/app/register/page-5a8587f9c1a9b85d.js HTTP/1.1" 200 4953 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.023571690Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/app/page-e2683bf2785eee20.js HTTP/1.1" 200 5297 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.024061347Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/980-996082b01fffcc4e.js HTTP/1.1" 200 6973 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.024091701Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/942-4c9d69a584f0e6ad.js HTTP/1.1" 200 10326 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.025556415Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/18-87b93934ca364884.js HTTP/1.1" 200 7257 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.030044567Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/app/privacy-policy/page-45aa1ea1199e75a9.js HTTP/1.1" 200 2837 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.034398629Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/app/terms-of-service/page-2454ce5c6847d269.js HTTP/1.1" 200 2837 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.136281347Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "POST /api-gateway/users/regressao-ui-1794936677952-749bc7@medicao.test/login HTTP/1.1" 201 424 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.151591905Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /dashboard?_rsc=ak96a HTTP/1.1" 200 2133 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.164019607Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/165-01667c39c9e3a5b6.js HTTP/1.1" 200 3527 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.166395866Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/460-58783612876d09d4.js HTTP/1.1" 200 24593 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.167057798Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/43-dd60343ce132b551.js HTTP/1.1" 200 3109 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:24.530265297Z [0mGET /6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8 [32m200[0m 13.193 ms - 402[0m
+nginx-1        | 2026-11-17T17:31:25.168830828Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/326-8ffd562c2e0be104.js HTTP/1.1" 200 18610 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.175884549Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/481-31ef86e65d02252a.js HTTP/1.1" 200 5255 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.178667323Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/582-42dcda755d02ed0e.js HTTP/1.1" 200 4555 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.179026378Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/app/dashboard/layout-8d488260ed45ae67.js HTTP/1.1" 200 6859 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.179475301Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/app/dashboard/page-c9c6f96aefe1e039.js HTTP/1.1" 200 1737 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.192614770Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/71-e562b164a26b8ff1.js HTTP/1.1" 200 175217 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:24.542786994Z [GET /:user/:project headers] {
+nginx-1        | 2026-11-17T17:31:25.246653061Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146 HTTP/1.1" 201 382 "-" "-"
+nginx-1        | 2026-11-17T17:31:25.253973593Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146 HTTP/1.1" 200 133 "https://localhost:8080/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.272629029Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /dashboard/6afc8f68fbd76419675257e8?_rsc=1bdos HTTP/1.1" 200 177 "https://localhost:8080/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.273041356Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /dashboard/6afc8f6dfbd7641967525809?_rsc=1bdos HTTP/1.1" 200 177 "https://localhost:8080/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:24.542810315Z   hasAuth: true,
+nginx-1        | 2026-11-17T17:31:25.278703333Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809 HTTP/1.1" 200 86 "-" "-"
+nginx-1        | 2026-11-17T17:31:25.354618782Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/img HTTP/1.1" 204 0 "-" "-"
+nginx-1        | 2026-11-17T17:31:25.384984289Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809 HTTP/1.1" 200 402 "-" "-"
+nginx-1        | 2026-11-17T17:31:25.424125795Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/tool HTTP/1.1" 201 2 "-" "-"
+nginx-1        | 2026-11-17T17:31:25.440088929Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/image?url=https%3A%2F%2Fpicsum.photos%2Fseed%2F58%2F1920%2F1080&w=1080&q=75 HTTP/1.1" 200 93208 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.442415657Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /dashboard/6afc8f6dfbd7641967525809 HTTP/1.1" 200 3970 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.454564691Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/945-20c172e3f6003409.js HTTP/1.1" 200 7418 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.457597854Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/823-023a903bb8c08eb5.js HTTP/1.1" 200 34807 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:24.542812230Z   authStart: 'Bearer eyJhbGciOiJIU',
+nginx-1        | 2026-11-17T17:31:25.458682675Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /_next/static/chunks/app/dashboard/%5Bpid%5D/page-118433d3ade41141.js HTTP/1.1" 200 24018 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.544641943Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /?_rsc=i4czr HTTP/1.1" 200 1849 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.553272242Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /api-gateway/users/validate/6afc8f665799776ca1f68146 HTTP/1.1" 200 426 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.566543819Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146 HTTP/1.1" 200 133 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.570808860Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/process/url HTTP/1.1" 200 22 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.574395991Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/presence?owner=6afc8f665799776ca1f68146 HTTP/1.1" 204 0 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.583868186Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /dashboard/6afc8f68fbd76419675257e8?_rsc=i4czr HTTP/1.1" 200 177 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.586768644Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809 HTTP/1.1" 200 502 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.610562822Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /s3/picturas/users/6afc8f665799776ca1f68146/projects/6afc8f6dfbd7641967525809/src/fa38790e-9c5d-4fdd-9d30-eeda268ee0f5.png?AWSAccessKeyId=admin&Expires=1794940285&Signature=d%2FRxwYY9HfSx%2F0IQnmLdwsnNDV0%3D HTTP/1.1" 200 106840 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.643001813Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /api-gateway/users/6afc8f665799776ca1f68146/presets HTTP/1.1" 200 678 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:24.542813999Z   caller: '6afc8f665799776ca1f68146'
+nginx-1        | 2026-11-17T17:31:25.655107709Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/share HTTP/1.1" 200 2 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:25.667870421Z 172.18.0.1 - - [17/Nov/2026:17:31:25 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/dirty HTTP/1.1" 204 0 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:28.780427461Z 172.18.0.1 - - [17/Nov/2026:17:31:28 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/process HTTP/1.1" 201 9 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:24.542831682Z }
+projects-1     | 2026-11-17T17:31:24.555461697Z [0mGET /6afc8f665799776ca1f68146/6afc8f68fbd76419675257e8 [32m200[0m 12.645 ms - 402[0m
+nginx-1        | 2026-11-17T17:31:28.826408898Z 172.18.0.1 - - [17/Nov/2026:17:31:28 +0000] "GET /api-gateway/users/validate/6afc8f665799776ca1f68146 HTTP/1.1" 200 426 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:28.828673292Z 172.18.0.1 - - [17/Nov/2026:17:31:28 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/process/url HTTP/1.1" 200 22 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:28.841253353Z 172.18.0.1 - - [17/Nov/2026:17:31:28 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809 HTTP/1.1" 200 502 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:28.858358167Z 172.18.0.1 - - [17/Nov/2026:17:31:28 +0000] "GET /api-gateway/users/validate/6afc8f665799776ca1f68146 HTTP/1.1" 200 426 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:28.860919341Z 172.18.0.1 - - [17/Nov/2026:17:31:28 +0000] "GET /s3/picturas/users/6afc8f665799776ca1f68146/projects/6afc8f6dfbd7641967525809/src/fa38790e-9c5d-4fdd-9d30-eeda268ee0f5.png?AWSAccessKeyId=admin&Expires=1794940288&Signature=nFEAcMfxniIKFVdXaKnu2P%2BNN%2BI%3D HTTP/1.1" 200 106840 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:30.566740040Z 172.18.0.1 - - [17/Nov/2026:17:31:30 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/presence?owner=6afc8f665799776ca1f68146 HTTP/1.1" 204 0 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:25.245243490Z [0mPOST /6afc8f665799776ca1f68146 [32m201[0m 3.612 ms - 382[0m
+projects-1     | 2026-11-17T17:31:25.253012793Z [0mGET /6afc8f665799776ca1f68146 [32m200[0m 3.044 ms - 133[0m
+projects-1     | 2026-11-17T17:31:25.262945655Z [GET /:user/:project headers] {
+projects-1     | 2026-11-17T17:31:25.262996037Z   hasAuth: true,
+nginx-1        | 2026-11-17T17:31:31.023244058Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/process/url HTTP/1.1" 200 373 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.055932242Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /dashboard/6afc8f6dfbd7641967525809?mode=results&view=grid&_rsc=1454t HTTP/1.1" 200 1108 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.075928909Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /s3/picturas/users/6afc8f665799776ca1f68146/projects/6afc8f6dfbd7641967525809/out/3d114d98-3b6e-4cf6-a161-880dbca4ce79.png?AWSAccessKeyId=admin&Expires=1794940291&Signature=FWVHIdl8ZNDTsPl545pmSCX77r8%3D HTTP/1.1" 200 92434 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.104271604Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "DELETE /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/presence?owner=6afc8f665799776ca1f68146 HTTP/1.1" 204 0 "https://localhost:8080/dashboard/6afc8f6dfbd7641967525809?mode=results&view=grid" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:25.262997939Z   authStart: 'Bearer eyJhbGciOiJIU',
+projects-1     | 2026-11-17T17:31:25.262999828Z   caller: '6afc8f665799776ca1f68146'
+projects-1     | 2026-11-17T17:31:25.263000712Z }
+projects-1     | 2026-11-17T17:31:25.277725173Z [0mGET /6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809 [32m200[0m 14.668 ms - 86[0m
+projects-1     | 2026-11-17T17:31:25.348604398Z PROJECTS-MS /:user/:project/img HIT, file = true
+nginx-1        | 2026-11-17T17:31:31.117389081Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/process/url HTTP/1.1" 200 373 "-" "-"
+nginx-1        | 2026-11-17T17:31:31.124060202Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 101 226 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.210622899Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /login HTTP/1.1" 200 2667 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.220453982Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/media/e4af272ccee01ff0-s.p.woff2 HTTP/1.1" 200 48432 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:25.353801987Z [0mPOST /6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/img [32m204[0m 58.501 ms - -[0m
+nginx-1        | 2026-11-17T17:31:31.229614984Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/main-app-ab6226b7eeb515d1.js HTTP/1.1" 200 473 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.239581853Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/media/fad5e1188f09afdc-s.p.woff2 HTTP/1.1" 200 19100 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.240731390Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/webpack-1f3e85f08fb8e1fe.js HTTP/1.1" 200 1720 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.240767016Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/css/c710969e6fc32733.css HTTP/1.1" 200 11031 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.246815999Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/386-4062c41898e969d5.js HTTP/1.1" 200 41505 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.250801642Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/4bd1b696-6009e3f64d526505.js HTTP/1.1" 200 53136 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.254521542Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/517-67a593dbde3c6077.js HTTP/1.1" 200 51025 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.254851281Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/128-7bfa13fc44d49699.js HTTP/1.1" 200 6385 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.257616798Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/50-b415b0af467e0c7d.js HTTP/1.1" 200 3287 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.257849434Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/173-86e44861db2516b8.js HTTP/1.1" 200 30891 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.260856827Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/652-1778f58ef0b22463.js HTTP/1.1" 200 4133 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.261082733Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/818-3e4dcc35a9f625a2.js HTTP/1.1" 200 6752 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.263794713Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/app/layout-ebb1a006f7f264aa.js HTTP/1.1" 200 2381 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:25.368133730Z [GET /:user/:project headers] {
+projects-1     | 2026-11-17T17:31:25.368162843Z   hasAuth: true,
+projects-1     | 2026-11-17T17:31:25.368165533Z   authStart: 'Bearer eyJhbGciOiJIU',
+projects-1     | 2026-11-17T17:31:25.368167559Z   caller: '6afc8f665799776ca1f68146'
+projects-1     | 2026-11-17T17:31:25.368168863Z }
+nginx-1        | 2026-11-17T17:31:31.264328143Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/554-e639605e9ec8695a.js HTTP/1.1" 200 3691 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.266114722Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/79-e7c79bd804b0c736.js HTTP/1.1" 200 5613 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.266176505Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/app/login/page-492439ac0e0fcd4d.js HTTP/1.1" 200 4755 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:25.384189690Z [0mGET /6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809 [32m200[0m 16.106 ms - 402[0m
+nginx-1        | 2026-11-17T17:31:31.387448285Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "POST /api-gateway/users/ HTTP/1.1" 201 336 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.446039960Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /register?_rsc=oth2v HTTP/1.1" 200 1844 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.446404455Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /?_rsc=oth2v HTTP/1.1" 200 1849 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.446742369Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /terms-of-service?_rsc=oth2v HTTP/1.1" 200 3441 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.447230187Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /privacy-policy?_rsc=oth2v HTTP/1.1" 200 2700 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.453481061Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/app/register/page-5a8587f9c1a9b85d.js HTTP/1.1" 200 4948 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.466297413Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/980-996082b01fffcc4e.js HTTP/1.1" 200 6973 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.467057479Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/942-4c9d69a584f0e6ad.js HTTP/1.1" 200 10333 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.468500076Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/18-87b93934ca364884.js HTTP/1.1" 200 7263 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.470083079Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/app/page-e2683bf2785eee20.js HTTP/1.1" 200 5297 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:25.422743308Z [0mPOST /6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/tool [32m204[0m 24.942 ms - -[0m
+projects-1     | 2026-11-17T17:31:25.562003640Z [GET /:user/:project headers] {
+projects-1     | 2026-11-17T17:31:25.562030459Z   hasAuth: true,
+projects-1     | 2026-11-17T17:31:25.562031936Z   authStart: 'Bearer eyJhbGciOiJIU',
+projects-1     | 2026-11-17T17:31:25.562033160Z   caller: '6afc8f665799776ca1f68146'
+projects-1     | 2026-11-17T17:31:25.562033842Z }
+projects-1     | 2026-11-17T17:31:25.565771994Z [0mGET /6afc8f665799776ca1f68146 [32m200[0m 7.474 ms - 133[0m
+projects-1     | 2026-11-17T17:31:25.569793871Z [0mGET /6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/process/url [32m200[0m 10.045 ms - 22[0m
+projects-1     | 2026-11-17T17:31:25.573494910Z [0mPOST /6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/presence [32m200[0m 36.221 ms - 60[0m
+projects-1     | 2026-11-17T17:31:25.585977387Z [0mGET /6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809 [32m200[0m 25.634 ms - 502[0m
+nginx-1        | 2026-11-17T17:31:31.470601560Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/app/terms-of-service/page-2454ce5c6847d269.js HTTP/1.1" 200 2837 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:25.654505155Z [0mGET /6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/share [32m200[0m 2.621 ms - 2[0m
+projects-1     | 2026-11-17T17:31:25.667135741Z [0mPOST /6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/dirty [32m204[0m 17.494 ms - -[0m
+projects-1     | 2026-11-17T17:31:28.760417846Z [CALLER] {
+nginx-1        | 2026-11-17T17:31:31.474233646Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/app/privacy-policy/page-45aa1ea1199e75a9.js HTTP/1.1" 200 2837 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:28.760442079Z   userParam: '6afc8f665799776ca1f68146',
+projects-1     | 2026-11-17T17:31:28.760443938Z   forwarded: '6afc8f665799776ca1f68146',
+projects-1     | 2026-11-17T17:31:28.760448135Z   hasAuth: true,
+nginx-1        | 2026-11-17T17:31:31.602675126Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "POST /api-gateway/users/regressao-ui-1794936677952-749bc7@medicao.test/login HTTP/1.1" 201 424 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.612434966Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /dashboard?_rsc=ak96a HTTP/1.1" 200 2133 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:28.760448903Z   caller: '6afc8f665799776ca1f68146'
+nginx-1        | 2026-11-17T17:31:31.623036370Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/165-01667c39c9e3a5b6.js HTTP/1.1" 200 3527 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.623072036Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/43-dd60343ce132b551.js HTTP/1.1" 200 3109 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:28.760449628Z }
+projects-1     | 2026-11-17T17:31:28.762349407Z [ADV DEBUG] project: 6afc8f6dfbd7641967525809 adv_ops: 0 totalAdv: 0 charged: 0 newTools: 0 tools: [ 'brightness' ]
+projects-1     | 2026-11-17T17:31:28.779248870Z [0mPOST /6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/process [32m201[0m 28.605 ms - 7[0m
+projects-1     | 2026-11-17T17:31:28.820717947Z [GET /:user/:project headers] {
+projects-1     | 2026-11-17T17:31:28.820750928Z   hasAuth: true,
+nginx-1        | 2026-11-17T17:31:31.628123433Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/326-8ffd562c2e0be104.js HTTP/1.1" 200 18610 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.628415331Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/460-58783612876d09d4.js HTTP/1.1" 200 24593 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.636278038Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/481-31ef86e65d02252a.js HTTP/1.1" 200 5261 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:28.820754259Z   authStart: 'Bearer eyJhbGciOiJIU',
+projects-1     | 2026-11-17T17:31:28.820756232Z   caller: '6afc8f665799776ca1f68146'
+projects-1     | 2026-11-17T17:31:28.820757564Z }
+projects-1     | 2026-11-17T17:31:28.825907568Z [0mGET /6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/process/url [32m200[0m 6.850 ms - 22[0m
+projects-1     | 2026-11-17T17:31:28.840563911Z [0mGET /6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809 [32m200[0m 20.422 ms - 502[0m
+projects-1     | 2026-11-17T17:31:28.923481684Z [T-03][RABBIT] msg=request-51867658-67e6-457d-b7f1-22f4b80c05fb status=success outType=image curPos=0 key=
+nginx-1        | 2026-11-17T17:31:31.637462233Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/582-42dcda755d02ed0e.js HTTP/1.1" 200 4555 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.643297585Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/app/dashboard/layout-8d488260ed45ae67.js HTTP/1.1" 200 6865 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.643341836Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/app/dashboard/page-c9c6f96aefe1e039.js HTTP/1.1" 200 1737 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.648030227Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/static/chunks/71-e562b164a26b8ff1.js HTTP/1.1" 200 175224 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:28.927883184Z [RUN-DEBUG] msg=request-51867658-67e6-457d-b7f1-22f4b80c05fb curPos=0 processTok=1 activeTok=1
+projects-1     | 2026-11-17T17:31:28.955795024Z [COMMIT] project=6afc8f6dfbd7641967525809 committedToken=1
+projects-1     | 2026-11-17T17:31:30.565877474Z [0mPOST /6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/presence [32m200[0m 15.815 ms - 60[0m
+nginx-1        | 2026-11-17T17:31:31.719231247Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146 HTTP/1.1" 200 133 "https://localhost:8080/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.766345007Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /dashboard/6afc8f6dfbd7641967525809?_rsc=1bdos HTTP/1.1" 200 177 "https://localhost:8080/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.766590292Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /dashboard/6afc8f68fbd76419675257e8?_rsc=1bdos HTTP/1.1" 200 177 "https://localhost:8080/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:31.792461463Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146 HTTP/1.1" 201 382 "-" "-"
+nginx-1        | 2026-11-17T17:31:31.818179488Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875 HTTP/1.1" 200 86 "-" "-"
+nginx-1        | 2026-11-17T17:31:31.840075283Z 172.18.0.1 - - [17/Nov/2026:17:31:31 +0000] "GET /_next/image?url=https%3A%2F%2Fpicsum.photos%2Fseed%2F57%2F1920%2F1080&w=1080&q=75 HTTP/1.1" 200 35350 "https://localhost:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:32.252236845Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/video HTTP/1.1" 204 0 "-" "-"
+nginx-1        | 2026-11-17T17:31:32.277928860Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875 HTTP/1.1" 200 593 "-" "-"
+projects-1     | 2026-11-17T17:31:31.022466116Z [0mGET /6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/process/url [32m200[0m 6.134 ms - 373[0m
+nginx-1        | 2026-11-17T17:31:32.312290685Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/tool HTTP/1.1" 201 2 "-" "-"
+nginx-1        | 2026-11-17T17:31:32.326137204Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "GET /dashboard/6afc8f73fbd7641967525875 HTTP/1.1" 200 3971 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:32.335038667Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "GET /_next/static/chunks/945-20c172e3f6003409.js HTTP/1.1" 200 7418 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:31.102952856Z [0mDELETE /6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/presence [32m204[0m 14.601 ms - -[0m
+nginx-1        | 2026-11-17T17:31:32.337457177Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "GET /_next/static/chunks/823-023a903bb8c08eb5.js HTTP/1.1" 200 34807 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:32.340928597Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "GET /_next/static/chunks/app/dashboard/%5Bpid%5D/page-118433d3ade41141.js HTTP/1.1" 200 24018 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:32.422660219Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "GET /api-gateway/users/validate/6afc8f665799776ca1f68146 HTTP/1.1" 200 426 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:31.115675680Z [0mGET /6afc8f665799776ca1f68146/6afc8f6dfbd7641967525809/process/url [32m200[0m 8.248 ms - 373[0m
+projects-1     | 2026-11-17T17:31:31.718251567Z [0mGET /6afc8f665799776ca1f68146 [32m200[0m 5.373 ms - 133[0m
+nginx-1        | 2026-11-17T17:31:32.427874393Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "GET /?_rsc=h06pv HTTP/1.1" 200 1849 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:32.448029889Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146 HTTP/1.1" 200 199 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:32.449813490Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence?owner=6afc8f665799776ca1f68146 HTTP/1.1" 204 0 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:32.453785152Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/process/url HTTP/1.1" 200 22 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:32.467878167Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875 HTTP/1.1" 200 693 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:32.472102521Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "GET /dashboard/6afc8f68fbd76419675257e8?_rsc=h06pv HTTP/1.1" 200 177 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:32.472251471Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "GET /dashboard/6afc8f6dfbd7641967525809?_rsc=h06pv HTTP/1.1" 200 177 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:32.501965870Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "GET /s3/picturas/users/6afc8f665799776ca1f68146/projects/6afc8f73fbd7641967525875/src/cdf2efcd-71a2-4dba-98ea-1b71c0f0ef91.mp4?AWSAccessKeyId=admin&Expires=1794940292&Signature=6yrVKFRVxBbfd0BOePpcvQNOqcA%3D HTTP/1.1" 206 7339570 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:32.504259147Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "GET /s3/picturas/users/6afc8f665799776ca1f68146/projects/6afc8f73fbd7641967525875/src/cdf2efcd-71a2-4dba-98ea-1b71c0f0ef91.mp4?AWSAccessKeyId=admin&Expires=1794940292&Signature=6yrVKFRVxBbfd0BOePpcvQNOqcA%3D HTTP/1.1" 206 73583 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:31.791214505Z [0mPOST /6afc8f665799776ca1f68146 [32m201[0m 2.360 ms - 382[0m
+projects-1     | 2026-11-17T17:31:31.805082830Z [GET /:user/:project headers] {
+projects-1     | 2026-11-17T17:31:31.805119615Z   hasAuth: true,
+projects-1     | 2026-11-17T17:31:31.805122489Z   authStart: 'Bearer eyJhbGciOiJIU',
+projects-1     | 2026-11-17T17:31:31.805124889Z   caller: '6afc8f665799776ca1f68146'
+projects-1     | 2026-11-17T17:31:31.805126204Z }
+projects-1     | 2026-11-17T17:31:31.817504384Z [0mGET /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875 [32m200[0m 12.386 ms - 86[0m
+projects-1     | 2026-11-17T17:31:32.085985228Z PROJECTS-MS /:user/:project/video HIT, file = true
+projects-1     | 2026-11-17T17:31:32.251260901Z [0mPOST /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/video [32m204[0m 417.756 ms - -[0m
+projects-1     | 2026-11-17T17:31:32.264630580Z [GET /:user/:project headers] {
+projects-1     | 2026-11-17T17:31:32.264652693Z   hasAuth: true,
+projects-1     | 2026-11-17T17:31:32.264653903Z   authStart: 'Bearer eyJhbGciOiJIU',
+projects-1     | 2026-11-17T17:31:32.264655115Z   caller: '6afc8f665799776ca1f68146'
+projects-1     | 2026-11-17T17:31:32.264655837Z }
+projects-1     | 2026-11-17T17:31:32.277122536Z [0mGET /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875 [32m200[0m 12.558 ms - 593[0m
+projects-1     | 2026-11-17T17:31:32.310997919Z [0mPOST /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/tool [32m204[0m 22.101 ms - -[0m
+projects-1     | 2026-11-17T17:31:32.440919331Z [GET /:user/:project headers] {
+projects-1     | 2026-11-17T17:31:32.440969712Z   hasAuth: true,
+projects-1     | 2026-11-17T17:31:32.440973414Z   authStart: 'Bearer eyJhbGciOiJIU',
+projects-1     | 2026-11-17T17:31:32.440975816Z   caller: '6afc8f665799776ca1f68146'
+projects-1     | 2026-11-17T17:31:32.440977289Z }
+projects-1     | 2026-11-17T17:31:32.447276410Z [0mGET /6afc8f665799776ca1f68146 [32m200[0m 9.609 ms - 199[0m
+projects-1     | 2026-11-17T17:31:32.451699438Z [0mPOST /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence [32m200[0m 33.128 ms - 60[0m
+projects-1     | 2026-11-17T17:31:32.453485050Z [0mGET /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/process/url [32m200[0m 9.624 ms - 22[0m
+projects-1     | 2026-11-17T17:31:32.467006778Z [0mGET /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875 [32m200[0m 27.888 ms - 693[0m
+projects-1     | 2026-11-17T17:31:32.512882697Z [0mGET /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/share [32m200[0m 2.833 ms - 2[0m
+projects-1     | 2026-11-17T17:31:32.525541956Z [0mPOST /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/dirty [32m204[0m 18.591 ms - -[0m
+projects-1     | 2026-11-17T17:31:35.619615286Z [CALLER] {
+projects-1     | 2026-11-17T17:31:35.619639690Z   userParam: '6afc8f665799776ca1f68146',
+projects-1     | 2026-11-17T17:31:35.619641626Z   forwarded: '6afc8f665799776ca1f68146',
+projects-1     | 2026-11-17T17:31:35.619642907Z   hasAuth: true,
+projects-1     | 2026-11-17T17:31:35.619644119Z   caller: '6afc8f665799776ca1f68146'
+projects-1     | 2026-11-17T17:31:35.619645320Z }
+projects-1     | 2026-11-17T17:31:35.621054726Z [ADV DEBUG] project: 6afc8f73fbd7641967525875 adv_ops: 0 totalAdv: 0 charged: 0 newTools: 0 tools: [ 'brightness' ]
+projects-1     | 2026-11-17T17:31:35.772911719Z [0mPOST /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/process [32m201[0m 161.368 ms - 7[0m
+projects-1     | 2026-11-17T17:31:35.793581314Z [GET /:user/:project headers] {
+projects-1     | 2026-11-17T17:31:35.793633368Z   hasAuth: true,
+projects-1     | 2026-11-17T17:31:35.793637871Z   authStart: 'Bearer eyJhbGciOiJIU',
+projects-1     | 2026-11-17T17:31:35.793640503Z   caller: '6afc8f665799776ca1f68146'
+projects-1     | 2026-11-17T17:31:35.793642619Z }
+projects-1     | 2026-11-17T17:31:35.815310299Z [0mGET /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875 [32m200[0m 21.934 ms - 695[0m
+projects-1     | 2026-11-17T17:31:35.816862832Z [0mGET /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/process/url [32m200[0m 9.813 ms - 22[0m
+projects-1     | 2026-11-17T17:31:37.439201063Z [0mPOST /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence [32m200[0m 22.780 ms - 60[0m
+projects-1     | 2026-11-17T17:31:38.894766055Z [CANCEL][RESULTS-CLEAN] token=1 deleted=0
+projects-1     | 2026-11-17T17:31:38.903558656Z [0mDELETE /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/process [32m204[0m 32.938 ms - -[0m
+projects-1     | 2026-11-17T17:31:38.945059290Z [GET /:user/:project headers] {
+projects-1     | 2026-11-17T17:31:38.945112171Z   hasAuth: true,
+projects-1     | 2026-11-17T17:31:38.945115016Z   authStart: 'Bearer eyJhbGciOiJIU',
+projects-1     | 2026-11-17T17:31:38.945140199Z   caller: '6afc8f665799776ca1f68146'
+nginx-1        | 2026-11-17T17:31:32.511557646Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "GET /api-gateway/users/6afc8f665799776ca1f68146/presets HTTP/1.1" 200 678 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:32.513064765Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/share HTTP/1.1" 200 2 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:32.526273156Z 172.18.0.1 - - [17/Nov/2026:17:31:32 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/dirty HTTP/1.1" 204 0 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:35.774088585Z 172.18.0.1 - - [17/Nov/2026:17:31:35 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/process HTTP/1.1" 201 9 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:38.945141379Z }
+nginx-1        | 2026-11-17T17:31:35.813656566Z 172.18.0.1 - - [17/Nov/2026:17:31:35 +0000] "GET /api-gateway/users/validate/6afc8f665799776ca1f68146 HTTP/1.1" 200 507 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:35.816254052Z 172.18.0.1 - - [17/Nov/2026:17:31:35 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875 HTTP/1.1" 200 695 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:38.961840784Z [0mGET /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/process/url [32m200[0m 12.577 ms - 22[0m
+projects-1     | 2026-11-17T17:31:38.976116566Z [0mGET /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875 [32m200[0m 30.122 ms - 693[0m
+projects-1     | 2026-11-17T17:31:42.436175108Z [0mPOST /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence [32m200[0m 19.563 ms - 60[0m
+projects-1     | 2026-11-17T17:31:47.450475865Z [0mPOST /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence [32m200[0m 20.656 ms - 60[0m
+nginx-1        | 2026-11-17T17:31:35.817812943Z 172.18.0.1 - - [17/Nov/2026:17:31:35 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/process/url HTTP/1.1" 200 22 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:31:52.445051522Z [0mPOST /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence [32m200[0m 25.161 ms - 60[0m
+projects-1     | 2026-11-17T17:31:57.447969804Z [0mPOST /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence [32m200[0m 19.881 ms - 60[0m
+nginx-1        | 2026-11-17T17:31:35.839729347Z 172.18.0.1 - - [17/Nov/2026:17:31:35 +0000] "GET /api-gateway/users/validate/6afc8f665799776ca1f68146 HTTP/1.1" 200 507 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:35.869101550Z 172.18.0.1 - - [17/Nov/2026:17:31:35 +0000] "GET /s3/picturas/users/6afc8f665799776ca1f68146/projects/6afc8f73fbd7641967525875/src/cdf2efcd-71a2-4dba-98ea-1b71c0f0ef91.mp4?AWSAccessKeyId=admin&Expires=1794940295&Signature=ZvZ%2FoW5nZsA84aE9LMTZWdCBGb0%3D HTTP/1.1" 206 261682 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+projects-1     | 2026-11-17T17:32:02.449394134Z [0mPOST /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence [32m200[0m 21.414 ms - 60[0m
+projects-1     | 2026-11-17T17:32:07.453590041Z [0mPOST /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence [32m200[0m 16.479 ms - 60[0m
+projects-1     | 2026-11-17T17:32:08.894394742Z [0mGET /6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/process/url [32m200[0m 2.635 ms - 22[0m
+nginx-1        | 2026-11-17T17:31:35.876408966Z 172.18.0.1 - - [17/Nov/2026:17:31:35 +0000] "GET /s3/picturas/users/6afc8f665799776ca1f68146/projects/6afc8f73fbd7641967525875/src/cdf2efcd-71a2-4dba-98ea-1b71c0f0ef91.mp4?AWSAccessKeyId=admin&Expires=1794940295&Signature=ZvZ%2FoW5nZsA84aE9LMTZWdCBGb0%3D HTTP/1.1" 206 73583 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:37.440030995Z 172.18.0.1 - - [17/Nov/2026:17:31:37 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence?owner=6afc8f665799776ca1f68146 HTTP/1.1" 204 0 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:38.904382155Z 172.18.0.1 - - [17/Nov/2026:17:31:38 +0000] "DELETE /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/process HTTP/1.1" 204 0 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:38.962141968Z 172.18.0.1 - - [17/Nov/2026:17:31:38 +0000] "GET /api-gateway/users/validate/6afc8f665799776ca1f68146 HTTP/1.1" 200 507 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:38.963402038Z 172.18.0.1 - - [17/Nov/2026:17:31:38 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/process/url HTTP/1.1" 200 22 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:38.977902980Z 172.18.0.1 - - [17/Nov/2026:17:31:38 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875 HTTP/1.1" 200 693 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:39.012934466Z 172.18.0.1 - - [17/Nov/2026:17:31:39 +0000] "GET /s3/picturas/users/6afc8f665799776ca1f68146/projects/6afc8f73fbd7641967525875/src/cdf2efcd-71a2-4dba-98ea-1b71c0f0ef91.mp4?AWSAccessKeyId=admin&Expires=1794940298&Signature=i9BCB3cJrAM69AvaZZAD8D3t2KM%3D HTTP/1.1" 206 851506 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:39.017434964Z 172.18.0.1 - - [17/Nov/2026:17:31:39 +0000] "GET /s3/picturas/users/6afc8f665799776ca1f68146/projects/6afc8f73fbd7641967525875/src/cdf2efcd-71a2-4dba-98ea-1b71c0f0ef91.mp4?AWSAccessKeyId=admin&Expires=1794940298&Signature=i9BCB3cJrAM69AvaZZAD8D3t2KM%3D HTTP/1.1" 206 73583 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:42.436866016Z 172.18.0.1 - - [17/Nov/2026:17:31:42 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence?owner=6afc8f665799776ca1f68146 HTTP/1.1" 204 0 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:47.451990733Z 172.18.0.1 - - [17/Nov/2026:17:31:47 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence?owner=6afc8f665799776ca1f68146 HTTP/1.1" 204 0 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:52.445762882Z 172.18.0.1 - - [17/Nov/2026:17:31:52 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence?owner=6afc8f665799776ca1f68146 HTTP/1.1" 204 0 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:31:57.448649952Z 172.18.0.1 - - [17/Nov/2026:17:31:57 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence?owner=6afc8f665799776ca1f68146 HTTP/1.1" 204 0 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:32:02.450003929Z 172.18.0.1 - - [17/Nov/2026:17:32:02 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence?owner=6afc8f665799776ca1f68146 HTTP/1.1" 204 0 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:32:07.454161304Z 172.18.0.1 - - [17/Nov/2026:17:32:07 +0000] "POST /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/presence?owner=6afc8f665799776ca1f68146 HTTP/1.1" 204 0 "https://localhost:8080/dashboard/6afc8f73fbd7641967525875" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"
+nginx-1        | 2026-11-17T17:32:08.895042721Z 172.18.0.1 - - [17/Nov/2026:17:32:08 +0000] "GET /api-gateway/projects/6afc8f665799776ca1f68146/6afc8f73fbd7641967525875/process/url HTTP/1.1" 200 22 "-" "-"
+nginx-1        | 2026-11-17T17:32:08.902251703Z 172.18.0.1 - - [17/Nov/2026:17:32:08 +0000] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 101 6621 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.16 Safari/537.36"

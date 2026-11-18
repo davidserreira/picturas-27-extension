@@ -13,11 +13,13 @@ inicial (`baseline/`) e para a final (`final/`). Só usam a interface pública d
 | `ambiente.mjs` | Regista máquina, sistema, versões e serviços em `<medição>/ambiente.json` |
 | `rnf1/medir-memoria.mjs` | RNF-F2-01: M1.1 e controlos C1.1 a C1.7 (o C1.7 lê o filer do SeaweedFS em `localhost:9090`) |
 | `rnf1/medir-limite.mjs` | RNF-F2-01: M1.2, com `rnf1/compose.limites.yaml` |
-| `rnf2/medir.mjs` | RNF-F2-02: `calibrar`, `m21`, `m22`, `m23`, `controlos` (C2.1 a C2.5) |
+| `rnf2/medir.mjs` | RNF-F2-02: `calibrar`, `m21`, `m22`, `m23`, `controlos` (C2.1 a C2.5; com `--so c21`, só o C2.1 e o C2.2) |
 | `correr-tudo.sh` | Corre toda a série pela ordem certa |
 | `resumo.mjs` | Junta os resultados em bruto em `<medição>/resumo.md` |
 | `lib/comum.mjs` | Pedidos à API, envio de ficheiros em fluxo, amostragem de memória, estatística |
 | `baseline/` | Resultados da medição inicial: JSON em bruto, `logs/`, `resumo.md` |
+| `passos/` | Medições intermédias de cada passo do ADR-01 |
+| `final/rnf-f2-01/` | Medição final do RNF-F2-01 no seu ramo, com o complemento e a comparação A/B do C2.1 (ver o `README.md` da pasta) |
 
 ## Pré-requisitos
 
