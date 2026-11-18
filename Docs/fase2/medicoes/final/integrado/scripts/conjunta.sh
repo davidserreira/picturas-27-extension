@@ -8,6 +8,10 @@
 #   git switch fase2/integracao                         # in the main working tree (has dados/ and node_modules)
 #   git worktree add C:/tmp/picturas-main 43a2e08       # the base, for the A blocks
 set -u
+# Git Bash rewrites POSIX-looking values passed to native programs: without this,
+# PICTURAS_STATE_PATH reaches node as "C:/Program Files/Git/projects/..." (C2.3 of
+# the RNF-F2-02 complement, final/rnf-f2-02/complemento/c23/README.md).
+export MSYS_NO_PATHCONV=1
 REPO="$(git rev-parse --show-toplevel)"
 M="$REPO/Docs/fase2/medicoes"
 OUT="$M/final/integrado"

@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 930 440" font-family="Carlito, Calibri, sans-serif" font-size="13">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+    <marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#c0392b"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="930" height="440" fill="#ffffff"/>
+
+  <!-- boxes -->
+  <g fill="#ffffff" stroke="#555" stroke-width="1.2">
+    <rect x="15" y="185" width="95" height="46" rx="6"/>
+    <rect x="145" y="185" width="95" height="46" rx="6"/>
+    <rect x="290" y="40" width="130" height="46" rx="6"/>
+    <rect x="290" y="185" width="130" height="46" rx="6"/>
+    <rect x="290" y="350" width="130" height="46" rx="6"/>
+    <rect x="470" y="40" width="150" height="46" rx="6"/>
+    <rect x="470" y="168" width="150" height="80" rx="6" fill="#F3E3D3"/>
+    <rect x="470" y="282" width="150" height="40" rx="6"/>
+    <rect x="470" y="370" width="150" height="40" rx="6"/>
+    <rect x="665" y="120" width="100" height="240" rx="6" fill="#f4f4f4"/>
+    <rect x="805" y="60" width="115" height="56" rx="6"/>
+  </g>
+  <rect x="805" y="246" width="115" height="66" rx="6" fill="#ffffff" stroke="#c0392b" stroke-width="3"/>
+
+  <!-- labels -->
+  <g fill="#222" text-anchor="middle">
+    <text x="62" y="213">Browser</text>
+    <text x="192" y="213">nginx</text>
+    <text x="355" y="68">frontend (Next.js)</text>
+    <text x="355" y="206">api_gateway</text>
+    <text x="355" y="222" font-size="11" fill="#666">verifica o JWT</text>
+    <text x="355" y="371">ws_gateway</text>
+    <text x="355" y="387" font-size="11" fill="#666">Socket.IO</text>
+    <text x="545" y="68">users · subscriptions</text>
+    <text x="545" y="192" font-weight="bold">projects</text>
+    <text x="545" y="209" font-size="11" fill="#444">orquestrador</text>
+    <text x="545" y="225" font-size="11" fill="#444">projetos, pipelines, Process</text>
+    <text x="545" y="240" font-size="11" fill="#444">MongoDB</text>
+    <text x="545" y="307">img_storage</text>
+    <text x="545" y="395">SeaweedFS (S3)</text>
+    <text x="715" y="142" font-weight="bold">RabbitMQ</text>
+    <text x="715" y="180" font-size="11">&lt;tool&gt;_queue ×16</text>
+    <text x="715" y="220" font-size="11" fill="#c0392b">video_queue</text>
+    <text x="715" y="260" font-size="11">project_queue</text>
+    <text x="715" y="300" font-size="11" fill="#c0392b">ws_queue</text>
+    <text x="862" y="84">16 ferramentas</text>
+    <text x="862" y="100">de imagem (PIL)</text>
+    <text x="862" y="268" font-weight="bold" fill="#c0392b">video_tool</text>
+    <text x="862" y="285" font-size="11" fill="#444">ffmpeg, Whisper</text>
+    <text x="862" y="300" font-size="11" fill="#444">uma réplica</text>
+  </g>
+
+  <!-- ordinary flows -->
+  <g stroke="#555" stroke-width="1.3" fill="none" marker-end="url(#a)">
+    <line x1="110" y1="208" x2="143" y2="208"/>
+    <line x1="240" y1="198" x2="288" y2="78"/>
+    <line x1="240" y1="208" x2="288" y2="208"/>
+    <line x1="240" y1="220" x2="288" y2="358"/>
+    <line x1="420" y1="198" x2="468" y2="76"/>
+    <line x1="420" y1="208" x2="468" y2="208"/>
+    <line x1="545" y1="248" x2="545" y2="280"/>
+    <line x1="545" y1="322" x2="545" y2="368"/>
+    <line x1="620" y1="190" x2="663" y2="180"/>
+    <line x1="765" y1="175" x2="803" y2="96"/>
+    <line x1="805" y1="290" x2="767" y2="262"/>
+    <line x1="663" y1="258" x2="622" y2="232"/>
+    <line x1="290" y1="380" x2="72" y2="233"/>
+  </g>
+  <!-- video path -->
+  <g stroke="#c0392b" stroke-width="3" fill="none" marker-end="url(#r)">
+    <line x1="620" y1="215" x2="663" y2="217"/>
+    <line x1="765" y1="220" x2="803" y2="262"/>
+    <line x1="805" y1="300" x2="767" y2="300"/>
+    <line x1="665" y1="315" x2="422" y2="372"/>
+  </g>
+  <g font-size="11" fill="#444">
+    <text x="626" y="176">publica</text>
+    <text x="140" y="330" fill="#444">eventos</text>
+    <text x="770" y="327" fill="#c0392b">progresso direto</text>
+    <text x="770" y="341" fill="#c0392b">(video-progress)</text>
+    <text x="640" y="345" fill="#c0392b" text-anchor="middle">ws_queue</text>
+  </g>
+
+  <!-- legend -->
+  <g font-size="12" fill="#222">
+    <line x1="20" y1="30" x2="60" y2="30" stroke="#c0392b" stroke-width="3"/>
+    <text x="68" y="34">caminho do vídeo na base</text>
+    <line x1="20" y1="52" x2="60" y2="52" stroke="#555" stroke-width="1.3"/>
+    <text x="68" y="56">outros fluxos</text>
+  </g>
+</svg>

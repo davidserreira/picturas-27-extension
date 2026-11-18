@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 930 420" font-family="Carlito, Calibri, sans-serif" font-size="13">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1f6f43"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="930" height="420" fill="#ffffff"/>
+
+  <!-- ANTES -->
+  <text x="15" y="26" font-weight="bold" font-size="15">Antes: cada serviço guarda o ficheiro inteiro</text>
+  <g fill="#ffffff" stroke="#555" stroke-width="1.2">
+    <rect x="15" y="45" width="90" height="50" rx="6"/>
+    <rect x="140" y="45" width="120" height="50" rx="6"/>
+    <rect x="295" y="45" width="140" height="50" rx="6"/>
+    <rect x="470" y="45" width="150" height="50" rx="6"/>
+    <rect x="655" y="45" width="130" height="50" rx="6"/>
+    <rect x="820" y="45" width="95" height="50" rx="6"/>
+  </g>
+  <g text-anchor="middle" fill="#222">
+    <text x="60" y="75">Browser</text>
+    <text x="200" y="75">nginx</text>
+    <text x="365" y="75">api_gateway</text>
+    <text x="545" y="75">projects</text>
+    <text x="720" y="75">img_storage</text>
+    <text x="867" y="75">SeaweedFS</text>
+  </g>
+  <g stroke="#555" stroke-width="1.4" marker-end="url(#a)">
+    <line x1="105" y1="70" x2="138" y2="70"/>
+    <line x1="260" y1="70" x2="293" y2="70"/>
+    <line x1="435" y1="70" x2="468" y2="70"/>
+    <line x1="620" y1="70" x2="653" y2="70"/>
+    <line x1="785" y1="70" x2="818" y2="70"/>
+  </g>
+  <g fill="#c0392b" opacity="0.85">
+    <rect x="140" y="102" width="120" height="8"/>
+    <rect x="295" y="102" width="140" height="8"/>
+    <rect x="470" y="102" width="150" height="8"/>
+    <rect x="655" y="102" width="130" height="8"/>
+  </g>
+  <g font-size="11" fill="#9b2c20" text-anchor="middle">
+    <text x="200" y="126">corpo guardado em disco</text>
+    <text x="200" y="140">antes de passar</text>
+    <text x="365" y="126">multer em memória;</text>
+    <text x="365" y="140">JWT só depois do corpo</text>
+    <text x="545" y="126">buffer em memória e</text>
+    <text x="545" y="140">cópia em disco (ffprobe)</text>
+    <text x="720" y="126">buffer em memória</text>
+    <text x="720" y="140">antes do S3</text>
+  </g>
+  <g font-size="12" font-weight="bold" fill="#9b2c20" text-anchor="middle">
+    <text x="200" y="160">+19 MiB</text>
+    <text x="365" y="160">+2001 MiB</text>
+    <text x="545" y="160">+1044 MiB</text>
+    <text x="720" y="160">+1016 MiB</text>
+  </g>
+
+  <line x1="15" y1="185" x2="915" y2="185" stroke="#ccc" stroke-dasharray="4 4"/>
+
+  <!-- DEPOIS -->
+  <text x="15" y="215" font-weight="bold" font-size="15">Depois: «tática: processar em fluxo» de ponta a ponta</text>
+  <g fill="#ffffff" stroke="#1f6f43" stroke-width="1.6">
+    <rect x="140" y="235" width="120" height="50" rx="6"/>
+    <rect x="295" y="235" width="140" height="50" rx="6"/>
+    <rect x="470" y="235" width="150" height="50" rx="6"/>
+    <rect x="655" y="235" width="130" height="50" rx="6"/>
+  </g>
+  <g fill="#ffffff" stroke="#555" stroke-width="1.2">
+    <rect x="15" y="235" width="90" height="50" rx="6"/>
+    <rect x="820" y="235" width="95" height="50" rx="6"/>
+  </g>
+  <g text-anchor="middle" fill="#222">
+    <text x="60" y="265">Browser</text>
+    <text x="200" y="265">nginx</text>
+    <text x="365" y="265">api_gateway</text>
+    <text x="545" y="265">projects</text>
+    <text x="720" y="265">img_storage</text>
+    <text x="867" y="265">SeaweedFS</text>
+  </g>
+  <g stroke="#1f6f43" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#g)">
+    <line x1="105" y1="260" x2="138" y2="260"/>
+    <line x1="260" y1="260" x2="293" y2="260"/>
+    <line x1="435" y1="260" x2="468" y2="260"/>
+    <line x1="620" y1="260" x2="653" y2="260"/>
+    <line x1="785" y1="260" x2="818" y2="260"/>
+  </g>
+  <g font-size="11" fill="#1f6f43" text-anchor="middle">
+    <text x="200" y="306">proxy_request_buffering</text>
+    <text x="200" y="320">off</text>
+    <text x="365" y="306">JWT antes do corpo;</text>
+    <text x="365" y="320">proxy em fluxo</text>
+    <text x="545" y="306">multer em fluxo: SHA-256 e</text>
+    <text x="545" y="320">bytes contados; ffprobe sobre</text>
+    <text x="545" y="334">o objeto, apagado se recusado</text>
+    <text x="720" y="306">envio em partes de 5 MiB,</text>
+    <text x="720" y="320">2 em paralelo</text>
+  </g>
+  <g font-size="12" font-weight="bold" fill="#1f6f43" text-anchor="middle">
+    <text x="200" y="358">+10 MiB</text>
+    <text x="365" y="358">+43 MiB</text>
+    <text x="545" y="358">+43 MiB</text>
+    <text x="720" y="358">+55 MiB</text>
+  </g>
+
+  <!-- legend -->
+  <g font-size="11" fill="#444">
+    <text x="15" y="395">Valores: maior acréscimo de memória com um vídeo de 500 MiB (M1.1), na base e na medição final do RNF-F2-01.</text>
+    <text x="15" y="410">Caixas a verde: serviços alterados pela DA-1. Seta tracejada: os bytes passam em blocos, sem cópia completa.</text>
+  </g>
+</svg>
