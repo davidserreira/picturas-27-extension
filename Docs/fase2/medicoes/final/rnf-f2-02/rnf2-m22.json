@@ -1,0 +1,116 @@
+{
+  "medida": "RNF-F2-02 M2.2",
+  "quando": "2026-11-18T15:43:03.532Z",
+  "commit": {
+    "hash": "77c9bf7c6830902d68fdf771f6a070b3b63bec48",
+    "codeChanges": []
+  },
+  "video": "p-video-330s.mp4",
+  "duracaoReferenciaS": 222.8,
+  "execucoes": [
+    {
+      "execucao": 1,
+      "P": "6afdc78931cedd52ae61af7a",
+      "R": [
+        {
+          "momento": 0.25,
+          "progressoAntes": 15,
+          "recuperaS": 0.36,
+          "valorDepois": 15.3,
+          "naoRecupera": false,
+          "aposLoadS": 0.4
+        },
+        {
+          "momento": 0.6,
+          "progressoAntes": 39,
+          "recuperaS": 0.32,
+          "valorDepois": 39,
+          "naoRecupera": false,
+          "aposLoadS": 0.3
+        }
+      ],
+      "F": {
+        "notificaS": 0,
+        "naoRecupera": false
+      }
+    },
+    {
+      "execucao": 2,
+      "P": "6afdc8f531cedd52ae61dc93",
+      "R": [
+        {
+          "momento": 0.25,
+          "progressoAntes": 14,
+          "recuperaS": 0.35,
+          "valorDepois": 14,
+          "naoRecupera": false,
+          "aposLoadS": 0.3
+        },
+        {
+          "momento": 0.6,
+          "progressoAntes": 38.6,
+          "recuperaS": 0.36,
+          "valorDepois": 38.8,
+          "naoRecupera": false,
+          "aposLoadS": 0.4
+        }
+      ],
+      "F": {
+        "notificaS": 0.11,
+        "naoRecupera": false
+      }
+    },
+    {
+      "execucao": 3,
+      "P": "6afdca6731cedd52ae620b37",
+      "R": [
+        {
+          "momento": 0.25,
+          "progressoAntes": 14,
+          "recuperaS": 0.63,
+          "valorDepois": 14.1,
+          "naoRecupera": false,
+          "aposLoadS": 0.6
+        },
+        {
+          "momento": 0.6,
+          "progressoAntes": 37,
+          "recuperaS": 0.34,
+          "valorDepois": 37,
+          "naoRecupera": false,
+          "aposLoadS": 0.3
+        }
+      ],
+      "F": {
+        "notificaS": 0.11,
+        "naoRecupera": false
+      }
+    }
+  ],
+  "resumo": {
+    "R": {
+      "valores": 6,
+      "naoRecupera": 0,
+      "tempos": {
+        "n": 6,
+        "mean": 0.39,
+        "sd": 0.12,
+        "median": 0.36,
+        "min": 0.32,
+        "max": 0.63
+      }
+    },
+    "F": {
+      "valores": 3,
+      "naoRecupera": 0,
+      "tempos": {
+        "n": 3,
+        "mean": 0.07,
+        "sd": 0.06,
+        "median": 0.11,
+        "min": 0,
+        "max": 0.11
+      }
+    }
+  }
+}

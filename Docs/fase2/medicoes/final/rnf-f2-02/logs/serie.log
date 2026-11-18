@@ -1,0 +1,10 @@
+=== 15:15:24 commit 77c9bf7; arranque limpo
+    exit 0
+    frontend 200 (15:17:16); espera 90 s
+=== 15:18:50 rnf1-memoria
+    exit 0 (15:28:32)
+=== 15:28:32 rnf2-m21
+    exit 0 (15:43:02)
+=== 15:43:02 rnf2-m22
+    exit 0 (16:01:16)
+=== 16:01:16 rnf2-m23

@@ -305,3 +305,67 @@ deste plano.
 | 3 | `projects`, `ws_gateway` | Baixo | 1 h | Evento `run-status` |
 | 4 | `frontend` | Médio | 4 h | M2.1, M2.2, M2.3 e C2.2 |
 | 5 | — | — | 1 h | Documentação |
+
+## 7. Implementação
+
+Feita a 18 de novembro de 2026, com um commit por passo (`f1714dc` a `77c9bf7`). Depois de cada
+passo correram:
+
+- os testes unitários do serviço alterado;
+- a regressão completa (`../regressao/passos-rnf2/`);
+- a verificação do passo (`../medicoes/passos-rnf2/`): nos passos 1 a 3, `estado.mjs` pelo servidor,
+  com o vídeo de 120 s; no passo 4, as medidas do browser com o vídeo de 330 s e uma execução.
+
+São verificações intermédias: o valor de cada requisito é o da medição final.
+
+O ramo foi publicado como `fase2/rnf-f2-02-segundo-plano-medido`, e não com o nome da secção 6. Um
+membro da equipa publicou com esse nome uma implementação diferente do mesmo requisito, feita em
+paralelo. A escolha entre as duas é da equipa. A medição final é a desta.
+
+### 7.1 Resultados por passo
+
+Verificação pelo servidor, um projeto com o vídeo de 120 s e duas imagens:
+
+| Passo | Rota de estado | Progresso no servidor | `video-progress` (maior intervalo) | `run-status` | C2.3 (outro utilizador / sem JWT) | Regressão |
+| --- | --- | --- | --- | --- | --- | --- |
+| Base | Não existe | Não existe | A cada 2% (C2.2 de 16,9 s com o vídeo de 330 s) | Não existe | — | 74/74, 8/8, 18/18, 3/3 |
+| 1. Estado no orquestrador | `idle`, `running`, `done` com 100 | 2 mudanças: o vídeo só conta quando acaba | 3,98 s | — | 401 / 401 | 74/74, 14/14, 18/18, 3/3 |
+| 2. Progresso pelo orquestrador | Igual | 107 mudanças, maior intervalo 2,06 s | 1,96 s | — | 401 / 401 | 75/75, 14/14, 18/18, 3/3 |
+| 3. Evento `run-status` | Igual | 109 mudanças, maior intervalo 1,73 s | 1,79 s | 121 eventos, maior intervalo 1,79 s; nenhum chega a outro utilizador | 401 / 401 | 75/75, 14/14, 18/18, 3/3 |
+
+A regressão aparece pela ordem pytest, `node --test` do `projects`, ponta a ponta e interface. Os 14
+testes do `projects` incluem os 8 da base. O pytest passou de 74 para 75 testes com o teste de
+cadência do passo 2. No passo 3 juntaram-se 3 testes unitários ao `ws_gateway`.
+
+Também se verificou o cancelamento pelo servidor, nos passos 1 e 3. No passo 3, a rota mostrou
+`cancelled` 0,27 s depois do pedido. Os eventos chegaram pela ordem `running` e `cancelled`, e o
+projeto ficou sem resultados.
+
+Passo 4, interface, com o vídeo de 330 s e uma execução:
+
+| Medida | Base | Passo 4 | Alvo |
+| --- | --- | --- | --- |
+| M2.2 R (recarregar aos 25% e 60%) | Não recupera | 0,35 s e 0,57 s | ≤ 2 s |
+| M2.2 F (fim noutra página) | Não recupera | 0,11 s | ≤ 2 s |
+| M2.3, forma A (recarregar) | 0/5 | 1/1; `Cancel` oferecido em 0,36 s | 5/5 |
+| M2.3, forma B (sessão nova) | 0/5 | 1/1; `Cancel` oferecido em 0,39 s | 5/5 |
+| Regressão | 74/74, 8/8, 18/18, 3/3 | 75/75, 14/14, 18/18, 3/3 | Sem falhas |
+
+`bun run build` correu sem erros. A M2.1 e o C2.1/C2.2 do passo 4 não ficaram registados, por duas
+razões:
+
+- a M2.1 parou num `ECONNRESET` do reencaminhamento de portas do Docker Desktop, antes de o pedido
+  chegar ao nginx (`../medicoes/passos-rnf2/passo-4/logs/rnf2-m21.log`);
+- a execução do C2.1/C2.2 foi interrompida pela suspensão do portátil.
+
+As duas medidas ficam para a medição final. O instrumento passou a repetir uma vez um `GET` que
+falhe por `ECONNRESET` ou `EPIPE` (`../medicoes/lib/comum.mjs`, passo 5).
+
+### 7.2 Desvios ao plano
+
+| Desvio | Porquê |
+| --- | --- |
+| O worker reporta a cada segundo e também a cada ponto percentual inteiro, e não só "no máximo uma vez por segundo" | O `video-progress` que o orquestrador reencaminha leva a percentagem inteira. Só com a regra do segundo, um vídeo em que cada ponto demora menos de um segundo saltava valores inteiros; na base, o evento chegava a cada 2 pontos. Com o vídeo de 330 s (cerca de 2,2 s por ponto), quem marca o ritmo é a regra do segundo |
+| O `run-status` não vai para a sala `project:<id>` | O plano inicial incluía-a. Ao implementar o passo 3 viu-se que o `ws_gateway` deixa qualquer socket entrar nessa sala sem verificar o acesso, e o estado inclui o nome do projeto e o dono. O ADR e o `AGENTS.md` foram corrigidos no mesmo commit (`54386cc`). Quem tem o projeto partilhado vê o estado pela rota, ao abrir a página |
+| O ramo foi publicado com outro nome | Ver o início desta secção |
+| A série final não repete a M1.1/C1.4 com 1000 MiB | Este ramo mantém o caminho de carregamento da base. Nesse caminho, o envio de 1000 MiB sem limites deitou abaixo o motor do Docker duas vezes (`../medicoes/ocorrencias/2026-11-16-queda-docker/`). A medida com 1000 MiB faz-se na série com os dois requisitos juntos. As outras medidas do RNF-F2-01 correm como na base |
