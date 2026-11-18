@@ -32,6 +32,8 @@ import { getErrorMessage } from "@/lib/error-messages";
 import { useQueryClient } from "@tanstack/react-query";
 import type { SingleProject } from "@/lib/projects";
 import { useSearchParams } from "next/navigation";
+import { useRuns } from "@/providers/runs-provider";
+import { Progress } from "../ui/progress";
 
 
 export default function ProjectItem({ p }: { p: Project }) {
@@ -44,6 +46,9 @@ export default function ProjectItem({ p }: { p: Project }) {
   const [newName, setNewName] = useState<string>(p.name);
 
   const session = useSession();
+  // RNF-F2-02: progress of a run of this project, visible from any page.
+  const run = useRuns().getRun(p._id);
+  const running = run?.state === "running";
   const qc = useQueryClient();
   const searchParams = useSearchParams();
 
@@ -104,6 +109,18 @@ export default function ProjectItem({ p }: { p: Project }) {
         >
           <Link href={`/dashboard/${p._id}`}>{p.name}</Link>
         </SidebarMenuButton>
+        {running && (
+          <div className="flex items-center gap-2 px-2 pb-1">
+            <Progress
+              value={run.percent}
+              aria-label={`Processing ${p.name}`}
+              className="h-1.5"
+            />
+            <span className="text-xs text-muted-foreground tabular-nums">
+              {Math.floor(run.percent)}%
+            </span>
+          </div>
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuAction className="pb-1">

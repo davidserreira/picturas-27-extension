@@ -15,6 +15,7 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "@/providers/session-provider";
+import { ActiveRuns } from "@/components/runs/active-runs";
 
 const pages = [
   {
@@ -81,6 +82,8 @@ export function AccountSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        {/* RNF-F2-02: progress of running projects stays visible here */}
+        <ActiveRuns />
       </SidebarContent>
     </Sidebar>
   );

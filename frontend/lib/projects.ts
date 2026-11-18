@@ -1112,3 +1112,48 @@ export async function setProjectDirty({
 
   return { newVersionHeader: resp.headers?.["x-project-version"] };
 }
+
+// RNF-F2-02: processing runs are tracked by the projects service, so the
+// progress survives reloads, page changes and new sessions.
+export type RunState = "running" | "completed" | "cancelled" | "failed";
+
+export interface ProjectRun {
+  projectId: string;
+  projectName: string;
+  ownerId: string;
+  runnerId: string | null;
+  token: number;
+  state: RunState;
+  percent: number;
+  error: string | null;
+  startedAt: string;
+  updatedAt: string;
+  finishedAt: string | null;
+}
+
+export const fetchProjectRun = async (
+  uid: string,
+  pid: string,
+  token: string,
+  ownerId?: string,
+  shareId?: string,
+): Promise<ProjectRun | null> => {
+  const query = buildQuery({ ownerId, shareId });
+  const pathUid = pathUidFor(uid, ownerId, shareId);
+  const response = await api.get<{ run: ProjectRun | null }>(
+    `/projects/${pathUid}/${pid}/process/status${query}`,
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
+  return response.data?.run ?? null;
+};
+
+export const fetchActiveRuns = async (
+  uid: string,
+  token: string,
+): Promise<ProjectRun[]> => {
+  const response = await api.get<{ runs: ProjectRun[] }>(
+    `/projects/${uid}/runs/active`,
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
+  return response.data?.runs ?? [];
+};

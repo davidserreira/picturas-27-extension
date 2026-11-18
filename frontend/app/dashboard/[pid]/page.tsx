@@ -1,7 +1,8 @@
 "use client";
 
 import { Download, LoaderCircle, OctagonAlert, Play } from "lucide-react";
-import { fetchSharedProject, resolveShareLink } from "@/lib/projects";
+import { fetchProjectRun, resolveShareLink } from "@/lib/projects";
+import { useRuns } from "@/providers/runs-provider";
 import { ProjectImageList } from "@/components/project-page/project-image-list";
 import { ViewToggle } from "@/components/project-page/view-toggle";
 import { AddImagesDialog } from "@/components/project-page/add-images-dialog";
@@ -34,13 +35,10 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { ProjectImage, isVideo } from "@/lib/projects";
 import { Progress } from "@/components/ui/progress";
-import { Card } from "@/components/ui/card";
-import { Transition } from "@headlessui/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { ModeToggle } from "@/components/project-page/mode-toggle";
-import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useUpdateSession } from "@/lib/mutations/session";
 import { getErrorMessage } from "@/lib/error-messages";
 import { PresetsDialog } from "@/components/presets/presets-dialog";
@@ -83,22 +81,15 @@ export default function Project({
   const downloadProjectPdf = useDownloadProjectPdf();
   const router = useRouter();
   const path = usePathname();
-  const sidebar = useSidebar();
-  const isMobile = useIsMobile();
   const [currentImage, setCurrentImage] = useState<ProjectImage | null>(null);
+  // True while a run of this project is in progress (set optimistically on
+  // Apply, then kept in sync with the run state of the projects service).
   const [processing, setProcessing] = useState<boolean>(false);
-  const [processingProgress, setProcessingProgress] = useState<number>(0);
-  const [processingSteps, setProcessingSteps] = useState<number>(1);
-  // Progress of each video being edited, as a percentage
-  const [videoProgress, setVideoProgress] = useState<Record<string, number>>({});
   const [waitingForPreview, setWaitingForPreview] = useState<string>("");
   const [canEdit, setCanEdit] = useState(true);
 
   // estado para saber se o link de partilha foi revogado
   const [shareRevoked, setShareRevoked] = useState(false);
-
-  // flag para ignorar updates depois de cancelar
-  const ignoreUpdatesRef = useRef(false);
 
   // início do processamento
   const processStartTimeRef = useRef<number | null>(null);
@@ -106,30 +97,20 @@ export default function Project({
   // se um processamento envolve ferramentas de IA ou não
   const processIsAiRef = useRef<boolean>(false);
 
-  // Each image goes through each image tool (trim is video-only);
-  // each video is processed in one go by the video worker (a single step).
-  const projectImgs = project.data?.imgs ?? [];
-  const projectVideos = projectImgs.filter((i) => isVideo(i));
-  const imageToolCount = (project.data?.tools ?? []).filter(
-    (t) => !["trim", "speed", "subtitles", "extract_frames"].includes(t.procedure),
-  ).length;
-  const totalProcessingSteps =
-    imageToolCount * (projectImgs.length - projectVideos.length) + projectVideos.length;
-  const hasVideos = projectVideos.length > 0;
+  // RNF-F2-02: the run state (and its progress) is owned by the projects
+  // service, so it survives reloads, page changes and new sessions.
+  const { getRun, upsertRun } = useRuns();
+  const run = getRun(pid);
+  const runPercent = run?.state === "running" ? run.percent : 0;
+  // Latest run token known when Apply was pressed (older runs are ignored)
+  const applyBaseTokenRef = useRef<number | null>(null);
+  // Token of the run this page has seen running
+  const runningTokenRef = useRef<number | null>(null);
+  // Called when the run followed by this page completes (set further below)
+  const onRunCompletedRef = useRef<() => void>(() => {});
 
-  // A single progress bar that combines the image steps with the real
-  // progress of each video (a video only counts as one step when it finishes)
-  const videosDone = projectVideos.filter((v) => (videoProgress[v._id] ?? 0) >= 100).length;
-  const imageStepsDone = Math.max(0, processingSteps - 1 - videosDone);
-  const videoFraction = projectVideos.reduce(
-    (acc, v) => acc + (videoProgress[v._id] ?? 0) / 100,
-    0,
-  );
-  const displayedProgress = !hasVideos
-    ? processingProgress
-    : totalProcessingSteps > 0
-      ? Math.min(100, Math.round(((imageStepsDone + videoFraction) * 100) / totalProcessingSteps))
-      : 0;
+  const projectImgs = project.data?.imgs ?? [];
+  const hasVideos = projectImgs.some((i) => isVideo(i));
   const projectResults = useGetProjectResults(
     session.user._id,
     pid,
@@ -297,172 +278,114 @@ useEffect(() => {
   };
 }, [socket.data, pid, qc, session.user._id, session.token, ownerId, shareId, toast]);
 
+// RNF-F2-02: state of the latest run when the page opens (after a reload,
+// a page change or in a new session).
 useEffect(() => {
-  function onProcessUpdate(msgId: string) {
-    // se já cancelámos ou já não estamos em processamento, ignora tudo
-    if (ignoreUpdatesRef.current || !processing) return;
-
-    setProcessingSteps((prev) => {
-      const nextSteps = prev + 1;
-
-      const progress =
-        totalProcessingSteps > 0
-          ? Math.min(Math.round(((nextSteps - 1) * 100) / totalProcessingSteps), 100)
-          : 100;
-
-      setProcessingProgress(progress);
-
-      if (nextSteps - 1 >= totalProcessingSteps) {
-        setTimeout(() => {
-          if (ignoreUpdatesRef.current) {
-            // cancelar medição
-            processStartTimeRef.current = null;
-            processIsAiRef.current = false;
-            return;
-          }
-
-          const startedAt = processStartTimeRef.current;
-          const isAiProcess = processIsAiRef.current;
-
-          // limpar medição
-          processStartTimeRef.current = null;
-          processIsAiRef.current = false;
-
-          projectResults.refetch().then(() => {
-            if (ignoreUpdatesRef.current) return;
-
-            setProcessing(false);
-            if (!isMobile) sidebar.setOpen(true);
-            setProcessingProgress(0);
-            setProcessingSteps(1);
-    setVideoProgress({});
-
-            // avisar o ProjectProvider que o Apply terminou
-            setWaitingForPreview("__APPLY_DONE__");
-
-            const params = new URLSearchParams();
-            params.set("mode", "results");
-            params.set("view", "grid");
-            
-            const ownerFromQuery = searchParams.get("owner");
-            const shareFromQuery = searchParams.get("share");  
-
-            if (ownerFromQuery) params.set("owner", ownerFromQuery);
-            if (shareFromQuery) params.set("share", shareFromQuery); 
-
-            router.push(`?${params.toString()}`);
-
-            if (startedAt != null) {
-              const durationMs = performance.now() - startedAt;
-              const seconds = durationMs / 1000;
-              const perStep =
-                totalProcessingSteps > 0
-                  ? durationMs / totalProcessingSteps
-                  : undefined;
-
-              console.log(
-                `[Perf] Processamento ${
-                  isAiProcess ? "IA" : "normal"
-                } concluído em ${seconds.toFixed(2)}s (${totalProcessingSteps} passos${
-                  perStep ? ` ~${perStep.toFixed(0)}ms/pass` : ""
-                })`,
-              );
-
-              // limiares diferentes: 5s filtros normais, 60s IA
-              const NORMAL_THRESHOLD_MS = 5000; // 5s
-              const AI_THRESHOLD_MS = 60000; // 60s
-
-              const threshold = isAiProcess
-                ? AI_THRESHOLD_MS
-                : NORMAL_THRESHOLD_MS;
-
-              if (durationMs > threshold && !hasVideos) {
-                toast({
-                  title: isAiProcess
-                    ? "Processamento de IA demorado"
-                    : "Processamento demorado",
-                  description: isAiProcess
-                    ? `Este processamento com ferramentas de IA demorou ${seconds.toFixed(
-                        1,
-                      )} segundos. Isto ainda está dentro do limite aceitável para IA (até 1 minuto), mas foi mais lento do que o esperado.`
-                    : `Este processamento demorou ${seconds.toFixed(
-                        1,
-                      )} segundos, acima do objetivo de 5 segundos para filtros normais.`,
-                });
-              }
-            }
-          });
-        }, 2000);
-      }
-
-      return nextSteps;
+  if (!session.token) return;
+  let cancelled = false;
+  fetchProjectRun(session.user._id, pid, session.token, ownerId, shareId)
+    .then((r) => {
+      if (!cancelled && r) upsertRun(r);
+    })
+    .catch(() => {
+      /* without a run state the page simply shows no progress */
     });
-  }
-
-  function onProcessError(payload: { error_code: string; error_msg: string }) {
-    if (processStartTimeRef.current !== null) {
-      const durationMs = performance.now() - processStartTimeRef.current;
-      console.error(
-        `[Perf] Processamento ${
-          processIsAiRef.current ? "IA" : "normal"
-        } falhou após ${(durationMs / 1000).toFixed(2)}s (código ${
-          payload?.error_code ?? "N/A"
-        })`,
-      );
-      processStartTimeRef.current = null;
-      processIsAiRef.current = false;
-    }
-
-    console.error("process-error", payload);
-    setProcessing(false);
-    setProcessingProgress(0);
-    setProcessingSteps(1);
-    setVideoProgress({});
-    toast({
-      title: "Falha no processamento",
-      description:
-        payload?.error_msg ||
-        "Ocorreu um erro ao processar o projeto. Tenta novamente.",
-      variant: "destructive",
-    });
-  }
-
-  function onVideoProgress(payload: { imgId: string; percent: number; preview?: boolean }) {
-    if (ignoreUpdatesRef.current || !processing || payload?.preview) return;
-    setVideoProgress((prev) => ({ ...prev, [payload.imgId]: payload.percent }));
-  }
-
-  let active = true;
-
-  if (active && socket.data) {
-    socket.data.on("process-update", onProcessUpdate);
-    socket.data.on("process-error", onProcessError);
-    socket.data.on("video-progress", onVideoProgress);
-  }
-
   return () => {
-    active = false;
-    if (socket.data) {
-      socket.data.off("process-update", onProcessUpdate);
-      socket.data.off("process-error", onProcessError);
-      socket.data.off("video-progress", onVideoProgress);
-    }
+    cancelled = true;
   };
-}, [
-  pid,
-  qc,
-  router,
-  session.token,
-  session.user._id,
-  socket.data,
-  totalProcessingSteps,
-  sidebar,
-  isMobile,
-  projectResults,
-  toast,
-  processing,
-  hasVideos,
-]);
+}, [pid, session.user._id, session.token, ownerId, shareId, upsertRun]);
+
+// Users of a share link who did not start the run do not receive its socket
+// events, so the page refreshes the run state while it is processing.
+useEffect(() => {
+  if (!processing || !shareId || !session.token) return;
+  const id = setInterval(() => {
+    fetchProjectRun(session.user._id, pid, session.token, ownerId, shareId)
+      .then((r) => r && upsertRun(r))
+      .catch(() => {});
+  }, 5000);
+  return () => clearInterval(id);
+}, [processing, pid, session.user._id, session.token, ownerId, shareId, upsertRun]);
+
+// Follow the run state pushed by the projects service.
+useEffect(() => {
+  if (!run) return;
+
+  if (run.state === "running") {
+    const base = applyBaseTokenRef.current;
+    if (base !== null && run.token <= base) return; // an older run
+    applyBaseTokenRef.current = null;
+    runningTokenRef.current = run.token;
+    setProcessing(true);
+    return;
+  }
+
+  // The run ended: only react if it is the run this page is following.
+  const base = applyBaseTokenRef.current;
+  const followed =
+    runningTokenRef.current === run.token || (base !== null && run.token > base);
+  if (!processing || !followed) return;
+
+  runningTokenRef.current = null;
+  applyBaseTokenRef.current = null;
+
+  if (run.state === "completed") {
+    onRunCompletedRef.current();
+  } else {
+    // cancelled or failed: the RunsProvider already shows the toast
+    processStartTimeRef.current = null;
+    processIsAiRef.current = false;
+    setProcessing(false);
+  }
+}, [run, processing]);
+
+onRunCompletedRef.current = () => {
+  const startedAt = processStartTimeRef.current;
+  const isAiProcess = processIsAiRef.current;
+  processStartTimeRef.current = null;
+  processIsAiRef.current = false;
+
+  projectResults.refetch().then(() => {
+    setProcessing(false);
+
+    // avisar o ProjectProvider que o Apply terminou
+    setWaitingForPreview("__APPLY_DONE__");
+
+    const params = new URLSearchParams();
+    params.set("mode", "results");
+    params.set("view", "grid");
+    const ownerFromQuery = searchParams.get("owner");
+    const shareFromQuery = searchParams.get("share");
+    if (ownerFromQuery) params.set("owner", ownerFromQuery);
+    if (shareFromQuery) params.set("share", shareFromQuery);
+    router.push(`?${params.toString()}`);
+
+    if (startedAt != null) {
+      const durationMs = performance.now() - startedAt;
+      const seconds = durationMs / 1000;
+      console.log(
+        `[Perf] Processamento ${isAiProcess ? "IA" : "normal"} concluído em ${seconds.toFixed(2)}s`,
+      );
+
+      // limiares diferentes: 5s filtros normais, 60s IA
+      const threshold = isAiProcess ? 60000 : 5000;
+      if (durationMs > threshold && !hasVideos) {
+        toast({
+          title: isAiProcess
+            ? "Processamento de IA demorado"
+            : "Processamento demorado",
+          description: isAiProcess
+            ? `Este processamento com ferramentas de IA demorou ${seconds.toFixed(
+                1,
+              )} segundos. Isto ainda está dentro do limite aceitável para IA (até 1 minuto), mas foi mais lento do que o esperado.`
+            : `Este processamento demorou ${seconds.toFixed(
+                1,
+              )} segundos, acima do objetivo de 5 segundos para filtros normais.`,
+        });
+      }
+    }
+  });
+};
 
 if (project.isError) {
   // caso especial: projeto aberto via link de partilha
@@ -565,23 +488,14 @@ if (project.isError) {
     );
 
 const handleCancel = () => {
-  // ignorar updates vindos do socket
-  ignoreUpdatesRef.current = true;
-
   // cancelar medição de tempo e tipo
   processStartTimeRef.current = null;
   processIsAiRef.current = false;
 
-  // parar tudo no UI
+  // parar tudo no UI (the run itself is finished by the projects service)
   setProcessing(false);
-  setProcessingProgress(0);
-  setProcessingSteps(1);
-    setVideoProgress({});
-
-  // reabrir a sidebar em desktop 
-  if (!isMobile) {
-    sidebar.setOpen(true);
-  }
+  runningTokenRef.current = null;
+  applyBaseTokenRef.current = null;
 
   // limpar estado de preview (se alguma tool estava a fazer preview)
   setWaitingForPreview("");
@@ -605,11 +519,7 @@ const handleCancel = () => {
           token: session.token,
         });
 
-        toast({
-          title: "Processamento cancelado",
-          description:
-            "O processamento deste projeto foi cancelado. Podes ajustar as ferramentas e voltar a tentar.",
-        });
+        // the "cancelled" toast comes from the RunsProvider (run-update)
       },
       
       onError: (error) => {
@@ -663,6 +573,7 @@ const handleCancel = () => {
                   <Button
                     disabled={
                       !canEdit ||
+                      processing ||
                       project.data.tools.length <= 0 ||
                       waitingForPreview !== ""
                     }
@@ -670,6 +581,8 @@ const handleCancel = () => {
                     onClick={() => {
                       // começa a contar o tempo
                       processStartTimeRef.current = performance.now();
+                      // runs up to this token are older than this Apply
+                      applyBaseTokenRef.current = run?.token ?? -1;
                       setProcessing(true);
                       
                       const aiProcedures = [
@@ -693,17 +606,13 @@ const handleCancel = () => {
                         },
                         {
                           onSuccess: async (result) => {
-                            ignoreUpdatesRef.current = false;
                             if (result.completed) {
                               await projectResults.refetch();
                               setProcessing(false);
-                              setProcessingProgress(0);
-                              setProcessingSteps(1);
-                              setVideoProgress({});
+                              applyBaseTokenRef.current = null;
                               processStartTimeRef.current = null;
                               processIsAiRef.current = false;
                               setWaitingForPreview("__APPLY_DONE__");
-                              if (!isMobile) sidebar.setOpen(true);
                               const params = new URLSearchParams(searchParams.toString());
                               params.set("mode", "results");
                               params.set("view", "grid");
@@ -719,9 +628,7 @@ const handleCancel = () => {
                           },
                           onError: (error: unknown) => {
                             setProcessing(false);
-                            setProcessingProgress(0);
-                            setProcessingSteps(1);
-                            setVideoProgress({});
+                            applyBaseTokenRef.current = null;
                             if (processStartTimeRef.current !== null) {
                               const durationMs =
                                 performance.now() - processStartTimeRef.current;
@@ -881,6 +788,35 @@ const handleCancel = () => {
             </div>
           </div>
         </div>
+        {/* RNF-F2-02: non-blocking progress of the run of this project */}
+        {processing && (
+          <div
+            role="region"
+            aria-label="Processing"
+            className="flex items-center gap-3 border-b border-sidebar-border px-4 py-2 text-sm"
+          >
+            <LoaderCircle className="size-4 shrink-0 animate-spin" />
+            <span className="font-medium">A processar</span>
+            <Progress
+              value={runPercent}
+              aria-label={`Processing ${project.data.name}`}
+              className="max-w-96"
+            />
+            <span className="tabular-nums text-muted-foreground">{Math.floor(runPercent)}%</span>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!canEdit || cancelProcess.isPending}
+              onClick={handleCancel}
+            >
+              {cancelProcess.isPending ? (
+                <LoaderCircle className="size-[1em] animate-spin" />
+              ) : (
+                "Cancelar"
+              )}
+            </Button>
+          </div>
+        )}
         {/* Main Content */}
 
         <div className="h-full overflow-x-hidden flex">
@@ -891,40 +827,6 @@ const handleCancel = () => {
         />
       </div>
       </div>
-      <Transition
-        show={processing}
-        enter="transition-opacity ease-in duration-300"
-        enterFrom="opacity-0"
-        enterTo="opacity-100"
-        leave="transition-opacity ease-out duration-300"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-      >
-        <div className="absolute top-0 left-0 h-screen w-screen bg-black/70 z-50 flex justify-center items-center">
-          <Card className="p-4 flex flex-col justify-center items-center gap-4">
-            <div className="flex gap-2 items-center text-lg font-semibold">
-              <h1>Processing</h1>
-              <LoaderCircle className="size-[1em] animate-spin" />
-            </div>
-            <Progress value={displayedProgress} className="w-96" />
-            {hasVideos && (
-              <span className="text-xs text-muted-foreground">{displayedProgress}%</span>
-            )}
-
-            <Button
-              variant="outline"
-              disabled={cancelProcess.isPending}
-              onClick={handleCancel}
-            >
-              {cancelProcess.isPending ? (
-                <LoaderCircle className="size-[1em] animate-spin" />
-              ) : (
-                "Cancelar"
-              )}
-            </Button>
-          </Card>
-        </div>
-      </Transition>
     </ProjectProvider>
   );
 }
