@@ -1,0 +1,34 @@
+21:33:17 a aplicar Docs/fase2/medicoes/rnf1/compose.limites.yaml
+21:33:46 M1.2 10 MiB rep 1/3
+21:33:50   -> 204 sucesso=true reiniciados=-
+[medicao] gravado Docs\fase2\medicoes\final\rnf-f2-02\complemento\rnf1-limite.json
+21:34:09 M1.2 10 MiB rep 2/3
+21:34:13   -> 204 sucesso=true reiniciados=-
+[medicao] gravado Docs\fase2\medicoes\final\rnf-f2-02\complemento\rnf1-limite.json
+21:34:33 M1.2 10 MiB rep 3/3
+21:34:38   -> 204 sucesso=true reiniciados=-
+[medicao] gravado Docs\fase2\medicoes\final\rnf-f2-02\complemento\rnf1-limite.json
+21:34:57 M1.2 100 MiB rep 1/3
+21:35:04   -> 204 sucesso=true reiniciados=-
+[medicao] gravado Docs\fase2\medicoes\final\rnf-f2-02\complemento\rnf1-limite.json
+21:35:23 M1.2 100 MiB rep 2/3
+21:35:31   -> 204 sucesso=true reiniciados=-
+[medicao] gravado Docs\fase2\medicoes\final\rnf-f2-02\complemento\rnf1-limite.json
+21:35:50 M1.2 100 MiB rep 3/3
+21:35:57   -> 204 sucesso=true reiniciados=-
+[medicao] gravado Docs\fase2\medicoes\final\rnf-f2-02\complemento\rnf1-limite.json
+[medicao] GET repetido depois de ECONNRESET: /api-gateway/projects/6afe19a7ca6841dd33ba3a23
+21:36:16 M1.2 500 MiB rep 1/3
+21:36:24   -> 502 sucesso=false reiniciados=api_gateway
+[medicao] gravado Docs\fase2\medicoes\final\rnf-f2-02\complemento\rnf1-limite.json
+[medicao] GET repetido depois de ECONNRESET: /api-gateway/projects/6afe19a7ca6841dd33ba3a23
+21:39:45 M1.2 500 MiB rep 2/3
+21:39:51   -> 502 sucesso=false reiniciados=api_gateway
+[medicao] gravado Docs\fase2\medicoes\final\rnf-f2-02\complemento\rnf1-limite.json
+21:43:11 M1.2 500 MiB rep 3/3
+21:43:17   -> 502 sucesso=false reiniciados=api_gateway
+[medicao] gravado Docs\fase2\medicoes\final\rnf-f2-02\complemento\rnf1-limite.json
+21:46:19 serie parada em 500 MiB
+21:46:19 maior ficheiro aceite: 100 MiB
+21:46:19 a repor a stack sem limites
+[medicao] gravado Docs\fase2\medicoes\final\rnf-f2-02\complemento\rnf1-limite.json

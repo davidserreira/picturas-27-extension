@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 | --- | --- |
-| Estado | Proposto, para validação pela equipa |
+| Estado | Implementado e medido no ramo `fase2/rnf-f2-02-segundo-plano-medido` (secção 7). Alvo atingido nas três medidas principais (`../analise.md`, secção 6). A aguardar a revisão pela equipa e a medição com o RNF-F2-01 integrado |
 | Data | 18 de novembro de 2026 |
 | Requisito | RNF-F2-02 — Trabalho em segundo plano durante o processamento (`../requisitos-nf.md`, secção 3) |
 | Base | Commit `0523102` (no nosso repositório, `43a2e08`) |
@@ -369,3 +369,30 @@ falhe por `ECONNRESET` ou `EPIPE` (`../medicoes/lib/comum.mjs`, passo 5).
 | O `run-status` não vai para a sala `project:<id>` | O plano inicial incluía-a. Ao implementar o passo 3 viu-se que o `ws_gateway` deixa qualquer socket entrar nessa sala sem verificar o acesso, e o estado inclui o nome do projeto e o dono. O ADR e o `AGENTS.md` foram corrigidos no mesmo commit (`54386cc`). Quem tem o projeto partilhado vê o estado pela rota, ao abrir a página |
 | O ramo foi publicado com outro nome | Ver o início desta secção |
 | A série final não repete a M1.1/C1.4 com 1000 MiB | Este ramo mantém o caminho de carregamento da base. Nesse caminho, o envio de 1000 MiB sem limites deitou abaixo o motor do Docker duas vezes (`../medicoes/ocorrencias/2026-11-16-queda-docker/`). A medida com 1000 MiB faz-se na série com os dois requisitos juntos. As outras medidas do RNF-F2-01 correm como na base |
+
+### 7.3 Medição final
+
+Feita a 18 de novembro de 2026 com o método completo da base, no ramo
+`fase2/rnf-f2-02-segundo-plano-medido` (`../medicoes/final/rnf-f2-02/`; análise em `../analise.md`,
+secção 6). A série foi parada a meio da M2.3 e completada de um arranque limpo (`complemento/`).
+
+| Medida | Base | Final | Alvo | Mínimo |
+| --- | --- | --- | --- | --- |
+| M2.1 (pior de 3) | 0% | 100% | 100% | 80%, G1 completo |
+| M2.2 R (maior de 6) | Não recupera | 0,63 s | ≤ 2 s | ≤ 5 s |
+| M2.2 F (maior de 3) | Não recupera | 0,11 s | ≤ 2 s | ≤ 5 s |
+| M2.3 | 0/10 | 12/12 (7/7 na forma A, 5/5 na forma B) | 10/10 | 5/5 na forma A |
+| C2.2 (maior de 3) | 16,9 s | 2,22 s | — | ≤ 5 s |
+
+O alvo foi atingido nas três medidas principais, e o C2.2, que a base não cumpria, passou a
+cumprir. Comparação com as previsões da secção 4.3:
+
+- M2.1, M2.2 R e M2.3 ficaram como previsto.
+- M2.2 F ficou dentro do previsto (≤ 1 s).
+- O C2.2 previa cerca de 1 s durante o vídeo, com o maior intervalo no arranque, abaixo de 5 s. O
+  maior intervalo foi de 1,5 a 2,2 s, abaixo do limite. O instrumento regista só o maior intervalo
+  de cada execução, e não em que ponto ocorreu, por isso não se confirma onde fica.
+
+O C2.1 (336,6 s de mediana, contra 269,3 s na série da base) não se compara entre sessões: na série
+do RNF-F2-01, o mesmo código da base demorou 311–381 s noutra sessão. A comparação válida é a dos
+blocos A-B-A da medição conjunta.

@@ -1,0 +1,11 @@
+✔ owner and runner rooms, once each (2.5699ms)
+✔ never the project room, which has no access check (0.1628ms)
+✔ a message without a project or a run is ignored (0.105ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 76.8219

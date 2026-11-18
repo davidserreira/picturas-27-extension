@@ -1,0 +1,29 @@
+{
+  "suite": "ui",
+  "modo": "final/rnf-f2-02",
+  "quando": "2026-11-18T21:50:48.336Z",
+  "commit": {
+    "hash": "ed34cd78a205894819c2861d5cbf72d2929c575e",
+    "codeChanges": []
+  },
+  "testes": [
+    {
+      "id": "U01",
+      "nome": "Importar uma imagem pela interface",
+      "estado": "passou",
+      "segundos": 5.1
+    },
+    {
+      "id": "U02",
+      "nome": "Aplicar um pipeline pela interface e ver os resultados",
+      "estado": "passou",
+      "segundos": 4.4
+    },
+    {
+      "id": "U03",
+      "nome": "Cancelar pela interface uma execução em curso",
+      "estado": "passou",
+      "segundos": 37.7
+    }
+  ]
+}

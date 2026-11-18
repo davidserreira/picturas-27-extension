@@ -1,0 +1,10 @@
+=== 21:46:26 unitarios: worker de video (pytest)
+    exit 0
+=== 21:47:12 unitarios: orquestrador (node --test)
+    exit 0
+=== 21:47:14 ponta a ponta (API e WebSocket)
+    exit 0
+=== 21:50:46 interface (Playwright)
+    exit 0
+escrito final/rnf-f2-02.md
+=== 21:51:36 fim: final/rnf-f2-02.md

@@ -1,0 +1,181 @@
+{
+  "medida": "RNF-F2-02 controlos C2.1-C2.5",
+  "quando": "2026-11-18T20:59:31.466Z",
+  "commit": {
+    "hash": "ed34cd78a205894819c2861d5cbf72d2929c575e",
+    "codeChanges": []
+  },
+  "video": "p-video-330s.mp4",
+  "c21c22": [
+    {
+      "execucao": 1,
+      "P": "6afe128ad6b59ddc1a3159cd",
+      "duracaoS": 330.3,
+      "maiorIntervaloProgressoS": 1.95,
+      "mudancasDeProgresso": 356,
+      "ultimoValor": 99.9
+    },
+    {
+      "execucao": 2,
+      "P": "6afe13e3d6b59ddc1a316cc8",
+      "duracaoS": 336.6,
+      "maiorIntervaloProgressoS": 1.51,
+      "mudancasDeProgresso": 372,
+      "ultimoValor": 99.9
+    },
+    {
+      "execucao": 3,
+      "P": "6afe153cd6b59ddc1a318044",
+      "duracaoS": 341.5,
+      "maiorIntervaloProgressoS": 2.22,
+      "mudancasDeProgresso": 375,
+      "ultimoValor": 99.9
+    }
+  ],
+  "c23": {
+    "aplicavel": true,
+    "url": "C:/Program Files/Git/projects/{user}/{project}/process/status",
+    "dono": 404,
+    "outroUtilizador": 404,
+    "semJwt": 404,
+    "recusadoNosDois": true
+  },
+  "c24": {
+    "arranque": {
+      "P": 201,
+      "Q": 201
+    },
+    "separado": {
+      "P": {
+        "n": 3,
+        "tipos": [
+          "image",
+          "image",
+          "video"
+        ],
+        "sha": {
+          "imagem-p2.png": {
+            "type": "image",
+            "sha256": "8416f6d917b640df0a7e5a6c934f71238a63e651e6f790c1386c3b9bea4ebc5c",
+            "bytes": 4638
+          },
+          "imagem-p1.png": {
+            "type": "image",
+            "sha256": "c436478363d5c224d237a437bd92257faec4c5b6ba790c4547ff7068216e9cfc",
+            "bytes": 89699
+          },
+          "p-video-330s.mp4": {
+            "type": "video",
+            "sha256": "ec43d8110a8370a989a15e752283710fb1d570ed8c60d2f131bee33c25cdfcfe",
+            "bytes": 109424533
+          }
+        }
+      },
+      "Q": {
+        "n": 1,
+        "tipos": [
+          "image"
+        ],
+        "sha": {
+          "imagem-q.png": {
+            "type": "image",
+            "sha256": "6a092a6e290ed1aec4245b35e564b22fcb08c67c0a36d09177d1b51128f64aae",
+            "bytes": 402628
+          }
+        }
+      }
+    },
+    "sobreposto": {
+      "P": {
+        "n": 3,
+        "tipos": [
+          "image",
+          "image",
+          "video"
+        ],
+        "sha": {
+          "imagem-p1.png": {
+            "type": "image",
+            "sha256": "c436478363d5c224d237a437bd92257faec4c5b6ba790c4547ff7068216e9cfc",
+            "bytes": 89699
+          },
+          "imagem-p2.png": {
+            "type": "image",
+            "sha256": "8416f6d917b640df0a7e5a6c934f71238a63e651e6f790c1386c3b9bea4ebc5c",
+            "bytes": 4638
+          },
+          "p-video-330s.mp4": {
+            "type": "video",
+            "sha256": "ec43d8110a8370a989a15e752283710fb1d570ed8c60d2f131bee33c25cdfcfe",
+            "bytes": 109424533
+          }
+        }
+      },
+      "Q": {
+        "n": 1,
+        "tipos": [
+          "image"
+        ],
+        "sha": {
+          "imagem-q.png": {
+            "type": "image",
+            "sha256": "6a092a6e290ed1aec4245b35e564b22fcb08c67c0a36d09177d1b51128f64aae",
+            "bytes": 402628
+          }
+        }
+      }
+    },
+    "iguais": {
+      "P": true,
+      "Q": true
+    }
+  },
+  "c25": {
+    "adicionarFerramenta": {
+      "status": 201,
+      "resposta": ""
+    },
+    "resultados": {
+      "n": 3,
+      "tipos": [
+        "image",
+        "image",
+        "video"
+      ],
+      "sha": {
+        "imagem-p1.png": {
+          "type": "image",
+          "sha256": "c436478363d5c224d237a437bd92257faec4c5b6ba790c4547ff7068216e9cfc",
+          "bytes": 89699
+        },
+        "imagem-p2.png": {
+          "type": "image",
+          "sha256": "8416f6d917b640df0a7e5a6c934f71238a63e651e6f790c1386c3b9bea4ebc5c",
+          "bytes": 4638
+        },
+        "p-video-330s.mp4": {
+          "type": "video",
+          "sha256": "ec43d8110a8370a989a15e752283710fb1d570ed8c60d2f131bee33c25cdfcfe",
+          "bytes": 109424533
+        }
+      }
+    },
+    "iguaisAExecucaoSemAlteracao": true
+  },
+  "resumoC21": {
+    "n": 3,
+    "mean": 336.13,
+    "sd": 5.61,
+    "median": 336.6,
+    "min": 330.3,
+    "max": 341.5
+  },
+  "resumoC22": {
+    "n": 3,
+    "mean": 1.89,
+    "sd": 0.36,
+    "median": 1.95,
+    "min": 1.51,
+    "max": 2.22
+  }
+}

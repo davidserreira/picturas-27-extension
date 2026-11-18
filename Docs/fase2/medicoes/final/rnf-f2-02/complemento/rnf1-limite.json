@@ -1,0 +1,140 @@
+{
+  "medida": "RNF-F2-01 M1.2",
+  "quando": "2026-11-18T21:33:17.349Z",
+  "commit": {
+    "hash": "ed34cd78a205894819c2861d5cbf72d2929c575e",
+    "codeChanges": []
+  },
+  "override": "Docs/fase2/medicoes/rnf1/compose.limites.yaml",
+  "limiteMiB": 512,
+  "repeticoes": 3,
+  "resultados": {
+    "10": [
+      {
+        "rep": 1,
+        "status": 204,
+        "body": "",
+        "crashed": [],
+        "oom": [],
+        "integrity": {
+          "inProject": true,
+          "equal": true
+        },
+        "success": true,
+        "totalS": 0.5416010999999998
+      },
+      {
+        "rep": 2,
+        "status": 204,
+        "body": "",
+        "crashed": [],
+        "oom": [],
+        "integrity": {
+          "inProject": true,
+          "equal": true
+        },
+        "success": true,
+        "totalS": 0.7565481
+      },
+      {
+        "rep": 3,
+        "status": 204,
+        "body": "",
+        "crashed": [],
+        "oom": [],
+        "integrity": {
+          "inProject": true,
+          "equal": true
+        },
+        "success": true,
+        "totalS": 0.7979080000000104
+      }
+    ],
+    "100": [
+      {
+        "rep": 1,
+        "status": 204,
+        "body": "",
+        "crashed": [],
+        "oom": [],
+        "integrity": {
+          "inProject": true,
+          "equal": true
+        },
+        "success": true,
+        "totalS": 3.002709699999992
+      },
+      {
+        "rep": 2,
+        "status": 204,
+        "body": "",
+        "crashed": [],
+        "oom": [],
+        "integrity": {
+          "inProject": true,
+          "equal": true
+        },
+        "success": true,
+        "totalS": 3.9604326000000003
+      },
+      {
+        "rep": 3,
+        "status": 204,
+        "body": "",
+        "crashed": [],
+        "oom": [],
+        "integrity": {
+          "inProject": true,
+          "equal": true
+        },
+        "success": true,
+        "totalS": 3.1938250000000115
+      }
+    ],
+    "500": [
+      {
+        "rep": 1,
+        "status": 502,
+        "body": "<html>\r\n<head><title>502 Bad Gateway</title></head>\r\n<body>\r\n<center><h1>502 Bad Gateway</h1></center>\r\n<hr><center>nginx/1.31.8</center>\r\n</body>\r\n</html>\r\n",
+        "crashed": [
+          "api_gateway"
+        ],
+        "oom": [
+          "api_gateway"
+        ],
+        "integrity": null,
+        "success": false,
+        "totalS": 3.9502025999999897
+      },
+      {
+        "rep": 2,
+        "status": 502,
+        "body": "<html>\r\n<head><title>502 Bad Gateway</title></head>\r\n<body>\r\n<center><h1>502 Bad Gateway</h1></center>\r\n<hr><center>nginx/1.31.8</center>\r\n</body>\r\n</html>\r\n",
+        "crashed": [
+          "api_gateway"
+        ],
+        "oom": [
+          "api_gateway"
+        ],
+        "integrity": null,
+        "success": false,
+        "totalS": 2.465012799999968
+      },
+      {
+        "rep": 3,
+        "status": 502,
+        "body": "<html>\r\n<head><title>502 Bad Gateway</title></head>\r\n<body>\r\n<center><h1>502 Bad Gateway</h1></center>\r\n<hr><center>nginx/1.31.8</center>\r\n</body>\r\n</html>\r\n",
+        "crashed": [
+          "api_gateway"
+        ],
+        "oom": [
+          "api_gateway"
+        ],
+        "integrity": null,
+        "success": false,
+        "totalS": 2.0941977000000187
+      }
+    ]
+  },
+  "maiorFicheiroAceiteMiB": 100
+}

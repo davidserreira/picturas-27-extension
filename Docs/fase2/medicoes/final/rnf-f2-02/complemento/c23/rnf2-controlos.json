@@ -1,0 +1,27 @@
+{
+  "medida": "RNF-F2-02 controlos C2.1-C2.5",
+  "quando": "2026-11-18T21:51:49.271Z",
+  "commit": {
+    "hash": "ed34cd78a205894819c2861d5cbf72d2929c575e",
+    "codeChanges": []
+  },
+  "video": "p-video-330s.mp4",
+  "c21c22": [],
+  "c23": {
+    "aplicavel": true,
+    "url": "/projects/{user}/{project}/process/status",
+    "dono": 200,
+    "outroUtilizador": 401,
+    "semJwt": 401,
+    "urlValido": true,
+    "recusadoNosDois": true
+  },
+  "c24": null,
+  "c25": null,
+  "resumoC21": {
+    "n": 0
+  },
+  "resumoC22": {
+    "n": 0
+  }
+}
