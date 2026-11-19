@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 | --- | --- |
-| Estado | Implementado e medido no ramo `fase2/rnf-f2-01-carregamento` e com o RNF-F2-02 integrado no ramo `fase2/integracao` (secção 7). Alvo atingido nas duas medidas principais, nas duas medições (`../analise.md`, secções 1 a 5 e 7). A aguardar a revisão pela equipa |
+| Estado | Aceite. Implementado e medido no ramo `fase2/rnf-f2-01-carregamento` e com o RNF-F2-02 integrado no ramo `fase2/integracao` (secção 7). Alvo atingido nas duas medidas principais, nas duas medições (`../analise.md`, secções 1 a 5 e 7). Revisto pela equipa a 19/11/2026 (`../ia.md`) |
 | Data | 17 de novembro de 2026 |
 | Requisito | RNF-F2-01 — Carregamento de ficheiros grandes com memória limitada (`../requisitos-nf.md`, secção 2) |
 | Base | Commit `0523102` (no nosso repositório, `43a2e08`) |
@@ -419,6 +419,7 @@ mesmo nas duas versões: o máximo variou entre 49 e 62 MiB nas cinco repetiçõ
 a margem para o alvo ficou em 1,6 MiB. A regressão deu os mesmos resultados da base, e as medidas e
 os controlos do RNF-F2-02 também cumprem, incluindo o C2.1, comparado com a base na mesma sessão.
 
-### 7.6 O que falta
+### 7.6 Revisão
 
-- Revisão pela equipa (`../ia.md`) e passagem do estado deste ADR a "Aceite".
+Revisto pela equipa a 19 de novembro de 2026, passo a passo, sem alterações (`../ia.md`). O estado
+passou a "Aceite".

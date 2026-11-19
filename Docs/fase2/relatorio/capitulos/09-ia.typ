@@ -8,7 +8,7 @@ O registo completo está em `Docs/fase2/ia.md`. No código, cada ficheiro altera
 
 #tabela-campos(
   [Ferramenta], [Claude Code (extensão do VS Code, Windows 11): um agente com acesso ao repositório, ao terminal e ao Docker local],
-  [Modelos], [Claude Fable 5.2 e Claude Opus 5.5. O plano das etapas foi pedido ao Fable 5.2, que recomendou o Fable para as etapas que decidem a qualidade do trabalho (diagnóstico, especificação, decisões) e o Opus para as de execução. O modelo usado em cada etapa está no `ia.md`],
+  [Modelos], [Claude Fable 5.2 e Claude Opus 5.5. O plano das etapas foi pedido ao Fable 5.2, que recomendou o Fable para as etapas que decidem a qualidade do trabalho (diagnóstico, especificação, decisões) e o Opus para as de execução. Foram usados o Fable 5.2 no diagnóstico e na especificação, e o Opus 5.5 em todas as outras etapas, incluindo as decisões (`ia.md`)],
   [_Skills_, MCP], [Não foram usados no trabalho sobre o repositório],
   [Instruções de projeto], [O `AGENTS.md` do repositório, atualizado pelos dois requisitos],
   [Commits], [Por decisão da equipa, sem linhas de coautoria da ferramenta. O uso de IA fica registado no `ia.md`, nos comentários e no `AGENTS.md`],
@@ -36,7 +36,7 @@ O método foi o mesmo em todas as etapas:
     [Decisões (ADR)], [Alternativas, decisão e plano por passos], [As alternativas B (ADR-01) e A (ADR-02)], [A sala `project:<id>` para o estado (sem verificação de acesso, EV-15); a previsão do passo 2 do ADR-01], [Causas confirmadas no código instalado antes de decidir; previsões confrontadas com as medições de cada passo],
     [Implementação], [Um commit por passo, com testes unitários novos], [O código dos dois ADR, com comentários que remetem para o ADR], [Expectativas erradas em testes novos; uma execução terminada que apareceria como "terminou" ao abrir o projeto], [Testes unitários, regressão completa e medição intermédia em cada passo (capítulos 6 e 7)],
     [Medição final e análise], [Séries finais, complementos e análise], [Os resultados e a análise], [Atribuir ao _refactoring_ o aumento do C2.1 na série do RNF-F2-01: só se atribuiu à máquina depois de uma comparação na mesma sessão], [Ocorrências registadas com os registos que as explicam],
-    [Relatório], [Escrever este relatório a partir de `Docs/fase2/`], [A estrutura pelos exercícios e pelas diretrizes], [—], [Números conferidos com os resultados em bruto; revisão pela equipa],
+    [Relatório], [Escrever este relatório a partir de `Docs/fase2/`], [A estrutura pelos exercícios e pelas diretrizes], [—], [Números conferidos com os resultados em bruto; revisto pela equipa],
   ),
 )
 
@@ -60,4 +60,4 @@ O método foi o mesmo em todas as etapas:
 
 A IA foi mais útil onde o trabalho é extenso e verificável: ler um código de base grande e apontar evidência linha a linha, escrever scripts de medição e testes, e implementar passos pequenos com testes. Foi menos fiável nas previsões. Errou a previsão do passo 2 do ADR-01 e os valores esperados da memória dos serviços Node, e propôs enviar o estado para uma sala sem controlo de acesso. Todos estes erros foram apanhados por algo independente da própria IA: uma medição, um teste ou a leitura do código de outro serviço.
 
-As práticas que mais contaram foram três. Medir em cada passo, e não só no fim, para cada efeito ter dono. Registar as ocorrências em vez de as descartar: a queda do Docker na base, a falha passageira de um comando e o aumento do C2.1 ficaram com os registos que os explicam. E não atribuir uma causa sem a medir: o aumento do C2.1 na série final do RNF-F2-01 só foi atribuído à máquina depois de uma comparação na mesma sessão. A equipa é responsável por todo o conteúdo entregue. As tabelas de revisão do `ia.md` registam quem reviu cada passo.
+As práticas que mais contaram foram três. Medir em cada passo, e não só no fim, para cada efeito ter dono. Registar as ocorrências em vez de as descartar: a queda do Docker na base, a falha passageira de um comando e o aumento do C2.1 ficaram com os registos que os explicam. E não atribuir uma causa sem a medir: o aumento do C2.1 na série final do RNF-F2-01 só foi atribuído à máquina depois de uma comparação na mesma sessão. A equipa é responsável por todo o conteúdo entregue. A equipa reviu o resultado de cada etapa e cada passo dos dois ADR, e concordou com eles (tabelas de revisão do `ia.md`).

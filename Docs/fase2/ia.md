@@ -34,18 +34,18 @@ de IA fica registado aqui, nos comentários do código alterado (que remetem par
 
 | Etapa | Modelo | O que a IA fez | Como foi validado |
 | --- | --- | --- | --- |
-| 1. Diagnóstico (`diagnostico.md`) | A confirmar pela equipa | Leu o código e a documentação da base e propôs oito fragilidades candidatas, cada uma com evidência em `ficheiro:linha` | Evidência verificável no código. A IA corrigiu uma conclusão errada sobre o ecrã sobreposto (C4) depois de reler `frontend/app/dashboard/layout.tsx`. Revisão da equipa: a preencher |
-| 2. Especificação (`requisitos-nf.md`) | A confirmar pela equipa | Propôs as medidas, os valores-alvo e mínimos e os controlos dos efeitos colaterais | Revisão da equipa: a preencher. Os valores-alvo são decisão da equipa |
-| 3. Medição da base (`medicoes/`) | A confirmar pela equipa | Escreveu os scripts e correu a série completa sobre a base, com volumes limpos | Repetições com média e desvio-padrão; ambiente registado; a queda do motor do Docker com 1000 MiB ficou registada em `medicoes/ocorrencias/`, e não descartada. Duas correções aos scripts depois de resultados anómalos: o 409 ao aplicar logo depois de abrir o projeto e a deriva da calibração do vídeo, com a primeira tentativa guardada em `baseline/rnf2-primeira-tentativa/` |
-| 4. Regressão (`regressao/`) | A confirmar pela equipa | Reaproveitou os testes existentes (pytest e node) e escreveu as suites ponta a ponta (18 testes) e de interface (3) | Duas corridas na base com impressões iguais (`resultados/repeticao-e2e.json`). As diferenças falsas da primeira repetição (ordem das chaves, bytes do watermark) foram corrigidas na comparação, não escondidas |
-| 5. Decisão (`adr/ADR-01-carregamento-em-fluxo.md`) | Claude Opus 5.5 | Propôs três alternativas, escolheu uma e escreveu o plano por passos | Causa da segunda cópia em memória confirmada no código instalado nos contentores (`follow-redirects`). Revisão da equipa: a preencher |
+| 1. Diagnóstico (`diagnostico.md`) | Claude Fable 5.2 | Leu o código e a documentação da base e propôs oito fragilidades candidatas, cada uma com evidência em `ficheiro:linha` | Evidência verificável no código. A IA corrigiu uma conclusão errada sobre o ecrã sobreposto (C4) depois de reler `frontend/app/dashboard/layout.tsx`. Revisto pela equipa, sem alterações |
+| 2. Especificação (`requisitos-nf.md`) | Claude Fable 5.2 | Propôs as medidas, os valores-alvo e mínimos e os controlos dos efeitos colaterais | Revisto pela equipa, que aceitou as medidas e os valores-alvo e mínimos propostos |
+| 3. Medição da base (`medicoes/`) | Claude Opus 5.5 | Escreveu os scripts e correu a série completa sobre a base, com volumes limpos | Repetições com média e desvio-padrão; ambiente registado; a queda do motor do Docker com 1000 MiB ficou registada em `medicoes/ocorrencias/`, e não descartada. Duas correções aos scripts depois de resultados anómalos: o 409 ao aplicar logo depois de abrir o projeto e a deriva da calibração do vídeo, com a primeira tentativa guardada em `baseline/rnf2-primeira-tentativa/` |
+| 4. Regressão (`regressao/`) | Claude Opus 5.5 | Reaproveitou os testes existentes (pytest e node) e escreveu as suites ponta a ponta (18 testes) e de interface (3) | Duas corridas na base com impressões iguais (`resultados/repeticao-e2e.json`). As diferenças falsas da primeira repetição (ordem das chaves, bytes do watermark) foram corrigidas na comparação, não escondidas |
+| 5. Decisão (`adr/ADR-01-carregamento-em-fluxo.md`) | Claude Opus 5.5 | Propôs três alternativas, escolheu uma e escreveu o plano por passos | Causa da segunda cópia em memória confirmada no código instalado nos contentores (`follow-redirects`). Revisto pela equipa, sem alterações |
 | 6. Implementação do ADR-01 (ramo `fase2/rnf-f2-01-carregamento`) | Claude Opus 5.5 | Implementou os passos 0 a 5 e uma afinação da memória (5b), um commit por passo, com testes unitários novos | Ver a secção seguinte |
-| 7. Medição final do RNF-F2-01 e análise (`medicoes/final/rnf-f2-01/`, `analise.md`) | Claude Opus 5.5 | Correu a série final com os scripts da base, repetiu de um arranque limpo as partes com ocorrências, fez uma comparação A/B do C2.1 entre a base e o ramo e escreveu a análise | As três ocorrências da série (regressão ponta a ponta interrompida, falha passageira do `docker inspect`, C2.1 mais lento) ficaram registadas com os registos que as explicam, e não foram descartadas. O aumento do C2.1 só foi atribuído à máquina depois da comparação A/B. A IA corrigiu uma afirmação sua sobre as previsões do ADR-01 ao conferi-la com os números. Revisão da equipa: a preencher |
-| 5. Decisão do RNF-F2-02 (`adr/ADR-02-estado-da-execucao-no-servidor.md`) | Claude Opus 5.5 | Propôs três alternativas (estado no orquestrador, estado no `ws_gateway`, só no browser), escolheu a primeira e escreveu o plano em cinco passos | A causa do C2.2 da base (16,9 s) foi confirmada no código da página e do worker antes de decidir. A IA corrigiu o ADR durante a implementação, ao ver que a sala do projeto no `ws_gateway` não tem verificação de acesso (secção seguinte). Revisão da equipa: a preencher |
+| 7. Medição final do RNF-F2-01 e análise (`medicoes/final/rnf-f2-01/`, `analise.md`) | Claude Opus 5.5 | Correu a série final com os scripts da base, repetiu de um arranque limpo as partes com ocorrências, fez uma comparação A/B do C2.1 entre a base e o ramo e escreveu a análise | As três ocorrências da série (regressão ponta a ponta interrompida, falha passageira do `docker inspect`, C2.1 mais lento) ficaram registadas com os registos que as explicam, e não foram descartadas. O aumento do C2.1 só foi atribuído à máquina depois da comparação A/B. A IA corrigiu uma afirmação sua sobre as previsões do ADR-01 ao conferi-la com os números. Revisto pela equipa, sem alterações |
+| 5. Decisão do RNF-F2-02 (`adr/ADR-02-estado-da-execucao-no-servidor.md`) | Claude Opus 5.5 | Propôs três alternativas (estado no orquestrador, estado no `ws_gateway`, só no browser), escolheu a primeira e escreveu o plano em cinco passos | A causa do C2.2 da base (16,9 s) foi confirmada no código da página e do worker antes de decidir. A IA corrigiu o ADR durante a implementação, ao ver que a sala do projeto no `ws_gateway` não tem verificação de acesso (secção seguinte). Revisto pela equipa, sem alterações |
 | 6. Implementação do ADR-02 (ramo `fase2/rnf-f2-02-segundo-plano-medido`) | Claude Opus 5.5 | Implementou os passos 0 a 5, um commit por passo, com testes unitários novos | Ver a secção "Implementação do ADR-02" |
-| 7. Medição final do RNF-F2-02 (`medicoes/final/rnf-f2-02/`) | Claude Opus 5.5 | Correu a série final com os scripts da base e, depois da paragem a meio da M2.3, o complemento de um arranque limpo; escreveu a secção 7.3 do ADR-02 e a secção 6 da `analise.md` | A paragem e o C2.3 inválido do complemento ficaram registados (secção seguinte), e não foram descartados. O C2.1 não foi comparado entre sessões: fica para os blocos A-B-A da medição conjunta. Revisão da equipa: a preencher |
-| 8. Integração e medição conjunta (ramo `fase2/integracao`, `medicoes/final/integrado/`) | Claude Opus 5.5 | Juntou os dois ramos (conflitos só em documentos e no cabeçalho de um script de medição), correu a série conjunta e a comparação A-B-A do C2.1 com a base, e escreveu a secção 7 da `analise.md` | Números conferidos com os resultados em bruto de cada bloco, e a versão de cada bloco com o seu `variante.txt`. A primeira tentativa do bloco 2 falhou por um erro do instrumento (problemas do ADR-02, abaixo): corrigido o instrumento, os blocos 2 e 3 foram repetidos e a tentativa falhada ficou guardada. A execução lenta de B (346 s) ficou nos resultados; só foi atribuída ao worker depois de comparar o tempo fora dele, e a causa fica por confirmar. Revisão da equipa: a preencher |
-| 9. Relatório (`relatorio/`) | Claude Opus 5.5 | Escreveu o relatório em Typst a partir de `Docs/fase2/`, com a estrutura dos Exercícios 6 e 7 e os seis pontos das diretrizes por requisito, e desenhou as três vistas em SVG. Os capítulos 2 a 4 adaptam a resolução dos Exercícios 6 e 7 feita por Miguel Páscoa (`arquitetura.md` e `taticas.md`, ramo `fase2/rnf-f2-02-segundo-plano`) ao que foi implementado: nome do evento, rotas e interface do ADR-02 | Referências ao código conferidas no commit de partida (uma linha corrigida: `video.py:54`); números conferidos com os resultados em bruto; compilado sem erros nem avisos. Revisão da equipa: a preencher |
+| 7. Medição final do RNF-F2-02 (`medicoes/final/rnf-f2-02/`) | Claude Opus 5.5 | Correu a série final com os scripts da base e, depois da paragem a meio da M2.3, o complemento de um arranque limpo; escreveu a secção 7.3 do ADR-02 e a secção 6 da `analise.md` | A paragem e o C2.3 inválido do complemento ficaram registados (secção seguinte), e não foram descartados. O C2.1 não foi comparado entre sessões: fica para os blocos A-B-A da medição conjunta. Revisto pela equipa, sem alterações |
+| 8. Integração e medição conjunta (ramo `fase2/integracao`, `medicoes/final/integrado/`) | Claude Opus 5.5 | Juntou os dois ramos (conflitos só em documentos e no cabeçalho de um script de medição), correu a série conjunta e a comparação A-B-A do C2.1 com a base, e escreveu a secção 7 da `analise.md` | Números conferidos com os resultados em bruto de cada bloco, e a versão de cada bloco com o seu `variante.txt`. A primeira tentativa do bloco 2 falhou por um erro do instrumento (problemas do ADR-02, abaixo): corrigido o instrumento, os blocos 2 e 3 foram repetidos e a tentativa falhada ficou guardada. A execução lenta de B (346 s) ficou nos resultados; só foi atribuída ao worker depois de comparar o tempo fora dele, e a causa fica por confirmar. Revisto pela equipa, sem alterações |
+| 9. Relatório (`relatorio/`) | Claude Opus 5.5 | Escreveu o relatório em Typst a partir de `Docs/fase2/`, com a estrutura dos Exercícios 6 e 7 e os seis pontos das diretrizes por requisito, e desenhou as três vistas em SVG. Os capítulos 2 a 4 adaptam a resolução dos Exercícios 6 e 7 feita por Miguel Páscoa (`arquitetura.md` e `taticas.md`, ramo `fase2/rnf-f2-02-segundo-plano`) ao que foi implementado: nome do evento, rotas e interface do ADR-02 | Referências ao código conferidas no commit de partida (uma linha corrigida: `video.py:54`); números conferidos com os resultados em bruto; compilado sem erros nem avisos. Revisto pela equipa, sem alterações |
 
 ## Implementação do ADR-01
 
@@ -80,17 +80,17 @@ Problemas encontrados pela validação durante a implementação, e como foram t
 | Os três serviços ficavam entre 80 e 100 MiB com 500 MiB, acima do alvo de 64 | M1.1 dos passos 3 a 5 | Seis variantes de configuração medidas com o mesmo método (`medicoes/passos/afinacao/`). A causa é a recolha tardia dos buffers já enviados, e não cópias do ficheiro. Escolhida a afinação do passo 5b |
 | Commit não pedido (`cf4b5be`), feito fora do agente durante a implementação, com a mensagem do passo 0 | Revisão do histórico do ramo | Mantido; assinalado à equipa |
 
-### Revisão pela equipa do ADR-01 (a preencher)
+### Revisão pela equipa do ADR-01
 
 | Passo | Revisto por | Data | Observações |
 | --- | --- | --- | --- |
-| 0 | | | |
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
-| 4 | | | |
-| 5 | | | |
-| 5b | | | |
+| 0 | Equipa PL5-G5 | 19/11/2026 | De acordo, sem alterações |
+| 1 | Equipa PL5-G5 | 19/11/2026 | De acordo, sem alterações |
+| 2 | Equipa PL5-G5 | 19/11/2026 | De acordo, sem alterações |
+| 3 | Equipa PL5-G5 | 19/11/2026 | De acordo, sem alterações |
+| 4 | Equipa PL5-G5 | 19/11/2026 | De acordo, sem alterações |
+| 5 | Equipa PL5-G5 | 19/11/2026 | De acordo, sem alterações |
+| 5b | Equipa PL5-G5 | 19/11/2026 | De acordo, sem alterações |
 
 ## Implementação do ADR-02
 
@@ -128,13 +128,13 @@ Problemas encontrados pela validação durante a implementação, e como foram t
 | O C2.3 do complemento da medição final deu 404 ao dono, a outro utilizador e sem JWT, e o script contou-o como "recusado nos dois casos" | Revisão dos resultados: o URL registado era `C:/Program Files/Git/projects/...` | O Git Bash converte em caminho do Windows um valor que comece por `/` antes de o passar ao node. O C2.3 foi repetido com `MSYS_NO_PATHCONV=1` (`medicoes/final/rnf-f2-02/complemento/c23/`), e o script passou a só contar a recusa quando o dono recebe 200 do mesmo URL (`rnf2/medir.mjs`, opção `--so c23`). O script da medição conjunta já desliga a conversão |
 | O bloco 2 da comparação A-B-A da medição conjunta parou no fim da primeira execução | Registo do bloco (`medicoes/final/integrado/ab/2-B-tentativa-1/logs/rnf2-c21.log`): `locator.getAttribute: Timeout 30000ms exceeded` | A execução tinha acabado e a interface retirou a barra de progresso, como devia; o `rnf2/medir.mjs` esperou 30 s pela barra e lançou uma exceção. Falha do instrumento, e não da aplicação: a leitura passou a tratar uma barra que desaparece como "sem barra", com 1 s de espera, e os blocos 2 e 3 foram repetidos seguidos (`scripts/ab-repeticao.sh`). A tentativa falhada e o bloco 3 interrompido ficaram guardados |
 
-### Revisão pela equipa do ADR-02 (a preencher)
+### Revisão pela equipa do ADR-02
 
 | Passo | Revisto por | Data | Observações |
 | --- | --- | --- | --- |
-| 0 | | | |
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
-| 4 | | | |
-| 5 | | | |
+| 0 | Equipa PL5-G5 | 19/11/2026 | De acordo, sem alterações |
+| 1 | Equipa PL5-G5 | 19/11/2026 | De acordo, sem alterações |
+| 2 | Equipa PL5-G5 | 19/11/2026 | De acordo, sem alterações |
+| 3 | Equipa PL5-G5 | 19/11/2026 | De acordo, sem alterações |
+| 4 | Equipa PL5-G5 | 19/11/2026 | De acordo, sem alterações |
+| 5 | Equipa PL5-G5 | 19/11/2026 | De acordo, sem alterações |

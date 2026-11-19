@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 | --- | --- |
-| Estado | Implementado e medido no ramo `fase2/rnf-f2-02-segundo-plano-medido` e com o RNF-F2-01 integrado no ramo `fase2/integracao` (secção 7). Alvo atingido nas três medidas principais, nas duas medições, e o C2.1 cumpre na mesma sessão que a base (`../analise.md`, secções 6 e 7). A aguardar a revisão pela equipa |
+| Estado | Aceite. Implementado e medido no ramo `fase2/rnf-f2-02-segundo-plano-medido` e com o RNF-F2-01 integrado no ramo `fase2/integracao` (secção 7). Alvo atingido nas três medidas principais, nas duas medições, e o C2.1 cumpre na mesma sessão que a base (`../analise.md`, secções 6 e 7). Revisto pela equipa a 19/11/2026 (`../ia.md`) |
 | Data | 18 de novembro de 2026 |
 | Requisito | RNF-F2-02 — Trabalho em segundo plano durante o processamento (`../requisitos-nf.md`, secção 3) |
 | Base | Commit `0523102` (no nosso repositório, `43a2e08`) |
