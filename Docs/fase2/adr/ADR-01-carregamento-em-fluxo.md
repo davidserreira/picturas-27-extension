@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 | --- | --- |
-| Estado | Implementado e medido no ramo `fase2/rnf-f2-01-carregamento` (secção 7). Alvo atingido nas duas medidas principais (`../analise.md`). A aguardar a revisão pela equipa e a medição com o RNF-F2-02 integrado |
+| Estado | Implementado e medido no ramo `fase2/rnf-f2-01-carregamento` e com o RNF-F2-02 integrado no ramo `fase2/integracao` (secção 7). Alvo atingido nas duas medidas principais, nas duas medições (`../analise.md`, secções 1 a 5 e 7). A aguardar a revisão pela equipa |
 | Data | 17 de novembro de 2026 |
 | Requisito | RNF-F2-01 — Carregamento de ficheiros grandes com memória limitada (`../requisitos-nf.md`, secção 2) |
 | Base | Commit `0523102` (no nosso repositório, `43a2e08`) |
@@ -404,7 +404,21 @@ máximo com 500 MiB ficou acima do previsto:
 A previsão contava só com os buffers dos streams e não com a memória que o V8 e a glibc demoram a
 devolver (secção 7.2). Mesmo assim, os três ficam abaixo do alvo.
 
-### 7.5 O que falta
+### 7.5 Medição com o RNF-F2-02 integrado
+
+Feita a 18 e 19 de novembro de 2026 no ramo `fase2/integracao` (commit `eb8a37d`), com o mesmo
+método (`../medicoes/final/integrado/`; análise em `../analise.md`, secção 7):
+
+| Medida | Isolado | Integrado | Alvo | Mínimo |
+| --- | --- | --- | --- | --- |
+| M1.1 (1000 MiB, serviço que mais cresce) | 56,3 MiB (`img_storage`) | 62,4 MiB (`img_storage`) | ≤ 64 MiB | ≤ 128 MiB |
+| M1.2 | 1000 MiB | 1000 MiB | 1000 MiB | 500 MiB |
+
+O alvo continua atingido, e os sete controlos C1.x cumprem o limite. O código do `img_storage` é o
+mesmo nas duas versões: o máximo variou entre 49 e 62 MiB nas cinco repetições da série conjunta, e
+a margem para o alvo ficou em 1,6 MiB. A regressão deu os mesmos resultados da base, e as medidas e
+os controlos do RNF-F2-02 também cumprem, incluindo o C2.1, comparado com a base na mesma sessão.
+
+### 7.6 O que falta
 
 - Revisão pela equipa (`../ia.md`) e passagem do estado deste ADR a "Aceite".
-- Medição com os dois requisitos integrados, quando o RNF-F2-02 estiver implementado.

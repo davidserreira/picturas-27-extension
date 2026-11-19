@@ -59,7 +59,19 @@ Cada série escreve em `medicoes/<MEDICAO>/` os JSON em bruto, os registos e um 
     [`54386cc`], [Passo 3: evento `run-status`],
     [`2abf795`], [Passo 4: interface que não bloqueia],
     [`77c9bf7`], [Passo 5: documentação, uso de IA e repetição de `GET` no instrumento],
-    [#preencher[commits]], [Medição final],
+    [`ed34cd7`, `3eefe39`], [Medição final (série e complemento), secção 7 do ADR-02 e correção do C2.3 no instrumento],
+  ),
+)
+
+#tab([Commits da integração (ramo `fase2/integracao`)],
+  tabela(
+    colunas: (2cm, 1fr),
+    [Commit], [Conteúdo],
+    [`5c219ae`], [Junção do RNF-F2-02 (`77c9bf7`) no ramo do RNF-F2-01 (`78c5fce`)],
+    [`9c27f2c`], [Script da série com os dois requisitos integrados],
+    [`50d9081`], [Rascunho deste relatório e análise do RNF-F2-02],
+    [`eb8a37d`], [Junção da medição final do RNF-F2-02 (`3eefe39`); é a versão medida na medição conjunta],
+    [Seguintes], [Resultados da medição conjunta e da comparação A-B-A, análise, ADR e este relatório],
   ),
 )
 

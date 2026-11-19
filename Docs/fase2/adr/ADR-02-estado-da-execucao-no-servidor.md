@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 | --- | --- |
-| Estado | Implementado e medido no ramo `fase2/rnf-f2-02-segundo-plano-medido` (secção 7). Alvo atingido nas três medidas principais (`../analise.md`, secção 6). A aguardar a revisão pela equipa e a medição com o RNF-F2-01 integrado |
+| Estado | Implementado e medido no ramo `fase2/rnf-f2-02-segundo-plano-medido` e com o RNF-F2-01 integrado no ramo `fase2/integracao` (secção 7). Alvo atingido nas três medidas principais, nas duas medições, e o C2.1 cumpre na mesma sessão que a base (`../analise.md`, secções 6 e 7). A aguardar a revisão pela equipa |
 | Data | 18 de novembro de 2026 |
 | Requisito | RNF-F2-02 — Trabalho em segundo plano durante o processamento (`../requisitos-nf.md`, secção 3) |
 | Base | Commit `0523102` (no nosso repositório, `43a2e08`) |
@@ -395,4 +395,24 @@ cumprir. Comparação com as previsões da secção 4.3:
 
 O C2.1 (336,6 s de mediana, contra 269,3 s na série da base) não se compara entre sessões: na série
 do RNF-F2-01, o mesmo código da base demorou 311–381 s noutra sessão. A comparação válida é a dos
-blocos A-B-A da medição conjunta.
+blocos A-B-A da medição conjunta (secção 7.4).
+
+### 7.4 Medição com o RNF-F2-01 integrado
+
+Feita a 18 e 19 de novembro de 2026 no ramo `fase2/integracao` (commit `eb8a37d`), com o mesmo
+método, seguida de três blocos A-B-A do C2.1 e do C2.2 contra a base, na mesma sessão
+(`../medicoes/final/integrado/`; análise em `../analise.md`, secção 7):
+
+| Medida | Isolado | Integrado | Alvo | Mínimo |
+| --- | --- | --- | --- | --- |
+| M2.1 | 100% | 100% | 100% | 80%, G1 completo |
+| M2.2 R | 0,63 s | 0,43 s | ≤ 2 s | ≤ 5 s |
+| M2.2 F | 0,11 s | 0,12 s | ≤ 2 s | ≤ 5 s |
+| M2.3 | 12/12 | 10/10 (5/5 em cada forma) | 10/10 | 5/5 na forma A |
+| C2.2 (maior intervalo) | 2,22 s | 2,30 s na série; 2,01 s nos blocos A-B-A | — | ≤ 5 s |
+
+O alvo continua atingido nas três medidas principais. O C2.1 cumpre o limite na mesma sessão:
+mediana de 282,5 s com os dois requisitos, contra 284,5 e 287,6 s da base nos blocos antes e
+depois (limite: 314,7 s). Uma das três execuções de B demorou 346,1 s, com o tempo a mais no worker
+de vídeo e 2,2 s fora dele, como nas outras; a causa não se confirma. O tempo fora do worker, onde
+este ADR acrescenta escritas e mensagens, foi de 2,2 a 2,6 s em B e de 1,6 a 2,5 s em A.

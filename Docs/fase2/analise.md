@@ -356,4 +356,122 @@ fica por decidir com a base na mesma sessão (secção 7).
 
 ## 7. Medição com os dois requisitos integrados
 
-{a preencher depois da série conjunta}
+### 7.1 Como foi medido
+
+| | Valor |
+| --- | --- |
+| Versão | `eb8a37d`, ramo `fase2/integracao`: o RNF-F2-01 (`7740230`) e o RNF-F2-02 (`3eefe39`) juntos. O código juntou-se sem conflitos; os conflitos foram em documentos e no cabeçalho de `rnf2/medir.mjs` |
+| Quando | 18 e 19 nov., a partir das 21:54 |
+| Procedimento | `scripts/conjunta.sh`. (1) Série completa com `correr-tudo.sh`, incluindo a M1.1 e o C1.4 com 1000 MiB, com a calibração da base para a M2.2 e a rota de estado para o C2.3. (2) Regressão (`regressao/final.md`), de um arranque limpo. (3) Três blocos A-B-A do C2.1 e do C2.2 (A: a base, `43a2e08`; B: este ramo), cada um de um arranque limpo |
+| Conversão de caminhos | O script exporta `MSYS_NO_PATHCONV=1` (secção 6.1, ocorrências) |
+
+Resultados em bruto em `medicoes/final/integrado/`.
+
+### 7.2 Medidas principais dos dois requisitos
+
+| Medida | Base | Isolado (no seu ramo) | Integrado | Alvo | Resultado integrado |
+| --- | --- | --- | --- | --- | --- |
+| M1.1 (1000 MiB, serviço que mais cresce) | Não mensurável | 56,3 MiB (`img_storage`) | **62,4 MiB** (`img_storage`), máximo de 5 repetições | ≤ 64 MiB | **Alvo atingido**, com 1,6 MiB de margem |
+| M1.1 com 500 MiB (referência) | 2001 MiB | 55,3 MiB | 62,9 MiB (`img_storage`) | — | — |
+| M1.2 | 100 MiB | 1000 MiB | **1000 MiB**: 3 em 3 em todos os tamanhos, sem reinícios | 1000 MiB | **Alvo atingido** |
+| M2.1 | 0% | 100% | 100% | 100% | **Alvo atingido** |
+| M2.2 R | Não recupera | 0,63 s | 0,43 s | ≤ 2 s | **Alvo atingido** |
+| M2.2 F | Não recupera | 0,11 s | 0,12 s | ≤ 2 s | **Alvo atingido** |
+| M2.3 | 0/10 | 12/12 | 10/10 (5/5 em cada forma) | 10/10 | **Alvo atingido** |
+
+**Os dois requisitos continuam cumpridos com o alvo atingido em todas as medidas principais.**
+Nenhum piora o outro nas medidas principais. A única diferença com algum peso é a margem da M1.1:
+o `img_storage` subiu até 62,4 MiB com 1000 MiB (52,2, 49,1, 54,6, 62,4 e 52,6 MiB nas cinco
+repetições), contra 56,3 MiB no ramo isolado. O RNF-F2-02 não toca no `img_storage` nem no
+caminho de carregamento, e o código do `img_storage` é o mesmo nas duas versões. A explicação mais
+provável é a recolha de memória do V8, que varia de repetição para repetição (de 49 a 62 MiB nesta
+série; secção 2: a margem depende da afinação do passo 5b). O instrumento não o confirma. Fica registada: com 1,6 MiB de margem, uma repetição desfavorável pode passar o alvo,
+embora fique longe do mínimo de 128 MiB.
+
+### 7.3 Controlos
+
+| ID | Base | Isolado | Integrado | Limite | Resultado |
+| --- | --- | --- | --- | --- | --- |
+| C1.1 — aceitação (mediana) | 500 MiB: 8,96 s | 500 MiB: 0,84 s; 1000 MiB: 0,63 s | 500 MiB: 0,97 s; 1000 MiB: 0,76 s | ≤ base + 10% | Cumpre |
+| C1.2 — envio completo (mediana) | 500 MiB: 10,22 s | 500 MiB: 7,03 s; 1000 MiB: 7,58 s | 500 MiB: 6,40 s; 1000 MiB: 7,67 s | ≤ base + 10% | Cumpre |
+| C1.3 — 500 MiB sem JWT | 401; +1006 MiB | 401; +24 MiB | 401; +19,6 MiB | 401 e ≤ 128 MiB | Cumpre |
+| C1.4 — SHA-256 | Igual (10–500 MiB) | Igual (10–1000 MiB) | Igual (10–1000 MiB) | Iguais | Cumpre |
+| C1.5 — decisões de validação | 7 casos | Iguais | Iguais, com as mesmas mensagens | Iguais | Cumpre |
+| C1.6 — temporários | Nenhum | Nenhum | Nenhum, também no envio interrompido | Zero | Cumpre |
+| C1.7 — órfãos | O 409 deixa um órfão | Nenhum | Nenhum | Sem órfãos | Cumpre |
+| C2.1 — duração de P (mediana) | 269,3 s | 336,6 s (sessão diferente) | 309,6 s (306,6–314,8 s) | ≤ base + 10% na mesma sessão | Cumpre: 282,5 s, contra 284,5 e 287,6 s da base na mesma sessão (7.4) |
+| C2.2 — maior intervalo do progresso | 16,9 s | 2,22 s | 2,30 s | ≤ 5 s | Cumpre |
+| C2.3 — estado a terceiros | Não aplicável | Dono 200; outro 401; sem JWT 401 | Dono 200; outro 401; sem JWT 401 | Recusado | Cumpre |
+| C2.4 — sobreposição | Iguais | Iguais | Iguais | Iguais | Cumpre |
+| C2.5 — ferramenta a meio | 201; iguais | 201; iguais | 201; iguais | Sem erro | Cumpre |
+
+### 7.4 Comparação A-B-A do C2.1
+
+Cada bloco partiu de um arranque limpo (`down -v`, `up --build`), esperou 90 s depois de o
+frontend responder e correu três execuções de P com o vídeo de 330 s, como o C2.1 da série
+(`rnf2/medir.mjs controlos --so c21`). A é a base (`43a2e08`, a partir de uma cópia de trabalho em
+`C:/tmp/picturas-main`) e B este ramo (`eb8a37d`); o `variante.txt` de cada bloco confirma a
+versão (só B tem `models/run.js`). O tempo do worker é o `t=` que o `video_tool` regista no fim de
+cada vídeo (`logs/video_tool.log` de cada bloco).
+
+| Bloco | Hora (19 nov.) | C2.1 (s) | Mediana (s) | Worker (s) | C2.1 menos worker (s) | C2.2 (s) |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 — A | 00:08–00:23 | 282,1; 289,5; 284,5 | 284,5 | 279,6; 287,6; 282,9 | 2,5; 1,9; 1,6 | 17,2; 18,8; 17,6 |
+| 2 — B | 00:36–00:52 | 282,5; 279,7; 346,1 | **282,5** | 280,2; 277,1; 343,9 | 2,3; 2,6; 2,2 | 2,0; 1,8; 1,9 |
+| 3 — A | 00:55–01:10 | 287,6; 295,8; 285,6 | 287,6 | 285,6; 293,6; 283,8 | 2,0; 2,2; 1,8 | 18,3; 18,3; 31,1 |
+
+**O C2.1 cumpre o limite.** A mediana de B (282,5 s) fica 1,2% abaixo do ponto médio das medianas
+de A (286,1 s), e o limite de base + 10% na mesma sessão é 314,7 s. Com as médias, que contam a
+execução mais lenta, B fica 5,3% acima de A (302,8 contra 287,5 s), também dentro do limite.
+
+A terceira execução de B demorou 346,1 s, 21% acima do ponto médio de A. O tempo a mais esteve no
+worker: 343,9 s, contra 280,2 e 277,1 s nas duas execuções anteriores do mesmo bloco. Fora do
+worker foram 2,2 s, como nas outras. O worker de B só difere do de A nos relatórios de progresso
+(ADR-02, passo 2). Um atraso sistemático causado por eles apareceria nas três execuções, e as duas
+primeiras de B são a primeira e a terceira mais rápidas das nove. O instrumento não regista a carga
+da máquina nem a do RabbitMQ, por isso a causa desta execução não se confirma. A variação do worker
+não é nova: na série conjunta, o mesmo código com o mesmo vídeo demorou no worker de 229 a 316 s,
+em 22 execuções das várias medidas.
+
+O tempo fora do worker é onde o ADR-02 acrescenta trabalho: as escritas da execução no MongoDB e as
+mensagens de estado. Foi de 2,2 a 2,6 s em B e de 1,6 a 2,5 s em A, ou seja, 0,4 s a mais em média,
+cerca de 0,1% da duração de P.
+
+O C2.2 confirma na mesma sessão o resultado da série: 1,8 a 2,0 s em B, abaixo do limite de 5 s,
+contra 17,2 a 31,1 s em A.
+
+Os blocos também mostram por que razão os tempos não se comparam entre sessões. O código de B
+demorou 309,6 s de mediana na série conjunta, cerca de uma hora antes, e 282,5 s no bloco 2. O da
+base demorou 269,3 s na série da base e 284,5 e 287,6 s nos blocos 1 e 3.
+
+A primeira tentativa do bloco 2 parou por uma falha do instrumento, e os blocos 2 e 3 foram
+repetidos seguidos (`medicoes/final/integrado/README.md`).
+
+### 7.5 Preservação funcional
+
+| Suite | Base | Integrado |
+| --- | --- | --- |
+| Worker de vídeo (pytest) | 74/74 | 75/75 |
+| Orquestrador (`node --test`) | 8/8 | 19/19 (os 8 da base, 5 do RNF-F2-01 e 6 do RNF-F2-02) |
+| Ponta a ponta (T01–T18) | 18/18 | 18/18, todos com a mesma impressão da base |
+| Interface (U01–U03) | 3/3 | 3/3 |
+
+Regressão em `regressao/final.md`, corrida de um arranque limpo depois da série. Os testes unitários
+do `img_storage`, do `api_gateway` e do `ws_gateway` correram nos passos de cada ADR e não fazem
+parte da suite da base.
+
+### 7.6 Conclusão da medição conjunta
+
+Com os dois requisitos integrados, as medidas principais dos dois mantêm o alvo atingido, os doze
+controlos cumprem o limite e a regressão dá os mesmos resultados da base, com as mesmas impressões
+ponta a ponta. O C2.1, que as séries isoladas não podiam comparar com a base, cumpre na mesma
+sessão: mediana de 282,5 s com os dois requisitos, contra 284,5 e 287,6 s na base (7.4). Nenhum
+dos requisitos piora o outro.
+
+Ficam registados um risco e uma limitação do instrumento:
+
+- **Margem da M1.1.** Nesta série foi de 1,6 MiB (7.2). Uma repetição desfavorável pode passar o
+  alvo, embora longe do mínimo de 128 MiB.
+- **Sensibilidade do C2.1.** O tempo do worker varia de execução para execução: uma execução de B
+  ficou 21% acima da base sem mudar a mediana (7.4). Com a mediana de três execuções, uma segunda
+  execução lenta no mesmo bloco bastaria para passar o limite, tanto em B como em A.

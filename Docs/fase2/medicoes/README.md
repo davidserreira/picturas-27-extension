@@ -22,6 +22,8 @@ inicial (`baseline/`) e para a final (`final/`). Só usam a interface pública d
 | `passos/` | Medições intermédias de cada passo do ADR-01 |
 | `passos-rnf2/` | Verificações intermédias de cada passo do ADR-02 (`rnf2/estado.mjs` e, no passo 4, as medidas do RNF-F2-02 com uma execução) |
 | `final/rnf-f2-01/` | Medição final do RNF-F2-01 no seu ramo, com o complemento e a comparação A/B do C2.1 (ver o `README.md` da pasta) |
+| `final/rnf-f2-02/` | Medição final do RNF-F2-02 no seu ramo, com o complemento (ver o `README.md` da pasta) |
+| `final/integrado/` | Medição com os dois requisitos integrados e comparação A-B-A do C2.1 com a base (ver o `README.md` da pasta) |
 
 ## Pré-requisitos
 

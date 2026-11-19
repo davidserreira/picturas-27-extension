@@ -117,7 +117,12 @@ async function progressOfP(page, p) {
     // aria-valuenow when the bar exposes it; otherwise the position of the
     // indicator (the base Progress component draws it with translateX(-N%)
     // and does not forward the value to the accessible element).
-    const v = await bar.getAttribute("aria-valuenow");
+    // Short timeout: the bar can disappear between isVisible() and here when the
+    // run ends, and getAttribute() would wait 30 s for it and throw (block 2-B of
+    // final/integrado/ab, 2026-11-19). A bar that is gone counts as no bar.
+    let gone = false;
+    const v = await bar.getAttribute("aria-valuenow", { timeout: 1000 }).catch(() => { gone = true; return null; });
+    if (gone) continue;
     if (v !== null) return Number(v);
     const drawn = await bar.evaluate((el) => {
       const ind = el.firstElementChild;

@@ -2,7 +2,7 @@
 
 = Arquitetura e padrões da solução de base
 
-Este capítulo corresponde ao Bloco 1 do Exercício 6: a vista da arquitetura, os padrões atuais (o global e o do vídeo), as alternativas e a matriz de comparação. A notação segue a dos enunciados: `EV-nn` é um facto verificado no código, na configuração ou numa medição, e `H-nn` é uma hipótese ainda não verificada. O registo completo está na secção 2.6. O estudo das fragilidades, com a evidência linha a linha, está em `Docs/fase2/diagnostico.md`. O commit analisado é o de partida, `0523102` (`43a2e08` no repositório do grupo).
+Este capítulo corresponde ao Bloco 1 do Exercício 6: a vista da arquitetura, os padrões atuais (o global e o do vídeo), as alternativas e a matriz de comparação. A notação segue a dos enunciados: `EV-nn` é um facto verificado no código, na configuração ou numa medição, e `H-nn` é uma hipótese ainda não verificada. O registo completo está na secção 2.6. O estudo das fragilidades, com a evidência linha a linha, está em `Docs/fase2/diagnostico.md`. Os capítulos 2 a 4 adaptam a resolução dos Exercícios 6 e 7 feita na equipa (`arquitetura.md` e `taticas.md`, no ramo `fase2/rnf-f2-02-segundo-plano`) ao que foi implementado. O commit analisado é o de partida, `0523102` (`43a2e08` no repositório do grupo).
 
 == Vista da arquitetura
 
