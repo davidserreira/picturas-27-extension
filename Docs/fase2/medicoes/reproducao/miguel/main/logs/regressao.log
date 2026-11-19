@@ -1,0 +1,10 @@
+=== 17:05:49 unitarios: worker de video (pytest)
+    exit 0
+=== 17:06:28 unitarios: orquestrador (node --test)
+    exit 0
+=== 17:06:29 ponta a ponta (API e WebSocket)
+    exit 1
+=== 17:09:32 interface (Playwright)
+    exit 0
+escrito reproducao/miguel.md
+=== 17:10:20 fim: reproducao/miguel.md

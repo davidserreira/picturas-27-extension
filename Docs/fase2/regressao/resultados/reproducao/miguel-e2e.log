@@ -1,0 +1,22 @@
+17:06:29 a gerar fala-25s.mp4
+17:06:31 a gerar sem-som-8s.mp4
+17:06:32 a gerar video-60s.mp4
+17:06:36 T01 PASSOU (0.2 s) Registo e início de sessão devolvem um JWT válido
+17:06:37 T02 PASSOU (0.4 s) Carregar imagem PNG: aceite, listada e guardada sem alteração
+17:06:37 T03 PASSOU (0.4 s) Carregar vídeos MP4 e MOV: aceites, com metadados lidos por ffprobe
+17:06:38 T04 PASSOU (0.7 s) Recusas: vídeo no endpoint de imagem, imagem no de vídeo, ficheiro corrompido, nome repetido, limites do perfil gratuito, anónimo
+17:06:58 T05 DIFERENTE (20.3 s) Cada ferramenta de imagem (8 + watermark) aplicada sozinha produz o resultado de referência
+17:07:00 T06 DIFERENTE (2.4 s) Pipeline encadeado em lote (brilho, contraste, rotação, redimensionamento) em duas imagens
+17:07:00 T07 PASSOU (0 s) Transferência dos resultados em ZIP
+17:07:03 T08 PASSOU (2.8 s) Pré-visualização de imagem e de vídeo chega pelo WebSocket
+17:07:24 T09 PASSOU (21.1 s) Efeitos de fotograma em vídeo: cor (brilho, contraste, saturação, binarização) e geometria (rotação, recorte, redimensionamento, moldura)
+17:07:28 T10 PASSOU (3.8 s) Corte no tempo e velocidade: duração e som do resultado
+17:07:59 T11 PASSOU (31.4 s) Legendagem automática: vídeo com fala legendado; vídeo sem som inalterado na duração
+17:08:17 T12 PASSOU (17.2 s) Extração de fotogramas: por número (PNG) e por intervalo (JPEG), cada fotograma como resultado
+17:08:17 T13 PASSOU (0.3 s) Regras do pipeline: extração só no fim e uma vez; acrescentar efeito vai para antes da extração
+17:08:24 T14 PASSOU (6.6 s) Projeto com imagem e vídeo: o mesmo efeito aplica-se aos dois; o corte de vídeo não toca na imagem
+17:08:24 T15 PASSOU (0.3 s) Ferramentas incompatíveis: só-imagem num projeto com vídeo e só-vídeo num projeto só com imagens são recusadas
+17:09:24 T16 PASSOU (60.5 s) Cancelar uma execução: sem resultados, operações não ficam comprometidas e o projeto volta a processar
+17:09:32 T17 PASSOU (7.7 s) Perfil gratuito: cada efeito em cada vídeo conta uma operação e o limite diário de 5 recusa a execução seguinte
+17:09:32 T18 PASSOU (0.1 s) Um utilizador não acede aos projetos nem aos media de outro
+17:09:32 e2e: 16 passaram, 2 diferentes, 0 falharam, 0 com erro

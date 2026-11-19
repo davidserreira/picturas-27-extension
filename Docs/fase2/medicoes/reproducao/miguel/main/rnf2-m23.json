@@ -1,0 +1,49 @@
+{
+  "medida": "RNF-F2-02 M2.3",
+  "quando": "2026-11-19T17:15:54.179Z",
+  "commit": {
+    "hash": "07f29354a0bdf2ab85406b40fcdef0985d509693",
+    "codeChanges": [
+      "?? teste-rnf2/"
+    ]
+  },
+  "video": "p-video-120s.mp4",
+  "tentativas": [
+    {
+      "forma": "A",
+      "tentativa": 1,
+      "P": "6aff2ecad665dfbb18fb043b",
+      "oferecido": true,
+      "oferecidoS": 0.1,
+      "parou": true,
+      "parouS": 0,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "B",
+      "tentativa": 1,
+      "P": "6aff2f16d665dfbb18fb060f",
+      "oferecido": true,
+      "oferecidoS": 0.1,
+      "parou": true,
+      "parouS": 0,
+      "resultadosIguais": true,
+      "sucesso": true
+    }
+  ],
+  "resumo": {
+    "A": {
+      "sucessos": 1,
+      "tentativas": 1
+    },
+    "B": {
+      "sucessos": 1,
+      "tentativas": 1
+    },
+    "total": {
+      "sucessos": 2,
+      "tentativas": 2
+    }
+  }
+}

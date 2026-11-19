@@ -1,0 +1,24 @@
+=== 16:56:33 verificações
+    commit 07f2935; Docker com 7 GiB: M1.1 com 500 MiB
+Preparing worktree (detached HEAD 43a2e08)
+=== 16:56:35 base: arranque limpo (a primeira vez demora 15 a 30 min)
+    frontend pronto; espera 90 s
+=== 16:59:52 dados de teste
+=== 17:00:38 base: M1.1 com 500 MiB (3 repetições)
+    exit 0
+=== 17:02:34 main: arranque limpo
+    frontend pronto; espera 90 s
+=== 17:05:49 main: regressão (a primeira legendagem descarrega o modelo de fala)
+    exit 0
+=== 17:10:20 main: M1.1 com 500 MiB (3 repetições)
+    exit 0
+=== 17:11:43 main: M2.2 (recarregar a página e ver o fim), uma execução
+    exit 0
+=== 17:15:53 main: M2.3 (cancelar depois de perder a página), uma tentativa de cada forma
+    exit 0
+=== 17:17:53 fim
+Resultados: Docs/fase2/medicoes/reproducao/miguel/{base,main}/resumo.md e Docs/fase2/regressao/reproducao/miguel.md
+Para os guardar (no ramo fase2/integracao, nunca na main):
+  git add Docs/fase2/medicoes/reproducao/miguel Docs/fase2/regressao/reproducao Docs/fase2/regressao/resultados/reproducao
+  git commit -m "Fase 2: reprodução das medições (miguel)" && git push
+A aplicação fica a correr com o código da main (docker compose stop para a parar).

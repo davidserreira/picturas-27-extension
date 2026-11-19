@@ -1,0 +1,66 @@
+{
+  "medida": "RNF-F2-02 M2.2",
+  "quando": "2026-11-19T17:38:52.381Z",
+  "commit": {
+    "hash": "07f29354a0bdf2ab85406b40fcdef0985d509693",
+    "codeChanges": [
+      "?? teste-rnf2/"
+    ]
+  },
+  "video": "p-video-330s.mp4",
+  "duracaoReferenciaS": 200,
+  "execucoes": [
+    {
+      "execucao": 1,
+      "P": "6aff342cd665dfbb18fb080a",
+      "R": [
+        {
+          "momento": 0.25,
+          "progressoAntes": 27.5,
+          "recuperaS": 0.13,
+          "valorDepois": 27.5,
+          "naoRecupera": false,
+          "aposLoadS": 0.1
+        },
+        {
+          "momento": 0.6,
+          "progressoAntes": 66.5,
+          "recuperaS": 0.13,
+          "valorDepois": 66.5,
+          "naoRecupera": false,
+          "aposLoadS": 0.1
+        }
+      ],
+      "F": {
+        "notificaS": 0,
+        "naoRecupera": false
+      }
+    }
+  ],
+  "resumo": {
+    "R": {
+      "valores": 2,
+      "naoRecupera": 0,
+      "tempos": {
+        "n": 2,
+        "mean": 0.13,
+        "sd": 0,
+        "median": 0.13,
+        "min": 0.13,
+        "max": 0.13
+      }
+    },
+    "F": {
+      "valores": 1,
+      "naoRecupera": 0,
+      "tempos": {
+        "n": 1,
+        "mean": 0,
+        "sd": 0,
+        "median": 0,
+        "min": 0,
+        "max": 0
+      }
+    }
+  }
+}
