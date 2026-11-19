@@ -106,6 +106,9 @@ export default function Project({
   const applyBaseTokenRef = useRef<number | null>(null);
   // Token of the run this page has seen running
   const runningTokenRef = useRef<number | null>(null);
+  // Token of the run being cancelled: its "running" state is ignored until the
+  // projects service confirms the cancellation (or the request fails)
+  const cancellingTokenRef = useRef<number | null>(null);
   // Called when the run followed by this page completes (set further below)
   const onRunCompletedRef = useRef<() => void>(() => {});
 
@@ -314,6 +317,7 @@ useEffect(() => {
   if (run.state === "running") {
     const base = applyBaseTokenRef.current;
     if (base !== null && run.token <= base) return; // an older run
+    if (cancellingTokenRef.current === run.token) return; // being cancelled
     applyBaseTokenRef.current = null;
     runningTokenRef.current = run.token;
     setProcessing(true);
@@ -487,12 +491,14 @@ if (project.isError) {
       </div>
     );
 
-const handleCancel = () => {
+const handleCancel = async () => {
   // cancelar medição de tempo e tipo
   processStartTimeRef.current = null;
   processIsAiRef.current = false;
 
   // parar tudo no UI (the run itself is finished by the projects service)
+  const cancellingToken = run?.state === "running" ? run.token : runningTokenRef.current;
+  cancellingTokenRef.current = cancellingToken;
   setProcessing(false);
   runningTokenRef.current = null;
   applyBaseTokenRef.current = null;
@@ -500,10 +506,21 @@ const handleCancel = () => {
   // limpar estado de preview (se alguma tool estava a fazer preview)
   setWaitingForPreview("");
 
+  // RNF-F2-02: after a reload the cached version can be older than the
+  // server's (opening the editor updates the project), so the cancel uses
+  // the current version instead of failing with a version conflict.
+  let projectVersion = project.data.version;
+  try {
+    const fresh = await project.refetch();
+    projectVersion = fresh.data?.version ?? projectVersion;
+  } catch {
+    /* keep the cached version */
+  }
+
   // cancelar no backend
   cancelProcess.mutate(
     {
-      projectVersion: project.data.version
+      projectVersion
     },
     {
       onSuccess: () => {
@@ -523,6 +540,12 @@ const handleCancel = () => {
       },
       
       onError: (error) => {
+        // the run goes on: show it again
+        cancellingTokenRef.current = null;
+        if (cancellingToken !== null && cancellingToken !== undefined) {
+          runningTokenRef.current = cancellingToken;
+          setProcessing(true);
+        }
         const { title, description } = getErrorMessage(
           "project-cancel-process",
           error,
