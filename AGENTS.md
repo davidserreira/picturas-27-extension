@@ -123,9 +123,9 @@ docker compose run --rm --no-deps -T img_storage node --test tests/
 docker compose exec -T api_gateway node --test tests/
 ```
 
-Phase 2 regression suite, measurements, analysis and report live in branch `fase2/integracao`
-(`Docs/fase2/regressao/`, `medicoes/`, `analise.md`, `relatorio/`). `main` keeps only the code,
-the ADRs (`Docs/fase2/adr/`) and the AI usage record (`Docs/fase2/ia.md`).
+Phase 2 regression suite, measurements and analysis live in branch `fase2/integracao`
+(`Docs/fase2/regressao/`, `medicoes/`, `analise.md`). `main` keeps only the code, the ADRs
+(`Docs/fase2/adr/`), the AI usage record (`Docs/fase2/ia.md`) and the report (`Docs/fase2/relatorio/`).
 
 - Open `https://localhost:8080` (https, port 8080) and accept the self-signed certificate.
 - `users`, `subscriptions` and `apiGateway` bind-mount their source and reload with nodemon.
