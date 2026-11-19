@@ -57,7 +57,7 @@ const {
   isVideoFile,
   isVideoMedia,
   videoOutputName,
-  probeVideoBuffer,
+  probeVideo,
   validateVideo,
   imageTools,
   videoPipeline,
@@ -68,9 +68,7 @@ const {
 } = require("../utils/video");
 const { persistFrameResults } = require("../utils/frameResults");
 const { dispatchProcessBatch } = require("../utils/processBatch");
-
-const storage = multer.memoryStorage();
-var upload = multer({ storage: storage });
+const { createMediaStorage } = require("../utils/mediaUpload");
 
 const key = fs.readFileSync(__dirname + "/../certs/selfsigned.key");
 const cert = fs.readFileSync(__dirname + "/../certs/selfsigned.crt");
@@ -1266,6 +1264,12 @@ router.post("/:user/:project/preview/:img", checkSharePermission, requireEditPer
 
 // Shared upload logic for project media (images and videos).
 // `kind` is "image" or "video"; each endpoint only accepts its own kind.
+//
+// The file reaches this handler already stored in img_storage: it is streamed
+// there while it arrives (utils/mediaUpload.js, Phase 2 ADR-01). The checks and
+// messages are the same as when the file was held in memory, in the same order;
+// every refusal or failure deletes the stored file before answering, so nothing
+// is left behind (control C1.7).
 function addProjectMedia(kind) {
   return async (req, res) => {
     console.log(`PROJECTS-MS /:user/:project/${kind === "video" ? "video" : "img"} HIT, file =`, !!req.file);
@@ -1274,12 +1278,22 @@ function addProjectMedia(kind) {
       return;
     }
 
+    const og_key = req.file.imageKey ? path.basename(req.file.imageKey) : null;
+    const refuse = async (status, body) => {
+      if (og_key) {
+        await delete_image(req.params.user, req.params.project, "src", og_key).catch((e) =>
+          console.error("[UPLOAD] could not delete refused file", og_key, e.message)
+        );
+      }
+      return res.status(status).jsonp(body);
+    };
+
     const fileIsVideo = isVideoFile(req.file.originalname, req.file.mimetype);
     if (kind === "image" && fileIsVideo) {
-      return res.status(400).jsonp("Videos must be uploaded through the /video endpoint.");
+      return refuse(400, "Videos must be uploaded through the /video endpoint.");
     }
     if (kind === "video" && !fileIsVideo) {
-      return res.status(400).jsonp("Only video files (.mp4, .mov, .webm) can be uploaded here.");
+      return refuse(400, "Only video files (.mp4, .mov, .webm) can be uploaded here.");
     }
 
     Project.getOne(req.params.user, req.params.project)
@@ -1289,13 +1303,10 @@ function addProjectMedia(kind) {
         );
 
         if (same_name_img.length > 0) {
-          res
-            .status(400)
-            .jsonp(`This project already has ${kind === "video" ? "a video" : "an image"} with that name.`);
-          return;
+          return refuse(400, `This project already has ${kind === "video" ? "a video" : "an image"} with that name.`);
         }
 
-        // Validate the video before storing it
+        // Validate the video before adding it to the project
         const isVideo = kind === "video";
         let videoMeta = null;
         if (isVideo) {
@@ -1305,91 +1316,94 @@ function addProjectMedia(kind) {
             userType = r.data.type;
           } catch (_) {}
 
+          let url;
           try {
-            videoMeta = await probeVideoBuffer(req.file.buffer, req.file.originalname);
+            url = (await get_image_internal_url(req.params.user, req.params.project, "src", og_key)).data.url;
+          } catch (_) {
+            return refuse(501, `Error storing image`);
+          }
+          try {
+            videoMeta = await probeVideo(url, req.file.size);
           } catch (e) {
-            return res.status(400).jsonp(e.message);
+            return refuse(400, e.message);
           }
 
           const reason = validateVideo(videoMeta, req.file.originalname, req.file.mimetype, userType);
           if (reason) {
-            return res.status(400).jsonp(reason);
+            return refuse(400, reason);
           }
         }
 
         try {
-          const data = new FormData();
-          data.append("file", req.file.buffer, {
-            filename: req.file.originalname,
-            contentType: req.file.mimetype,
+          const og_uri = `./images/users/${req.params.user}/projects/${req.params.project}/src/${req.file.originalname}`;
+          // the edited video is always MP4
+          const out_name = isVideo ? videoOutputName(req.file.originalname) : req.file.originalname;
+          const new_uri = `./images/users/${req.params.user}/projects/${req.params.project}/out/${out_name}`;
+
+          // Insert new image
+          project["imgs"].push({
+            og_uri: og_uri,
+            new_uri: new_uri,
+            og_img_key: og_key,
+            og_sha256: req.file.sha256,
+            media_type: isVideo ? "video" : "image",
+            video: videoMeta || undefined,
           });
-          const resp = await post_image(
+
+          const updated = await Project.updateIfVersion(
             req.params.user,
             req.params.project,
-            "src",
-            data
+            project,
+            req.expectedVersion
           );
 
-          const og_key_tmp = resp.data.data.imageKey.split("/");
-          const og_key = og_key_tmp[og_key_tmp.length - 1];
-
-          try {
-            const og_uri = `./images/users/${req.params.user}/projects/${req.params.project}/src/${req.file.originalname}`;
-            // the edited video is always MP4
-            const out_name = isVideo ? videoOutputName(req.file.originalname) : req.file.originalname;
-            const new_uri = `./images/users/${req.params.user}/projects/${req.params.project}/out/${out_name}`;
-
-            const crypto = require("crypto");
-            const sha = crypto.createHash("sha256").update(req.file.buffer).digest("hex");
-
-            // Insert new image
-            project["imgs"].push({
-              og_uri: og_uri,
-              new_uri: new_uri,
-              og_img_key: og_key,
-              og_sha256: sha,
-              media_type: isVideo ? "video" : "image",
-              video: videoMeta || undefined,
+          if (!updated) {
+            const fresh = await Project.getOne(req.params.user, req.params.project);
+            return refuse(409, {
+              message: "Project version conflict",
+              serverVersion: fresh?.version ?? null,
             });
-
-            const updated = await Project.updateIfVersion(
-              req.params.user,
-              req.params.project,
-              project,
-              req.expectedVersion
-            );
-
-            if (!updated) {
-              const fresh = await Project.getOne(req.params.user, req.params.project);
-              return res.status(409).jsonp({
-                message: "Project version conflict",
-                serverVersion: fresh?.version ?? null,
-              });
-            }
-
-            res.set("X-Project-Version", String(updated.version));
-            return res.sendStatus(204);
-
-          } catch (_) {
-            res.status(501).jsonp(`Updating project information`);
           }
+
+          res.set("X-Project-Version", String(updated.version));
+          return res.sendStatus(204);
+
         } catch (_) {
-          res.status(501).jsonp(`Error storing image`);
+          return refuse(501, `Updating project information`);
         }
       })
-      .catch((_) => res.status(501).jsonp(`Error acquiring user's project`));
+      .catch((_) => refuse(501, `Error acquiring user's project`));
   };
+}
+
+// The file is streamed to img_storage while it arrives (utils/mediaUpload.js).
+// A file of the wrong kind is not stored, since the handler refuses it anyway.
+// A storage failure gets the same 501 "Error storing image" as before; other
+// multer errors go to the error handler, as they did.
+function receiveMedia(kind) {
+  const upload = multer({
+    storage: createMediaStorage({
+      store: post_image,
+      remove: delete_image,
+      accept: (file) => isVideoFile(file.originalname, file.mimetype) === (kind === "video"),
+    }),
+  }).single(kind === "video" ? "video" : "image");
+  return (req, res, next) =>
+    upload(req, res, (err) => {
+      if (err && err.storageError) return res.status(501).jsonp(`Error storing image`);
+      next(err);
+    });
 }
 
 // Add new image to a project
 router.post(
-  "/:user/:project/img", checkSharePermission, requireEditPermission, enforcePresenceLimit, requireProjectVersion, upload.single("image"),
+  "/:user/:project/img", checkSharePermission, requireEditPermission, enforcePresenceLimit, requireProjectVersion, receiveMedia("image"),
   addProjectMedia("image")
 );
 
 // Add new video to a project
 router.post(
-  "/:user/:project/video", checkSharePermission, requireEditPermission, enforcePresenceLimit, requireProjectVersion, upload.single("video"),
+  "/:user/:project/video", checkSharePermission, requireEditPermission, enforcePresenceLimit, requireProjectVersion, receiveMedia("video"),
   addProjectMedia("video")
 );
 

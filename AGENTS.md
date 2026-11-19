@@ -42,6 +42,15 @@ Behind the gateway:
 
 ### Processing flow
 
+- **Uploads** stream end to end; no service holds a whole file in memory (Phase 2, ADR-01,
+  `Docs/fase2/adr/`). nginx passes the body on as it arrives (`proxy_request_buffering off`);
+  `api_gateway` checks the JWT first and pipes the multipart body to `projects`
+  (`apiGateway/utils/streamProxy.js`); `projects` streams the file to `img_storage` while
+  counting and hashing it (`projects/utils/mediaUpload.js`), then probes videos with ffprobe
+  on the stored object's internal URL and deletes the object on any refusal; `img_storage`
+  sends it to S3 as a multipart upload (`imageStorageService/services/streamStorage.js`).
+  The client still gets its answer only after sending the whole body, with the same codes
+  and messages as before.
 - **Images**: `projects` sends one message per (image, tool) step and advances the chain when
   the tool replies on `project_queue`. Progress goes to the browser through `ws_queue`.
 - **Videos**: `projects` sends **one** message per video carrying the whole pipeline to
@@ -93,8 +102,20 @@ cd Tools/video && python3 -m venv .venv && .venv/bin/pip install -r requirements
 .venv/bin/python -m pytest -q tests
 ```
 
+Node unit tests (`node --test`) run inside each service's container:
+
+```bash
+docker compose run --rm --no-deps -T projects sh -c "node --test tests/*.test.js"
+docker compose run --rm --no-deps -T img_storage node --test tests/
+docker compose exec -T api_gateway node --test tests/
+```
+
+Phase 2 regression suite and measurements: `Docs/fase2/regressao/` and `Docs/fase2/medicoes/`.
+
 - Open `https://localhost:8080` (https, port 8080) and accept the self-signed certificate.
 - `users`, `subscriptions` and `apiGateway` bind-mount their source and reload with nodemon.
+  On Docker Desktop for Windows, file changes may not reach nodemon: run
+  `docker compose restart <service>` (then restart nginx).
   The frontend is a production build and Python tools have no bind mount: rebuild them.
 - RabbitMQ management: `http://localhost:15672` (`user` / `password`).
 - Sample videos for manual tests: `samples/video/` (see its README).
@@ -125,3 +146,19 @@ cd Tools/video && python3 -m venv .venv && .venv/bin/pip install -r requirements
   reached"); `projects` maps that case to 403 before replying.
 - Image/video handling is branched in the orchestrator, PIL effects are duplicated in
   `Tools/video/effects.py`, and there is a single `video_tool` with no replicas.
+- Do not read uploads into memory (`multer.memoryStorage()`, `req.file.buffer`) and do not
+  send large bodies with axios without `maxRedirects: 0`: axios's default transport
+  (follow-redirects) keeps a copy of the whole body. Either makes memory grow with the file
+  size again (RNF-F2-01); check with `Docs/fase2/medicoes/rnf1/medir-memoria.mjs`.
+- Media are stored before they are validated: every refusal in `addProjectMedia`
+  (`projects/routes/projects.js`) must go through `refuse()`, which deletes the stored file.
+- `NODE_OPTIONS` and `MALLOC_*` of `api_gateway`, `projects` and `img_storage` in
+  `docker-compose.yaml` keep upload memory bounded (measured in `Docs/fase2/medicoes/passos/`).
+  Remeasure before removing them.
+
+## Phase 2 refactorings (AI-assisted)
+
+Phase 2 changes were made with Claude Code (Claude Opus 5.5) following the ADRs in
+`Docs/fase2/adr/`, one commit per plan step, each validated by new unit tests, the full
+regression suite and intermediate measurements. Changed code carries comments pointing to its
+ADR. Tools, supported tasks and the team's validation are recorded in `Docs/fase2/ia.md`.
