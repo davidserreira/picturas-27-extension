@@ -29,5 +29,6 @@ capitulos/99-anexos      como repetir as medições, commits e mapa dos resultad
 images/                  diagramas em SVG (vista da base e vistas antes/depois das decisões)
 ```
 
-Os números vêm dos ficheiros de `Docs/fase2/` (`analise.md`, `medicoes/`, `regressao/`, `adr/`),
-que têm o pormenor e os resultados em bruto.
+Os números vêm dos ficheiros de `Docs/fase2/` no ramo `fase2/integracao` (`analise.md`, `medicoes/`,
+`regressao/`, `adr/`); no `main` estão só `adr/`, `ia.md` e este relatório. Esses ficheiros
+têm o pormenor e os resultados em bruto.

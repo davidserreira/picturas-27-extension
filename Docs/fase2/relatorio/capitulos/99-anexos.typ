@@ -86,6 +86,7 @@ Cada série escreve em `medicoes/<MEDICAO>/` os JSON em bruto, os registos e um 
     [`43a2e08`], [Base: o commit de partida `0523102` mais a pasta `Docs/`],
     [`126c319`], [RNF-F2-01: o código de `7740230` (o medido no seu ramo) e o ADR-01],
     [`d959150`], [RNF-F2-02: o código de `eb8a37d` (o medido com os dois integrados), o ADR-02, o `ia.md` e, no `AGENTS.md`, onde estão as medições],
+    [Seguinte], [Este relatório, em Typst e PDF (`Docs/fase2/relatorio/`), igual ao do ramo `fase2/integracao`],
   ),
 )
 
