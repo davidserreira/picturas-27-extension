@@ -7,6 +7,8 @@
 
 == Como repetir as medições
 
+Os scripts e os dados de teste estão no ramo `fase2/integracao`, cujo código é igual ao do `main`. Para medir a base, usa-se uma cópia de trabalho em `43a2e08` (`git worktree add`), como na comparação A-B-A.
+
 Pré-requisitos: Docker Desktop (ou Docker Engine) com Compose v2, Node.js 20 ou mais recente, Bash (no Windows, o Git Bash), cerca de 4 GB livres. O ffmpeg não é preciso no anfitrião: os dados são gerados com o da imagem `projects`.
 
 ```bash
@@ -71,11 +73,25 @@ Cada série escreve em `medicoes/<MEDICAO>/` os JSON em bruto, os registos e um 
     [`9c27f2c`], [Script da série com os dois requisitos integrados],
     [`50d9081`], [Rascunho deste relatório e análise do RNF-F2-02],
     [`eb8a37d`], [Junção da medição final do RNF-F2-02 (`3eefe39`); é a versão medida na medição conjunta],
-    [Seguintes], [Resultados da medição conjunta e da comparação A-B-A, análise, ADR e este relatório],
+    [`3f977dc`], [Análise, ADR e este relatório com a medição conjunta; correção do instrumento],
+    [`6ccd755`], [Resultados da medição conjunta e da comparação A-B-A],
+    [`c34da1d`], [Revisão da equipa, modelos por etapa e ADR aceites],
+  ),
+)
+
+#tab([Commits do `main` (entrega do código)],
+  tabela(
+    colunas: (2cm, 1fr),
+    [Commit], [Conteúdo],
+    [`43a2e08`], [Base: o commit de partida `0523102` mais a pasta `Docs/`],
+    [`126c319`], [RNF-F2-01: o código de `7740230` (o medido no seu ramo) e o ADR-01],
+    [`d959150`], [RNF-F2-02: o código de `eb8a37d` (o medido com os dois integrados), o ADR-02, o `ia.md` e, no `AGENTS.md`, onde estão as medições],
   ),
 )
 
 == Mapa dos resultados
+
+Todas estas pastas estão no ramo `fase2/integracao`, dentro de `Docs/fase2/`.
 
 #tabela(
   colunas: (6.4cm, 1fr),

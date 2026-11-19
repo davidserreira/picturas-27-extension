@@ -9,7 +9,7 @@ Na Fase 1, o PictuRAS passou a suportar vídeo como um produto mínimo viável: 
 #tabela-campos(
   [Repositório oficial], [#link("https://github.com/picturas-um/picturas-27")],
   [Commit de partida], [`052310226c51fa57a17101c7bd1ad795674aac95` (`0523102`, 4 de novembro de 2026), com a solução do PL1-G4, as correções da equipa docente, a legendagem automática e a extração de fotogramas],
-  [Repositório do grupo], [#link("https://github.com/davidserreira/picturas-27-extension"). O `main` é o commit de partida mais a pasta `Docs/` (`43a2e08`): o código é igual ao de `0523102`],
+  [Repositório do grupo], [#link("https://github.com/davidserreira/picturas-27-extension"). A base do grupo é `43a2e08`: o commit de partida mais a pasta `Docs/`, com o código igual ao de `0523102`. O `main` tem, sobre essa base, só o código final dos dois requisitos, num commit por requisito, com os ADR e o `ia.md`. As medições, a regressão, a análise e este relatório estão no ramo `fase2/integracao`],
   [Documentos de base], [`fase-2-guidelines.pdf`, `doc-ext-requisitos-2627.pdf` (PL1-G4), `README.md` e `AGENTS.md` do repositório],
 )
 
@@ -39,7 +39,7 @@ A estrutura final do relatório ainda não estava definida nas diretrizes quando
 
 == Organização do trabalho e do relatório
 
-Cada etapa deixou o resultado em ficheiros de `Docs/fase2/`, revistos antes da etapa seguinte. Este relatório resume-os e remete para eles:
+Cada etapa deixou o resultado em ficheiros de `Docs/fase2/`, revistos antes da etapa seguinte. Este relatório resume-os e remete para eles. Estão todos no ramo `fase2/integracao`; o `main` tem só `adr/` e `ia.md`:
 
 #tabela(
   colunas: (5.2cm, 1fr),
@@ -55,12 +55,13 @@ Cada etapa deixou o resultado em ficheiros de `Docs/fase2/`, revistos antes da e
 
 A Parte I faz a análise arquitetural: a arquitetura e os padrões da base (capítulo 2), os _trade-offs_, os cenários de qualidade e a escolha dos requisitos (capítulo 3), e as táticas e decisões (capítulo 4). A Parte II descreve o método de medição e de regressão (capítulo 5) e tem um capítulo por requisito (6 e 7), cada um com o ciclo completo: diagnóstico, quantificação, medição inicial, decisões e _refactoring_, medição final e análise, e preservação funcional. A Parte III trata os dois requisitos juntos (capítulo 8), o uso de IA (capítulo 9) e as conclusões. Os anexos dizem como repetir as medições.
 
-Cada requisito foi implementado num ramo próprio, a partir do `main`, e medido isolado. Os dois ramos foram depois integrados e medidos juntos:
+Cada requisito foi implementado num ramo próprio, sem o código do outro, e medido isolado. Os dois ramos foram depois integrados e medidos juntos, e o código final passou para o `main`:
 
 #tabela(
   colunas: (6.2cm, 1fr),
   [Ramo], [Conteúdo],
   [`fase2/rnf-f2-01-carregamento`], [ADR-01, passos 0 a 5b e medição final do RNF-F2-01],
   [`fase2/rnf-f2-02-segundo-plano-medido`], [ADR-02, passos 0 a 5 e medição final do RNF-F2-02],
-  [`fase2/integracao`], [Os dois ramos juntos, a medição conjunta, a análise e este relatório],
+  [`fase2/integracao`], [Os dois ramos juntos, com o histórico completo: a medição conjunta, a análise e este relatório],
+  [`main`], [A entrega do código: a base `43a2e08` mais um commit por requisito (`126c319` e `d959150`), com o mesmo código que foi medido, os ADR e o `ia.md`],
 )
