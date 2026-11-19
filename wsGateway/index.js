@@ -3,6 +3,7 @@ const socketIo = require('socket.io');
 const jwt = require("jsonwebtoken");
 
 const { read_rabbit_msg } = require("./utils/rabbit_mq.js");
+const { runStatusRooms } = require("./utils/runStatus.js");
 const httpServer = http.createServer();
 httpServer.listen(4000);
 
@@ -98,6 +99,12 @@ function process_msg() {
             }
 
             io.to(user).emit("process-update", msg_id);
+        }
+
+        // State of a processing run (ADR-02), kept by the projects service
+        else if (msg_content.type === "run-status") {
+            const rooms = runStatusRooms(msg_content.run);
+            if (rooms.length > 0) io.to(rooms).emit("run-status", msg_content.run);
         }
 
         else if (msg_content.type === "project-op") {
