@@ -1,0 +1,65 @@
+{
+  "quando": "2026-11-18T21:57:48.128Z",
+  "codigo": {
+    "hash": "eb8a37d69529f18179de084a685c8c293ae701dd",
+    "codeChanges": []
+  },
+  "maquina": {
+    "fabricante": "HP",
+    "modelo": "Victus by HP Gaming Laptop 15-fa0xxx"
+  },
+  "cpu": {
+    "nome": "12th Gen Intel(R) Core(TM) i5-12450H",
+    "nucleosFisicos": 8,
+    "processadoresLogicos": 12
+  },
+  "ramTotalGiB": 15.7,
+  "so": {
+    "nome": "Microsoft Windows 11 Home",
+    "versao": "10.0.26300"
+  },
+  "docker": {
+    "engine": "29.9.3",
+    "sistema": "Docker Desktop",
+    "kernel": "6.6.87.2-microsoft-standard-WSL2",
+    "cpusAtribuidos": 12,
+    "memoriaAtribuidaGiB": 7.59,
+    "compose": "5.7.0"
+  },
+  "node": "v24.11.1",
+  "browser": "Chromium (Playwright 1.55.0), sem interface, janela 1440x900",
+  "servicosLancados": [
+    "api_gateway",
+    "bg_remove_ai_tool",
+    "binarization_tool",
+    "border_tool",
+    "brightness_tool",
+    "contrast_tool",
+    "cut_ai_tool",
+    "cut_tool",
+    "expand_ai_tool",
+    "frontend",
+    "generative-mock",
+    "img_storage",
+    "mongo-backup",
+    "nginx",
+    "obj_ai_tool",
+    "people_ai_tool",
+    "projects",
+    "projects_mongoDB",
+    "rabbitmq",
+    "resize_tool",
+    "rotate_tool",
+    "saturation_tool",
+    "seaweedfs",
+    "subscriptions",
+    "subscriptions_mongoDB",
+    "text_ai_tool",
+    "upgrade_ai_tool",
+    "users",
+    "users_mongoDB",
+    "video_tool",
+    "watermark_tool_ms",
+    "ws_gateway"
+  ]
+}

@@ -1,0 +1,472 @@
+{
+  "medida": "RNF-F2-02 M2.1",
+  "quando": "2026-11-18T22:06:04.750Z",
+  "commit": {
+    "hash": "eb8a37d69529f18179de084a685c8c293ae701dd",
+    "codeChanges": []
+  },
+  "video": "p-video-330s.mp4",
+  "execucoes": [
+    {
+      "execucao": 1,
+      "P": "6afe214dbd8525295582300d",
+      "Q": "6afe214ebd85252955823074",
+      "inicio10pctS": 34.2,
+      "acoes": [
+        {
+          "n": 1,
+          "grupo": "G2",
+          "acao": "Em P, alternar para o carrossel",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 249,
+          "progressoVisivel": 10,
+          "url": "/dashboard/6afe214dbd8525295582300d?mode=edit&view=carousel",
+          "nota": null
+        },
+        {
+          "n": 2,
+          "grupo": "G2",
+          "acao": "Em P, voltar a grelha e ver os tres media",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 142,
+          "progressoVisivel": 10.3,
+          "url": "/dashboard/6afe214dbd8525295582300d?mode=edit&view=grid",
+          "nota": null
+        },
+        {
+          "n": 3,
+          "grupo": "G2",
+          "acao": "Em P, descarregar os media originais",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 3694,
+          "progressoVisivel": 11.2,
+          "url": "/dashboard/6afe214dbd8525295582300d?mode=edit&view=grid",
+          "nota": "P-m21-1-65098.zip"
+        },
+        {
+          "n": 4,
+          "grupo": "G2",
+          "acao": "Em P, abrir o dialogo de partilha",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 173,
+          "progressoVisivel": 11.4,
+          "url": "/dashboard/6afe214dbd8525295582300d?mode=edit&view=grid",
+          "nota": null
+        },
+        {
+          "n": 5,
+          "grupo": "G1",
+          "acao": "Abrir a pagina da conta",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 521,
+          "progressoVisivel": 11.5,
+          "url": "/dashboard/account?ref=/dashboard",
+          "nota": null
+        },
+        {
+          "n": 6,
+          "grupo": "G1",
+          "acao": "Abrir o projeto Q pela barra lateral",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 495,
+          "progressoVisivel": 12,
+          "url": "/dashboard/6afe214ebd85252955823074",
+          "nota": null
+        },
+        {
+          "n": 7,
+          "grupo": "G1",
+          "acao": "Carregar uma imagem para Q",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 701,
+          "progressoVisivel": 12.2,
+          "url": "/dashboard/6afe214ebd85252955823074",
+          "nota": null
+        },
+        {
+          "n": 8,
+          "grupo": "G1",
+          "acao": "Acrescentar brilho ao pipeline de Q e guardar",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 1080,
+          "progressoVisivel": 12.6,
+          "url": "/dashboard/6afe214ebd85252955823074?mode=edit&view=carousel",
+          "nota": null
+        },
+        {
+          "n": 9,
+          "grupo": "G1",
+          "acao": "Criar um projeto novo pela barra lateral",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 658,
+          "progressoVisivel": 13.3,
+          "url": "/dashboard/6afe2183bd852529558231d6",
+          "nota": null
+        },
+        {
+          "n": 10,
+          "grupo": "G1",
+          "acao": "Voltar a P",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 131,
+          "progressoVisivel": 13.3,
+          "url": "/dashboard/6afe214dbd8525295582300d",
+          "nota": null
+        }
+      ],
+      "valida": true,
+      "concluidas": 10,
+      "percentagem": 100,
+      "g1Completo": true
+    },
+    {
+      "execucao": 2,
+      "P": "6afe225fbd85252955823e7c",
+      "Q": "6afe2262bd85252955823ee3",
+      "inicio10pctS": 30.8,
+      "acoes": [
+        {
+          "n": 1,
+          "grupo": "G2",
+          "acao": "Em P, alternar para o carrossel",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 284,
+          "progressoVisivel": 10,
+          "url": "/dashboard/6afe225fbd85252955823e7c?mode=edit&view=carousel",
+          "nota": null
+        },
+        {
+          "n": 2,
+          "grupo": "G2",
+          "acao": "Em P, voltar a grelha e ver os tres media",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 144,
+          "progressoVisivel": 10.3,
+          "url": "/dashboard/6afe225fbd85252955823e7c?mode=edit&view=grid",
+          "nota": null
+        },
+        {
+          "n": 3,
+          "grupo": "G2",
+          "acao": "Em P, descarregar os media originais",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 3813,
+          "progressoVisivel": 11.3,
+          "url": "/dashboard/6afe225fbd85252955823e7c?mode=edit&view=grid",
+          "nota": "P-m21-2-39896.zip"
+        },
+        {
+          "n": 4,
+          "grupo": "G2",
+          "acao": "Em P, abrir o dialogo de partilha",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 178,
+          "progressoVisivel": 11.3,
+          "url": "/dashboard/6afe225fbd85252955823e7c?mode=edit&view=grid",
+          "nota": null
+        },
+        {
+          "n": 5,
+          "grupo": "G1",
+          "acao": "Abrir a pagina da conta",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 421,
+          "progressoVisivel": 11.6,
+          "url": "/dashboard/account?ref=/dashboard",
+          "nota": null
+        },
+        {
+          "n": 6,
+          "grupo": "G1",
+          "acao": "Abrir o projeto Q pela barra lateral",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 538,
+          "progressoVisivel": 12,
+          "url": "/dashboard/6afe2262bd85252955823ee3",
+          "nota": null
+        },
+        {
+          "n": 7,
+          "grupo": "G1",
+          "acao": "Carregar uma imagem para Q",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 676,
+          "progressoVisivel": 12.2,
+          "url": "/dashboard/6afe2262bd85252955823ee3",
+          "nota": null
+        },
+        {
+          "n": 8,
+          "grupo": "G1",
+          "acao": "Acrescentar brilho ao pipeline de Q e guardar",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 1012,
+          "progressoVisivel": 13,
+          "url": "/dashboard/6afe2262bd85252955823ee3?mode=edit&view=carousel",
+          "nota": null
+        },
+        {
+          "n": 9,
+          "grupo": "G1",
+          "acao": "Criar um projeto novo pela barra lateral",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 628,
+          "progressoVisivel": 13.3,
+          "url": "/dashboard/6afe2291bd8525295582405d",
+          "nota": null
+        },
+        {
+          "n": 10,
+          "grupo": "G1",
+          "acao": "Voltar a P",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 124,
+          "progressoVisivel": 13.6,
+          "url": "/dashboard/6afe225fbd85252955823e7c",
+          "nota": null
+        }
+      ],
+      "valida": true,
+      "concluidas": 10,
+      "percentagem": 100,
+      "g1Completo": true
+    },
+    {
+      "execucao": 3,
+      "P": "6afe2365bd85252955824c8d",
+      "Q": "6afe2366bd85252955824cf4",
+      "inicio10pctS": 33.8,
+      "acoes": [
+        {
+          "n": 1,
+          "grupo": "G2",
+          "acao": "Em P, alternar para o carrossel",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 314,
+          "progressoVisivel": 10,
+          "url": "/dashboard/6afe2365bd85252955824c8d?mode=edit&view=carousel",
+          "nota": null
+        },
+        {
+          "n": 2,
+          "grupo": "G2",
+          "acao": "Em P, voltar a grelha e ver os tres media",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 212,
+          "progressoVisivel": 10.1,
+          "url": "/dashboard/6afe2365bd85252955824c8d?mode=edit&view=grid",
+          "nota": null
+        },
+        {
+          "n": 3,
+          "grupo": "G2",
+          "acao": "Em P, descarregar os media originais",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 4425,
+          "progressoVisivel": 10.8,
+          "url": "/dashboard/6afe2365bd85252955824c8d?mode=edit&view=grid",
+          "nota": "P-m21-3-1100.zip"
+        },
+        {
+          "n": 4,
+          "grupo": "G2",
+          "acao": "Em P, abrir o dialogo de partilha",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 178,
+          "progressoVisivel": 11,
+          "url": "/dashboard/6afe2365bd85252955824c8d?mode=edit&view=grid",
+          "nota": null
+        },
+        {
+          "n": 5,
+          "grupo": "G1",
+          "acao": "Abrir a pagina da conta",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 473,
+          "progressoVisivel": 11.2,
+          "url": "/dashboard/account?ref=/dashboard",
+          "nota": null
+        },
+        {
+          "n": 6,
+          "grupo": "G1",
+          "acao": "Abrir o projeto Q pela barra lateral",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 501,
+          "progressoVisivel": 11.5,
+          "url": "/dashboard/6afe2366bd85252955824cf4",
+          "nota": null
+        },
+        {
+          "n": 7,
+          "grupo": "G1",
+          "acao": "Carregar uma imagem para Q",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 705,
+          "progressoVisivel": 12,
+          "url": "/dashboard/6afe2366bd85252955824cf4",
+          "nota": null
+        },
+        {
+          "n": 8,
+          "grupo": "G1",
+          "acao": "Acrescentar brilho ao pipeline de Q e guardar",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 1158,
+          "progressoVisivel": 12.2,
+          "url": "/dashboard/6afe2366bd85252955824cf4?mode=edit&view=carousel",
+          "nota": null
+        },
+        {
+          "n": 9,
+          "grupo": "G1",
+          "acao": "Criar um projeto novo pela barra lateral",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 686,
+          "progressoVisivel": 12.8,
+          "url": "/dashboard/6afe2399bd85252955824e8e",
+          "nota": null
+        },
+        {
+          "n": 10,
+          "grupo": "G1",
+          "acao": "Voltar a P",
+          "a": true,
+          "b": true,
+          "concluida": true,
+          "ms": 118,
+          "progressoVisivel": 12.8,
+          "url": "/dashboard/6afe2365bd85252955824c8d",
+          "nota": null
+        }
+      ],
+      "valida": true,
+      "concluidas": 10,
+      "percentagem": 100,
+      "g1Completo": true
+    }
+  ],
+  "resumo": {
+    "execucoesValidas": 3,
+    "percentagem": {
+      "n": 3,
+      "mean": 100,
+      "sd": 0,
+      "median": 100,
+      "min": 100,
+      "max": 100
+    },
+    "pior": 100,
+    "g1CompletoEmTodas": true,
+    "porAcao": {
+      "1": {
+        "a": 3,
+        "b": 3,
+        "concluida": 3
+      },
+      "2": {
+        "a": 3,
+        "b": 3,
+        "concluida": 3
+      },
+      "3": {
+        "a": 3,
+        "b": 3,
+        "concluida": 3
+      },
+      "4": {
+        "a": 3,
+        "b": 3,
+        "concluida": 3
+      },
+      "5": {
+        "a": 3,
+        "b": 3,
+        "concluida": 3
+      },
+      "6": {
+        "a": 3,
+        "b": 3,
+        "concluida": 3
+      },
+      "7": {
+        "a": 3,
+        "b": 3,
+        "concluida": 3
+      },
+      "8": {
+        "a": 3,
+        "b": 3,
+        "concluida": 3
+      },
+      "9": {
+        "a": 3,
+        "b": 3,
+        "concluida": 3
+      },
+      "10": {
+        "a": 3,
+        "b": 3,
+        "concluida": 3
+      }
+    }
+  }
+}

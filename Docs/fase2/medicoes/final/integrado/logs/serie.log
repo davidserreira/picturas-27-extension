@@ -1,0 +1,30 @@
+=== 21:54:40 commit eb8a37d; arranque limpo
+    exit 0
+    frontend 200 (21:56:14); espera 90 s
+=== 21:57:48 rnf1-memoria
+    exit 0 (22:06:03)
+=== 22:06:03 rnf2-m21
+    exit 0 (22:19:31)
+=== 22:19:31 rnf2-m22
+    exit 0 (22:35:40)
+=== 22:35:40 rnf2-m23
+    exit 0 (23:15:43)
+=== 23:15:43 rnf2-controlos
+    exit 0 (23:46:59)
+=== 23:46:59 rnf1-limite
+    exit 0 (23:54:19)
+=== 23:54:19 rnf1-memoria-1000
+    exit 0 (23:57:48)
+=== 23:57:48 fim
+=== 23:57:49 regressao (arranque limpo)
+    frontend 200 (23:59:05); espera 90 s
+    exit 0
+=== 00:05:19 bloco 1 variante A
+    arranque exit 0
+    frontend 200 (00:06:41); espera 90 s
+    medicao exit 0 (00:22:58)
+=== 00:22:58 bloco 2 variante B
+    arranque exit 0
+    frontend 200 (00:24:22); espera 90 s
+    medicao exit 1 (00:31:17)
+=== 00:31:17 bloco 3 variante A

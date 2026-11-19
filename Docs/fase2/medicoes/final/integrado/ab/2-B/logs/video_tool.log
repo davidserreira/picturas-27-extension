@@ -1,0 +1,7 @@
+video_tool-1  | 2026-11-19T00:34:28.856417279Z [video] waiting for jobs on video_queue
+video_tool-1  | 2026-11-19T00:36:19.073554241Z [video] msg=request-8a0f922e-ca98-4831-96c9-0ea3e10fd071 preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-19T00:40:59.299019497Z [video] msg=request-8a0f922e-ca98-4831-96c9-0ea3e10fd071 ok frames=9900 t=280.2s
+video_tool-1  | 2026-11-19T00:41:12.876541807Z [video] msg=request-6ed1fa02-87dd-492f-886c-20aac2f2a6d9 preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-19T00:45:50.001831429Z [video] msg=request-6ed1fa02-87dd-492f-886c-20aac2f2a6d9 ok frames=9900 t=277.1s
+video_tool-1  | 2026-11-19T00:46:02.584786964Z [video] msg=request-0e159533-6592-4f8c-9be6-27b75232470b preview=False tools=['brightness', 'contrast']
+video_tool-1  | 2026-11-19T00:51:46.519641124Z [video] msg=request-0e159533-6592-4f8c-9be6-27b75232470b ok frames=9900 t=343.9s

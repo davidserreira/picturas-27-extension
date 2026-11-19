@@ -1,0 +1,29 @@
+{
+  "suite": "ui",
+  "modo": "final",
+  "quando": "2026-11-19T00:04:31.859Z",
+  "commit": {
+    "hash": "eb8a37d69529f18179de084a685c8c293ae701dd",
+    "codeChanges": []
+  },
+  "testes": [
+    {
+      "id": "U01",
+      "nome": "Importar uma imagem pela interface",
+      "estado": "passou",
+      "segundos": 4.7
+    },
+    {
+      "id": "U02",
+      "nome": "Aplicar um pipeline pela interface e ver os resultados",
+      "estado": "passou",
+      "segundos": 4.4
+    },
+    {
+      "id": "U03",
+      "nome": "Cancelar pela interface uma execução em curso",
+      "estado": "passou",
+      "segundos": 37.4
+    }
+  ]
+}

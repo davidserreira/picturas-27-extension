@@ -1,0 +1,9 @@
+variante: B
+ramo fase2/integracao eb8a37d
+presence.js
+preview.js
+previewCache.js
+process.js
+project.js
+result.js
+run.js

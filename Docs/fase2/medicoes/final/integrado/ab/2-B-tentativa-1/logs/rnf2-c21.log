@@ -1,0 +1,16 @@
+[medicao] gravado Docs\fase2\medicoes\final\integrado\ab\2-B\rnf2-controlos-apply.json
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.getAttribute: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('progressbar').first()[22m
+
+    at progressOfP (C:\Users\david\Documents\GitHub\picturas-27-extension\Docs\fase2\medicoes\rnf2\medir.mjs:120:25)
+    at async controlos (C:\Users\david\Documents\GitHub\picturas-27-extension\Docs\fase2\medicoes\rnf2\medir.mjs:479:17)
+    at async file:///C:/Users/david/Documents/GitHub/picturas-27-extension/Docs/fase2/medicoes/rnf2/medir.mjs:576:33 {
+  name: 'TimeoutError'
+}
+
+Node.js v24.11.1

@@ -1,0 +1,38 @@
+22:06:13 M2.1 execucao 1: Apply em P-m21-1-65098
+22:06:48   1 Em P, alternar para o carrossel: a=true b=true 249ms 
+22:06:49   2 Em P, voltar a grelha e ver os tres media: a=true b=true 142ms 
+22:06:53   3 Em P, descarregar os media originais: a=true b=true 3694ms P-m21-1-65098.zip
+22:06:54   4 Em P, abrir o dialogo de partilha: a=true b=true 173ms 
+22:06:55   5 Abrir a pagina da conta: a=true b=true 521ms 
+22:06:56   6 Abrir o projeto Q pela barra lateral: a=true b=true 495ms 
+22:06:57   7 Carregar uma imagem para Q: a=true b=true 701ms 
+22:06:59   8 Acrescentar brilho ao pipeline de Q e guardar: a=true b=true 1080ms 
+22:07:00   9 Criar um projeto novo pela barra lateral: a=true b=true 658ms 
+22:07:01   10 Voltar a P: a=true b=true 131ms 
+[medicao] gravado Docs\fase2\medicoes\final\integrado\rnf2-m21.json
+22:10:46 M2.1 execucao 2: Apply em P-m21-2-39896
+22:11:18   1 Em P, alternar para o carrossel: a=true b=true 284ms 
+22:11:18   2 Em P, voltar a grelha e ver os tres media: a=true b=true 144ms 
+22:11:23   3 Em P, descarregar os media originais: a=true b=true 3813ms P-m21-2-39896.zip
+22:11:23   4 Em P, abrir o dialogo de partilha: a=true b=true 178ms 
+22:11:24   5 Abrir a pagina da conta: a=true b=true 421ms 
+22:11:26   6 Abrir o projeto Q pela barra lateral: a=true b=true 538ms 
+22:11:27   7 Carregar uma imagem para Q: a=true b=true 676ms 
+22:11:28   8 Acrescentar brilho ao pipeline de Q e guardar: a=true b=true 1012ms 
+22:11:29   9 Criar um projeto novo pela barra lateral: a=true b=true 628ms 
+22:11:30   10 Voltar a P: a=true b=true 124ms 
+[medicao] gravado Docs\fase2\medicoes\final\integrado\rnf2-m21.json
+22:15:07 M2.1 execucao 3: Apply em P-m21-3-1100
+22:15:41   1 Em P, alternar para o carrossel: a=true b=true 314ms 
+22:15:42   2 Em P, voltar a grelha e ver os tres media: a=true b=true 212ms 
+22:15:47   3 Em P, descarregar os media originais: a=true b=true 4425ms P-m21-3-1100.zip
+22:15:48   4 Em P, abrir o dialogo de partilha: a=true b=true 178ms 
+22:15:49   5 Abrir a pagina da conta: a=true b=true 473ms 
+22:15:50   6 Abrir o projeto Q pela barra lateral: a=true b=true 501ms 
+22:15:51   7 Carregar uma imagem para Q: a=true b=true 705ms 
+22:15:53   8 Acrescentar brilho ao pipeline de Q e guardar: a=true b=true 1158ms 
+22:15:54   9 Criar um projeto novo pela barra lateral: a=true b=true 686ms 
+22:15:54   10 Voltar a P: a=true b=true 118ms 
+[medicao] gravado Docs\fase2\medicoes\final\integrado\rnf2-m21.json
+[medicao] gravado Docs\fase2\medicoes\final\integrado\rnf2-m21.json
+[medicao] gravado Docs\fase2\medicoes\final\integrado\rnf2-m21-apply.json

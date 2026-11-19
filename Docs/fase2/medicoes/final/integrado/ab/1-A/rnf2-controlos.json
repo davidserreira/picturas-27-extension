@@ -1,0 +1,54 @@
+{
+  "medida": "RNF-F2-02 controlos C2.1-C2.5",
+  "quando": "2026-11-19T00:08:12.437Z",
+  "commit": {
+    "hash": "eb8a37d69529f18179de084a685c8c293ae701dd",
+    "codeChanges": []
+  },
+  "video": "p-video-330s.mp4",
+  "c21c22": [
+    {
+      "execucao": 1,
+      "P": "6afe3dec2b27eacdcaf45fe3",
+      "duracaoS": 282.1,
+      "maiorIntervaloProgressoS": 17.16,
+      "mudancasDeProgresso": 26,
+      "ultimoValor": 100
+    },
+    {
+      "execucao": 2,
+      "P": "6afe3f132b27eacdcaf46fa5",
+      "duracaoS": 289.5,
+      "maiorIntervaloProgressoS": 18.81,
+      "mudancasDeProgresso": 25,
+      "ultimoValor": 100
+    },
+    {
+      "execucao": 3,
+      "P": "6afe403f2b27eacdcaf47fcd",
+      "duracaoS": 284.5,
+      "maiorIntervaloProgressoS": 17.58,
+      "mudancasDeProgresso": 25,
+      "ultimoValor": 100
+    }
+  ],
+  "c23": null,
+  "c24": null,
+  "c25": null,
+  "resumoC21": {
+    "n": 3,
+    "mean": 285.37,
+    "sd": 3.78,
+    "median": 284.5,
+    "min": 282.1,
+    "max": 289.5
+  },
+  "resumoC22": {
+    "n": 3,
+    "mean": 17.85,
+    "sd": 0.86,
+    "median": 17.58,
+    "min": 17.16,
+    "max": 18.81
+  }
+}

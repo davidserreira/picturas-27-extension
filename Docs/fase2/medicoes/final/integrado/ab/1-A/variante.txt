@@ -1,0 +1,8 @@
+variante: A
+base 43a2e08 (C:/tmp/picturas-main)
+presence.js
+preview.js
+previewCache.js
+process.js
+project.js
+result.js

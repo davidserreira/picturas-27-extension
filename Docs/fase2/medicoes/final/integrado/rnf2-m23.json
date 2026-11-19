@@ -1,0 +1,135 @@
+{
+  "medida": "RNF-F2-02 M2.3",
+  "quando": "2026-11-18T22:35:42.010Z",
+  "commit": {
+    "hash": "eb8a37d69529f18179de084a685c8c293ae701dd",
+    "codeChanges": []
+  },
+  "video": "p-video-330s.mp4",
+  "tentativas": [
+    {
+      "forma": "A",
+      "tentativa": 1,
+      "P": "6afe2842bd8525295582d0b6",
+      "oferecido": true,
+      "oferecidoS": 0.24,
+      "parou": true,
+      "parouS": 0.02,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "A",
+      "tentativa": 2,
+      "P": "6afe2950bd8525295582d36f",
+      "oferecido": true,
+      "oferecidoS": 0.25,
+      "parou": true,
+      "parouS": 0.01,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "A",
+      "tentativa": 3,
+      "P": "6afe2a53bd8525295582d62d",
+      "oferecido": true,
+      "oferecidoS": 0.26,
+      "parou": true,
+      "parouS": 0.01,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "A",
+      "tentativa": 4,
+      "P": "6afe2b4ebd8525295582d8f0",
+      "oferecido": true,
+      "oferecidoS": 0.33,
+      "parou": true,
+      "parouS": 0.01,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "A",
+      "tentativa": 5,
+      "P": "6afe2c4cbd8525295582dbc6",
+      "oferecido": true,
+      "oferecidoS": 0.35,
+      "parou": true,
+      "parouS": 0.02,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "B",
+      "tentativa": 1,
+      "P": "6afe2d4cbd8525295582deaa",
+      "oferecido": true,
+      "oferecidoS": 0.37,
+      "parou": true,
+      "parouS": 0.16,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "B",
+      "tentativa": 2,
+      "P": "6afe2e50bd8525295582e1cf",
+      "oferecido": true,
+      "oferecidoS": 0.34,
+      "parou": true,
+      "parouS": 0.03,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "B",
+      "tentativa": 3,
+      "P": "6afe2f54bd8525295582e508",
+      "oferecido": true,
+      "oferecidoS": 0.48,
+      "parou": true,
+      "parouS": 0.02,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "B",
+      "tentativa": 4,
+      "P": "6afe3058bd8525295582e85b",
+      "oferecido": true,
+      "oferecidoS": 0.42,
+      "parou": true,
+      "parouS": 0.03,
+      "resultadosIguais": true,
+      "sucesso": true
+    },
+    {
+      "forma": "B",
+      "tentativa": 5,
+      "P": "6afe315cbd8525295582ebbf",
+      "oferecido": true,
+      "oferecidoS": 0.44,
+      "parou": true,
+      "parouS": 0.01,
+      "resultadosIguais": true,
+      "sucesso": true
+    }
+  ],
+  "resumo": {
+    "A": {
+      "sucessos": 5,
+      "tentativas": 5
+    },
+    "B": {
+      "sucessos": 5,
+      "tentativas": 5
+    },
+    "total": {
+      "sucessos": 10,
+      "tentativas": 10
+    }
+  }
+}

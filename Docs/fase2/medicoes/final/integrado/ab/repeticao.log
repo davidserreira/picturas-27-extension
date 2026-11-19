@@ -1,0 +1,11 @@
+=== 00:33:15 bloco 2 variante B
+    arranque exit 0
+    frontend 200 (00:34:33); espera 90 s
+    medicao exit 0 (00:51:50)
+=== 00:51:50 bloco 3 variante A
+    arranque exit 0
+    frontend 200 (00:53:10); espera 90 s
+    medicao exit 0 (01:09:43)
+=== 01:09:44 repor o ramo
+    exit 0
+=== 01:11:16 A-B-A terminado

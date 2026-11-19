@@ -1,0 +1,178 @@
+{
+  "medida": "RNF-F2-01 M1.2",
+  "quando": "2026-11-18T23:46:59.301Z",
+  "commit": {
+    "hash": "eb8a37d69529f18179de084a685c8c293ae701dd",
+    "codeChanges": []
+  },
+  "override": "Docs/fase2/medicoes/rnf1/compose.limites.yaml",
+  "limiteMiB": 512,
+  "repeticoes": 3,
+  "resultados": {
+    "10": [
+      {
+        "rep": 1,
+        "status": 204,
+        "body": "",
+        "crashed": [],
+        "oom": [],
+        "integrity": {
+          "inProject": true,
+          "equal": true
+        },
+        "success": true,
+        "totalS": 0.4388892999999989
+      },
+      {
+        "rep": 2,
+        "status": 204,
+        "body": "",
+        "crashed": [],
+        "oom": [],
+        "integrity": {
+          "inProject": true,
+          "equal": true
+        },
+        "success": true,
+        "totalS": 0.2860584000000017
+      },
+      {
+        "rep": 3,
+        "status": 204,
+        "body": "",
+        "crashed": [],
+        "oom": [],
+        "integrity": {
+          "inProject": true,
+          "equal": true
+        },
+        "success": true,
+        "totalS": 0.28350509999999485
+      }
+    ],
+    "100": [
+      {
+        "rep": 1,
+        "status": 204,
+        "body": "",
+        "crashed": [],
+        "oom": [],
+        "integrity": {
+          "inProject": true,
+          "equal": true
+        },
+        "success": true,
+        "totalS": 1.068505799999999
+      },
+      {
+        "rep": 2,
+        "status": 204,
+        "body": "",
+        "crashed": [],
+        "oom": [],
+        "integrity": {
+          "inProject": true,
+          "equal": true
+        },
+        "success": true,
+        "totalS": 1.0866331999999965
+      },
+      {
+        "rep": 3,
+        "status": 204,
+        "body": "",
+        "crashed": [],
+        "oom": [],
+        "integrity": {
+          "inProject": true,
+          "equal": true
+        },
+        "success": true,
+        "totalS": 1.025111199999985
+      }
+    ],
+    "500": [
+      {
+        "rep": 1,
+        "status": 204,
+        "body": "",
+        "crashed": [],
+        "oom": [],
+        "integrity": {
+          "inProject": true,
+          "equal": true
+        },
+        "success": true,
+        "totalS": 4.252681199999992
+      },
+      {
+        "rep": 2,
+        "status": 204,
+        "body": "",
+        "crashed": [],
+        "oom": [],
+        "integrity": {
+          "inProject": true,
+          "equal": true
+        },
+        "success": true,
+        "totalS": 3.6936428000000014
+      },
+      {
+        "rep": 3,
+        "status": 204,
+        "body": "",
+        "crashed": [],
+        "oom": [],
+        "integrity": {
+          "inProject": true,
+          "equal": true
+        },
+        "success": true,
+        "totalS": 3.90028820000001
+      }
+    ],
+    "1000": [
+      {
+        "rep": 1,
+        "status": 204,
+        "body": "",
+        "crashed": [],
+        "oom": [],
+        "integrity": {
+          "inProject": true,
+          "equal": true
+        },
+        "success": true,
+        "totalS": 7.276031600000046
+      },
+      {
+        "rep": 2,
+        "status": 204,
+        "body": "",
+        "crashed": [],
+        "oom": [],
+        "integrity": {
+          "inProject": true,
+          "equal": true
+        },
+        "success": true,
+        "totalS": 7.92992869999999
+      },
+      {
+        "rep": 3,
+        "status": 204,
+        "body": "",
+        "crashed": [],
+        "oom": [],
+        "integrity": {
+          "inProject": true,
+          "equal": true
+        },
+        "success": true,
+        "totalS": 7.893598499999964
+      }
+    ]
+  },
+  "maiorFicheiroAceiteMiB": 1000
+}

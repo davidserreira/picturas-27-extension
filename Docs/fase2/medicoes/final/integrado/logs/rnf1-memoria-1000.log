@@ -1,0 +1,44 @@
+23:54:41 M1.1 1000 MiB rep 1/5
+23:54:53   -> 204 valida {
+  nginx: 7.7,
+  api_gateway: 41,
+  projects: 18.1,
+  img_storage: 52.2,
+  seaweedfs: 3.1
+}
+23:55:23   C1.4 1000 MiB sha igual=true
+[medicao] GET repetido depois de ECONNRESET: /api-gateway/projects/6afe3aac45acbb362096f0f1
+23:55:42 M1.1 1000 MiB rep 2/5
+23:55:54   -> 204 valida {
+  nginx: 9.7,
+  api_gateway: 42.7,
+  projects: 14.7,
+  img_storage: 49.1,
+  seaweedfs: 0
+}
+23:56:12 M1.1 1000 MiB rep 3/5
+23:56:24   -> 204 valida {
+  nginx: 7.4,
+  api_gateway: 41.2,
+  projects: 16.6,
+  img_storage: 54.6,
+  seaweedfs: 73.7
+}
+23:57:04 M1.1 1000 MiB rep 4/5
+23:57:17   -> 204 valida {
+  nginx: 11.5,
+  api_gateway: 41,
+  projects: 22.6,
+  img_storage: 62.4,
+  seaweedfs: 134.1
+}
+23:57:35 M1.1 1000 MiB rep 5/5
+23:57:48   -> 204 valida {
+  nginx: 7.2,
+  api_gateway: 40.2,
+  projects: 15.7,
+  img_storage: 52.6,
+  seaweedfs: 173.1
+}
+[medicao] gravado Docs\fase2\medicoes\final\integrado\rnf1-memoria-1000.json
+[medicao] gravado Docs\fase2\medicoes\final\integrado\rnf1-memoria-1000.json

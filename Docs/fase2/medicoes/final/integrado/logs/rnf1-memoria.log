@@ -1,0 +1,155 @@
+21:58:10 M1.1 10 MiB rep 1/5
+21:58:16   -> 204 valida {
+  nginx: 0.8,
+  api_gateway: 6,
+  projects: 5.7,
+  img_storage: 23.9,
+  seaweedfs: 149.5
+}
+21:58:16   C1.4 10 MiB sha igual=true
+21:58:34 M1.1 10 MiB rep 2/5
+21:58:39   -> 204 valida {
+  nginx: 0.6,
+  api_gateway: 7.5,
+  projects: 4.3,
+  img_storage: 24.2,
+  seaweedfs: 42.3
+}
+21:58:57 M1.1 10 MiB rep 3/5
+21:59:02   -> 204 valida {
+  nginx: 0.6,
+  api_gateway: 6.9,
+  projects: 5.5,
+  img_storage: 23.7,
+  seaweedfs: 85.3
+}
+21:59:20 M1.1 10 MiB rep 4/5
+21:59:25   -> 204 valida {
+  nginx: 0.6,
+  api_gateway: 6.2,
+  projects: 5.9,
+  img_storage: 22.8,
+  seaweedfs: 103.5
+}
+21:59:43 M1.1 10 MiB rep 5/5
+21:59:48   -> 204 valida {
+  nginx: 0.9,
+  api_gateway: 8.4,
+  projects: 5.4,
+  img_storage: 21,
+  seaweedfs: 1.7
+}
+[medicao] gravado Docs\fase2\medicoes\final\integrado\rnf1-memoria.json
+22:00:07 M1.1 100 MiB rep 1/5
+22:00:13   -> 204 valida {
+  nginx: 6.8,
+  api_gateway: 29.1,
+  projects: 12.5,
+  img_storage: 41.1,
+  seaweedfs: 200.2
+}
+22:00:14   C1.4 100 MiB sha igual=true
+22:00:32 M1.1 100 MiB rep 2/5
+22:00:38   -> 204 valida {
+  nginx: 3.6,
+  api_gateway: 14.3,
+  projects: 18.8,
+  img_storage: 31.2,
+  seaweedfs: 243.2
+}
+[medicao] GET repetido depois de ECONNRESET: /api-gateway/projects/6afe1f5c45acbb362096e187
+22:00:57 M1.1 100 MiB rep 3/5
+22:01:03   -> 204 valida {
+  nginx: 9.6,
+  api_gateway: 28.5,
+  projects: 12.2,
+  img_storage: 32.6,
+  seaweedfs: 0
+}
+22:01:21 M1.1 100 MiB rep 4/5
+22:01:27   -> 204 valida {
+  nginx: 2.3,
+  api_gateway: 31.6,
+  projects: 12.5,
+  img_storage: 45.6,
+  seaweedfs: 219.4
+}
+22:01:45 M1.1 100 MiB rep 5/5
+22:01:51   -> 204 valida {
+  nginx: 5.6,
+  api_gateway: 14.2,
+  projects: 23.3,
+  img_storage: 34.9,
+  seaweedfs: 30.7
+}
+[medicao] gravado Docs\fase2\medicoes\final\integrado\rnf1-memoria.json
+[medicao] GET repetido depois de ECONNRESET: /api-gateway/projects/6afe1f5c45acbb362096e187
+22:02:10 M1.1 500 MiB rep 1/5
+22:02:26   -> 204 valida {
+  nginx: 11.2,
+  api_gateway: 38.3,
+  projects: 36,
+  img_storage: 57.7,
+  seaweedfs: 171
+}
+22:02:38   C1.4 500 MiB sha igual=true
+[medicao] GET repetido depois de ECONNRESET: /api-gateway/projects/6afe1f5c45acbb362096e187
+22:02:56 M1.1 500 MiB rep 2/5
+22:03:05   -> 204 valida {
+  nginx: 6.1,
+  api_gateway: 40.4,
+  projects: 18.2,
+  img_storage: 49.9,
+  seaweedfs: 2
+}
+22:03:23 M1.1 500 MiB rep 3/5
+22:03:33   -> 204 valida {
+  nginx: 7.3,
+  api_gateway: 39.9,
+  projects: 12.6,
+  img_storage: 62.9,
+  seaweedfs: 180.2
+}
+[medicao] GET repetido depois de ECONNRESET: /api-gateway/projects/6afe1f5c45acbb362096e187
+22:03:51 M1.1 500 MiB rep 4/5
+22:04:05   -> 204 valida {
+  nginx: 8.6,
+  api_gateway: 42.9,
+  projects: 22.9,
+  img_storage: 58.5,
+  seaweedfs: 184.3
+}
+22:04:23 M1.1 500 MiB rep 5/5
+22:04:34   -> 204 valida {
+  nginx: 9.5,
+  api_gateway: 41.2,
+  projects: 24.8,
+  img_storage: 57.9,
+  seaweedfs: 0
+}
+[medicao] gravado Docs\fase2\medicoes\final\integrado\rnf1-memoria.json
+22:04:52 C1.3 envio de 500 MiB sem JWT
+22:04:58   -> 401, api_gateway +19.6 MiB
+[medicao] gravado Docs\fase2\medicoes\final\integrado\rnf1-memoria.json
+22:04:58 C1.5 sample_10s_720p.mp4: 204 
+22:04:59 C1.5 sample_6s.mov: 204 
+22:04:59 C1.5 speech_mandela_177s_1080p.webm: 400 "The video is 176.6 s long and your profile limit is 60 s"
+22:04:59 C1.5 too_long_90s.mp4 (acima do limite do perfil gratuito): 400 "The video is 90.0 s long and your profile limit is 60 s"
+22:04:59 C1.5 corrupted.mp4: 400 "Unreadable or corrupted video file"
+22:04:59 C1.5 imagem enviada como video: 400 "Only video files (.mp4, .mov, .webm) can be uploaded here."
+22:05:01 C1.5 upload-100MiB.mp4 (tamanho no limite gratuito): 400 "The video is 100.1 MB and your profile limit is 100 MB"
+[medicao] gravado Docs\fase2\medicoes\final\integrado\rnf1-memoria.json
+22:05:37 C1.6 {"before":{"api_gateway":544,"projects":544,"img_storage":544},"complete":{"status":204,"tmpFiles":{"api_gateway":544,"projects":544,"img_storage":544}},"interrupted":{"aborted":true,"tmpFiles":{"api_gateway":544,"projects":544,"img_storage":544}}}
+[medicao] gravado Docs\fase2\medicoes\final\integrado\rnf1-memoria.json
+22:06:03 C1.7 sample_10s_720p.mp4: 204, 1 objeto(s) em src/ (esperado 1)
+22:06:03 C1.7 sample_6s.mov: 204, 1 objeto(s) em src/ (esperado 1)
+22:06:03 C1.7 speech_mandela_177s_1080p.webm: 400, 0 objeto(s) em src/ (esperado 0)
+22:06:03 C1.7 too_long_90s.mp4 (acima do limite do perfil gratuito): 400, 0 objeto(s) em src/ (esperado 0)
+22:06:03 C1.7 corrupted.mp4: 400, 0 objeto(s) em src/ (esperado 0)
+22:06:03 C1.7 imagem enviada como video: 400, 0 objeto(s) em src/ (esperado 0)
+22:06:03 C1.7 upload-100MiB.mp4 (tamanho no limite gratuito): 400, 0 objeto(s) em src/ (esperado 0)
+22:06:03 C1.7 conflito de versão (segundo envio com versão antiga): 204, 409, 1 objeto(s) em src/ (esperado 1)
+22:06:03 C1.7 envio de 100 MiB interrompido a meio: interrompido, 0 objeto(s) em src/ (esperado 0)
+22:06:03 C1.7 envios em partes abertos: 0 -> 0; sem órfãos: true
+[medicao] gravado Docs\fase2\medicoes\final\integrado\rnf1-memoria.json
+[medicao] gravado Docs\fase2\medicoes\final\integrado\rnf1-memoria.json
