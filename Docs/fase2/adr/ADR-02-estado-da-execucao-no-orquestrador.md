@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 | --- | --- |
-| Estado | Implementado no ramo `fase2/rnf-f2-02-segundo-plano` (secção 7). Testes unitários e verificação manual feitos; **medição final por fazer** |
+| Estado | Implementado no ramo `fase2/rnf-f2-02-segundo-plano` (secção 7). Regressão e medição preliminar feitas noutra máquina (secção 8), com o alvo atingido em M2.1, M2.2 e M2.3; **medição final oficial por fazer** |
 | Data | 18 de novembro de 2026 |
 | Requisito | RNF-F2-02 — Trabalho em segundo plano durante o processamento (`../requisitos-nf.md`, secção 3) |
 | Decisão no Exercício 7 | DA-2, táticas TAT-5, TAT-6 e TAT-7 (`../taticas.md`) |
@@ -194,10 +194,52 @@ Ajustes durante a implementação, antes de medir:
   perdia o progresso. Acrescentada a secção "Em processamento".
 - **Uma casa decimal.** Com percentagens inteiras, 1 % do vídeo de 330 s às vezes não mudava o
   total (0,99 %), o que podia levar o intervalo para perto de 5,4 s.
+- **Passo 3b — cancelar depois de recarregar.** A medição preliminar deu M2.3 = 0/2: o Cancelar
+  aparecia, mas o pedido era recusado com 409. Ao abrir o editor, o `ProjectProvider` marca o
+  projeto como "com alterações por guardar" (`POST .../dirty`), o que sobe a versão no servidor,
+  e a página enviava a versão que tinha em cache. O defeito já existia na base, mas não se via,
+  porque o Cancelar não estava disponível depois de recarregar. A página passa a ler a versão atual
+  antes de cancelar e não volta a mostrar a execução enquanto o cancelamento não é confirmado (ou
+  volta a mostrá-la se ele falhar). Com a correção, M2.3 = 2/2.
 
 Testes: `projects/tests` 13/13 (4 novos), `Tools/video/tests` 29/29, `tsc` e `eslint` sem erros.
 
-## 8. Uso de IA
+## 8. Verificação preliminar
+
+Corrida num MacBook (Apple Silicon), com arranque limpo da aplicação a partir deste ramo e os
+scripts do ramo `fase2/rnf-f2-01-carregamento` (`78c5fce`), alterados só localmente para usar o
+Google Chrome instalado (`PW_CHANNEL=chrome`) e não gravar vídeo (`SEM_VIDEO=1`), porque a
+instalação dos browsers do Playwright ficou bloqueada nessa máquina. Não substitui a medição
+oficial: tem uma só execução por medida e uma tentativa por forma, e os tempos não se comparam com
+os da base, que foi medida noutra máquina.
+
+**Regressão** (`regressao/final/rnf-f2-02.md` nessa cópia):
+
+| Suite | Resultado |
+| --- | --- |
+| Worker de vídeo (pytest) | 74/74 |
+| Orquestrador (`node --test`) | 13/13 |
+| Ponta a ponta | 16/18; T05 e T06 com impressões SHA-256 diferentes da referência |
+| Interface | 3/3 |
+
+T05 e T06 comparam os bytes dos ficheiros de imagem com a referência gravada na máquina da base
+(Intel, Windows). Este ramo não altera nenhuma ferramenta de imagem nem o armazenamento, e diferem
+também ferramentas que só copiam píxeis (recorte). A explicação provável é a plataforma (imagens
+Docker ARM e outra compressão PNG). **Hipótese**, a confirmar na corrida oficial, na máquina da
+referência.
+
+**Medidas do RNF-F2-02:**
+
+| Medida | Base | Preliminar | Alvo | Mínimo |
+| --- | --- | --- | --- | --- |
+| M2.1 | 0 % | **100 %** (10/10, G1 completo) | 100 % | 80 % com G1 |
+| M2.2 R | Não recupera | **0,13 s e 0,12 s** | ≤ 2 s | ≤ 5 s |
+| M2.2 F | Não recupera | **0,1 s** | ≤ 2 s | ≤ 5 s |
+| M2.3 | 0/10 | **2/2** (A: oferecido em 0,10 s, parado em 0,21 s; B: 0,10 s e 0,22 s; resultados iguais) | 10/10 | 5/5 em A |
+| C2.2 | 16,9 s | **2,54 s** (104 mudanças) | ≤ 5 s | — |
+| C2.1 | 276 s (outra máquina) | 174 s | ≤ base + 10 % | Só comparável na mesma máquina |
+
+## 9. Uso de IA
 
 Implementação e documento feitos com apoio de um agente de IA (Claude), a partir do diagnóstico
 (C4), da especificação e do script de medição. A equipa:
