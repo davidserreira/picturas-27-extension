@@ -11,7 +11,9 @@
 #
 #   1. Base (43a2e08, from a git worktree): M1.1 with 500 MiB, or 100 MiB when Docker
 #      has less than 7 GiB (on the base, 500 MiB takes about 2 GiB in one service).
-#   2. This branch: regression suite, M1.1 with the same size, M2.2 and M2.3 once each.
+#   2. This branch: regression suite, M1.1 with the same size, M2.2 and M2.3 once each, with the
+#      330 s video of the official series (M2.2 reloads at fixed times: with the 120 s video a
+#      fast machine ends the run before the reloads; reproducao/miguel/NOTAS.md).
 # Results: medicoes/reproducao/$NOME/{base,main}/ and regressao/reproducao/$NOME.md.
 set -u
 # Git Bash would turn PICTURAS_STATE_PATH into a Windows path (final/rnf-f2-02/README.md).
@@ -23,7 +25,7 @@ R="$REPO/Docs/fase2/regressao"
 OUT="reproducao/$NOME"
 BASE_WT="${BASE_WT:-$REPO/../picturas-base-43a2e08}"
 STATE_PATH="/projects/{user}/{project}/process/status"
-VIDEO=120
+VIDEO=330
 mkdir -p "$M/$OUT/base/logs" "$M/$OUT/main/logs"
 exec > >(tee -a "$M/$OUT/reproducao.log") 2>&1
 cd "$REPO"
@@ -42,7 +44,7 @@ wait_frontend() {
 
 # --- 0. Checks: the code must be the code of main.
 step "verificações"
-command -v node >/dev/null || fail "falta o Node.js 20+"
+command -v node >/dev/null || fail "falta o Node.js 18+"
 docker info >/dev/null 2>&1 || fail "o Docker não está a correr"
 git fetch -q origin main || fail "git fetch falhou"
 git diff --quiet origin/main HEAD -- . ':(exclude)Docs' ':(exclude)AGENTS.md' \

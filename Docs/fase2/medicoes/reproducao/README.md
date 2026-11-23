@@ -11,14 +11,14 @@ resultados de sim ou não.
 | Passo | Versão | O que mede |
 | --- | --- | --- |
 | 1 | Base (`43a2e08`, numa cópia de trabalho ao lado do repositório) | M1.1 com 500 MiB (100 MiB se o Docker tiver menos de 7 GiB) |
-| 2 | Este ramo (código igual ao da `main`) | Regressão completa; M1.1 com o mesmo tamanho; M2.2 e M2.3 uma vez cada, com o vídeo de 120 s |
+| 2 | Este ramo (código igual ao da `main`) | Regressão completa; M1.1 com o mesmo tamanho; M2.2 e M2.3 uma vez cada, com o vídeo de 330 s das séries oficiais |
 
 O script verifica primeiro que o código da cópia é igual ao da `main`. Na base, um envio de
 1000 MiB deita abaixo o motor do Docker (`../ocorrencias/`), por isso esse tamanho não entra aqui.
 
 ## Como correr
 
-Requisitos: Docker a correr, Node.js 20 ou mais recente, cerca de 20 GB livres e, no Windows, o
+Requisitos: Docker a correr, Node.js 18 ou mais recente, cerca de 20 GB livres e, no Windows, o
 Git Bash. O script para e apaga a instalação local do PictuRAS (`docker compose down -v`).
 
 ```bash

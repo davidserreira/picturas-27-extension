@@ -1,6 +1,8 @@
 // Builds $REGRESSAO.md from the raw results in resultados/.
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -17,8 +19,10 @@ const nodeNum = (k) => Number((node.match(new RegExp(`ℹ ${k} (\\d+)`)) || [])[
 const nodeCases = [...node.matchAll(/^([✔✖]) (.+?) \([\d.]+ms\)$/gm)].map((m) => [m[1] === "✔" ? "passou" : "falhou", m[2]]);
 const e2e = readJson(`${MODE}-e2e.json`);
 const ui = readJson(`${MODE}-ui.json`);
-const amb = fs.existsSync(path.join(HERE, "..", "medicoes", "baseline", "ambiente.json"))
-  ? JSON.parse(fs.readFileSync(path.join(HERE, "..", "medicoes", "baseline", "ambiente.json"), "utf8")) : null;
+// The machine of this run, not the baseline's: reproductions run on other machines.
+const dockerInfo = (() => {
+  try { return JSON.parse(execFileSync("docker", ["info", "--format", "{{json .}}"], { encoding: "utf8" })); } catch { return null; }
+})();
 
 const icon = { passou: "passou", falhou: "**falhou**", erro: "**erro**", diferente: "**diferente da referência**" };
 const L = [];
@@ -26,7 +30,8 @@ const commit = e2e?.commit?.hash?.slice(0, 7) ?? "?";
 L.push(`# Regressão — ${MODE === "baseline" ? "solução de base" : MODE}`, "");
 L.push(`Corrida a ${(e2e?.quando ?? new Date().toISOString()).slice(0, 16).replace("T", " ")} UTC sobre o commit \`${commit}\`` +
   (e2e?.commit?.codeChanges?.length ? `, com alterações por versionar: ${e2e.commit.codeChanges.join("; ")}` : ", sem alterações ao código") + ".");
-if (amb) L.push(`Máquina: ${amb.cpu.nome}, Docker ${amb.docker.engine} com ${amb.docker.cpusAtribuidos} CPUs e ${amb.docker.memoriaAtribuidaGiB} GiB (a mesma das medições).`);
+L.push(`Máquina: ${os.cpus()[0]?.model?.trim() ?? "?"} (${os.cpus().length} processadores lógicos), ${os.type()} ${os.release()}` +
+  (dockerInfo ? `; Docker ${dockerInfo.ServerVersion} com ${dockerInfo.NCPU} CPUs e ${(dockerInfo.MemTotal / 1073741824).toFixed(2)} GiB` : "") + ".");
 L.push("", "## Resumo", "", "| Suite | O que cobre | Resultado |", "| --- | --- | --- |");
 const pyPass = pyCases.filter((c) => c[0] === "PASSED").length;
 L.push(`| Worker de vídeo (pytest, existente) | \`Tools/video/tests\`: processamento, corte, velocidade, legendas e extração, com FFmpeg real e reconhecimento de fala simulado | ${pyPass}/${pyCases.length} (${pyLine}) |`);
