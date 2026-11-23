@@ -3,18 +3,17 @@
 #set heading(numbering: "A.1.")
 #counter(heading).update(0)
 
-= Anexos
+= Instruções de execução
 
-== Como repetir as medições
+== Lançar a solução e repetir as medições
 
-Os scripts e os dados de teste estão no ramo `fase2/integracao`, cujo código é igual ao do `main`. Para medir a base, usa-se uma cópia de trabalho em `43a2e08` (`git worktree add`), como na comparação A-B-A.
-
-Pré-requisitos: Docker Desktop (ou Docker Engine) com Compose v2, Node.js 20 ou mais recente, Bash (no Windows, o Git Bash), cerca de 4 GB livres. O ffmpeg não é preciso no anfitrião: os dados são gerados com o da imagem `projects`.
+Pré-requisitos: Docker Desktop (ou Docker Engine) com Compose v2 e 8 GB ou mais de memória, Node.js 18 ou mais recente, Bash (no Windows, o Git Bash) e cerca de 20 GB livres. O ffmpeg não é preciso no anfitrião: os dados são gerados com o da imagem `projects`. O código do `main` é igual ao do ramo `fase2/integracao`, que tem também os _scripts_ e os dados das medições.
 
 ```bash
-# 1. Arranque limpo da versão a medir
+# 1. Arranque limpo da versão a medir (no ramo fase2/integracao, código igual ao do main)
+git switch fase2/integracao
 docker compose down -v --remove-orphans
-docker compose up -d --build
+docker compose up -d --build        # depois, https://localhost:8080
 
 # 2. Dados de teste e browser (uma vez)
 cd Docs/fase2/medicoes
@@ -22,87 +21,60 @@ node gerar-dados.mjs && node gerar-dados.mjs --video 330
 (cd rnf2 && npm install && npx playwright install chromium)
 
 # 3. Série completa, pela ordem da medição inicial
-MEDICAO=baseline ./correr-tudo.sh             # na base
 PICTURAS_STATE_PATH=/projects/{user}/{project}/process/status \
-  MEDICAO=final/integrado ./correr-tudo.sh    # com o ADR-02, a rota de estado existe
+  MEDICAO=final/teste ./correr-tudo.sh   # no Git Bash, com MSYS_NO_PATHCONV=1
 
-# 4. Regressão (pytest e node --test nas imagens dos serviços; e2e e interface no anfitrião)
-cd ../regressao && REGRESSAO=final ./correr.sh
+# 4. Regressão (pytest e node --test nas imagens dos serviços; ponta a ponta e interface no anfitrião)
+cd ../regressao && npm install && npx playwright install chromium
+REGRESSAO=teste ./correr.sh
 ```
 
-Cada série escreve em `medicoes/<MEDICAO>/` os JSON em bruto, os registos e um `resumo.md`, e a regressão escreve `regressao/<REGRESSAO>.md`. Os scripts que correram cada série final estão na pasta `scripts/` da série, com as horas em `logs/`.
+Para medir a base, cria-se uma cópia de trabalho em `43a2e08` (`git worktree add`) e arranca-se a solução a partir dela, como na comparação A-B-A (`medicoes/final/integrado/scripts/`). Na base, o envio de 1000 MiB deita abaixo o motor do Docker: vai no fim da série de propósito. Cada série escreve em `medicoes/<MEDICAO>/` os JSON em bruto, os registos e um `resumo.md`, e a regressão escreve `regressao/<REGRESSAO>.md`, comparado com as impressões da base.
 
-== Commits
+Uma reprodução curta, numa hora, está em `medicoes/reproducao/reproducao.sh`: a M1.1 com 500 MiB na base e no código do `main`, a regressão, e a M2.2 e a M2.3 uma vez cada.
 
-#tab([Commits do RNF-F2-01 (ramo `fase2/rnf-f2-01-carregamento`)],
+== Commits e ramos
+
+#tab([Ramos do repositório entregue],
   tabela(
-    colunas: (2cm, 1fr),
-    [Commit], [Conteúdo],
-    [`47c303b`], [Passo 0: documentos da Fase 2 e controlo C1.7],
-    [`93dd800`], [Passo 1: `img_storage` envia ao S3 em fluxo],
-    [`cf4b5be`], [Commit repetido do passo 0, feito fora do agente; mantido e assinalado no `ia.md`],
-    [`d3546b2`], [Passo 2: `projects` envia ao `img_storage` sem segunda cópia],
-    [`847e0dc`], [Passo 3: `projects` recebe em fluxo e valida o objeto guardado],
-    [`0130073`], [Passo 4: `api_gateway` verifica o JWT e passa o envio em fluxo],
-    [`a394a9a`], [Passo 5: nginx passa o corpo dos pedidos à API sem o guardar],
-    [`78a035a`], [Passo 5b: afinação da memória dos serviços de carregamento],
-    [`8529695`], [Passo 6: documentação do ADR-01 e do uso de IA],
-    [`56110a8`, `78c5fce`], [Medição final, comparação A/B do C2.1 e análise],
+    colunas: (5.6cm, 1fr),
+    [Ramo], [Conteúdo],
+    [`main`], [A entrega: a base `43a2e08` mais `126c319` (RNF-F2-01: o código de `7740230`, medido no seu ramo, e o ADR-01) e `d959150` (RNF-F2-02: o código de `eb8a37d`, medido com os dois integrados, o ADR-02 e o `ia.md`), com este relatório],
+    [`fase2/integracao`], [Os dois ramos juntos, com o histórico completo: as medições (base, passos, finais, integrada, A-B-A, reproduções), a suite de regressão, a análise (`analise.md`), os documentos de cada etapa e este relatório],
+    [`fase2/rnf-f2-01-carregamento`], [A DA-1 sozinha: um _commit_ por passo (secção 8.1) e a medição final isolada],
+    [`fase2/rnf-f2-02-segundo-plano-medido`], [A DA-2 sozinha: um _commit_ por passo (secção 8.2) e a medição final isolada],
   ),
 )
 
-#tab([Commits do RNF-F2-02 (ramo `fase2/rnf-f2-02-segundo-plano-medido`)],
+#tab([Mapa dos resultados (ramo `fase2/integracao`, `Docs/fase2/`)],
   tabela(
-    colunas: (2cm, 1fr),
-    [Commit], [Conteúdo],
-    [`f1714dc`], [Passo 0: ADR-02],
-    [`2982528`], [Passo 1: estado da execução no orquestrador],
-    [`df7e1dc`], [Passo 2: progresso do vídeo passa pelo orquestrador],
-    [`54386cc`], [Passo 3: evento `run-status`],
-    [`2abf795`], [Passo 4: interface que não bloqueia],
-    [`77c9bf7`], [Passo 5: documentação, uso de IA e repetição de `GET` no instrumento],
-    [`ed34cd7`, `3eefe39`], [Medição final (série e complemento), secção 7 do ADR-02 e correção do C2.3 no instrumento],
+    colunas: (6.4cm, 1fr),
+    [Pasta], [Conteúdo],
+    [`medicoes/baseline/`], [Medição inicial, 17 de novembro],
+    [`medicoes/passos/`, `medicoes/passos-rnf2/`], [Medições intermédias de cada passo das duas decisões],
+    [`medicoes/final/rnf-f2-01/`, `medicoes/final/rnf-f2-02/`], [Medição final de cada requisito no seu ramo, com os complementos],
+    [`medicoes/final/integrado/`], [Medição com os dois integrados e comparação A-B-A com a base],
+    [`medicoes/reproducao/`], [Reproduções noutras máquinas],
+    [`medicoes/ocorrencias/`], [Registos da queda do Docker com 1000 MiB na base],
+    [`regressao/`], [Suite de regressão, impressões da base (`referencia.json`) e resultados na base, em cada passo, no fim e nas reproduções],
+    [`adr/`, `analise.md`, `diagnostico.md`, `requisitos-nf.md`, `ia.md`], [Decisões, análise, diagnóstico, especificação e uso de IA],
   ),
 )
 
-#tab([Commits da integração (ramo `fase2/integracao`)],
-  tabela(
-    colunas: (2cm, 1fr),
-    [Commit], [Conteúdo],
-    [`5c219ae`], [Junção do RNF-F2-02 (`77c9bf7`) no ramo do RNF-F2-01 (`78c5fce`)],
-    [`9c27f2c`], [Script da série com os dois requisitos integrados],
-    [`50d9081`], [Rascunho deste relatório e análise do RNF-F2-02],
-    [`eb8a37d`], [Junção da medição final do RNF-F2-02 (`3eefe39`); é a versão medida na medição conjunta],
-    [`3f977dc`], [Análise, ADR e este relatório com a medição conjunta; correção do instrumento],
-    [`6ccd755`], [Resultados da medição conjunta e da comparação A-B-A],
-    [`c34da1d`], [Revisão da equipa, modelos por etapa e ADR aceites],
-  ),
-)
-
-#tab([Commits do `main` (entrega do código)],
-  tabela(
-    colunas: (2cm, 1fr),
-    [Commit], [Conteúdo],
-    [`43a2e08`], [Base: o commit de partida `0523102` mais a pasta `Docs/`],
-    [`126c319`], [RNF-F2-01: o código de `7740230` (o medido no seu ramo) e o ADR-01],
-    [`d959150`], [RNF-F2-02: o código de `eb8a37d` (o medido com os dois integrados), o ADR-02, o `ia.md` e, no `AGENTS.md`, onde estão as medições],
-    [Seguinte], [Este relatório, em Typst e PDF (`Docs/fase2/relatorio/`), igual ao do ramo `fase2/integracao`],
-  ),
-)
-
-== Mapa dos resultados
-
-Todas estas pastas estão no ramo `fase2/integracao`, dentro de `Docs/fase2/`.
+= Glossário
 
 #tabela(
-  colunas: (6.4cm, 1fr),
-  [Pasta], [Conteúdo],
-  [`medicoes/baseline/`], [Medição inicial, 17 de novembro],
-  [`medicoes/passos/`, `medicoes/passos-rnf2/`], [Medições intermédias de cada passo dos dois ADR],
-  [`medicoes/final/rnf-f2-01/`], [Medição final do RNF-F2-01 no seu ramo, com o complemento e a comparação A/B],
-  [`medicoes/final/rnf-f2-02/`], [Medição final do RNF-F2-02 no seu ramo, com o complemento],
-  [`medicoes/final/integrado/`], [Medição com os dois requisitos integrados e comparação A-B-A com a base],
-  [`medicoes/ocorrencias/`], [Registos da queda do Docker com 1000 MiB na base],
-  [`regressao/baseline.md`, `regressao/final/`, `regressao/final.md`], [Regressão na base, nos ramos e com os dois requisitos integrados],
-  [`regressao/passos/`, `regressao/passos-rnf2/`], [Regressão em cada passo],
+  colunas: (4cm, 1fr),
+  [Termo], [Definição],
+  [A-B-A], [Comparação de tempos na mesma sessão, em três blocos seguidos: base (A), versão nova (B) e base outra vez, para separar o efeito do código da variação da máquina],
+  [ADR], [_Architecture Decision Record_: registo de uma decisão arquitetural, com o contexto, as alternativas, a decisão e as consequências],
+  [Acréscimo de memória], [O maior valor de memória de um contentor durante um envio, menos o valor em repouso imediatamente antes (M1.1)],
+  [Cenário de qualidade], [Descrição verificável de um requisito de qualidade, com fonte, estímulo, artefacto, ambiente, resposta e medida da resposta],
+  [Controlo (C1.x, C2.x)], [Medida de um efeito colateral noutro requisito não funcional; não decide o cumprimento, mas é reportado e analisado],
+  [Execução (_run_)], [Uma aplicação do pipeline a todos os media de um projeto, iniciada por _Apply_],
+  [Impressão (regressão)], [Resumo do resultado de um teste ponta a ponta (SHA-256 dos ficheiros, durações, resoluções, mensagens), comparado com o da base],
+  [Medida principal (M1.x, M2.x)], [Medida que decide se um requisito fica cumprido (mínimo) ou com o alvo atingido],
+  [Processamento em fluxo], [Passar os dados de um serviço ao seguinte à medida que chegam, em blocos, sem guardar o ficheiro inteiro],
+  [Projeto P, projeto Q], [Projetos de teste do RNF-F2-02: P com um vídeo de 330 s e duas imagens, em processamento; Q de apoio, com uma imagem],
+  [Tática (TAT-nn)], [Decisão de desenho que influencia a resposta a um estímulo de um atributo de qualidade (Bass, Clements e Kazman)],
 )
