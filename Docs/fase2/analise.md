@@ -475,3 +475,37 @@ Ficam registados um risco e uma limitação do instrumento:
 - **Sensibilidade do C2.1.** O tempo do worker varia de execução para execução: uma execução de B
   ficou 21% acima da base sem mudar a mediana (7.4). Com a mediana de três execuções, uma segunda
   execução lenta no mesmo bloco bastaria para passar o limite, tanto em B como em A.
+
+## 8. Reprodução noutras máquinas
+
+De 19 a 23 de novembro, dois membros da equipa repetiram uma parte das medições nas suas máquinas, com
+`medicoes/reproducao/reproducao.sh` sobre o código do `main`: a M1.1 com 500 MiB na base e no `main`,
+a regressão, e a M2.2 e a M2.3 uma vez cada. Não substituem as séries oficiais: os tempos não se
+comparam entre máquinas.
+
+| | Máquina de medição | Pedro (Linux, Intel i5-11300H) | Miguel (macOS, Apple M1 Pro, imagens ARM) |
+| --- | --- | --- | --- |
+| M1.1 na base (`api_gateway`) | 2001 MiB | ~1700 MiB | 1961 MiB |
+| M1.1 no `main`, serviço pior | 42,7 MiB (`projects`); 55,3 MiB (`img_storage`) | `projects` 77 e 87 MiB em duas de três repetições | `projects` 112, 147 e 182 MiB |
+| M2.2 R / F | 0,63 / 0,11 s | 0,43 s | 0,13 / 0,13 s (vídeo de 330 s) |
+| M2.3 | 12/12 | 2/2 | 2/2 |
+| Regressão | 75/75, 19/19, 18/18, 3/3 | 75/75, 19/19, 18/18, 3/3 | 75/75, 19/19, 16/18, 3/3 |
+
+Os resultados do Miguel estão em `medicoes/reproducao/miguel/` (com `NOTAS.md`); os do Pedro foram
+comunicados por ele e ainda não estão no repositório.
+
+**A melhoria repete-se, mas a margem da M1.1 não.** Nas duas máquinas, o `projects` ficou acima do
+alvo de 64 MiB, e na do Miguel acima do mínimo de 128 MiB em duas das três repetições; na máquina de
+medição, o mesmo serviço ficou nos 42,7 MiB. A hipótese é a mesma causa da afinação do passo 5b: a
+memória que o V8 e a glibc demoram a devolver, que depende da plataforma. Não está verificada, e só
+se mediu 500 MiB, por isso as reproduções não mostram se nessas máquinas o acréscimo depende do
+tamanho do ficheiro. O resultado "alvo atingido" da secção 2 vale para a máquina de medição.
+
+**O T05 e o T06 diferem da referência em ARM** só no SHA-256 de imagens; na máquina Intel do Pedro o
+mesmo código deu as impressões da referência. A explicação provável é a compressão PNG das imagens
+Docker ARM; não verificada.
+
+**Falhas do instrumento encontradas.** O `regressao/correr.sh` não tinha permissão de execução no
+git (exit 126 em Linux e macOS); com o vídeo de 120 s, a M2.2 dava "não recupera" numa máquina rápida,
+porque a execução acabava antes das recargas; e o relatório da regressão escrevia sempre a máquina da
+medição inicial. As três foram corrigidas (`0ec8e05`).

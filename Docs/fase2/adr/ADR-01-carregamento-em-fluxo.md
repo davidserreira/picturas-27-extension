@@ -419,6 +419,11 @@ mesmo nas duas versões: o máximo variou entre 49 e 62 MiB nas cinco repetiçõ
 a margem para o alvo ficou em 1,6 MiB. A regressão deu os mesmos resultados da base, e as medidas e
 os controlos do RNF-F2-02 também cumprem, incluindo o C2.1, comparado com a base na mesma sessão.
 
+Reproduzida com 500 MiB noutras duas máquinas (`../analise.md`, secção 8), a M1.1 do `projects`
+ficou acima do alvo nas duas (77 a 87 MiB em Linux; 112 a 182 MiB em macOS com imagens ARM), e numa
+delas acima do mínimo. A margem depende da plataforma, provavelmente pela mesma causa da afinação do
+passo 5b; não verificado. O resultado da secção 7.4 vale para a máquina de medição.
+
 ### 7.6 Revisão
 
 Revisto pela equipa a 19 de novembro de 2026, passo a passo, sem alterações (`../ia.md`). O estado

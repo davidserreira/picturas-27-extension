@@ -2,66 +2,47 @@
 
 = Introdução
 
-Na Fase 1, o PictuRAS passou a suportar vídeo como um produto mínimo viável: o objetivo era a validação funcional. A Fase 2 escolhe dois requisitos não funcionais da solução e melhora-os por _refactoring_, sem acrescentar funcionalidades. Para cada requisito, este relatório fecha o ciclo pedido nas diretrizes: requisito, quantificação, medição inicial, _refactoring_ e medição final.
+== Propósito e âmbito
 
-== Ponto de partida
+Na Fase 1, o PictuRAS passou a suportar vídeo como um produto mínimo viável, com o foco na validação funcional. Nesta fase, a equipa escolheu dois requisitos não funcionais da solução de base e melhorou-os por _refactoring_, sem acrescentar funcionalidades e preservando o comportamento funcional:
 
-#tabela-campos(
-  [Repositório oficial], [#link("https://github.com/picturas-um/picturas-27")],
-  [Commit de partida], [`052310226c51fa57a17101c7bd1ad795674aac95` (`0523102`, 4 de novembro de 2026), com a solução do PL1-G4, as correções da equipa docente, a legendagem automática e a extração de fotogramas],
-  [Repositório do grupo], [#link("https://github.com/davidserreira/picturas-27-extension"). A base do grupo é `43a2e08`: o commit de partida mais a pasta `Docs/`, com o código igual ao de `0523102`. O `main` tem, sobre essa base, o código final dos dois requisitos, num commit por requisito, com os ADR, o `ia.md` e este relatório. As medições, a regressão e a análise estão no ramo `fase2/integracao`],
-  [Documentos de base], [`fase-2-guidelines.pdf`, `doc-ext-requisitos-2627.pdf` (PL1-G4), `README.md` e `AGENTS.md` do repositório],
-)
+- *RNF-F2-01 — Carregamento de ficheiros grandes com memória limitada* (eficiência de desempenho, utilização de recursos). Na base, cada vídeo carregado fica inteiro em memória em três serviços seguidos, e um envio de 1000 MiB deita abaixo toda a instalação.
+- *RNF-F2-02 — Trabalho em segundo plano durante o processamento* (usabilidade, operabilidade). Na base, um painel bloqueia a página durante o processamento, e o progresso só existe no browser: perde-se ao recarregar, e com ele a possibilidade de cancelar.
 
-== Requisitos escolhidos
+As duas fragilidades atingem a extensão de vídeo, mas têm origem diferente: a primeira está no padrão global (o caminho de carregamento), a segunda na interação entre o padrão global e o do vídeo (o progresso do vídeo não passa pelo orquestrador). Para cada requisito, o relatório fecha o ciclo pedido nas diretrizes: requisito, quantificação, medição inicial, _refactoring_ e medição final.
 
-#tab([Os dois requisitos não funcionais da Fase 2],
+== _Baseline_ e repositório
+
+#tab([Artefactos de partida],
   tabela(
-    colunas: (2.1cm, 4.4cm, 4.2cm, 1fr),
-    [ID], [Requisito], [ISO/IEC 25010:2011], [Fragilidade de partida],
-    [RNF-F2-01], [Carregamento de ficheiros grandes com memória limitada], [Eficiência de desempenho — utilização de recursos], [Cada vídeo (até 1 GB) fica inteiro em memória em três serviços seguidos; um envio de 1000 MiB deita abaixo toda a instalação],
-    [RNF-F2-02], [Trabalho em segundo plano durante o processamento], [Usabilidade — operabilidade], [Um painel bloqueia a página durante o processamento, e o progresso só existe no browser: perde-se ao recarregar, e com ele o cancelamento],
+    colunas: (5cm, 1fr),
+    [Artefacto], [Versão / referência],
+    [Documento de requisitos de base], [`doc-ext-requisitos-2627.pdf` (PL1-G4)],
+    [Documento de solução arquitetural de base], [`doc-sol-arquitetural.pdf`],
+    [Repositório de partida], [#link("https://github.com/picturas-um/picturas-27"), _commit_ `052310226c51fa57a17101c7bd1ad795674aac95` (`0523102`, 4 de novembro de 2026): a solução do PL1-G4 com as correções da equipa docente, a legendagem automática e a extração de fotogramas. No repositório do grupo, a base é `43a2e08`: o mesmo código mais a pasta `Docs/`],
+    [Repositório entregue], [#link("https://github.com/davidserreira/picturas-27-extension"). Ramo `main`: a base mais um _commit_ por requisito (`126c319` e `d959150`), com os ADR, o registo de uso de IA e este relatório. Ramo `fase2/integracao`: o histórico completo, com as medições, a suite de regressão e a análise (anexo A.2)],
+    [Diretrizes da Fase 2], [Versão 1, de 4 de novembro de 2026],
   ),
 )
 
-Os dois partem de fragilidades que as diretrizes já apontavam e que o próprio PL1-G4 registou como limitações. A escolha está justificada no capítulo 3.
+Este relatório estende os documentos de base; não os reescreve. O _commit_ de partida é o mesmo em todos os capítulos.
 
-== Documentos seguidos
+== Exercícios e versões usadas
 
-#tabela-campos(
-  [Diretrizes], [_Diretrizes Fase 2 — Melhoria de Req. Não Funcionais do PictuRAS_, versão 1 (4 de novembro de 2026): os seis pontos esperados para cada requisito (diagnóstico, quantificação, medição inicial, decisões e _refactoring_, medição final e análise, preservação funcional)],
-  [Exercício 6, Bloco 1], [Padrões e alternativas: capítulo 2],
-  [Exercício 6, Bloco 2], [Enunciado 1.1 e template 1.1: _trade-offs_, cenários de qualidade e candidatos, no capítulo 3],
-  [Exercício 7], [Template 3.0, compatível com o enunciado 3.0: táticas e decisões arquiteturais, no capítulo 4],
+#tab([Exercícios que alimentam este relatório],
+  tabela(
+    colunas: (3.6cm, 2.2cm, 2cm, 2cm, 1fr),
+    [Exercício], [Capítulos], [Enunciado], [Template], [Versão do documento da equipa],
+    [Exercício 6, Bloco 1: padrões arquiteturais], [2, 3 e 4], [1.1], [Não registada], [Resolução da equipa (`arquitetura.md`, Miguel Páscoa), sobre o `diagnostico.md` (v1.0 deste relatório)],
+    [Exercício 6, Bloco 2: trade-offs, cenários e candidatos a RNF], [5 e 6], [1.1], [1.1], [A mesma resolução (`arquitetura.md`) (v1.0)],
+    [Exercício 7: táticas arquiteturais], [7 a 10], [3.0], [3.0], [Resolução da equipa (`taticas.md`), ajustada ao que foi implementado (v1.0)],
+  ),
 )
 
-A estrutura final do relatório ainda não estava definida nas diretrizes quando este documento foi escrito. Por isso, segue a ordem dos exercícios e, para cada requisito, os seis pontos das diretrizes.
+A escolha dos dois requisitos foi feita antes do Exercício 6, a partir do estudo da base em `Docs/fase2/diagnostico.md`. Os exercícios formalizaram essa escolha com os IDs que os capítulos seguintes usam.
 
-== Organização do trabalho e do relatório
+== Organização do documento
 
-Cada etapa deixou o resultado em ficheiros de `Docs/fase2/`, revistos antes da etapa seguinte. Este relatório resume-os e remete para eles. Estão todos no ramo `fase2/integracao`; o `main` tem só `adr/`, `ia.md` e este relatório (`relatorio/`):
+A *Parte II* (capítulos 2 a 4) descreve a solução de base: como foi lançada, a vista da arquitetura e a sequência de um pedido (capítulo 2), os padrões global e do vídeo (capítulo 3) e as alternativas, com a matriz de comparação (capítulo 4). A *Parte III* (capítulos 5 e 6) transforma as fragilidades em cenários de qualidade priorizados e escolhe e quantifica os dois candidatos a requisito. A *Parte IV* (capítulos 7 a 10) trata as táticas, as duas decisões arquiteturais e a sua implementação, as vistas antes e depois, e a medição: _trade-offs_, plano, resultados e preservação funcional. A *Parte V* tem as conclusões e o uso de IA. Os anexos dizem como lançar a solução e repetir as medições.
 
-#tabela(
-  colunas: (5.2cm, 1fr),
-  [Ficheiro ou pasta], [Conteúdo],
-  [`diagnostico.md`], [Estudo da base e comparação de oito candidatos (capítulos 2 e 3)],
-  [`requisitos-nf.md`], [Especificação: escalas, métodos, valores-alvo e mínimos, controlos dos efeitos colaterais],
-  [`medicoes/`], [Scripts de medição, dados de teste, resultados em bruto da base, dos passos intermédios e da medição final],
-  [`regressao/`], [Suite de regressão e os seus resultados na base, em cada passo e no fim],
-  [`adr/`], [Um registo de decisão arquitetural por requisito, com o plano de _refactoring_ e os resultados por passo],
-  [`analise.md`], [Comparação base, final, alvo e mínimo, e análise crítica],
-  [`ia.md`], [Uso de IA: ferramentas, tarefas apoiadas e validação],
-)
-
-A Parte I faz a análise arquitetural: a arquitetura e os padrões da base (capítulo 2), os _trade-offs_, os cenários de qualidade e a escolha dos requisitos (capítulo 3), e as táticas e decisões (capítulo 4). A Parte II descreve o método de medição e de regressão (capítulo 5) e tem um capítulo por requisito (6 e 7), cada um com o ciclo completo: diagnóstico, quantificação, medição inicial, decisões e _refactoring_, medição final e análise, e preservação funcional. A Parte III trata os dois requisitos juntos (capítulo 8), o uso de IA (capítulo 9) e as conclusões. Os anexos dizem como repetir as medições.
-
-Cada requisito foi implementado num ramo próprio, sem o código do outro, e medido isolado. Os dois ramos foram depois integrados e medidos juntos, e o código final passou para o `main`:
-
-#tabela(
-  colunas: (6.2cm, 1fr),
-  [Ramo], [Conteúdo],
-  [`fase2/rnf-f2-01-carregamento`], [ADR-01, passos 0 a 5b e medição final do RNF-F2-01],
-  [`fase2/rnf-f2-02-segundo-plano-medido`], [ADR-02, passos 0 a 5 e medição final do RNF-F2-02],
-  [`fase2/integracao`], [Os dois ramos juntos, com o histórico completo: a medição conjunta, a análise e este relatório],
-  [`main`], [A entrega do código: a base `43a2e08` mais um commit por requisito (`126c319` e `d959150`), com o mesmo código que foi medido, os ADR, o `ia.md` e este relatório],
-)
+Os IDs encadeiam os capítulos: as evidências e hipóteses (`EV-nn`, `H-nn`) sustentam as alternativas (`ALT-n`); as fragilidades com evidência dão os cenários de qualidade (`QS-nn`), e os dois mais prioritários dão os candidatos (`CAND-1` e `CAND-2`); cada cenário tem as suas táticas candidatas (`TAT-nn`), e a tática escolhida fica registada numa decisão (`DA-1` e `DA-2`). Cada evidência é descrita no sítio onde é usada pela primeira vez.

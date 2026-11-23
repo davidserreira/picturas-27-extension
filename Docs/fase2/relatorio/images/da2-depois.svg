@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 205 930 275" font-family="Carlito, Calibri, sans-serif" font-size="13">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1f6f43"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="930" height="480" fill="#ffffff"/>
+
+  <!-- ANTES -->
+  <text x="15" y="24" font-weight="bold" font-size="15">Antes: o estado da execução só existe no browser</text>
+  <g fill="#ffffff" stroke="#555" stroke-width="1.2">
+    <rect x="15" y="45" width="125" height="46" rx="6"/>
+    <rect x="15" y="120" width="125" height="46" rx="6"/>
+    <rect x="215" y="82" width="105" height="46" rx="6" fill="#f4f4f4"/>
+    <rect x="385" y="82" width="120" height="46" rx="6"/>
+  </g>
+  <rect x="580" y="45" width="335" height="120" rx="6" fill="#fdf0ee" stroke="#c0392b" stroke-width="1.6"/>
+  <g text-anchor="middle" fill="#222">
+    <text x="77" y="73">video_tool</text>
+    <text x="77" y="140">projects</text>
+    <text x="77" y="156" font-size="11" fill="#666">Process, tokens</text>
+    <text x="267" y="110">ws_queue</text>
+    <text x="445" y="110">ws_gateway</text>
+    <text x="747" y="68" font-weight="bold">Browser: página do projeto</text>
+  </g>
+  <g font-size="12" fill="#9b2c20">
+    <text x="595" y="92">• estado num useState; recarregar apaga-o</text>
+    <text x="595" y="110">• progresso das imagens contado no browser</text>
+    <text x="595" y="128">• painel z-50 tapa a página; Cancelar só no painel</text>
+    <text x="595" y="146">• noutras páginas, nenhuma indicação</text>
+  </g>
+  <g stroke="#555" stroke-width="1.4" fill="none" marker-end="url(#a)">
+    <line x1="140" y1="68" x2="213" y2="96"/>
+    <line x1="140" y1="143" x2="213" y2="116"/>
+    <line x1="320" y1="105" x2="383" y2="105"/>
+    <line x1="505" y1="105" x2="578" y2="105"/>
+  </g>
+  <g font-size="11" fill="#444">
+    <text x="145" y="62">video-progress (a cada 2%)</text>
+    <text x="150" y="160">process-update</text>
+  </g>
+
+  <line x1="15" y1="190" x2="915" y2="190" stroke="#ccc" stroke-dasharray="4 4"/>
+
+  <!-- DEPOIS -->
+  <text x="15" y="218" font-weight="bold" font-size="15">Depois: o orquestrador é dono do estado; o browser reconstrói-o</text>
+  <g fill="#ffffff" stroke="#555" stroke-width="1.2">
+    <rect x="15" y="260" width="125" height="50" rx="6"/>
+    <rect x="175" y="262" width="110" height="46" rx="6" fill="#f4f4f4"/>
+    <rect x="590" y="262" width="95" height="46" rx="6" fill="#f4f4f4"/>
+    <rect x="330" y="400" width="200" height="50" rx="6"/>
+  </g>
+  <rect x="320" y="240" width="225" height="100" rx="6" fill="#eef7f1" stroke="#1f6f43" stroke-width="1.8"/>
+  <rect x="725" y="252" width="190" height="66" rx="6" fill="#eef7f1" stroke="#1f6f43" stroke-width="1.8"/>
+  <rect x="580" y="370" width="335" height="95" rx="6" fill="#eef7f1" stroke="#1f6f43" stroke-width="1.8"/>
+  <g text-anchor="middle" fill="#222">
+    <text x="77" y="282">video_tool</text>
+    <text x="77" y="298" font-size="11" fill="#666">reporta a cada 1 s</text>
+    <text x="230" y="290">project_queue</text>
+    <text x="637" y="290">ws_queue</text>
+    <text x="430" y="422">api_gateway</text>
+    <text x="430" y="438" font-size="11" fill="#666">JWT do dono ou partilha</text>
+    <text x="432" y="262" font-weight="bold">projects</text>
+    <text x="432" y="278" font-size="11" fill="#1f6f43">«tática: manter o modelo da tarefa»</text>
+    <text x="432" y="296" font-size="11">coleção runs (MongoDB)</text>
+    <text x="432" y="312" font-size="11">progresso em fotogramas</text>
+    <text x="432" y="328" font-size="11">running → done / failed / cancelled</text>
+    <text x="820" y="275">ws_gateway</text>
+    <text x="820" y="292" font-size="11">só as salas do dono e de</text>
+    <text x="820" y="306" font-size="11">quem iniciou a execução</text>
+    <text x="747" y="390" font-weight="bold">Browser: RunsProvider</text>
+  </g>
+  <g font-size="11" fill="#1f6f43">
+    <text x="595" y="408">«tática: mostrar o estado» faixa na página do projeto</text>
+    <text x="595" y="423">e painel no canto nas outras páginas; aviso do fim</text>
+    <text x="595" y="438">«tática: cancelar» Cancel disponível depois de</text>
+    <text x="595" y="453">recarregar ou noutra sessão</text>
+  </g>
+  <g stroke="#1f6f43" stroke-width="1.6" fill="none" marker-end="url(#g)">
+    <line x1="140" y1="285" x2="173" y2="285"/>
+    <line x1="285" y1="285" x2="318" y2="285"/>
+    <line x1="545" y1="285" x2="588" y2="285"/>
+    <line x1="685" y1="285" x2="723" y2="285"/>
+    <line x1="820" y1="318" x2="820" y2="368"/>
+    <line x1="578" y1="425" x2="532" y2="425"/>
+    <line x1="430" y1="398" x2="430" y2="342"/>
+  </g>
+  <g font-size="11" fill="#444">
+    <text x="150" y="330">type: "progress"</text>
+    <text x="548" y="276">run-status</text>
+    <text x="826" y="350">run-status</text>
+    <text x="330" y="468">GET .../process/status e .../process/active</text>
+    <text x="436" y="375">ao carregar a página</text>
+  </g>
+</svg>

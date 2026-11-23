@@ -1,5 +1,5 @@
 // =============================================================================
-//  PictuRAS · RAS 2026/2027 · Relatório da Fase 2 (Melhoria de Requisitos Não Funcionais); template da Fase 1
+//  PictuRAS · RAS 2026/2027 · Template do Relatório da Fase 2 (Melhoria de RNF)
 //  Estilos de página e componentes reutilizáveis.
 //  Em princípio NÃO precisam de alterar este ficheiro.
 // =============================================================================
@@ -25,7 +25,7 @@
     )[
       #set text(size: 9pt)
       #set par(justify: false)
-      #text(weight: "bold", fill: rgb("#C76C1B"))[Orientação (esconder antes de entregar)] \
+      #text(weight: "bold", fill: rgb("#C76C1B"))[Orientação (apagar antes de entregar)] \
       #corpo
     ]
   }
@@ -95,7 +95,7 @@
 // Figura com tabela legendada (aparece na Lista de Tabelas).
 #let tab(legenda, corpo) = figure(corpo, kind: table, caption: legenda)
 
-// Prioridade MoSCoW com cor: Must have / Should have / Could have / Won't have (this time).
+// Prioridade MoSCoW (mantida do template da Fase 1; útil para recomendações).
 #let must = text(fill: rgb("#B00020"), weight: "bold")[Must]
 #let should = text(fill: rgb("#C76C1B"), weight: "bold")[Should]
 #let could = text(fill: rgb("#2E7D32"), weight: "bold")[Could]
@@ -120,8 +120,6 @@
   show heading.where(level: 2): it => text(size: 14pt, it)
   show heading.where(level: 3): it => text(size: 12pt, it)
 
-  // IDs (UC-VID-001, REQ-VID-TRIM-016, TST-TRIM-M06, …) never break at a hyphen
-  show regex("\b(UC|REQ|TST|RNG|DQ|DA|RNF|ADR|QS|CAND|TAT|EV|ALT|H)-[A-Za-z0-9-]*[A-Za-z0-9]"): it => box(it)
   show link: set text(fill: blue.darken(30%))
   show link: underline.with(evade: false)
 
