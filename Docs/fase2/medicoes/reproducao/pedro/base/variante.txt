@@ -1,0 +1,1 @@
+base 43a2e08 (/home/pedrorebelo/RAS/picturas-27-extension/../picturas-base-43a2e08); os JSON registam o commit de onde correm os scripts

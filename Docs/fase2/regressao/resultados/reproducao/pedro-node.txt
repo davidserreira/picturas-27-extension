@@ -1,0 +1,29 @@
+ Container picturas-projects-run-86eff1c5e72a Creating 
+ Container picturas-projects-run-86eff1c5e72a Created 
+✔ extraction is project-wide and terminal, with ordinary effects inserted before it (2.275061ms)
+✔ extraction validates active mode parameters and disallows targeted/potentially unbounded inputs (0.338747ms)
+✔ manifest validation rejects escaped, duplicate and oversized frame output before upload (7.822226ms)
+✔ all extracted images retain the source ID and run token; upload failure rolls back only this batch (1.441255ms)
+✔ the file is passed on to img_storage whole, with the same size and SHA-256 as the bytes sent (45.627965ms)
+✔ a file the route will refuse by type is read and dropped, not stored (5.520423ms)
+✔ a storage failure is marked so the route keeps its 501 answer (2.949989ms)
+✔ a client that goes away midway cancels the request to img_storage (46.714832ms)
+✔ multer cleanup removes the stored file by its key (0.52791ms)
+✔ a fast first worker cannot commit while later sources are still being scheduled (2.548301ms)
+✔ registration failure starts no workers and rolls back only newly registered jobs (1.010247ms)
+✔ a cancelled run cannot overwrite the committed results with a delayed commit (4.952583ms)
+✔ an image counts one unit per image tool; video-only tools do not count (1.37639ms)
+✔ a video counts its frames; images are left out when there is no image tool (0.302488ms)
+✔ image-only run: steps done over total steps, as in the base (0.192999ms)
+✔ mixed run follows the video, which holds almost all the work (0.160005ms)
+✔ progress is clamped, rounded down, and only reaches 100 when done (4.151944ms)
+✔ view exposes the state without internal fields (0.419924ms)
+✔ captions apply to all videos, while images skip them and trim stays targeted (2.546658ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 248.403708

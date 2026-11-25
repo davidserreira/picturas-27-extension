@@ -1,0 +1,29 @@
+[medicao] GET repetido depois de ECONNRESET: /api-gateway/projects/6aff1cf8a6ffb54522730a3d
+16:00:12 M1.1 500 MiB rep 1/3
+16:00:22   -> 204 valida {
+  nginx: 6.1,
+  api_gateway: 36.4,
+  projects: 15.1,
+  img_storage: 46.5,
+  seaweedfs: 482.3
+}
+[medicao] GET repetido depois de ECONNRESET: /api-gateway/projects/6aff1cf8a6ffb54522730a3d
+16:00:39 M1.1 500 MiB rep 2/3
+16:00:48   -> 204 valida {
+  nginx: 3.1,
+  api_gateway: 35.5,
+  projects: 87,
+  img_storage: 44.1,
+  seaweedfs: 198.4
+}
+[medicao] GET repetido depois de ECONNRESET: /api-gateway/projects/6aff1cf8a6ffb54522730a3d
+16:01:04 M1.1 500 MiB rep 3/3
+16:01:13   -> 204 valida {
+  nginx: 5.6,
+  api_gateway: 33.2,
+  projects: 77,
+  img_storage: 45.8,
+  seaweedfs: 190.9
+}
+[medicao] gravado Docs/fase2/medicoes/reproducao/pedro/main/rnf1-memoria.json
+[medicao] gravado Docs/fase2/medicoes/reproducao/pedro/main/rnf1-memoria.json

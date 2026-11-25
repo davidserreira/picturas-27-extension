@@ -1,0 +1,22 @@
+16:11:54 a gerar fala-25s.mp4
+16:11:57 a gerar sem-som-8s.mp4
+16:11:57 a gerar video-60s.mp4
+16:12:05 T01 PASSOU (0.1 s) Registo e início de sessão devolvem um JWT válido
+16:12:05 T02 PASSOU (0.1 s) Carregar imagem PNG: aceite, listada e guardada sem alteração
+16:12:05 T03 PASSOU (0.5 s) Carregar vídeos MP4 e MOV: aceites, com metadados lidos por ffprobe
+16:12:06 T04 PASSOU (0.8 s) Recusas: vídeo no endpoint de imagem, imagem no de vídeo, ficheiro corrompido, nome repetido, limites do perfil gratuito, anónimo
+16:12:26 T05 PASSOU (20 s) Cada ferramenta de imagem (8 + watermark) aplicada sozinha produz o resultado de referência
+16:12:28 T06 PASSOU (2.4 s) Pipeline encadeado em lote (brilho, contraste, rotação, redimensionamento) em duas imagens
+16:12:28 T07 PASSOU (0 s) Transferência dos resultados em ZIP
+16:12:31 T08 PASSOU (3 s) Pré-visualização de imagem e de vídeo chega pelo WebSocket
+16:12:54 T09 PASSOU (22.8 s) Efeitos de fotograma em vídeo: cor (brilho, contraste, saturação, binarização) e geometria (rotação, recorte, redimensionamento, moldura)
+16:12:59 T10 PASSOU (4.7 s) Corte no tempo e velocidade: duração e som do resultado
+16:14:05 T11 PASSOU (65.9 s) Legendagem automática: vídeo com fala legendado; vídeo sem som inalterado na duração
+16:14:31 T12 PASSOU (25.9 s) Extração de fotogramas: por número (PNG) e por intervalo (JPEG), cada fotograma como resultado
+16:14:31 T13 PASSOU (0.6 s) Regras do pipeline: extração só no fim e uma vez; acrescentar efeito vai para antes da extração
+16:14:44 T14 PASSOU (12.2 s) Projeto com imagem e vídeo: o mesmo efeito aplica-se aos dois; o corte de vídeo não toca na imagem
+16:14:44 T15 PASSOU (0.7 s) Ferramentas incompatíveis: só-imagem num projeto com vídeo e só-vídeo num projeto só com imagens são recusadas
+16:16:06 T16 PASSOU (81.7 s) Cancelar uma execução: sem resultados, operações não ficam comprometidas e o projeto volta a processar
+16:16:18 T17 PASSOU (12 s) Perfil gratuito: cada efeito em cada vídeo conta uma operação e o limite diário de 5 recusa a execução seguinte
+16:16:18 T18 PASSOU (0.2 s) Um utilizador não acede aos projetos nem aos media de outro
+16:16:18 e2e: 18 passaram, 0 diferentes, 0 falharam, 0 com erro

@@ -1,0 +1,21 @@
+15:52:37 a gerar imagem-p1.png
+15:52:37 a gerar imagem-p2.png
+15:52:38 a gerar imagem-q.png
+15:52:38 a gerar imagem-nova.png
+15:52:39 a gerar upload-1000MiB.mp4 (500 s a 16526 kbit/s; demora alguns minutos)
+15:53:16 a gerar upload-10MiB.mp4 (5.07 s copiados de upload-1000MiB.mp4)
+15:53:17 a gerar upload-100MiB.mp4 (50.74 s copiados de upload-1000MiB.mp4)
+15:53:17 a gerar upload-500MiB.mp4 (253.71 s copiados de upload-1000MiB.mp4)
+┌────────────────────┬────────────┬───────┐
+│ (index)            │ bytes      │ MiB   │
+├────────────────────┼────────────┼───────┤
+│ imagem-nova.png    │ 25344      │ 0     │
+│ imagem-p1.png      │ 106840     │ 0.1   │
+│ imagem-p2.png      │ 23039      │ 0     │
+│ imagem-q.png       │ 483726     │ 0.5   │
+│ upload-1000MiB.mp4 │ 1033228595 │ 985.4 │
+│ upload-100MiB.mp4  │ 105590773  │ 100.7 │
+│ upload-10MiB.mp4   │ 11357425   │ 10.8  │
+│ upload-500MiB.mp4  │ 524612227  │ 500.3 │
+└────────────────────┴────────────┴───────┘
+15:53:18 a gerar p-video-120s.mp4
