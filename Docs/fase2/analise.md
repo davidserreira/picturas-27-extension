@@ -483,20 +483,20 @@ De 19 a 23 de novembro, dois membros da equipa repetiram uma parte das mediçõe
 a regressão, e a M2.2 e a M2.3 uma vez cada. Não substituem as séries oficiais: os tempos não se
 comparam entre máquinas.
 
-| | Máquina de medição | Pedro (Linux, Intel i5-11300H) | Miguel (macOS, Apple M1 Pro, imagens ARM) |
+| | Máquina de medição (os dois integrados) | Pedro (Linux, Intel i5-11300H) | Miguel (macOS, Apple M1 Pro, imagens ARM) |
 | --- | --- | --- | --- |
-| M1.1 na base (`api_gateway`) | 2001 MiB | ~1700 MiB | 1961 MiB |
-| M1.1 no `main`, serviço pior | 42,7 MiB (`projects`); 55,3 MiB (`img_storage`) | `projects` 77 e 87 MiB em duas de três repetições | `projects` 112, 147 e 182 MiB |
-| M2.2 R / F | 0,63 / 0,11 s | 0,43 s | 0,13 / 0,13 s (vídeo de 330 s) |
-| M2.3 | 12/12 | 2/2 | 2/2 |
+| M1.1 na base (`api_gateway`) | 2001 MiB | 1694 MiB | 1961 MiB |
+| M1.1 no `main`, serviço pior | `projects` 36,0 MiB; `img_storage` 62,9 MiB | `projects` 15, 87 e 77 MiB | `projects` 112, 147 e 182 MiB |
+| M2.2 R / F | 0,43 / 0,12 s | 0,44 / 0 s (vídeo de 120 s) | 0,13 / 0 s (vídeo de 330 s) |
+| M2.3 | 10/10 | 2/2 | 2/2 |
 | Regressão | 75/75, 19/19, 18/18, 3/3 | 75/75, 19/19, 18/18, 3/3 | 75/75, 19/19, 16/18, 3/3 |
 
-Os resultados do Miguel estão em `medicoes/reproducao/miguel/` (com `NOTAS.md`); os do Pedro foram
-comunicados por ele e ainda não estão no repositório.
+Os resultados em bruto estão em `medicoes/reproducao/pedro/` e `medicoes/reproducao/miguel/`, cada
+um com o seu `NOTAS.md`; os da máquina de medição são os de `medicoes/final/integrado/`.
 
 **A melhoria repete-se, mas a margem da M1.1 não.** Nas duas máquinas, o `projects` ficou acima do
 alvo de 64 MiB, e na do Miguel acima do mínimo de 128 MiB em duas das três repetições; na máquina de
-medição, o mesmo serviço ficou nos 42,7 MiB. A hipótese é a mesma causa da afinação do passo 5b: a
+medição, o mesmo serviço ficou nos 36,0 MiB. A hipótese é a mesma causa da afinação do passo 5b: a
 memória que o V8 e a glibc demoram a devolver, que depende da plataforma. Não está verificada, e só
 se mediu 500 MiB, por isso as reproduções não mostram se nessas máquinas o acréscimo depende do
 tamanho do ficheiro. O resultado "alvo atingido" da secção 2 vale para a máquina de medição.
