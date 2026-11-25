@@ -1,0 +1,1388 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PictuRAS · Defesa da Fase 2 · Grupo 5</title>
+<meta name="description" content="Defesa da Fase 2 de RAS 2026/27 (Grupo 5, PL5): dois requisitos não funcionais do PictuRAS melhorados por refactoring, com as decisões arquiteturais, as medições antes e depois e a demonstração.">
+<style>
+/* -----------------------------------------------------------------------------
+   Diapositivos de 1600 × 900 que escalam para caber no ecrã.
+   Teclas: → ← (navegar) · P (vista do apresentador) · N (notas) · O (visão geral)
+           S (cronómetro) · B (ecrã preto) · F (ecrã inteiro) · ? (ajuda)
+   Imprimir (Ctrl+P) gera um PDF com um diapositivo por página.
+----------------------------------------------------------------------------- */
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+:root{
+  --paper:#FBFAF7; --card:#FFFFFF; --ink:#15171C; --ink-2:#3A3F48; --muted:#6A707B; --line:#E3E0D9; --line-2:#EFEDE8;
+  --accent:#C2611A; --accent-ink:#97460D; --accent-soft:#FCEADB; --accent-line:#F1C9A6;
+  --sys:#1E5CC0; --sys-ink:#163F86; --sys-soft:#E5EDFB; --sys-line:#BFD2F4;
+  --ok:#16803C; --ok-ink:#0F5C2B; --ok-soft:#E0F3E7; --ok-line:#A9DBBB;
+  --fail:#B4261D; --fail-ink:#8A1C15; --fail-soft:#FBE6E4; --fail-line:#F0B9B4;
+  --idle:#5B6472; --idle-soft:#EDEEF1; --idle-line:#CDD1D8;
+  --night:#111318;
+  --display:"Segoe UI Variable Display","Segoe UI",-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+  --text:"Segoe UI Variable Text","Segoe UI",-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  --mono:"Cascadia Mono","SF Mono",ui-monospace,Consolas,"Liberation Mono",monospace;
+}
+html,body{height:100%;margin:0}
+body{background:var(--night);overflow:hidden;font-family:var(--text);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button{font:inherit;color:inherit}
+
+/* ---------- palco ---------- */
+.viewport{position:fixed;inset:0}
+.stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform:translate(-50%,-50%) scale(var(--scale,1));transform-origin:center;cursor:default}
+.slide{position:absolute;inset:0;overflow:hidden;background:var(--paper);color:var(--ink);font-size:24px;line-height:1.4;
+  padding:60px 88px 100px;opacity:0;visibility:hidden;transform:translateX(18px);
+  transition:opacity .38s ease,transform .38s ease,visibility 0s linear .38s}
+.slide.is-active{opacity:1;visibility:visible;transform:none;transition:opacity .38s ease,transform .38s ease,visibility 0s}
+.slide.is-past{transform:translateX(-18px)}
+.notes{display:none}
+@media (prefers-reduced-motion:reduce){.slide,.slide.is-active{transition:none;transform:none}}
+
+/* ---------- tipografia ---------- */
+.kicker{display:flex;align-items:center;gap:14px;font:600 17px/1 var(--text);letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink)}
+.kicker__num{display:inline-grid;place-items:center;min-width:34px;height:34px;padding:0 8px;border-radius:9px;background:var(--accent);color:#fff;letter-spacing:0;font-weight:700}
+.kicker__time{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;color:var(--muted);letter-spacing:.04em;text-transform:none;font-weight:600;font-size:15px;background:var(--card)}
+h1,h2,h3{font-family:var(--display);margin:0;color:var(--ink)}
+.title{font-weight:700;font-size:50px;line-height:1.08;letter-spacing:-.022em;margin-top:18px;max-width:1360px}
+.lead{font-size:23px;line-height:1.45;color:var(--ink-2);margin:14px 0 0;max-width:1240px}
+.id{font-family:var(--mono);font-weight:600;letter-spacing:-.01em;white-space:nowrap}
+.muted{color:var(--muted)}
+.small{font-size:17px}
+.nw{white-space:nowrap}
+q{quotes:"“" "”"}
+.icon{width:1em;height:1em;flex:none;display:inline-block;vertical-align:-.14em}
+
+/* ---------- componentes ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px 28px}
+.label{font:700 13.5px/1.2 var(--text);letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.tag{display:inline-flex;align-items:center;gap:7px;padding:5px 13px;border-radius:999px;font:600 15px/1.35 var(--text);background:var(--idle-soft);color:var(--ink-2);white-space:nowrap}
+.tag--accent{background:var(--accent-soft);color:var(--accent-ink)}
+.tag--sys{background:var(--sys-soft);color:var(--sys-ink)}
+.tag--ok{background:var(--ok-soft);color:var(--ok-ink)}
+.tag--line{background:transparent;border:1px solid var(--line)}
+.pass{display:inline-flex;align-items:center;gap:6px;color:var(--ok-ink);font-weight:700}
+.pass .icon{color:var(--ok)}
+
+/* rodapé gerado em cada diapositivo */
+.foot{position:absolute;left:88px;right:88px;bottom:30px;height:30px;display:flex;align-items:center;gap:28px;font-size:15px;color:var(--muted)}
+.foot__brand{display:flex;align-items:center;gap:10px;white-space:nowrap}
+.foot__brand b{color:var(--ink-2);font-weight:700}
+.foot__track{flex:1;display:flex;gap:6px;max-width:660px;margin-left:auto}
+.foot__seg{position:relative;height:6px;border-radius:3px;background:var(--line)}
+.foot__seg span{position:absolute;top:11px;left:0;font-size:13px;letter-spacing:.01em;white-space:nowrap;color:var(--muted)}
+.foot__seg.is-done{background:#E6C4A4}
+.foot__seg.is-current{background:var(--accent)}
+.foot__seg.is-current span{color:var(--accent-ink);font-weight:700}
+.foot__appendix{margin-left:auto;font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:13px}
+.foot__num{font-family:var(--mono);font-size:15px;color:var(--ink-2);min-width:64px;text-align:right}
+
+/* ---------- capa ---------- */
+.s-cover{padding:0;background:radial-gradient(1200px 700px at 88% 30%,#FFF3E8 0%,rgba(255,243,232,0) 60%),var(--paper)}
+.s-cover__band{position:absolute;left:0;top:0;bottom:0;width:22px;background:var(--accent)}
+.s-cover__inner{position:absolute;inset:0;padding:78px 88px 70px 120px;display:grid;grid-template-columns:720px 1fr;column-gap:56px}
+.s-cover__uni{font-size:17px;color:var(--muted);line-height:1.5}
+.s-cover__uni b{color:var(--ink-2)}
+.s-cover__kicker{margin-top:92px}
+.s-cover h1{font-size:84px;line-height:1.0;letter-spacing:-.035em;font-weight:700;margin-top:20px}
+.s-cover h1 em{font-style:normal;color:var(--accent)}
+.s-cover__sub{font-size:25px;line-height:1.45;color:var(--ink-2);margin-top:26px;max-width:640px}
+.s-cover__team{margin-top:34px;display:grid;grid-template-columns:repeat(2,max-content);gap:10px 44px;font-size:21px}
+.s-cover__team span{white-space:nowrap}
+.s-cover__team small{font-family:var(--mono);font-size:14px;color:var(--muted);margin-left:7px}
+.s-cover__group{margin-top:18px;display:flex;gap:10px}
+.agenda{grid-column:1 / -1;align-self:end;display:flex;gap:10px}
+.agenda__item{border-top:6px solid var(--line);padding-top:14px}
+.agenda__item b{display:block;font:700 15px/1 var(--mono);color:var(--accent-ink);letter-spacing:.04em}
+.agenda__item span{display:block;margin-top:8px;font-size:21px;font-weight:600}
+.agenda__item i{font-style:normal;color:var(--muted);font-weight:500}
+.agenda__item:nth-child(1){flex:3;border-color:var(--accent)}
+.agenda__item:nth-child(2){flex:2;border-color:#E39A5E}
+.agenda__item:nth-child(3){flex:5;border-color:#F1C9A6}
+
+
+/* =============================================================================
+   Componentes da defesa da Fase 2
+============================================================================= */
+
+/* capa: motivo com o antes e o depois */
+.s-cover__inner{grid-template-columns:740px 1fr}
+.s-cover h1{font-size:76px}
+.motif{align-self:center;justify-self:end;width:600px;display:flex;flex-direction:column;gap:16px;margin-top:30px}
+.motif__card{border-radius:20px;background:#171A21;color:#C9D0DC;padding:20px 24px;box-shadow:0 30px 60px -24px rgba(24,20,10,.35),0 0 0 1px rgba(0,0,0,.08)}
+.motif__head{display:flex;justify-content:space-between;align-items:center;font:600 14px/1 var(--mono);color:#8D96A6}
+.motif__head b{color:#fff;font-family:var(--text);font-size:15px;letter-spacing:.02em}
+.motif__rows{display:grid;grid-template-columns:120px 1fr 76px;gap:10px 14px;align-items:center;margin-top:16px;font:600 14px/1 var(--mono)}
+.motif__bar{height:14px;border-radius:7px;background:#2A2F39;position:relative;overflow:hidden}
+.motif__bar i{position:absolute;left:0;top:0;bottom:0;border-radius:7px}
+.motif__bar i.b{background:#E0664F}
+.motif__bar i.a{background:#3DBE74}
+.motif__val{text-align:right;color:#fff}
+.motif__run{display:flex;align-items:center;gap:14px;margin-top:6px}
+.motif__run .pct{font:700 30px/1 var(--display);color:#fff}
+.motif__prog{flex:1;height:10px;border-radius:5px;background:#2A2F39;overflow:hidden}
+.motif__prog i{display:block;height:100%;width:62%;background:linear-gradient(90deg,#2B6CEB,#5B9BFF)}
+.motif__btn{padding:6px 12px;border-radius:8px;border:1px solid #3A3F4A;font-size:13px;color:#E7EAF0}
+.motif__note{margin-top:10px;font-size:13.5px;color:#8D96A6}
+.agenda__item:nth-child(1){flex:2;border-color:var(--accent)}
+.agenda__item:nth-child(2){flex:2;border-color:#D87F3B}
+.agenda__item:nth-child(3){flex:3;border-color:#E39A5E}
+.agenda__item:nth-child(4){flex:4;border-color:#EBB283}
+.agenda__item:nth-child(5){flex:3;border-color:#F1C9A6}
+.agenda__item:nth-child(6){flex:1;border-color:#F6DCC4}
+.agenda__item span{font-size:19px}
+
+/* grelhas genéricas */
+.cols{display:grid;gap:24px;margin-top:30px}
+.cols--2{grid-template-columns:1fr 1fr}
+.cols--2-1{grid-template-columns:1.45fr 1fr}
+.cols--1-2{grid-template-columns:1fr 1.45fr}
+.cols--3{grid-template-columns:repeat(3,1fr)}
+.card h3{font-size:24px;line-height:1.22;font-weight:650;letter-spacing:-.01em}
+.card p{margin:8px 0 0;font-size:18.5px;line-height:1.45;color:var(--ink-2)}
+.card--accent{border:2px solid var(--accent);box-shadow:0 18px 40px -26px rgba(194,97,26,.55)}
+.card--sys{border:2px solid var(--sys)}
+.card--muted{background:#F6F5F1}
+.card__top{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.card__top .id{font-size:17px;color:var(--accent-ink)}
+ul.bul{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+ul.bul li{position:relative;padding-left:24px;font-size:18.5px;line-height:1.42;color:var(--ink-2)}
+ul.bul li::before{content:"";position:absolute;left:4px;top:.62em;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+ul.bul--sys li::before{background:var(--sys)}
+ul.bul--ok li::before{background:var(--ok)}
+ul.bul b{color:var(--ink);font-weight:650}
+
+/* 2: arquitetura de base */
+.flow{position:relative;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px 26px 22px}
+.flow__row{display:flex;align-items:center;gap:10px}
+.flow__row + .flow__row{margin-top:18px}
+.node{flex:none;min-width:120px;padding:12px 14px;border-radius:12px;background:var(--idle-soft);border:1px solid var(--idle-line);font:600 16.5px/1.2 var(--mono);text-align:center;color:var(--ink)}
+.node small{display:block;font:500 13px/1.3 var(--text);color:var(--muted);margin-top:4px}
+.node--hot{background:var(--fail-soft);border-color:var(--fail-line);color:var(--fail-ink)}
+.node--hot small{color:var(--fail-ink)}
+.node--q{background:#F3F1EC;border-style:dashed}
+.arr{flex:1;min-width:18px;height:2px;background:var(--idle-line);position:relative}
+.arr::after{content:"";position:absolute;right:-1px;top:-5px;border:6px solid transparent;border-left:8px solid var(--idle-line);border-right:0}
+.arr--hot{background:var(--fail)}
+.arr--hot::after{border-left-color:var(--fail)}
+.flow__lab{font:700 12.5px/1 var(--text);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.issue{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:16px 18px;border-radius:16px;background:var(--fail-soft);border:1px solid var(--fail-line)}
+.issue + .issue{margin-top:14px}
+.issue__n{width:44px;height:44px;border-radius:50%;background:var(--fail);color:#fff;display:grid;place-items:center;font:700 20px/1 var(--display)}
+.issue h3{font-size:21px;line-height:1.25;font-weight:650;color:var(--fail-ink)}
+.issue p{margin:6px 0 0;font-size:17px;line-height:1.42;color:#5A1712}
+.issue .id{font-size:14.5px;color:var(--fail-ink)}
+.patterns{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+
+/* 3: escolha */
+table.cand{width:100%;border-collapse:collapse;font-size:17px;line-height:1.35;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+table.cand th{text-align:left;font:700 12.5px/1.2 var(--text);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:11px 14px;background:var(--idle-soft)}
+table.cand td{padding:8px 14px;border-top:1px solid var(--line-2);color:var(--ink-2);vertical-align:top}
+table.cand td:first-child{font:700 15px/1.4 var(--mono);color:var(--muted);width:56px}
+table.cand tr.is-pick td{background:var(--accent-soft);color:#4E2507}
+table.cand tr.is-pick td:first-child{color:var(--accent-ink)}
+.lvl{display:inline-block;min-width:62px;padding:2px 9px;border-radius:999px;font:600 14px/1.5 var(--text);text-align:center}
+.lvl--h{background:var(--ok-soft);color:var(--ok-ink)}
+.lvl--m{background:var(--idle-soft);color:var(--ink-2)}
+.lvl--l{background:var(--fail-soft);color:var(--fail-ink)}
+.prio{display:flex;flex-direction:column;gap:14px}
+.prio__item{display:grid;grid-template-columns:54px 1fr;gap:16px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.prio__n{width:54px;height:54px;border-radius:14px;background:var(--accent);color:#fff;display:grid;place-items:center;font:700 26px/1 var(--display)}
+.prio__item h3{font-size:21px;line-height:1.25;font-weight:650}
+.prio__item p{margin:5px 0 0;font-size:16.5px;line-height:1.42;color:var(--ink-2)}
+
+/* 4: quantificação */
+table.q{width:100%;border-collapse:collapse;font-size:17.5px;line-height:1.35;margin-top:12px}
+table.q th{text-align:left;font:700 12.5px/1.2 var(--text);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:9px 10px;border-bottom:2px solid var(--line)}
+table.q td{padding:10px 10px;border-bottom:1px solid var(--line-2);vertical-align:top;color:var(--ink-2)}
+table.q td:first-child{font:700 16px/1.35 var(--mono);color:var(--ink);white-space:nowrap}
+table.q td.base{color:var(--fail-ink);font-weight:650}
+table.q td.tgt{color:var(--ok-ink);font-weight:650;white-space:nowrap}
+table.q td.min{white-space:nowrap}
+.src{margin-top:12px;font-size:15.5px;line-height:1.45;color:var(--muted)}
+.ctl{margin-top:22px;display:grid;grid-template-columns:240px 1fr;gap:18px;align-items:center;padding:16px 20px;border-radius:16px;background:var(--sys-soft);border:1px solid var(--sys-line)}
+.ctl b{font:700 20px/1.2 var(--display);color:var(--sys-ink)}
+.ctl p{margin:0;font-size:17px;line-height:1.45;color:#10305F}
+
+/* 5: táticas */
+.tat{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:26px}
+.tat__col h3{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:650;margin-bottom:12px}
+.tat__list{display:flex;flex-direction:column;gap:9px}
+.tat__item{display:grid;grid-template-columns:84px 1fr 66px;gap:12px;align-items:center;padding:11px 14px;border-radius:13px;background:var(--card);border:1px solid var(--line);font-size:17px;line-height:1.35;color:var(--ink-2)}
+.tat__item .id{font-size:14.5px;color:var(--muted)}
+.tat__item .cls{justify-self:end;font:700 13.5px/1 var(--mono);padding:6px 9px;border-radius:8px;background:var(--idle-soft);color:var(--ink-2)}
+.tat__item.is-pick{background:var(--ok-soft);border-color:var(--ok-line);color:#0D3F1F}
+.tat__item.is-pick .id{color:var(--ok-ink)}
+.tat__item.is-pick .cls{background:var(--ok);color:#fff}
+.tat__item.is-c{background:var(--fail-soft);border-color:var(--fail-line);color:var(--fail-ink)}
+.tat__item.is-c .cls{background:var(--fail);color:#fff}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;font-size:15.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend i{width:14px;height:14px;border-radius:4px;display:inline-block}
+
+/* 6 e 7: decisões, antes e depois */
+.ba{display:grid;grid-template-columns:110px 1fr;gap:14px 18px;margin-top:24px;align-items:center}
+.ba__lab{font:700 14px/1.2 var(--text);letter-spacing:.13em;text-transform:uppercase}
+.ba__lab--b{color:var(--fail-ink)}
+.ba__lab--a{color:var(--ok-ink)}
+.chain{display:flex;align-items:stretch;gap:0}
+.chain__node{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.chain__box{width:100%;padding:12px 8px;border-radius:12px;border:1px solid var(--idle-line);background:var(--card);font:600 16px/1.2 var(--mono)}
+.chain__mem{font:700 22px/1 var(--display);letter-spacing:-.01em}
+.chain__mem small{font:500 13px/1.3 var(--text);display:block;color:var(--muted);margin-top:3px;letter-spacing:0}
+.chain__link{flex:none;width:34px;display:grid;place-items:center;padding-bottom:36px;color:var(--idle-line)}
+.chain__link .icon{width:24px;height:24px}
+.chain--b .chain__box{background:var(--fail-soft);border-color:var(--fail-line)}
+.chain--b .chain__mem{color:var(--fail-ink)}
+.chain--a .chain__box{background:var(--ok-soft);border-color:var(--ok-line)}
+.chain--a .chain__mem{color:var(--ok-ink)}
+.chain__box.is-out{background:var(--idle-soft);border-color:var(--idle-line)}
+.dafacts{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:18px;margin-top:26px}
+.dafacts .card{padding:18px 20px}
+.dafacts .card p,.dafacts .card li{font-size:16.5px}
+.dafacts ul.bul{margin-top:8px;gap:6px}
+.state{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:24px}
+.state__panel{border-radius:20px;padding:20px 22px;border:1px solid var(--line);background:var(--card)}
+.state__panel--b{background:var(--fail-soft);border-color:var(--fail-line)}
+.state__panel--a{background:var(--ok-soft);border-color:var(--ok-line)}
+.state__panel h3{font-size:21px;font-weight:650;display:flex;align-items:center;gap:10px}
+.state__flow{display:flex;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+.pill{padding:8px 12px;border-radius:10px;background:#fff;border:1px solid var(--line);font:600 14.5px/1.2 var(--mono);color:var(--ink)}
+.pill--new{border:2px solid var(--ok);color:var(--ok-ink)}
+.pill--bad{border:2px solid var(--fail);color:var(--fail-ink)}
+.state__flow .icon{width:18px;height:18px;color:var(--muted)}
+.state__panel ul.bul li{font-size:16.5px}
+
+/* resultados */
+.bars{display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.bars__row{display:grid;grid-template-columns:140px 1fr;gap:16px;align-items:center}
+.bars__name{font:600 16px/1.2 var(--mono);color:var(--ink)}
+.bars__pair{display:flex;flex-direction:column;gap:5px}
+.bar{position:relative;height:22px;border-radius:6px;background:var(--line-2)}
+.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:6px}
+.bar--b i{background:#E0664F}
+.bar--a i{background:var(--ok)}
+.bar b{position:absolute;top:50%;transform:translateY(-50%);font:700 14.5px/1 var(--mono);white-space:nowrap}
+.bar--b b{color:#fff;right:10px}
+.bar--a b{left:calc(var(--w) + 10px);color:var(--ok-ink)}
+.bars__axis{display:flex;gap:22px;margin-top:6px;font-size:14.5px;color:var(--muted)}
+.bars__axis span{display:inline-flex;align-items:center;gap:8px}
+.bars__axis i{width:14px;height:14px;border-radius:4px;display:inline-block}
+.kpis{display:grid;gap:16px}
+.kpis--4{grid-template-columns:repeat(4,1fr)}
+.kpis--2{grid-template-columns:repeat(2,1fr)}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 20px}
+.kpi__lab{font:700 12.5px/1.25 var(--text);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.kpi__ba{display:flex;align-items:baseline;gap:12px;margin-top:10px;flex-wrap:wrap}
+.kpi__from{font:600 20px/1.1 var(--display);color:var(--fail-ink);text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:rgba(180,38,29,.45)}
+.kpi__to{font:700 44px/1 var(--display);letter-spacing:-.02em;color:var(--ink)}
+.kpi__to small{font-size:20px;color:var(--muted);letter-spacing:0;margin-left:2px}
+.kpi__tgt{margin-top:10px;display:flex;align-items:center;gap:8px;font-size:15.5px;color:var(--ok-ink);font-weight:600}
+.kpi__tgt .icon{color:var(--ok)}
+.kpi__note{margin-top:6px;font-size:15px;line-height:1.4;color:var(--muted)}
+.kpi--dark{background:var(--ink);border-color:var(--ink)}
+.kpi--dark .kpi__lab{color:#9AA3B2}
+.kpi--dark .kpi__to{color:#fff}
+.kpi--dark .kpi__note{color:#AEB6C4}
+.verdict{display:flex;align-items:center;gap:14px;margin-top:20px;padding:14px 20px;border-radius:14px;background:var(--ok-soft);border:1px solid var(--ok-line);font-size:19px;line-height:1.4;color:#0D3F1F}
+.verdict .icon{width:28px;height:28px;color:var(--ok)}
+.verdict--warn{background:#FFF4E0;border-color:#F3CF8E;color:#5E3B05}
+.verdict--warn .icon{color:#C98A12}
+.aba-svg{display:block;width:100%;height:auto}
+table.res{width:100%;border-collapse:collapse;font-size:17px;line-height:1.35;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+table.res th{text-align:left;font:700 12.5px/1.2 var(--text);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:11px 14px;background:var(--idle-soft)}
+table.res td{padding:9px 14px;border-top:1px solid var(--line-2);color:var(--ink-2);vertical-align:top}
+table.res td:first-child{font-weight:650;color:var(--ink)}
+table.res td.good{color:var(--ok-ink);font-weight:650}
+table.res td.bad{color:var(--fail-ink);font-weight:650}
+table.res td.warn{color:#8A5A07;font-weight:650}
+.suites{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:26px}
+.suite{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 20px}
+.suite h3{font-size:19px;font-weight:650;line-height:1.25}
+.suite p{margin:6px 0 0;font-size:15.5px;line-height:1.4;color:var(--muted)}
+.suite__n{display:flex;align-items:baseline;gap:10px;margin-top:12px}
+.suite__n b{font:700 40px/1 var(--display);letter-spacing:-.02em}
+.suite__n span{font-size:15px;color:var(--muted)}
+.suite__tag{margin-top:10px}
+.fp{display:grid;grid-template-columns:1.1fr 1fr;gap:24px;margin-top:24px}
+
+/* IA */
+.ai{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:26px}
+.ai__step{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 20px}
+.ai__step .label{color:var(--accent-ink)}
+.ai__step h3{font-size:20px;font-weight:650;margin-top:8px;line-height:1.25}
+.ai__step p{margin:6px 0 0;font-size:16.5px;line-height:1.42;color:var(--ink-2)}
+.caught{margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.caught__row{display:grid;grid-template-columns:1.15fr 1fr;gap:0;border-top:1px solid var(--line-2)}
+.caught__row:first-child{border-top:0}
+.caught__row > div{padding:11px 18px;font-size:16.5px;line-height:1.4;color:var(--ink-2)}
+.caught__row > div:first-child{border-right:1px solid var(--line-2)}
+.caught__head > div{font:700 12.5px/1.2 var(--text);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);background:var(--idle-soft)}
+
+/* ajustes */
+.s-cover h1{font-size:64px;line-height:1.02;max-width:700px}
+.s-cover__kicker{margin-top:48px}
+.s-cover__sub{font-size:23px;margin-top:22px}
+.s-cover__team{margin-top:26px}
+.node{min-width:0;padding:10px 10px;font-size:15px}
+.node small{font-size:12px}
+.flow__row{gap:8px}
+.arr{min-width:14px}
+.foot__track{max-width:1000px}
+.foot__seg span{font-size:12px}
+
+/* ---------- 8: demonstração ---------- */
+.demo{display:grid;grid-template-columns:780px 1fr;gap:36px;margin-top:22px}
+.script{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.script li{display:grid;grid-template-columns:68px 1fr;gap:16px;padding:9px 0;border-top:1px solid var(--line-2);font-size:18.5px;line-height:1.38}
+.script li:first-child{border-top:0;padding-top:0}
+.script time{font:700 16px/1.5 var(--mono);color:var(--accent-ink);padding-top:1px}
+.script b{font-weight:650}
+.script .ref{display:inline-flex;flex-wrap:wrap;gap:6px;margin-left:6px;vertical-align:1px}
+.script .ref span{font:600 12.5px/1.6 var(--mono);color:var(--sys-ink);background:var(--sys-soft);padding:0 7px;border-radius:6px}
+.script li.opt{color:var(--muted)}
+.script li.opt time{color:var(--muted)}
+.shot{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 16px 36px -22px rgba(0,0,0,.45);background:#fff}
+.shot img{display:block;width:100%;height:auto}
+.callout{position:absolute;border:3px solid var(--accent);border-radius:10px;box-shadow:0 0 0 5px rgba(194,97,26,.22)}
+.callout b{position:absolute;top:-15px;left:-15px;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font:700 15px/1 var(--display)}
+.prep{margin-top:16px;padding:16px 20px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
+.prep ul{margin:8px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:6px 18px}
+.prep li{display:grid;grid-template-columns:24px 1fr;gap:6px;font-size:16px;line-height:1.38;color:var(--ink-2)}
+.prep li .icon{width:18px;height:18px;color:var(--ok);margin-top:2px}
+.caption{margin-top:10px;font-size:15.5px;color:var(--muted);line-height:1.4}
+
+
+.s-appx table.trace-table td:last-child{white-space:normal}
+.s-appx table.trace-table td{font-size:16px}
+
+/* ---------- 9: fecho ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:40px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:30px 28px 28px}
+.stat strong{display:block;font:700 76px/1 var(--display);letter-spacing:-.03em;color:var(--ink)}
+.stat strong small{font-size:30px;color:var(--muted);letter-spacing:-.01em}
+.stat span{display:block;margin-top:12px;font-size:18px;line-height:1.4;color:var(--ink-2)}
+.stat--accent{background:var(--ink);border-color:var(--ink)}
+.stat--accent strong{color:#fff}
+.stat--accent strong small{color:#9AA3B2}
+.stat--accent span{color:#C9D0DC}
+.next{display:grid;grid-template-columns:240px repeat(3,1fr);gap:18px;margin-top:40px;align-items:stretch}
+.next__title{display:flex;flex-direction:column;justify-content:center}
+.next__title h3{font-size:26px;font-weight:650}
+.next__title p{margin:6px 0 0;font-size:16.5px;color:var(--muted);line-height:1.4}
+.next__item{border-left:4px solid var(--accent-line);padding:4px 0 4px 18px}
+.next__item b{display:block;font-size:19px}
+.next__item span{display:block;margin-top:4px;font-size:16.5px;line-height:1.4;color:var(--ink-2)}
+.s-end.is-active,.s-end{display:flex;flex-direction:column}
+.thanks{display:flex;align-items:flex-end;justify-content:space-between;margin-top:auto;padding-top:26px;border-top:1px solid var(--line)}
+.thanks h3{font-size:60px;font-weight:700;letter-spacing:-.03em;line-height:1}
+.thanks h3 span{color:var(--accent)}
+.thanks p{margin:0;font-size:18px;color:var(--muted);text-align:right;line-height:1.5}
+
+/* ---------- apêndice ---------- */
+.s-appx{background:#F6F5F1}
+.s-appx .title{font-size:42px}
+.appx-shot{display:grid;grid-template-columns:888px 1fr;gap:40px;margin-top:22px;align-items:start}
+.appx-shot .shot img{max-height:626px;object-fit:contain}
+.appx-side h3{font-size:28px;font-weight:650;line-height:1.2}
+.appx-side p{font-size:19px;line-height:1.5;color:var(--ink-2);margin:12px 0 0}
+.appx-side ol{margin:16px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;counter-reset:c}
+.appx-side li{position:relative;padding-left:44px;font-size:18px;line-height:1.42;color:var(--ink-2);counter-increment:c}
+.appx-side li::before{content:counter(c);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font:700 15px/1 var(--display)}
+.appx-side p.small{font-size:16px;color:var(--muted)}
+.appx-side .reqs{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px}
+table.trace-table{width:100%;border-collapse:collapse;margin-top:22px;font-size:16.5px;line-height:1.38;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+table.trace-table th{text-align:left;font:700 12.5px/1.2 var(--text);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:12px 16px;background:var(--idle-soft)}
+table.trace-table td{padding:9px 16px;border-top:1px solid var(--line-2);vertical-align:top;color:var(--ink-2)}
+table.trace-table td:first-child{font-weight:650;color:var(--ink);white-space:nowrap}
+table.trace-table td .id{font-size:14.5px}
+table.trace-table td:last-child{white-space:nowrap}
+table.trace-table .sep{color:var(--muted);margin:0 2px 0 5px}
+.appx-note{margin-top:14px;font-size:16px;color:var(--muted);display:flex;align-items:center;gap:10px}
+.appx-note .icon{color:var(--ok)}
+.arch-svg{display:block;width:100%;height:auto;margin-top:26px;overflow:visible}
+.arch-legend{list-style:none;margin:22px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px 28px;counter-reset:a}
+.arch-legend li{position:relative;padding-left:38px;font-size:16.5px;line-height:1.4;color:var(--ink-2);counter-increment:a}
+.arch-legend li::before{content:counter(a);position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font:700 13.5px/1 var(--display)}
+.arch-legend li.is-end::before{background:var(--ok)}
+.arch-legend b{color:var(--ink);margin-right:4px}
+.arch-legend .id{font-size:.9em}
+
+/* ---------- interface (fora do diapositivo) ---------- */
+.hud{position:fixed;right:18px;bottom:16px;display:flex;align-items:center;gap:4px;padding:6px;border-radius:14px;background:rgba(20,22,28,.86);color:#E7EAF0;font-size:13px;backdrop-filter:blur(8px);box-shadow:0 10px 30px rgba(0,0,0,.35);opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s;z-index:20}
+.hud.is-visible{opacity:1;transform:none}
+.hud button{border:0;background:transparent;border-radius:9px;padding:7px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:inherit}
+.hud button:hover,.hud button:focus-visible{background:rgba(255,255,255,.12);outline:none}
+.hud__count{font-family:var(--mono);padding:0 8px;color:#AEB6C4;min-width:62px;text-align:center}
+.hud__timer{font-family:var(--mono);padding:0 10px;border-left:1px solid rgba(255,255,255,.14);margin-left:4px}
+.hud__timer.is-warn{color:#FFC36B}.hud__timer.is-over{color:#FF8A80}
+.hud kbd{font-family:var(--mono);font-size:11px;color:#8D96A6}
+.overlay{position:fixed;inset:0;z-index:30;background:rgba(10,11,14,.92);color:#E7EAF0;overflow:auto}
+.overview{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px;padding:34px}
+.ov-item{cursor:pointer;border:0;background:none;padding:0;text-align:left;color:inherit}
+.ov-thumb{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;outline:2px solid transparent;outline-offset:3px;background:var(--paper)}
+.ov-item:hover .ov-thumb,.ov-item:focus-visible .ov-thumb,.ov-item.is-current .ov-thumb{outline-color:var(--accent)}
+.ov-thumb .slide,.pv__next .slide{inset:auto;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;opacity:1;visibility:visible;transition:none}
+.ov-cap{display:flex;gap:10px;margin-top:9px;font-size:14px;color:#AEB6C4}
+.ov-cap b{font-family:var(--mono);color:#fff}
+.help{max-width:640px;margin:10vh auto;padding:30px 34px;background:#1A1D24;border-radius:18px;font-size:16px;line-height:1.5}
+.help h2{color:#fff;font-size:24px;margin-bottom:14px}
+.help dl{display:grid;grid-template-columns:150px 1fr;gap:9px 18px;margin:0}
+.help dt{font-family:var(--mono);color:#FFB070}
+.help dd{margin:0;color:#C9D0DC}
+.notes-panel{position:fixed;left:0;right:0;bottom:0;z-index:25;max-height:34vh;overflow:auto;background:#1A1D24;color:#E7EAF0;padding:18px 26px;font-size:18px;line-height:1.55;border-top:3px solid var(--accent)}
+.notes-panel h4{margin:0 0 6px;font:700 13px/1 var(--text);letter-spacing:.12em;text-transform:uppercase;color:#FFB070}
+.blackout{position:fixed;inset:0;background:#000;z-index:40}
+
+/* ---------- vista do apresentador ---------- */
+body.is-presenter{background:#0E1014;color:#E7EAF0}
+.pv{position:fixed;inset:0;display:grid;grid-template-columns:1fr 470px;gap:18px;padding:18px}
+.pv__main{position:relative;border-radius:12px;overflow:hidden;background:#000}
+.pv__main .stage{position:absolute}
+.pv__side{display:flex;flex-direction:column;gap:14px;min-height:0}
+.pv__box{background:#181B22;border-radius:12px;padding:14px 16px}
+.pv__label{font:700 12px/1 var(--text);letter-spacing:.12em;text-transform:uppercase;color:#8D96A6;margin-bottom:8px}
+.pv__clock{font:700 56px/1 var(--mono);letter-spacing:-.02em}
+.pv__clock.is-warn{color:#FFC36B}.pv__clock.is-over{color:#FF8A80}
+.pv__target{margin-top:6px;color:#AEB6C4;font-size:15px}
+.pv__row{display:flex;gap:8px;margin-top:10px}
+.pv button{border:1px solid #2E333D;background:#20242C;border-radius:9px;padding:8px 14px;cursor:pointer;color:#E7EAF0;font-size:14px}
+.pv button:hover{background:#2A2F39}
+.pv__next{position:relative;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:var(--paper)}
+.pv__nexttitle{margin-top:8px;font-size:14px;color:#AEB6C4}
+.pv__notes{flex:1;min-height:0;overflow:auto;font-size:19px;line-height:1.55;color:#E7EAF0}
+.pv__notes p{margin:0 0 10px}
+.pv__count{font-family:var(--mono);color:#AEB6C4;align-self:center;margin:0 auto}
+
+/* ---------- impressão: um diapositivo por página ---------- */
+@page{size:1600px 900px;margin:0}
+@media print{
+  html,body{height:auto;overflow:visible;background:#fff}
+  .viewport{position:static}
+  .stage{position:static;transform:none;width:1600px;height:auto}
+  .slide{position:relative;width:1600px;height:900px;opacity:1!important;visibility:visible!important;transform:none!important;transition:none;break-after:page;page-break-after:always}
+  .hud,.overlay,.notes-panel,.blackout,.pv__side{display:none!important}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7.8 12.4l2.8 2.8 5.6-5.8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7.5 3v5.6c0 4.6-3.1 8.3-7.5 9.6-4.4-1.3-7.5-5-7.5-9.6V6L12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 12.2l2.2 2.2 4-4.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-scissors" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6.5" cy="6.5" r="2.8"/><circle cx="6.5" cy="17.5" r="2.8"/><path d="M8.6 8.4L20 17.5M8.6 15.6L20 6.5"/></g></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M4 15v4a1 1 0 001 1h14a1 1 0 001-1v-4"/></g></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></g></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="10.5" width="14" height="10" rx="2.2"/><path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5"/></g></symbol>
+  <symbol id="i-coin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v9M9.5 9.8c0-1.2 1.1-1.8 2.5-1.8s2.5.6 2.5 1.8c0 2.6-5 1.4-5 4.2 0 1.2 1.1 1.9 2.5 1.9s2.5-.7 2.5-1.9"/></g></symbol>
+  <symbol id="i-queue" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="4.5" rx="1.5"/><rect x="3.5" y="14.5" width="17" height="4.5" rx="1.5"/><path d="M7 7.25h.01M7 16.75h.01"/></g></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></g></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8h.01"/></g></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h13M13 6.5l5.5 5.5-5.5 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l9 16H3l9-16z"/><path d="M12 10v4.5M12 17.3h.01"/></g></symbol>
+</svg>
+
+<div class="viewport" id="viewport">
+<div class="stage" id="stage" aria-live="polite">
+
+<!-- ======================================================= 1 · CAPA -->
+<section class="slide s-cover" data-part="capa" data-title="Capa">
+  <div class="s-cover__band"></div>
+  <div class="s-cover__inner">
+    <div>
+      <div class="s-cover__uni"><b>Requisitos e Arquiteturas de Software</b> · 2026/2027<br>Mestrado em Engenharia Informática · Universidade do Minho</div>
+      <div class="kicker s-cover__kicker">Defesa da Fase 2</div>
+      <h1>Dois requisitos não funcionais, <em>medidos</em> antes e depois</h1>
+      <p class="s-cover__sub">Carregar vídeos grandes com memória limitada e continuar a usar a aplicação durante o processamento — por <i>refactoring</i>, sem funcionalidades novas.</p>
+      <div class="s-cover__group"><span class="tag tag--accent">PL5 · Grupo 5</span><span class="tag tag--line">Commit de partida 0523102</span></div>
+      <div class="s-cover__team">
+        <span>David Cruz<small>pg65403</small></span>
+        <span>Miguel Páscoa<small>pg64007</small></span>
+        <span>Pedro Rebelo<small>pg64018</small></span>
+        <span>Tiago Barros<small>pg64035</small></span>
+      </div>
+    </div>
+    <div class="motif" aria-hidden="true">
+      <div class="motif__card">
+        <div class="motif__head"><b>RNF-F2-01 · memória com 500 MiB</b><span>M1.1</span></div>
+        <div class="motif__rows">
+          <span>antes</span><div class="motif__bar"><i class="b" style="width:100%"></i></div><span class="motif__val">2001 MiB</span>
+          <span>depois</span><div class="motif__bar"><i class="a" style="width:2.8%"></i></div><span class="motif__val">55 MiB</span>
+        </div>
+      </div>
+      <div class="motif__card">
+        <div class="motif__head"><b>RNF-F2-02 · depois de recarregar a página</b><span>M2.2</span></div>
+        <div class="motif__run"><span class="pct">62%</span><div class="motif__prog"><i></i></div><span class="motif__btn">Cancel</span></div>
+        <div class="motif__note">Estado reposto em 0,63 s · antes: perdido ao recarregar</div>
+      </div>
+    </div>
+    <div class="agenda">
+      <div class="agenda__item"><b>01</b><span>Diagnóstico <i>· 2′</i></span></div>
+      <div class="agenda__item"><b>02</b><span>Requisitos <i>· 2′</i></span></div>
+      <div class="agenda__item"><b>03</b><span>Decisões <i>· 3′</i></span></div>
+      <div class="agenda__item"><b>04</b><span>Resultados <i>· 4′</i></span></div>
+      <div class="agenda__item"><b>05</b><span>Demonstração <i>· 3′</i></span></div>
+      <div class="agenda__item"><b>06</b><span>Fim <i>· 1′</i></span></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p><b>~10 s.</b> Boa tarde. Somos o Grupo 5 do PL5.</p>
+    <p>Na Fase 2 escolhemos dois requisitos não funcionais do PictuRAS e melhorámo-los por refactoring. Vamos mostrar porque os escolhemos, como os quantificámos, as decisões que tomámos, o que medimos antes e depois, e uma demonstração. Cerca de 15 minutos.</p>
+  </aside>
+</section>
+
+<!-- ======================================================= 2 · BASE -->
+<section class="slide" data-part="diag" data-title="A solução de base">
+  <div class="kicker"><span class="kicker__num">01</span>Diagnóstico<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>2 min</span></div>
+  <h2 class="title">Microsserviços com orquestração central.<br>O vídeo segue o padrão global, mas tem duas fragilidades.</h2>
+  <div class="cols cols--2-1">
+    <div class="flow">
+      <div class="flow__lab">Carregamento de um vídeo</div>
+      <div class="flow__row">
+        <div class="node">browser</div><div class="arr arr--hot"></div>
+        <div class="node">nginx<small>guarda o corpo</small></div><div class="arr arr--hot"></div>
+        <div class="node node--hot">api_gateway<small>ficheiro em memória</small></div><div class="arr arr--hot"></div>
+        <div class="node node--hot">projects<small>ficheiro em memória</small></div><div class="arr arr--hot"></div>
+        <div class="node node--hot">img_storage<small>ficheiro em memória</small></div>
+      </div>
+      <div class="flow__lab" style="margin-top:26px">Processamento de um vídeo (Apply)</div>
+      <div class="flow__row">
+        <div class="node">projects<small>orquestrador</small></div><div class="arr"></div>
+        <div class="node node--q">video_queue<small>1 mensagem</small></div><div class="arr"></div>
+        <div class="node">video_tool<small>único worker</small></div><div class="arr arr--hot"></div>
+        <div class="node node--q">ws_queue</div><div class="arr arr--hot"></div>
+        <div class="node node--hot">browser<small>estado só aqui</small></div>
+      </div>
+      <div class="patterns">
+        <span class="tag">Microsserviços + API Gateway</span><span class="tag">Filas (RabbitMQ)</span><span class="tag">Orquestração central</span><span class="tag tag--sys">Vídeo: worker único com o pipeline inteiro</span>
+      </div>
+    </div>
+    <div>
+      <div class="issue"><span class="issue__n">1</span><div><h3>O ficheiro inteiro em memória em três serviços seguidos</h3><p>Com 500 MiB, o <span class="id">api_gateway</span> sobe <b>2001 MiB</b>; com 1000 MiB, a instalação inteira deixa de responder. <span class="id">EV-13</span></p></div></div>
+      <div class="issue"><span class="issue__n">2</span><div><h3>O progresso do vídeo não passa pelo orquestrador</h3><p>O estado da execução só existe no browser e um painel bloqueia a página: recarregar perde o progresso e o cancelamento. <span class="id">EV-03</span> <span class="id">EV-04</span></p></div></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p><b>~50 s.</b> A base é a solução do PL1-G4, commit 0523102: microsserviços atrás de um nginx e de um API Gateway, processamento assíncrono por filas e um orquestrador central, o projects.</p>
+    <p>O vídeo segue o padrão global (filas, resultado na project_queue), mas com um único worker que aplica o pipeline inteiro. Duas fragilidades. Primeira: no carregamento, três serviços guardam o ficheiro inteiro em memória antes de o passar — vem do padrão global mal aplicado. Segunda: o worker manda o progresso diretamente para o browser, e o orquestrador não o guarda — vem do desvio do vídeo face à orquestração central.</p>
+  </aside>
+</section>
+
+<!-- ======================================================= 3 · ESCOLHA -->
+<section class="slide" data-part="diag" data-title="Escolha dos dois requisitos">
+  <div class="kicker"><span class="kicker__num">01</span>Diagnóstico<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>2 min</span></div>
+  <h2 class="title">Oito candidatos estudados; escolhemos os dois<br>cenários de qualidade mais prioritários.</h2>
+  <div class="cols cols--2-1" style="grid-template-columns:1.35fr 1fr">
+    <table class="cand">
+      <thead><tr><th>#</th><th>Candidato</th><th>Pertinência</th><th>Medir</th><th>Risco</th></tr></thead>
+      <tbody>
+        <tr><td>C1</td><td>Usabilidade — criação de pipelines</td><td><span class="lvl lvl--m">Média</span></td><td><span class="lvl lvl--l">Difícil</span></td><td><span class="lvl lvl--m">Médio</span></td></tr>
+        <tr><td>C2</td><td>Manutenibilidade — modularidade do vídeo</td><td><span class="lvl lvl--m">Média</span></td><td><span class="lvl lvl--m">Média</span></td><td><span class="lvl lvl--l">Alto</span></td></tr>
+        <tr><td>C3</td><td>Eficiência — elasticidade</td><td><span class="lvl lvl--h">Alta</span></td><td><span class="lvl lvl--m">Dep. máquina</span></td><td><span class="lvl lvl--l">Alto</span></td></tr>
+        <tr class="is-pick"><td>C4</td><td><b>Usabilidade — trabalho em segundo plano</b></td><td><span class="lvl lvl--h">Alta</span></td><td><span class="lvl lvl--h">Fácil</span></td><td><span class="lvl lvl--m">Médio</span></td></tr>
+        <tr class="is-pick"><td>C5</td><td><b>Eficiência — ficheiros grandes</b></td><td><span class="lvl lvl--h">Alta</span></td><td><span class="lvl lvl--h">Fácil</span></td><td><span class="lvl lvl--h">Baixo</span></td></tr>
+        <tr><td>C6</td><td>Segurança</td><td><span class="lvl lvl--m">Média</span></td><td><span class="lvl lvl--m">Média</span></td><td><span class="lvl lvl--m">Médio</span></td></tr>
+        <tr><td>C7</td><td>Fiabilidade — tolerância a falhas</td><td><span class="lvl lvl--h">Alta</span></td><td><span class="lvl lvl--h">Fácil</span></td><td><span class="lvl lvl--m">Médio</span></td></tr>
+        <tr><td>C8</td><td>Eficiência — tempo de processamento</td><td><span class="lvl lvl--l">Baixa</span></td><td><span class="lvl lvl--h">Fácil</span></td><td><span class="lvl lvl--l">Alto</span></td></tr>
+      </tbody>
+    </table>
+    <div class="prio">
+      <div class="prio__item"><span class="prio__n">1</span><div><h3><span class="id">QS-02</span> → <span class="id">RNF-F2-02</span></h3><p>Usabilidade — operabilidade. Atinge <b>todos os utilizadores em todas as execuções</b>; base: 0% das ações durante uma execução.</p></div></div>
+      <div class="prio__item"><span class="prio__n">2</span><div><h3><span class="id">QS-01</span> → <span class="id">RNF-F2-01</span></h3><p>Eficiência — utilização de recursos. O premium paga pelos ficheiros grandes, e é com eles que a <b>entrada única cai</b>.</p></div></div>
+      <div class="card card--muted" style="padding:16px 18px"><p style="margin:0;font-size:16.5px">Ambos têm evidência no código, escala objetiva medível por <i>script</i> e alternativas reais — sem reescrever o processamento de vídeo.</p></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p><b>~60 s.</b> Comparámos as seis ideias das diretrizes e duas fragilidades que encontrámos no código, por pertinência, facilidade de medir e risco para o prazo.</p>
+    <p>Os dois escolhidos são os dois cenários de qualidade mais prioritários: o QS-02, trabalho em segundo plano, que atinge todos os utilizadores, e o QS-01, carregamento de ficheiros grandes, que derruba a entrada única. A alternativa mais ambiciosa, separar as legendas e escalar o vídeo (C2 + C3), juntava os dois riscos mais altos.</p>
+  </aside>
+</section>
+
+<!-- ======================================================= 4 · QUANTIFICAÇÃO -->
+<section class="slide" data-part="req" data-title="Quantificação">
+  <div class="kicker"><span class="kicker__num">02</span>Requisitos<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>2 min</span></div>
+  <h2 class="title">Cada requisito com escala, base, alvo e mínimo —<br>os valores fixados depois de medir a base.</h2>
+  <div class="cols cols--2">
+    <div class="card card--accent">
+      <div class="card__top"><span class="id">RNF-F2-01</span><span class="tag">Eficiência — utilização de recursos</span></div>
+      <h3>Carregar ficheiros grandes com memória limitada</h3>
+      <table class="q">
+        <thead><tr><th>Medida</th><th>Base</th><th>Alvo</th><th>Mínimo</th></tr></thead>
+        <tbody>
+          <tr><td>M1.1</td><td class="base">Docker cai com 1000 MiB<br><span class="small muted">2001 MiB com 500 MiB</span></td><td class="tgt">≤ 64 MiB</td><td class="min">≤ 128 MiB</td></tr>
+          <tr><td>M1.2</td><td class="base">100 MiB</td><td class="tgt">1000 MiB</td><td class="min">500 MiB</td></tr>
+        </tbody>
+      </table>
+      <p class="src">M1.1: acréscimo de memória do serviço que mais cresce durante um envio. M1.2: maior ficheiro aceite com 512 MiB por contentor. Alvo: as partes S3 que a base já usa (20 MiB) × 3; mínimo: três envios num serviço de 512 MiB; 500 MiB do REQ-VID-SUBMIT-008.</p>
+    </div>
+    <div class="card card--sys">
+      <div class="card__top"><span class="id" style="color:var(--sys-ink)">RNF-F2-02</span><span class="tag">Usabilidade — operabilidade</span></div>
+      <h3>Continuar a usar a aplicação durante o processamento</h3>
+      <table class="q">
+        <thead><tr><th>Medida</th><th>Base</th><th>Alvo</th><th>Mínimo</th></tr></thead>
+        <tbody>
+          <tr><td>M2.1</td><td class="base">0%</td><td class="tgt">100%</td><td class="min">80%</td></tr>
+          <tr><td>M2.2</td><td class="base">Não recupera</td><td class="tgt">≤ 2 s</td><td class="min">≤ 5 s</td></tr>
+          <tr><td>M2.3</td><td class="base">0/10</td><td class="tgt">10/10</td><td class="min">5/5 a recarregar</td></tr>
+        </tbody>
+      </table>
+      <p class="src">M2.1: 10 ações durante uma execução de P (vídeo de 330 s). M2.2: repor o estado ao recarregar e avisar o fim. M2.3: cancelar depois de perder a página. 2 s e 5 s do REQ-VID-STATUS-003; 10 s por ação (Nielsen).</p>
+    </div>
+  </div>
+  <div class="ctl"><b>12 controlos dos efeitos colaterais</b><p>Tempo de envio e de processamento, envio sem JWT, SHA-256, decisões de validação, temporários, órfãos, confidencialidade do estado e resultados (<span class="id">C1.1–C1.7</span>, <span class="id">C2.1–C2.5</span>). Medidos em todas as séries.</p></div>
+  <aside class="notes">
+    <p><b>~2 min.</b> Para cada requisito: classificação ISO 25010, escala, método por script e três valores — base, alvo e mínimo — com origem identificável.</p>
+    <p>RNF-F2-01: a medida principal é o acréscimo de memória do serviço que mais cresce durante um envio. Na base, com 1000 MiB, nem se mede: o Docker cai. O alvo de 64 MiB vem das partes S3 que a base já usava, com folga.</p>
+    <p>RNF-F2-02: três medidas feitas com Playwright, como um utilizador. Os 2 s e 5 s vêm do REQ-VID-STATUS-003 do PL1-G4.</p>
+    <p>E doze controlos, para ver se a melhoria de um atributo degrada outro.</p>
+  </aside>
+</section>
+
+<!-- ======================================================= 5 · TÁTICAS -->
+<section class="slide" data-part="dec" data-title="Táticas candidatas">
+  <div class="kicker"><span class="kicker__num">03</span>Decisões<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>3 min</span></div>
+  <h2 class="title">Dez táticas candidatas: cinco escolhidas,<br>uma rejeitada por ser uma funcionalidade nova.</h2>
+  <div class="tat">
+    <div class="tat__col">
+      <h3><span class="id">QS-01</span> Carregamento</h3>
+      <div class="tat__list">
+        <div class="tat__item is-pick"><span class="id">TAT-01</span><span>Processar em fluxo, de ponta a ponta</span><span class="cls">A</span></div>
+        <div class="tat__item is-pick"><span class="id">TAT-02</span><span>Limitar o que fica em memória (partes S3, <i>buffers</i>)</span><span class="cls">A</span></div>
+        <div class="tat__item"><span class="id">TAT-03</span><span>Envio direto ao S3 com URL assinado — muda a API e expõe o armazenamento</span><span class="cls">B</span></div>
+        <div class="tat__item"><span class="id">TAT-04</span><span>Aumentar ou limitar a memória dos contentores — não muda a escala</span><span class="cls">A</span></div>
+      </div>
+    </div>
+    <div class="tat__col">
+      <h3><span class="id">QS-02</span> Trabalho em segundo plano</h3>
+      <div class="tat__list">
+        <div class="tat__item is-pick"><span class="id">TAT-05</span><span>Modelo da tarefa no servidor (estado no orquestrador)</span><span class="cls">A</span></div>
+        <div class="tat__item is-pick"><span class="id">TAT-06</span><span>Estado em qualquer página, sem bloquear</span><span class="cls">B</span></div>
+        <div class="tat__item is-pick"><span class="id">TAT-07</span><span>Cancelar depois de perder a página</span><span class="cls">A/B</span></div>
+        <div class="tat__item"><span class="id">TAT-08</span><span>Estado só no browser — falha noutra sessão</span><span class="cls">A</span></div>
+        <div class="tat__item"><span class="id">TAT-09</span><span>Consulta periódica — atraso e carga</span><span class="cls">A</span></div>
+        <div class="tat__item is-c"><span class="id">TAT-10</span><span>Pausar e retomar — funcionalidade nova</span><span class="cls">C</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="legend"><span><i style="background:var(--ok)"></i>Escolhida</span><span><i style="background:var(--fail)"></i>Rejeitada (classe C)</span><span>A: <em>refactoring</em> puro · B: alteração visível que é o objeto da melhoria · C: funcionalidade nova</span><span class="muted">Catálogo: Bass, Clements e Kazman</span></div>
+  <aside class="notes">
+    <p><b>~40 s.</b> Para cada cenário, táticas do catálogo de Bass, Clements e Kazman, classificadas: A é refactoring puro, B uma alteração visível que é o próprio objeto da melhoria, C uma funcionalidade nova — rejeitada nesta fase.</p>
+    <p>Para o carregamento: processar em fluxo e limitar o que fica em memória. Para o segundo plano: guardar o modelo da tarefa no servidor, mostrar o estado em qualquer página e manter o cancelamento disponível. Pausar e retomar seria uma funcionalidade nova.</p>
+  </aside>
+</section>
+
+<!-- ======================================================= 6 · DA-1 -->
+<section class="slide" data-part="dec" data-title="DA-1 · Carregamento em fluxo">
+  <div class="kicker"><span class="kicker__num">03</span>Decisões<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>3 min</span></div>
+  <h2 class="title"><span class="id" style="font-size:.84em">DA-1</span> · Os mesmos serviços, pela mesma ordem —<br>muda a forma como os bytes passam.</h2>
+  <div class="ba">
+    <div class="ba__lab ba__lab--b">Antes</div>
+    <div class="chain chain--b">
+      <div class="chain__node"><div class="chain__box is-out">browser</div><div class="chain__mem">&nbsp;</div></div>
+      <div class="chain__link"><svg class="icon"><use href="#i-arrow"/></svg></div>
+      <div class="chain__node"><div class="chain__box">nginx</div><div class="chain__mem">+19<small>corpo em disco</small></div></div>
+      <div class="chain__link"><svg class="icon"><use href="#i-arrow"/></svg></div>
+      <div class="chain__node"><div class="chain__box">api_gateway</div><div class="chain__mem">+2001<small>multer em memória; JWT depois</small></div></div>
+      <div class="chain__link"><svg class="icon"><use href="#i-arrow"/></svg></div>
+      <div class="chain__node"><div class="chain__box">projects</div><div class="chain__mem">+1044<small>buffer e cópia para o ffprobe</small></div></div>
+      <div class="chain__link"><svg class="icon"><use href="#i-arrow"/></svg></div>
+      <div class="chain__node"><div class="chain__box">img_storage</div><div class="chain__mem">+1016<small>buffer antes do S3</small></div></div>
+    </div>
+    <div class="ba__lab ba__lab--a">Depois</div>
+    <div class="chain chain--a">
+      <div class="chain__node"><div class="chain__box is-out">browser</div><div class="chain__mem">&nbsp;</div></div>
+      <div class="chain__link"><svg class="icon"><use href="#i-arrow"/></svg></div>
+      <div class="chain__node"><div class="chain__box">nginx</div><div class="chain__mem">+10<small>sem guardar o corpo</small></div></div>
+      <div class="chain__link"><svg class="icon"><use href="#i-arrow"/></svg></div>
+      <div class="chain__node"><div class="chain__box">api_gateway</div><div class="chain__mem">+43<small>JWT antes; proxy em fluxo</small></div></div>
+      <div class="chain__link"><svg class="icon"><use href="#i-arrow"/></svg></div>
+      <div class="chain__node"><div class="chain__box">projects</div><div class="chain__mem">+43<small>conta e SHA-256 em fluxo</small></div></div>
+      <div class="chain__link"><svg class="icon"><use href="#i-arrow"/></svg></div>
+      <div class="chain__node"><div class="chain__box">img_storage</div><div class="chain__mem">+55<small>S3 em partes de 5 MiB</small></div></div>
+    </div>
+  </div>
+  <div class="dafacts">
+    <div class="card"><div class="label">Decisão</div><p><b>Pipes and filters em fluxo</b> (TAT-01, TAT-02); o vídeo é validado com o <span class="id">ffprobe</span> sobre o objeto guardado e apagado se for recusado. Classe A: invisível para o utilizador. 6 passos + afinação do V8 e da glibc.</p></div>
+    <div class="card"><div class="label">Alternativas rejeitadas</div><ul class="bul"><li>Ficheiro em disco até validar: a cache de páginas conta na memória</li><li>Envio direto ao S3 (TAT-03): muda a API</li></ul></div>
+    <div class="card"><div class="label">Risco controlado</div><ul class="bul"><li>Órfãos ao recusar → <span class="id">C1.7</span></li><li>Mesmas decisões de validação → <span class="id">C1.5</span></li></ul></div>
+  </div>
+  <p class="src">Acréscimo de memória com 500 MiB (MiB): medição inicial e medição final do RNF-F2-01. ADR-01 · ramo fase2/rnf-f2-01-carregamento · main 126c319</p>
+  <aside class="notes">
+    <p><b>~60 s.</b> A DA-1 não muda a arquitetura: os mesmos serviços, pela mesma ordem, e o img_storage continua a ser a única porta para o S3. Muda a forma como os bytes passam — em blocos, de ponta a ponta.</p>
+    <p>Fizemo-lo serviço a serviço, com uma medição em cada passo: primeiro o img_storage, depois o projects, o gateway — que passou a verificar o JWT antes de ler o corpo — e o nginx. No fim, uma afinação do V8 e da glibc, porque os serviços Node ainda subiam 80 a 100 MiB.</p>
+    <p>O custo: um ficheiro recusado é guardado e logo apagado. Controlámo-lo com o C1.7, que até corrigiu um órfão que a base já deixava com o 409.</p>
+  </aside>
+</section>
+
+<!-- ======================================================= 7 · DA-2 -->
+<section class="slide" data-part="dec" data-title="DA-2 · Estado da execução no servidor">
+  <div class="kicker"><span class="kicker__num">03</span>Decisões<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>3 min</span></div>
+  <h2 class="title"><span class="id" style="font-size:.84em">DA-2</span> · O orquestrador passa a ser dono do estado;<br>o browser reconstrói-o em qualquer página.</h2>
+  <div class="state">
+    <div class="state__panel state__panel--b">
+      <h3><svg class="icon" style="color:var(--fail)"><use href="#i-alert"/></svg>Antes</h3>
+      <div class="state__flow"><span class="pill">video_tool</span><svg class="icon"><use href="#i-arrow"/></svg><span class="pill">ws_queue</span><svg class="icon"><use href="#i-arrow"/></svg><span class="pill">ws_gateway</span><svg class="icon"><use href="#i-arrow"/></svg><span class="pill pill--bad">browser: useState</span></div>
+      <ul class="bul" style="margin-top:16px"><li>O orquestrador só vê o resultado final</li><li>Recarregar apaga o progresso e o <b>Cancelar</b></li><li>Um painel <span class="id">z-50</span> bloqueia a página</li></ul>
+    </div>
+    <div class="state__panel state__panel--a">
+      <h3><svg class="icon" style="color:var(--ok)"><use href="#i-check-circle"/></svg>Depois</h3>
+      <div class="state__flow"><span class="pill">video_tool</span><svg class="icon"><use href="#i-arrow"/></svg><span class="pill pill--new">projects · runs</span><svg class="icon"><use href="#i-arrow"/></svg><span class="pill pill--new">run-status</span><svg class="icon"><use href="#i-arrow"/></svg><span class="pill pill--new">RunsProvider</span></div>
+      <ul class="bul bul--ok" style="margin-top:16px"><li>Estado na coleção <span class="id">runs</span> (MongoDB), progresso em fotogramas</li><li><span class="id">GET …/process/status</span> e <span class="id">…/process/active</span> ao carregar</li><li>Faixa com <b>Cancel</b> no projeto; painel nas outras páginas</li></ul>
+    </div>
+  </div>
+  <div class="dafacts">
+    <div class="card"><div class="label">Decisão</div><p><b>Registo de estado no orquestrador + publish-subscribe</b> (TAT-05 a TAT-07). Classe B: a interface muda só para melhorar a operabilidade. 5 passos, do servidor para a interface.</p></div>
+    <div class="card"><div class="label">Alternativas rejeitadas</div><ul class="bul"><li>Estado no <span class="id">ws_gateway</span>: perde-se num reinício</li><li>Só no browser: falha noutra sessão</li></ul></div>
+    <div class="card"><div class="label">Desvio encontrado ao implementar</div><ul class="bul"><li>A sala <span class="id">project:&lt;id&gt;</span> aceita qualquer socket (<span class="id">EV-15</span>): o estado vai só para o dono e para quem iniciou</li></ul></div>
+  </div>
+  <aside class="notes">
+    <p><b>~70 s.</b> Na base, o progresso do vídeo ia do worker para o browser sem passar pelo orquestrador, e o estado vivia num useState da página. Por isso recarregar perdia tudo.</p>
+    <p>A DA-2 põe o estado onde já estava o ciclo de vida da execução: no orquestrador, numa coleção runs. O worker reporta-lhe o progresso, o orquestrador publica run-status, e o browser pede o estado ao carregar e ouve os eventos.</p>
+    <p>Um desvio importante: o plano mandava o evento para a sala do projeto, mas ao implementar vimos que essa sala não verifica o acesso. O estado vai só para o dono e para quem iniciou. Também tivemos de impedir que um relatório atrasado reabrisse uma execução.</p>
+  </aside>
+</section>
+
+<!-- ======================================================= 8 · RESULTADOS RNF-F2-01 -->
+<section class="slide" data-part="res" data-title="Resultados · RNF-F2-01">
+  <div class="kicker"><span class="kicker__num">04</span>Resultados<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>4 min</span></div>
+  <h2 class="title"><span class="id" style="font-size:.84em">RNF-F2-01</span> · A memória deixa de acompanhar<br>o tamanho do ficheiro: alvo atingido.</h2>
+  <div class="cols cols--2-1" style="grid-template-columns:1.3fr 1fr;margin-top:26px">
+    <div class="card">
+      <div class="label">Maior acréscimo de memória com 500 MiB (MiB)</div>
+      <div class="bars">
+        <div class="bars__row"><span class="bars__name">api_gateway</span><div class="bars__pair"><div class="bar bar--b" style="--w:100%"><i style="width:100%"></i><b>2001</b></div><div class="bar bar--a" style="--w:2.1%"><i style="width:2.1%"></i><b>42,6</b></div></div></div>
+        <div class="bars__row"><span class="bars__name">projects</span><div class="bars__pair"><div class="bar bar--b" style="--w:52.2%"><i style="width:52.2%"></i><b style="right:auto;left:calc(52.2% - 62px)">1044</b></div><div class="bar bar--a" style="--w:2.1%"><i style="width:2.1%"></i><b>42,7</b></div></div></div>
+        <div class="bars__row"><span class="bars__name">img_storage</span><div class="bars__pair"><div class="bar bar--b" style="--w:50.8%"><i style="width:50.8%"></i><b style="right:auto;left:calc(50.8% - 62px)">1016</b></div><div class="bar bar--a" style="--w:2.8%"><i style="width:2.8%"></i><b>55,3</b></div></div></div>
+        <div class="bars__row"><span class="bars__name">nginx</span><div class="bars__pair"><div class="bar bar--b" style="--w:0.9%"><i style="width:0.9%"></i><b style="right:auto;left:calc(0.9% + 10px);color:var(--fail-ink)">18,8</b></div><div class="bar bar--a" style="--w:0.5%"><i style="width:0.5%"></i><b>10,2</b></div></div></div>
+      </div>
+      <div class="bars__axis"><span><i style="background:#E0664F"></i>Base (43a2e08)</span><span><i style="background:var(--ok)"></i>Final, no seu ramo</span><span>Alvo: ≤ 64 MiB por serviço</span></div>
+    </div>
+    <div class="kpis kpis--2" style="align-content:start">
+      <div class="kpi kpi--dark" style="grid-column:1 / -1"><div class="kpi__lab">M1.1 · 1000 MiB · serviço pior</div><div class="kpi__ba"><span class="kpi__from" style="color:#FF9C8F">Docker cai</span><span class="kpi__to">56,3<small>MiB</small></span></div><div class="kpi__note">Alvo ≤ 64 · mínimo ≤ 128 · 62,4 MiB com os dois integrados</div></div>
+      <div class="kpi"><div class="kpi__lab">M1.2 · com 512 MiB</div><div class="kpi__ba"><span class="kpi__from">100</span><span class="kpi__to">1000<small>MiB</small></span></div><div class="kpi__tgt"><svg class="icon"><use href="#i-check"/></svg>Alvo</div></div>
+      <div class="kpi"><div class="kpi__lab">C1.1 · aceitar 500 MiB</div><div class="kpi__ba"><span class="kpi__from">8,96 s</span><span class="kpi__to">0,84<small>s</small></span></div><div class="kpi__tgt"><svg class="icon"><use href="#i-check"/></svg>Melhorou</div></div>
+      <div class="kpi" style="grid-column:1 / -1"><div class="kpi__lab">C1.3 · 500 MiB sem JWT</div><div class="kpi__ba"><span class="kpi__from">+1006 MiB</span><span class="kpi__to">+24<small>MiB</small></span></div><div class="kpi__note">O JWT passou a ser verificado antes de ler o corpo · C1.4 a C1.7 cumprem</div></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p><b>~60 s.</b> Com 500 MiB, o api_gateway passou de 2001 MiB para 43 — 36 vezes menos. Com 1000 MiB, que na base deitava abaixo o Docker, o serviço pior fica nos 56 MiB, abaixo do alvo de 64. A partir de 100 MiB o valor praticamente não muda com o tamanho do ficheiro, que é o que o requisito pede.</p>
+    <p>Com cada contentor limitado a 512 MiB, o maior ficheiro aceite passou de 100 MiB para 1000. E os controlos melhoraram em vez de piorar: aceitar 500 MiB passou de 9 s para menos de 1 s, porque os serviços trabalham em paralelo, e o envio sem JWT deixou de ocupar memória.</p>
+  </aside>
+</section>
+
+<!-- ======================================================= 9 · RESULTADOS RNF-F2-02 -->
+<section class="slide" data-part="res" data-title="Resultados · RNF-F2-02">
+  <div class="kicker"><span class="kicker__num">04</span>Resultados<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>4 min</span></div>
+  <h2 class="title"><span class="id" style="font-size:.84em">RNF-F2-02</span> · O utilizador continua a trabalhar<br>e não perde a execução: alvo atingido nas três medidas.</h2>
+  <div class="kpis kpis--4" style="margin-top:34px">
+    <div class="kpi"><div class="kpi__lab">M2.1 · ações durante uma execução</div><div class="kpi__ba"><span class="kpi__from">0%</span><span class="kpi__to">100<small>%</small></span></div><div class="kpi__tgt"><svg class="icon"><use href="#i-check"/></svg>Alvo 100%</div><div class="kpi__note">10 ações em 3 execuções; 0,1 a 0,3 s dentro de P</div></div>
+    <div class="kpi"><div class="kpi__lab">M2.2 R · repor ao recarregar</div><div class="kpi__ba"><span class="kpi__from">não recupera</span><span class="kpi__to">0,63<small>s</small></span></div><div class="kpi__tgt"><svg class="icon"><use href="#i-check"/></svg>Alvo ≤ 2 s</div><div class="kpi__note">Pior de 6; o valor nunca recuou</div></div>
+    <div class="kpi"><div class="kpi__lab">M2.2 F · avisar o fim noutra página</div><div class="kpi__ba"><span class="kpi__from">não avisa</span><span class="kpi__to">0,11<small>s</small></span></div><div class="kpi__tgt"><svg class="icon"><use href="#i-check"/></svg>Alvo ≤ 2 s</div><div class="kpi__note">Pior de 3</div></div>
+    <div class="kpi"><div class="kpi__lab">M2.3 · cancelar depois de perder a página</div><div class="kpi__ba"><span class="kpi__from">0/10</span><span class="kpi__to">12/12</span></div><div class="kpi__tgt"><svg class="icon"><use href="#i-check"/></svg>Alvo 10/10</div><div class="kpi__note">A recarregar e noutra sessão; Cancel em 0,27–1,02 s</div></div>
+  </div>
+  <div class="cols cols--2" style="margin-top:22px">
+    <div class="card"><div class="card__top"><span class="id">C2.2</span><span class="tag tag--ok">Passa a cumprir</span></div><h3>Maior intervalo sem o progresso mudar: 16,9 s → 2,2 s</h3><p>O progresso mudou 356 a 375 vezes por execução, contra 25 na base. A base nem cumpria o limite de 5 s do REQ-VID-STATUS-003.</p></div>
+    <div class="card"><div class="card__top"><span class="id">C2.3</span><span class="tag tag--ok">Cumpre</span></div><h3>O estado não chega a terceiros</h3><p>Outro utilizador e um pedido sem JWT recebem 401; o dono recebe 200. Os resultados ficam iguais com execuções sobrepostas e com uma ferramenta acrescentada a meio (C2.4, C2.5).</p></div>
+  </div>
+  <aside class="notes">
+    <p><b>~50 s.</b> Na base nenhuma das dez ações era possível sem perder a execução; agora são todas, nas três execuções. Recarregar repõe o estado em menos de 0,7 s, e o fim é avisado noutra página em 0,1 s. O cancelamento funcionou em todas as tentativas, a recarregar e noutra sessão.</p>
+    <p>Um efeito colateral positivo: o progresso, que na base ficava até 17 s parado, muda agora a cada 2 s.</p>
+  </aside>
+</section>
+
+<!-- ======================================================= 10 · OS DOIS JUNTOS -->
+<section class="slide" data-part="res" data-title="Os dois juntos · A-B-A">
+  <div class="kicker"><span class="kicker__num">04</span>Resultados<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>4 min</span></div>
+  <h2 class="title">Integrados, nenhum piora o outro — e o tempo de<br>processamento é igual ao da base na mesma sessão.</h2>
+  <div class="cols cols--1-2" style="grid-template-columns:1fr 1.25fr;margin-top:24px">
+    <table class="res">
+      <thead><tr><th>Medida</th><th>Isolado</th><th>Integrado</th></tr></thead>
+      <tbody>
+        <tr><td>M1.1 · 1000 MiB</td><td>56,3 MiB</td><td class="good">62,4 MiB</td></tr>
+        <tr><td>M1.2</td><td>1000 MiB</td><td class="good">1000 MiB</td></tr>
+        <tr><td>M2.1</td><td>100%</td><td class="good">100%</td></tr>
+        <tr><td>M2.2 R / F</td><td>0,63 / 0,11 s</td><td class="good">0,43 / 0,12 s</td></tr>
+        <tr><td>M2.3</td><td>12/12</td><td class="good">10/10</td></tr>
+        <tr><td>12 controlos</td><td>Cumprem</td><td class="good">Cumprem</td></tr>
+        <tr><td>Regressão</td><td>Igual à base</td><td class="good">Igual à base</td></tr>
+      </tbody>
+    </table>
+    <div class="card" style="padding:18px 22px">
+      <div class="label">C2.1 · duração de P em blocos A-B-A, 19 nov. (s; eixo a partir de 250)</div>
+      <svg class="aba-svg" viewBox="0 0 640 330" role="img" aria-label="Nove execuções em três blocos; a mediana de B, 282,5 s, fica entre as de A, 284,5 e 287,6 s; o limite é 314,7 s">
+        <g font-family="Cascadia Mono, Consolas, monospace" font-size="12" fill="#6A707B">
+          <text x="44" y="284" text-anchor="end">250</text><text x="44" y="219" text-anchor="end">275</text><text x="44" y="154" text-anchor="end">300</text><text x="44" y="89" text-anchor="end">325</text><text x="44" y="24" text-anchor="end">350</text>
+        </g>
+        <g stroke="#EFEDE8"><line x1="52" y1="215" x2="630" y2="215"/><line x1="52" y1="150" x2="630" y2="150"/><line x1="52" y1="85" x2="630" y2="85"/><line x1="52" y1="20" x2="630" y2="20"/></g>
+        <line x1="52" y1="280" x2="630" y2="280" stroke="#CDD1D8"/>
+        <g fill="#5B6472"><rect x="80" y="196.5" width="30" height="83.5" rx="3"/><rect x="118" y="177.3" width="30" height="102.7" rx="3"/><rect x="156" y="190.3" width="30" height="89.7" rx="3"/></g>
+        <g fill="#C2611A"><rect x="262" y="195.5" width="30" height="84.5" rx="3"/><rect x="300" y="202.8" width="30" height="77.2" rx="3"/><rect x="338" y="30.1" width="30" height="249.9" rx="3"/></g>
+        <g fill="#5B6472"><rect x="444" y="182.2" width="30" height="97.8" rx="3"/><rect x="482" y="160.9" width="30" height="119.1" rx="3"/><rect x="520" y="187.4" width="30" height="92.6" rx="3"/></g>
+        <line x1="52" y1="111.8" x2="630" y2="111.8" stroke="#B4261D" stroke-width="2" stroke-dasharray="7 5"/>
+        <text x="628" y="104" text-anchor="end" font-size="13" fill="#8A1C15" font-weight="700">limite: base + 10% = 314,7 s</text>
+        <g stroke="#15171C" stroke-width="3"><line x1="74" y1="190.3" x2="192" y2="190.3"/><line x1="256" y1="195.5" x2="374" y2="195.5"/><line x1="438" y1="182.2" x2="556" y2="182.2"/></g>
+        <text x="376" y="44" font-size="12.5" fill="#97460D">346,1 s: o tempo a mais</text><text x="376" y="60" font-size="12.5" fill="#97460D">esteve todo no worker</text>
+        <g font-size="13" text-anchor="middle" fill="#3A3F48" font-weight="600"><text x="133" y="302">A · base</text><text x="315" y="302">B · integrado</text><text x="497" y="302">A · base</text></g>
+        <g font-size="12.5" text-anchor="middle" fill="#6A707B"><text x="133" y="320">mediana 284,5</text><text x="315" y="320" fill="#97460D" font-weight="700">mediana 282,5</text><text x="497" y="320">mediana 287,6</text></g>
+      </svg>
+    </div>
+  </div>
+  <aside class="notes">
+    <p><b>~60 s.</b> Medimos cada requisito no seu ramo e depois os dois integrados: as medidas principais mantêm o alvo, os controlos cumprem e a regressão dá os mesmos resultados.</p>
+    <p>O tempo de processamento era o único controlo perto do limite, e a máquina variou até 40% entre sessões. Por isso comparámos com a base na mesma sessão, em três blocos: base, integrado, base. A mediana do integrado ficou entre as duas da base. Houve uma execução lenta, mas o tempo a mais estava todo no worker, e fora dele foram 2,2 s, como nas outras.</p>
+  </aside>
+</section>
+
+<!-- ======================================================= 11 · REPRODUÇÕES E LIMITES -->
+<section class="slide" data-part="res" data-title="Reproduções e limites">
+  <div class="kicker"><span class="kicker__num">04</span>Resultados<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>4 min</span></div>
+  <h2 class="title">Repetimos as medições noutras duas máquinas:<br>a melhoria repete-se, a margem da M1.1 não.</h2>
+  <table class="res" style="margin-top:26px">
+    <thead><tr><th></th><th>Máquina de medição · Windows, i5-12450H</th><th>Pedro · Linux, i5-11300H</th><th>Miguel · macOS, M1 Pro (ARM)</th></tr></thead>
+    <tbody>
+      <tr><td>M1.1 na base, 500 MiB</td><td class="bad">2001 MiB</td><td class="bad">~1700 MiB</td><td class="bad">1961 MiB</td></tr>
+      <tr><td>M1.1 no main, serviço pior</td><td class="good">55,3 MiB (img_storage)</td><td class="warn">87 MiB (projects)</td><td class="bad">182 MiB (projects)</td></tr>
+      <tr><td>M2.2 · repor ao recarregar</td><td class="good">0,63 s</td><td class="good">0,43 s</td><td class="good">0,13 s</td></tr>
+      <tr><td>M2.3 · cancelar</td><td class="good">12/12</td><td class="good">2/2</td><td class="good">2/2</td></tr>
+      <tr><td>Regressão ponta a ponta</td><td class="good">18/18</td><td class="good">18/18</td><td class="warn">16/18 — só o SHA-256 de PNG</td></tr>
+    </tbody>
+  </table>
+  <div class="cols cols--2" style="margin-top:20px">
+    <div class="verdict verdict--warn" style="margin-top:0"><svg class="icon"><use href="#i-alert"/></svg><div><b>O alvo da M1.1 vale para a máquina de medição.</b> Noutras, o <span class="id">projects</span> ficou entre o alvo e o mínimo, ou acima. Hipótese <span class="id">H-05</span>: memória que o V8 e a glibc demoram a devolver, dependente da plataforma.</div></div>
+    <div class="card card--muted" style="padding:16px 20px"><div class="label">Outras ameaças à validade</div><ul class="bul" style="margin-top:8px"><li>Tempos só comparáveis na mesma sessão (A-B-A)</li><li>Quatro falhas do instrumento registadas, não descartadas</li><li>Sem envios em simultâneo nem utilizadores reais</li></ul></div>
+  </div>
+  <aside class="notes">
+    <p><b>~50 s.</b> As diretrizes pedem medições que outra pessoa consiga repetir. O Pedro e o Miguel correram uma reprodução curta nas suas máquinas.</p>
+    <p>A melhoria repete-se: na base o gateway sobe quase 2 GB, no main nenhum serviço passa de 182 MiB, e o estado e o cancelamento funcionam. Mas a margem da M1.1 não: o projects ficou acima do alvo nas duas máquinas, e no Mac acima do mínimo. Não escondemos isto: o relatório diz que o alvo foi atingido na máquina de medição, e a causa provável — a memória que o V8 e a glibc demoram a devolver — fica como hipótese, porque só medimos 500 MiB nessas máquinas.</p>
+    <p>As diferenças de SHA-256 no Mac são só em imagens PNG, provavelmente pela compressão em ARM; no Linux do Pedro, o mesmo código deu 18 em 18.</p>
+  </aside>
+</section>
+
+<!-- ======================================================= 12 · PRESERVAÇÃO FUNCIONAL -->
+<section class="slide" data-part="res" data-title="Preservação funcional">
+  <div class="kicker"><span class="kicker__num">04</span>Resultados<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>4 min</span></div>
+  <h2 class="title">A funcionalidade existente mantém-se: mesmos testes,<br>mesmas impressões da base, em cada passo e no fim.</h2>
+  <div class="suites">
+    <div class="suite"><h3>Worker de vídeo</h3><p>pytest, já existente</p><div class="suite__n"><b>75/75</b><span>base 74/74</span></div><div class="suite__tag"><span class="tag">+1 cadência do progresso</span></div></div>
+    <div class="suite"><h3>Orquestrador</h3><p>node --test, já existente</p><div class="suite__n"><b>19/19</b><span>base 8/8</span></div><div class="suite__tag"><span class="tag">+5 carregamento · +6 progresso</span></div></div>
+    <div class="suite"><h3>Ponta a ponta</h3><p>nova: nginx, API e WebSocket</p><div class="suite__n"><b>18/18</b><span>T01–T18</span></div><div class="suite__tag"><span class="tag tag--ok">mesmas impressões da base</span></div></div>
+    <div class="suite"><h3>Interface</h3><p>nova: Playwright</p><div class="suite__n"><b>3/3</b><span>U01–U03</span></div><div class="suite__tag"><span class="tag">importar · aplicar · cancelar</span></div></div>
+  </div>
+  <div class="fp">
+    <div class="card"><div class="label">Porquê suites novas</div><p>Os testes da base eram unitários e não passavam pelo gateway, pelo armazenamento nem pela interface — precisamente o que foi alterado. As novas cobrem carregamento, 9 ferramentas de imagem, efeitos de vídeo, corte e velocidade, legendagem real, extração de fotogramas, projetos mistos, cancelamento, quotas e acesso.</p></div>
+    <div class="card"><div class="label">Impressão de cada resultado</div><p>SHA-256 dos ficheiros, duração, resolução, codec, som, fotogramas e mensagens de recusa. Uma versão só preserva a funcionalidade se der <b>as mesmas impressões da base</b>, e não só os mesmos testes passados. Duas corridas na base deram impressões iguais.</p></div>
+  </div>
+  <aside class="notes">
+    <p><b>~40 s.</b> A preservação funcional verificou-se com uma suite que correu na base antes de qualquer alteração, em cada passo dos dois ADR e no fim. Os testes que o repositório tinha não cobriam as partes alteradas, por isso escrevemos 18 testes ponta a ponta e 3 de interface.</p>
+    <p>O mais importante é a impressão: comparamos o SHA-256 e os metadados de cada resultado com os da base, não só se o teste passa.</p>
+  </aside>
+</section>
+
+<!-- ======================================================= 13 · DEMONSTRAÇÃO -->
+<section class="slide" data-part="demo" data-title="Demonstração">
+  <div class="kicker"><span class="kicker__num">05</span>Demonstração<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>3 min</span></div>
+  <h2 class="title">Demonstração na versão entregue (<span class="id" style="font-size:.84em">main</span>)</h2>
+  <div class="demo" style="grid-template-columns:860px 1fr">
+    <ol class="script">
+      <li><time>0:00</time><div><b>Aplicar o pipeline ao projeto P</b> (vídeo de 330 s e duas imagens): aparece a faixa com o progresso e o <b>Cancel</b>; o resto da página funciona.<span class="ref"><span>TAT-06</span><span>M2.1</span></span></div></li>
+      <li><time>0:30</time><div><b>Ir para outra página</b> (lista de projetos, conta): o painel no canto mostra a execução.<span class="ref"><span>M2.1</span></span></div></li>
+      <li><time>1:00</time><div><b>Voltar a P e recarregar a página</b>: o progresso volta, no mesmo ponto.<span class="ref"><span>TAT-05</span><span>M2.2 R</span></span></div></li>
+      <li><time>1:30</time><div><b>Cancelar</b> a partir do estado reposto: o projeto volta a ficar editável.<span class="ref"><span>TAT-07</span><span>M2.3</span></span></div></li>
+      <li><time>2:00</time><div><b>Carregar um vídeo de 500 MiB</b> com o <span class="id">docker stats</span> ao lado: a memória do gateway, do projects e do img_storage fica estável.<span class="ref"><span>DA-1</span><span>M1.1</span></span></div></li>
+      <li class="opt"><time>2:40</time><div>Se houver tempo: deixar uma execução acabar noutra página e ver o aviso de fim.<span class="ref"><span>M2.2 F</span></span></div></li>
+    </ol>
+    <div>
+      <div class="prep"><div class="label">Preparação, antes da defesa</div>
+        <ul>
+          <li><svg class="icon"><use href="#i-check"/></svg><span>main com <span class="id">docker compose up -d</span> e serviços prontos</span></li>
+          <li><svg class="icon"><use href="#i-check"/></svg><span>Conta premium com sessão iniciada</span></li>
+          <li><svg class="icon"><use href="#i-check"/></svg><span>Projeto P já criado, com o pipeline</span></li>
+          <li><svg class="icon"><use href="#i-check"/></svg><span>Ficheiro de 500 MiB gerado (<span class="id">gerar-dados.mjs</span>)</span></li>
+          <li><svg class="icon"><use href="#i-check"/></svg><span>Terminal com <span class="id">docker stats</span> aberto</span></li>
+          <li><svg class="icon"><use href="#i-check"/></svg><span>Portátil ligado à corrente</span></li>
+        </ul>
+      </div>
+      <div class="card card--muted" style="margin-top:16px;padding:16px 20px"><div class="label">Plano B</div><p style="font-size:16.5px">Os <i>scripts</i> de medição gravam um vídeo de cada execução no browser (<span class="id">medicoes/final/*/videos/</span>, só na máquina de medição). Mostrar a gravação de uma M2.2 e de uma M2.3 se a demonstração ao vivo falhar.</p></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p><b>~3 min.</b> Carregar em B (ecrã preto) para mudar para o browser.</p>
+    <p>Mostrar primeiro o RNF-F2-02, porque é visível: aplicar, sair, recarregar, cancelar. Depois o RNF-F2-01 com o docker stats ao lado: carregar 500 MiB e ver que a memória não sobe com o ficheiro.</p>
+    <p>Se algo falhar, não insistir: mostrar a gravação do Playwright.</p>
+  </aside>
+</section>
+
+<!-- ======================================================= 14 · IA -->
+<section class="slide" data-part="fim" data-title="Uso de IA">
+  <div class="kicker"><span class="kicker__num">06</span>Fim<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>1 min</span></div>
+  <h2 class="title">Claude Code em todas as etapas —<br>e tudo verificado por algo independente da IA.</h2>
+  <div class="ai">
+    <div class="ai__step"><div class="label">Método</div><h3>Um pedido por etapa, um ficheiro por resultado</h3><p>Diagnóstico e especificação com o Fable 5.2; o resto com o Opus 5.5. A equipa reviu cada etapa e cada passo dos ADR.</p></div>
+    <div class="ai__step"><div class="label">No código</div><h3>Um commit por passo, com testes</h3><p>Comentários que remetem para o ADR, <span class="id">AGENTS.md</span> atualizado e <span class="id">ia.md</span> com o que foi aceite e rejeitado.</p></div>
+    <div class="ai__step"><div class="label">Nas medições</div><h3>Nada conta sem dados em bruto</h3><p>Cada resultado guarda o commit; as ocorrências ficaram registadas com os registos que as explicam.</p></div>
+  </div>
+  <div class="caught">
+    <div class="caught__row caught__head"><div>Erro da IA</div><div>Apanhado por</div></div>
+    <div class="caught__row"><div>Previsão errada do passo 2 do ADR-01</div><div>A medição desse passo</div></div>
+    <div class="caught__row"><div>Mandar o estado para uma sala sem controlo de acesso</div><div>A leitura do código do <span class="id">ws_gateway</span></div></div>
+    <div class="caught__row"><div>Atribuir ao refactoring o aumento do C2.1</div><div>A comparação A-B-A na mesma sessão</div></div>
+    <div class="caught__row"><div>Generalizar a partir de um só tamanho de ficheiro</div><div>A revisão dos dados em bruto da reprodução</div></div>
+  </div>
+  <aside class="notes">
+    <p><b>~30 s.</b> Usámos o Claude Code em todas as etapas, com um pedido escrito por etapa e o resultado em ficheiros que a equipa reviu.</p>
+    <p>A IA foi útil no que é extenso e verificável, e menos fiável nas previsões. Cada erro foi apanhado por algo independente dela: uma medição, a leitura do código, uma comparação na mesma sessão.</p>
+  </aside>
+</section>
+
+<!-- ======================================================= 15 · FECHO -->
+<section class="slide s-end" data-part="fecho" data-title="Fecho">
+  <div class="kicker"><span class="kicker__num">06</span>Fim<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>1 min</span></div>
+  <h2 class="title">Os dois requisitos cumpridos, com o alvo atingido,<br>sem funcionalidades novas e sem regressões.</h2>
+  <div class="stats">
+    <div class="stat stat--accent"><strong>36<small>×</small></strong><span>menos memória com 500 MiB (2001 → 55 MiB)</span></div>
+    <div class="stat"><strong>1000<small>MiB</small></strong><span>maior ficheiro com 512 MiB por contentor (era 100)</span></div>
+    <div class="stat"><strong>100<small>%</small></strong><span>das ações possíveis durante uma execução (era 0%)</span></div>
+    <div class="stat"><strong>18/18</strong><span>testes ponta a ponta com as impressões da base</span></div>
+  </div>
+  <div class="next">
+    <div class="next__title"><h3>O que fica</h3><p>Limitações e passos seguintes</p></div>
+    <div class="next__item"><b>Margem da M1.1 por plataforma</b><span>Medir os quatro tamanhos nas outras máquinas (H-05) antes de afinar por plataforma.</span></div>
+    <div class="next__item"><b>Capacidade do vídeo</b><span>Réplicas do worker e fila própria para a legendagem (QS-03, ALT-1).</span></div>
+    <div class="next__item"><b>Segurança</b><span>Verificar o acesso na sala <span class="id">project:&lt;id&gt;</span> (EV-15), que a DA-2 contornou.</span></div>
+  </div>
+  <div class="thanks"><h3>Obrigado<span>.</span></h3><p>Relatório, ADR, medições e código<br>github.com/davidserreira/picturas-27-extension · main e fase2/integracao</p></div>
+  <aside class="notes">
+    <p><b>~30 s.</b> Resumindo: os dois requisitos cumpridos com o alvo atingido, medidos com o mesmo método antes e depois, sem funcionalidades novas e com a regressão igual à base.</p>
+    <p>Fica a margem da M1.1 noutras máquinas, a capacidade do vídeo e a sala sem verificação de acesso. Obrigado — estamos disponíveis para perguntas.</p>
+  </aside>
+</section>
+
+<!-- ======================================================= APÊNDICE -->
+<section class="slide s-appx" data-part="apendice" data-title="A1 · Ramos e commits">
+  <div class="kicker"><span class="kicker__num">A1</span>Apêndice</div>
+  <h2 class="title">Ramos e commits</h2>
+  <table class="trace-table">
+    <thead><tr><th>Ramo</th><th>Conteúdo</th><th>Commits</th></tr></thead>
+    <tbody>
+      <tr><td>main</td><td>A entrega: a base com o código final de cada requisito, os ADR, o ia.md e o relatório</td><td class="ids">43a2e08 · 126c319 · d959150</td></tr>
+      <tr><td>fase2/rnf-f2-01-carregamento</td><td>DA-1 sozinha: passos 0 a 5, afinação 5b, documentação e medição final</td><td class="ids">47c303b · 93dd800 · d3546b2 · 847e0dc · 0130073 · a394a9a · 78a035a · 8529695</td></tr>
+      <tr><td>fase2/rnf-f2-02-segundo-plano-medido</td><td>DA-2 sozinha: passos 0 a 5 e medição final</td><td class="ids">f1714dc · 2982528 · df7e1dc · 54386cc · 2abf795 · 77c9bf7</td></tr>
+      <tr><td>fase2/integracao</td><td>Os dois juntos, com o histórico completo: medições, regressão, análise, reproduções e relatório</td><td class="ids">5c219ae · eb8a37d · 8acb075</td></tr>
+    </tbody>
+  </table>
+  <p class="appx-note"><svg class="icon"><use href="#i-check"/></svg>O código do main é igual, byte a byte, ao medido: 7740230 (RNF-F2-01 isolado) e eb8a37d (os dois integrados).</p>
+  <aside class="notes"><p>Commits sem linhas de coautoria da ferramenta, por decisão da equipa; o uso de IA está no ia.md, nos comentários e no AGENTS.md.</p></aside>
+</section>
+
+<section class="slide s-appx" data-part="apendice" data-title="A2 · Controlos">
+  <div class="kicker"><span class="kicker__num">A2</span>Apêndice</div>
+  <h2 class="title">Controlos dos efeitos colaterais: base → integrado</h2>
+  <table class="trace-table">
+    <thead><tr><th>Controlo</th><th>Base</th><th>Integrado</th><th>Limite</th></tr></thead>
+    <tbody>
+      <tr><td>C1.1 · aceitação de 500 MiB</td><td>8,96 s</td><td>0,97 s</td><td>≤ base + 10%</td></tr>
+      <tr><td>C1.2 · envio completo de 1000 MiB</td><td>Não mensurável (500 MiB: 10,22 s)</td><td>7,67 s (500 MiB: 6,40 s)</td><td>≤ base + 10%</td></tr>
+      <tr><td>C1.3 · 500 MiB sem JWT</td><td>401; +1006 MiB</td><td>401; +19,6 MiB</td><td>401 e ≤ 128 MiB</td></tr>
+      <tr><td>C1.4 a C1.6 · SHA-256, validação, temporários</td><td>Iguais; 7 decisões; nenhum</td><td>Iguais até 1000 MiB; as mesmas 7; nenhum</td><td>Iguais; zero</td></tr>
+      <tr><td>C1.7 · objetos órfãos</td><td>O 409 deixa um órfão (EV-16)</td><td>Nenhum</td><td>Sem órfãos</td></tr>
+      <tr><td>C2.1 · duração de P</td><td>A: 284,5 e 287,6 s</td><td>B: 282,5 s (mesma sessão)</td><td>≤ 314,7 s</td></tr>
+      <tr><td>C2.2 · maior intervalo do progresso</td><td>16,9 s</td><td>2,30 s</td><td>≤ 5 s</td></tr>
+      <tr><td>C2.3 · estado a terceiros</td><td>Não aplicável</td><td>401 e 401 (dono: 200)</td><td>Recusado</td></tr>
+      <tr><td>C2.4, C2.5 · sobreposição; ferramenta a meio</td><td>Iguais; 201</td><td>Iguais; 201</td><td>Iguais; sem erro</td></tr>
+    </tbody>
+  </table>
+  <aside class="notes"><p>Todos os controlos cumprem o limite; vários melhoraram (C1.1, C1.3, C1.7, C2.2).</p></aside>
+</section>
+
+<section class="slide s-appx" data-part="apendice" data-title="A3 · Cenários de qualidade">
+  <div class="kicker"><span class="kicker__num">A3</span>Apêndice</div>
+  <h2 class="title">Os dois cenários de qualidade (seis elementos)</h2>
+  <table class="trace-table">
+    <thead><tr><th>Elemento</th><th>QS-01 · utilização de recursos</th><th>QS-02 · operabilidade</th></tr></thead>
+    <tbody>
+      <tr><td>Fragilidade</td><td>Ficheiro inteiro em memória em cada serviço (EV-13)</td><td>Estado só no browser; painel que bloqueia (EV-03, EV-04, EV-14)</td></tr>
+      <tr><td>Fonte</td><td>Utilizador premium</td><td>Utilizador registado ou premium</td></tr>
+      <tr><td>Estímulo</td><td>Carrega um vídeo de 1000 MiB</td><td>Recarrega, muda de página ou abre outra sessão a meio de uma execução</td></tr>
+      <tr><td>Artefacto</td><td>nginx, api_gateway, projects, img_storage</td><td>Frontend, projects, ws_gateway, video_tool</td></tr>
+      <tr><td>Ambiente</td><td>Operação normal, um envio de cada vez</td><td>Execução de um vídeo e duas imagens em curso</td></tr>
+      <tr><td>Resposta</td><td>Aceite e guardado sem alteração; memória sem acompanhar o ficheiro</td><td>Continua a usar, vê o progresso, cancela, é avisado do fim</td></tr>
+      <tr><td>Medida</td><td>MiB por serviço (M1.1); maior ficheiro com 512 MiB (M1.2)</td><td>% de ações (M2.1); segundos (M2.2); cancelamentos (M2.3)</td></tr>
+    </tbody>
+  </table>
+  <aside class="notes"><p>Capítulo 5 do relatório. Os outros três cenários (capacidade, recuperabilidade, autenticidade) ficaram com prioridade 3 a 5.</p></aside>
+</section>
+
+<section class="slide s-appx" data-part="apendice" data-title="A4 · Matriz de efeitos">
+  <div class="kicker"><span class="kicker__num">A4</span>Apêndice</div>
+  <h2 class="title">Matriz de efeitos das decisões, prevista e medida</h2>
+  <table class="trace-table">
+    <thead><tr><th>Atributo</th><th>DA-1 · carregamento em fluxo</th><th>DA-2 · estado no servidor</th></tr></thead>
+    <tbody>
+      <tr><td>Desempenho</td><td>↑ memória e tempo de aceitação (C1.1)</td><td>= duração (C2.1, A-B-A); ↑ frequência do progresso (C2.2)</td></tr>
+      <tr><td>Fiabilidade</td><td>↑ a entrada única deixa de cair; = órfãos controlados (C1.7)</td><td>↑ o estado sobrevive à página, à sessão e ao ws_gateway</td></tr>
+      <tr><td>Segurança</td><td>↑ JWT antes de ler o corpo (C1.3)</td><td>= estado recusado a terceiros (C2.3); sala sem verificação evitada</td></tr>
+      <tr><td>Usabilidade</td><td>= o frontend não muda</td><td>↑ operabilidade (M2.1 a M2.3)</td></tr>
+      <tr><td>Manutenibilidade</td><td>= mesmos serviços; ↓ afinação do V8 e da glibc a manter</td><td>↑ o vídeo volta a seguir a orquestração central</td></tr>
+      <tr><td>Interação</td><td colspan="2">Independentes: só se tocam na ação 7 da M2.1 e em zonas diferentes de projects/routes/projects.js; integradas sem conflitos de código</td></tr>
+    </tbody>
+  </table>
+  <aside class="notes"><p>Capítulo 10.1 do relatório.</p></aside>
+</section>
+
+<section class="slide s-appx" data-part="apendice" data-title="A5 · Método de medição">
+  <div class="kicker"><span class="kicker__num">A5</span>Apêndice</div>
+  <h2 class="title">Método de medição</h2>
+  <div class="cols cols--2">
+    <div class="card"><div class="label">Regras</div><ul class="bul"><li>A mesma máquina, o mesmo Docker, ligada à corrente, sem outras cargas</li><li>Arranque limpo antes de cada série (<span class="id">down -v</span>, <span class="id">up --build</span>)</li><li>Só se mede por fora: API pública e <span class="id">docker stats</span></li><li>Cada resultado guarda o commit; dados gerados por <i>script</i></li><li>Medição curta em cada passo; série final em cada ramo, depois integrada; A-B-A para os tempos</li></ul></div>
+    <div class="card"><div class="label">Ambiente e instrumentos</div><ul class="bul bul--sys"><li>HP Victus 15, i5-12450H, 15,7 GiB; Windows 11; Docker Desktop 29.9.3 (12 CPU, 7,59 GiB)</li><li><span class="id">rnf1/medir-memoria.mjs</span>: M1.1 e C1.x, <span class="id">docker stats</span> a cada segundo</li><li><span class="id">rnf1/medir-limite.mjs</span>: M1.2, override de 512 MiB</li><li><span class="id">rnf2/medir.mjs</span>: M2.x e C2.x com Playwright, gravação de cada execução</li><li><span class="id">regressao/correr.sh</span>: pytest, node, ponta a ponta e interface</li></ul></div>
+  </div>
+  <aside class="notes"><p>Tudo em Docs/fase2/medicoes e Docs/fase2/regressao, no ramo fase2/integracao; reprodução curta em medicoes/reproducao/reproducao.sh.</p></aside>
+</section>
+
+<section class="slide s-appx" data-part="apendice" data-title="A6 · Alternativas de padrão">
+  <div class="kicker"><span class="kicker__num">A6</span>Apêndice</div>
+  <h2 class="title">Alternativas ao padrão do vídeo (Exercício 6)</h2>
+  <table class="trace-table">
+    <thead><tr><th>ID</th><th>Padrão</th><th>Ganha</th><th>Perde</th><th>Padrão global</th></tr></thead>
+    <tbody>
+      <tr><td>ALT-1</td><td>Competing Consumers: réplicas do video_tool</td><td>Capacidade; recuperabilidade</td><td>Memória (uma cópia do Whisper por réplica, H-01)</td><td>Mantém</td></tr>
+      <tr><td>ALT-2</td><td>Pipes and filters distribuído: um serviço por efeito</td><td>Modularidade (sem efeitos duplicados)</td><td>Tempo: codifica entre efeitos (H-02)</td><td>Mantém</td></tr>
+      <tr><td>ALT-3</td><td>Tarefas efémeras com um orquestrador de workflow</td><td>Elasticidade; estado num só sítio</td><td>Segurança: acesso ao motor de contentores (H-03)</td><td>Altera em parte</td></tr>
+      <tr><td>Ref.</td><td>Monólito modular</td><td>Sem rede interna</td><td>Isolamento de falhas; escala por serviço</td><td>Altera</td></tr>
+    </tbody>
+  </table>
+  <p class="appx-note"><svg class="icon"><use href="#i-info"/></svg>Conclusão: manter os dois padrões e corrigir as duas fragilidades dentro deles; a ALT-1 fica como melhoria seguinte.</p>
+  <aside class="notes"><p>Capítulo 4 do relatório. As avaliações das alternativas são hipóteses, porque nenhuma foi implementada nem medida.</p></aside>
+</section>
+
+
+</div>
+</div>
+
+<!-- interface -->
+<div class="hud" id="hud" role="toolbar" aria-label="Controlos da apresentação">
+  <button data-act="prev" title="Anterior (←)" aria-label="Anterior">‹</button>
+  <span class="hud__count" id="hudCount">1 / 1</span>
+  <button data-act="next" title="Seguinte (→)" aria-label="Seguinte">›</button>
+  <span class="hud__timer" id="hudTimer" title="Cronómetro (S inicia ou pausa, R repõe)">00:00</span>
+  <button data-act="presenter" title="Vista do apresentador (P)">Apresentador <kbd>P</kbd></button>
+  <button data-act="notes" title="Notas (N)">Notas <kbd>N</kbd></button>
+  <button data-act="overview" title="Visão geral (O)">Visão geral <kbd>O</kbd></button>
+  <button data-act="fullscreen" title="Ecrã inteiro (F)">⛶</button>
+  <button data-act="help" title="Atalhos (?)">?</button>
+</div>
+<div class="notes-panel" id="notesPanel" hidden><h4 id="notesTitle"></h4><div id="notesBody"></div></div>
+<div class="overlay" id="overview" hidden><div class="overview" id="overviewGrid"></div></div>
+<div class="overlay" id="help" hidden>
+  <div class="help">
+    <h2>Atalhos</h2>
+    <dl>
+      <dt>→ · Espaço · PgDn</dt><dd>Diapositivo seguinte</dd>
+      <dt>← · PgUp</dt><dd>Diapositivo anterior</dd>
+      <dt>Home · End</dt><dd>Primeiro · último</dd>
+      <dt>P</dt><dd>Vista do apresentador numa janela à parte (notas, cronómetro e diapositivo seguinte)</dd>
+      <dt>N</dt><dd>Mostrar ou esconder as notas</dd>
+      <dt>O</dt><dd>Visão geral de todos os diapositivos</dd>
+      <dt>S · R</dt><dd>Iniciar ou pausar · repor o cronómetro (alvo: 15 min)</dd>
+      <dt>B · .</dt><dd>Ecrã preto (útil ao mudar para a demonstração)</dd>
+      <dt>F</dt><dd>Ecrã inteiro</dd>
+      <dt>Ctrl + P</dt><dd>Imprimir ou guardar em PDF, um diapositivo por página</dd>
+      <dt>Esc</dt><dd>Fechar</dd>
+    </dl>
+  </div>
+</div>
+<div class="blackout" id="blackout" hidden></div>
+
+<script>
+(() => {
+  "use strict";
+  const NS = "picturas-defesa-fase2";
+  const W = 1600, H = 900;
+  const viewport = document.getElementById("viewport");
+  const stage = document.getElementById("stage");
+  const slides = Array.from(stage.querySelectorAll(".slide"));
+  const isPresenter = new URLSearchParams(location.search).has("presenter");
+  const PARTS = [
+    { key: "diag", label: "Diagnóstico", min: 2, end: 120 },
+    { key: "req", label: "Requisitos", min: 2, end: 240 },
+    { key: "dec", label: "Decisões", min: 3, end: 420 },
+    { key: "res", label: "Resultados", min: 4, end: 660 },
+    { key: "demo", label: "Demonstração", min: 3, end: 840 },
+    { key: "fim", label: "Fim", min: 1, end: 900 },
+  ];
+  const mainCount = slides.filter((s) => s.dataset.part !== "apendice").length;
+  const pad = (n) => String(n).padStart(2, "0");
+  const partIndex = (s) => ({ capa: 0, diag: 0, req: 1, dec: 2, res: 3, demo: 4, fim: 5, fecho: 5 })[s.dataset.part] ?? -1;
+
+  /* rodapé de cada diapositivo (também aparece na impressão) */
+  slides.forEach((s, k) => {
+    if (s.dataset.part === "capa") return;
+    const foot = document.createElement("div");
+    foot.className = "foot";
+    const brand = '<div class="foot__brand"><b>PictuRAS</b> · Defesa da Fase 2 · Grupo 5</div>';
+    let track;
+    if (s.dataset.part === "apendice") {
+      track = '<div class="foot__appendix">Apêndice · para perguntas</div>';
+    } else {
+      const cur = partIndex(s);
+      track = '<div class="foot__track">' + PARTS.map((p, i) =>
+        `<div class="foot__seg${i < cur ? " is-done" : i === cur ? " is-current" : ""}" style="flex:${p.min}"><span>${p.label} · ${p.min}′</span></div>`
+      ).join("") + "</div>";
+    }
+    const num = s.dataset.part === "apendice" ? s.querySelector(".kicker__num").textContent : `${pad(k + 1)} / ${pad(mainCount)}`;
+    foot.innerHTML = brand + track + `<div class="foot__num">${num}</div>`;
+    s.appendChild(foot);
+  });
+
+  /* tabela de rastreabilidade: cada ID numa peça que não parte */
+  document.querySelectorAll("td.ids").forEach((td) => {
+    td.innerHTML = td.textContent.split(" · ").map((id) => `<span class="id">${id}</span>`).join('<span class="sep">·</span> ');
+  });
+  document.querySelectorAll("td.ok").forEach((td) => {
+    td.innerHTML = '<span class="pass"><svg class="icon"><use href="#i-check"/></svg>Passa</span>';
+  });
+
+  /* forma de onda da capa (determinística) */
+  (function wave() {
+    const path = document.querySelector("#wave path");
+    if (!path) return;
+    let seed = 7, d = "";
+    const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
+    for (let x = 0; x < 600; x += 4) {
+      const env = 0.35 + 0.65 * Math.abs(Math.sin(x / 47)) * (0.6 + 0.4 * Math.sin(x / 13));
+      const a = Math.max(1.2, 16 * env * (0.45 + 0.55 * rnd()));
+      d += `M${x} ${17 - a}h2.4v${a * 2}h-2.4z`;
+    }
+    path.setAttribute("d", d);
+  })();
+
+  /* escala */
+  function fit() {
+    const box = isPresenter ? document.querySelector(".pv__main") : viewport;
+    const r = box.getBoundingClientRect();
+    stage.style.setProperty("--scale", Math.min(r.width / W, r.height / H));
+  }
+
+  /* navegação */
+  let current = 0;
+  let peer = null;
+  function send(msg) {
+    try { if (peer && !peer.closed) peer.postMessage(Object.assign({ ns: NS }, msg), "*"); } catch (e) { /* janela fechada */ }
+  }
+  function go(n, opts = {}) {
+    n = Math.max(0, Math.min(slides.length - 1, n));
+    const prev = current;
+    slides.forEach((s, k) => {
+      s.classList.toggle("is-active", k === n);
+      s.classList.toggle("is-past", k < n);
+      s.setAttribute("aria-hidden", k === n ? "false" : "true");
+    });
+    current = n;
+    if (!isPresenter) history.replaceState(null, "", "#" + (n + 1));
+    if (prev === 0 && n > 0 && !timer.running && timer.acc === 0) startTimer();
+    updateUI();
+    if (!opts.remote) send({ type: "go", n });
+  }
+  const next = () => go(current + 1);
+  const prev = () => go(current - 1);
+
+  /* cronómetro (15 min, com alvo por parte) */
+  const timer = { running: false, startedAt: 0, acc: 0 };
+  const elapsed = () => timer.acc + (timer.running ? Date.now() - timer.startedAt : 0);
+  function startTimer() { if (!timer.running) { timer.running = true; timer.startedAt = Date.now(); syncTimer(); } }
+  function toggleTimer() { if (timer.running) { timer.acc = elapsed(); timer.running = false; } else { timer.running = true; timer.startedAt = Date.now(); } syncTimer(); }
+  function resetTimer() { timer.running = false; timer.acc = 0; timer.startedAt = 0; syncTimer(); }
+  function syncTimer(remote) { renderTimer(); if (!remote) send({ type: "timer", state: Object.assign({}, timer, { now: Date.now() }) }); }
+  function fmt(ms) { const t = Math.floor(ms / 1000); return pad(Math.floor(t / 60)) + ":" + pad(t % 60); }
+  function targetFor(n) {
+    const i = partIndex(slides[n]);
+    return i >= 0 && i < PARTS.length ? PARTS[i] : PARTS[PARTS.length - 1];
+  }
+  function renderTimer() {
+    const ms = elapsed(), t = ms / 1000, target = targetFor(current);
+    const cls = t > target.end ? "is-over" : t > target.end - 20 ? "is-warn" : "";
+    const hudT = document.getElementById("hudTimer");
+    if (hudT) { hudT.textContent = fmt(ms) + " / 15:00"; hudT.className = "hud__timer " + cls; }
+    const clock = document.getElementById("pvClock");
+    if (clock) {
+      clock.textContent = fmt(ms);
+      clock.className = "pv__clock " + cls;
+      document.getElementById("pvTarget").textContent = slides[current].dataset.part === "apendice"
+        ? "Apêndice · fora do tempo da apresentação"
+        : `${target.label} · termina aos ${fmt(target.end * 1000)} · total 15:00`;
+      document.getElementById("pvToggle").textContent = timer.running ? "Pausar" : (timer.acc ? "Retomar" : "Iniciar");
+    }
+  }
+  setInterval(renderTimer, 250);
+
+  /* notas, visão geral, ajuda */
+  const notesPanel = document.getElementById("notesPanel");
+  function notesHTML(n) { const a = slides[n].querySelector(".notes"); return a ? a.innerHTML : "<p>Sem notas.</p>"; }
+  function updateUI() {
+    const label = slides[current].dataset.part === "apendice"
+      ? slides[current].querySelector(".kicker__num").textContent
+      : `${current + 1} / ${mainCount}`;
+    const hc = document.getElementById("hudCount"); if (hc) hc.textContent = label;
+    if (!notesPanel.hidden) {
+      document.getElementById("notesTitle").textContent = slides[current].dataset.title;
+      document.getElementById("notesBody").innerHTML = notesHTML(current);
+    }
+    if (isPresenter) renderPresenter();
+    renderTimer();
+  }
+  function toggleNotes() { notesPanel.hidden = !notesPanel.hidden; updateUI(); }
+
+  function mini(slide, box) {
+    const clone = slide.cloneNode(true);
+    clone.classList.add("is-active"); clone.classList.remove("is-past");
+    clone.removeAttribute("aria-hidden");
+    clone.querySelectorAll("[id]").forEach((el) => el.removeAttribute("id"));
+    box.innerHTML = ""; box.appendChild(clone);
+    const fitMini = () => { clone.style.transform = `scale(${box.clientWidth / W})`; };
+    fitMini();
+    return fitMini;
+  }
+  const overview = document.getElementById("overview");
+  function toggleOverview(force) {
+    const show = force ?? overview.hidden;
+    overview.hidden = !show;
+    if (!show) return;
+    const grid = document.getElementById("overviewGrid");
+    grid.innerHTML = "";
+    slides.forEach((s, k) => {
+      const b = document.createElement("button");
+      b.className = "ov-item" + (k === current ? " is-current" : "");
+      b.innerHTML = `<div class="ov-thumb"></div><div class="ov-cap"><b>${s.dataset.part === "apendice" ? s.querySelector(".kicker__num").textContent : pad(k + 1)}</b>${s.dataset.title}</div>`;
+      b.addEventListener("click", () => { toggleOverview(false); go(k); });
+      grid.appendChild(b);
+      requestAnimationFrame(() => mini(s, b.querySelector(".ov-thumb")));
+    });
+    const cur = grid.children[current]; if (cur) cur.focus();
+  }
+  const help = document.getElementById("help");
+  const blackout = document.getElementById("blackout");
+  function closeAll() { overview.hidden = true; help.hidden = true; blackout.hidden = true; }
+
+  function fullscreen() {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else document.documentElement.requestFullscreen?.();
+  }
+
+  /* vista do apresentador */
+  let presenterWin = null;
+  function openPresenter() {
+    const url = location.href.split("#")[0].split("?")[0] + "?presenter#" + (current + 1);
+    presenterWin = window.open(url, "picturas-apresentador", "width=1280,height=800");
+    if (presenterWin) peer = presenterWin;
+  }
+  let fitNext = null;
+  function renderPresenter() {
+    document.getElementById("pvNotes").innerHTML = notesHTML(current);
+    const nb = document.getElementById("pvNext");
+    const nt = document.getElementById("pvNextTitle");
+    if (current + 1 < slides.length) { fitNext = mini(slides[current + 1], nb); nt.textContent = slides[current + 1].dataset.title; }
+    else { nb.innerHTML = ""; fitNext = null; nt.textContent = "Fim"; }
+    document.getElementById("pvCount").textContent = slides[current].dataset.part === "apendice"
+      ? slides[current].querySelector(".kicker__num").textContent : `${current + 1} / ${mainCount}`;
+  }
+  if (isPresenter) {
+    document.body.classList.add("is-presenter");
+    document.title = "Apresentador · " + document.title;
+    const pv = document.createElement("div");
+    pv.className = "pv";
+    pv.innerHTML = `
+      <div class="pv__main"></div>
+      <aside class="pv__side">
+        <div class="pv__box"><div class="pv__label">Tempo</div><div class="pv__clock" id="pvClock">00:00</div><div class="pv__target" id="pvTarget"></div>
+          <div class="pv__row"><button id="pvToggle">Iniciar</button><button data-pv="reset">Repor</button><button data-pv="black">Ecrã preto</button></div></div>
+        <div class="pv__box"><div class="pv__label">A seguir</div><div class="pv__next" id="pvNext"></div><div class="pv__nexttitle" id="pvNextTitle"></div></div>
+        <div class="pv__box pv__notes"><div class="pv__label">Notas</div><div id="pvNotes"></div></div>
+        <div class="pv__row"><button data-pv="prev">‹ Anterior</button><span class="pv__count" id="pvCount"></span><button data-pv="next">Seguinte ›</button></div>
+      </aside>`;
+    document.body.appendChild(pv);
+    pv.querySelector(".pv__main").appendChild(stage);
+    viewport.remove();
+    document.getElementById("hud").remove();
+    pv.addEventListener("click", (e) => {
+      const b = e.target.closest("button"); if (!b) return;
+      if (b.id === "pvToggle") toggleTimer();
+      else if (b.dataset.pv === "reset") resetTimer();
+      else if (b.dataset.pv === "prev") prev();
+      else if (b.dataset.pv === "next") next();
+      else if (b.dataset.pv === "black") send({ type: "black" });
+    });
+    peer = window.opener;
+    send({ type: "hello" });
+  }
+
+  window.addEventListener("message", (e) => {
+    const d = e.data;
+    if (!d || d.ns !== NS) return;
+    if (d.type === "hello") { peer = e.source; send({ type: "go", n: current }); syncTimer(); }
+    else if (d.type === "go") go(d.n, { remote: true });
+    else if (d.type === "timer") {
+      const skew = Date.now() - d.state.now;
+      timer.running = d.state.running; timer.acc = d.state.acc; timer.startedAt = d.state.startedAt + skew;
+      syncTimer(true);
+    } else if (d.type === "black" && !isPresenter) blackout.hidden = !blackout.hidden;
+  });
+
+  /* entrada */
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = e.key;
+    if (k === "Escape") { closeAll(); return; }
+    if (!overview.hidden && !["o", "O"].includes(k)) return;
+    switch (k) {
+      case "ArrowRight": case "ArrowDown": case "PageDown": case " ": case "Enter": e.preventDefault(); next(); break;
+      case "ArrowLeft": case "ArrowUp": case "PageUp": case "Backspace": e.preventDefault(); prev(); break;
+      case "Home": go(0); break;
+      case "End": go(mainCount - 1); break;
+      case "n": case "N": if (!isPresenter) toggleNotes(); break;
+      case "o": case "O": toggleOverview(); break;
+      case "p": case "P": if (!isPresenter) openPresenter(); break;
+      case "s": case "S": toggleTimer(); break;
+      case "r": case "R": resetTimer(); break;
+      case "b": case "B": case ".": if (isPresenter) send({ type: "black" }); else blackout.hidden = !blackout.hidden; break;
+      case "f": case "F": fullscreen(); break;
+      case "?": help.hidden = !help.hidden; break;
+    }
+  });
+  if (!isPresenter) {
+    viewport.addEventListener("click", (e) => {
+      if (e.target.closest("a,button")) return;
+      const r = viewport.getBoundingClientRect();
+      (e.clientX - r.left) < r.width * 0.3 ? prev() : next();
+    });
+    let tx = null;
+    viewport.addEventListener("touchstart", (e) => { tx = e.touches[0].clientX; }, { passive: true });
+    viewport.addEventListener("touchend", (e) => {
+      if (tx === null) return;
+      const dx = e.changedTouches[0].clientX - tx; tx = null;
+      if (Math.abs(dx) > 40) (dx < 0 ? next : prev)();
+    });
+    const hud = document.getElementById("hud");
+    let hideT = null;
+    const showHud = () => { hud.classList.add("is-visible"); clearTimeout(hideT); hideT = setTimeout(() => { if (!hud.matches(":hover")) hud.classList.remove("is-visible"); }, 2500); };
+    document.addEventListener("mousemove", showHud);
+    hud.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const b = e.target.closest("button"); if (!b) return;
+      ({ prev, next, presenter: openPresenter, notes: toggleNotes, overview: () => toggleOverview(), fullscreen, help: () => { help.hidden = !help.hidden; } })[b.dataset.act]?.();
+    });
+  }
+  [overview, help, blackout].forEach((el) => el.addEventListener("click", (e) => { if (e.target === el || el === blackout) el.hidden = true; }));
+  window.addEventListener("resize", () => { fit(); if (fitNext) fitNext(); });
+  window.addEventListener("hashchange", () => { if (!isPresenter) { const n = parseInt(location.hash.slice(1), 10); if (n && n - 1 !== current) go(n - 1); } });
+
+  fit();
+  const start = parseInt(location.hash.slice(1), 10);
+  go(Number.isFinite(start) && start > 0 ? start - 1 : 0, { remote: true });
+})();
+</script>
+</body>
+</html>
