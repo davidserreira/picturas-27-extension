@@ -112,20 +112,21 @@ Além das medições inicial e final, cada passo das duas decisões teve uma med
 
 *Os dois integrados.* Nenhum requisito piora o outro: as medidas principais dos dois mantêm o alvo atingido, os doze controlos cumprem o limite e a regressão dá os mesmos resultados da base.
 
-#tab([Reprodução noutras máquinas (`medicoes/reproducao/`): M1.1 com 500 MiB, M2.2, M2.3 e regressão, sobre o código do `main`],
+#tab([Reprodução noutras máquinas (`medicoes/reproducao/`): M1.1 com 500 MiB (no Mac, também com 10, 100 e 1000 MiB), M2.2, M2.3 e regressão, sobre o código do `main`],
   tabela(
     colunas: (3.4cm, 1fr, 1fr, 1fr),
     tamanho: 8pt,
     [], [Máquina de medição (oficial, os dois integrados)], [Pedro: Linux, Intel i5-11300H, 15 GB], [Miguel: macOS, Apple M1 Pro, 16 GiB, imagens ARM],
     [M1.1 na base (`api_gateway`)], [2001 MiB], [1694 MiB], [1961 MiB],
     [M1.1 no `main`, serviço pior], [`projects`: 36,0 MiB; `img_storage`: 62,9 MiB], [`projects`: 15, 87 e 77 MiB], [`projects`: 112, 147 e 182 MiB],
+    [M1.1 no `main` com 10 / 100 / 500 / 1000 MiB (`projects`, máximo de 3)], [—], [—], [68 / 193 / 197 / 191 MiB],
     [M2.2 R / F], [0,43 / 0,12 s], [0,44 / 0 s (vídeo de 120 s)], [0,13 / 0 s (vídeo de 330 s)],
     [M2.3], [10/10], [2/2], [2/2],
     [Regressão], [75/75, 19/19, 18/18, 3/3], [75/75, 19/19, 18/18, 3/3], [75/75, 19/19, 16/18 (T05 e T06 diferentes da referência), 3/3],
   ),
 )
 
-*Análise das reproduções.* As duas reproduções confirmam a melhoria: na base, o `api_gateway` sobe 1694 a 1961 MiB com 500 MiB, e no código do `main` nenhum serviço do critério passa de 182 MiB; o estado é reposto em menos de 0,5 s, e os cancelamentos foram conseguidos em todas as tentativas. Mas *a margem da M1.1 não se repete noutras máquinas*. O `projects` ficou acima do alvo de 64 MiB nas duas, e na do Miguel acima do mínimo de 128 MiB em duas das três repetições. Na máquina de medição, o mesmo serviço ficou nos 36,0 MiB. *H-05*: a diferença vem da memória que o V8 e a glibc demoram a devolver (a causa da afinação do passo 5b), que depende da plataforma (Linux nativo, macOS com imagens ARM, WSL 2); não verificado. Como as reproduções só mediram 500 MiB, não mostram se nessas máquinas o acréscimo depende do tamanho do ficheiro. Os resultados em bruto e as notas estão em `medicoes/reproducao/pedro/` e `medicoes/reproducao/miguel/`. Na máquina do Pedro, o `projects` ficou entre o alvo e o mínimo em duas repetições; a M2.2 usou o vídeo de 120 s, e o fim em 0 s só diz que o aviso foi visto o mais tardar quando a API deu o resultado (as diferenças negativas contam como zero). Na máquina do Miguel, a M2.2 com o vídeo de 120 s do primeiro _script_ deu "não recupera": a execução acabou antes das recargas, por ser mais rápida do que a calibração. É uma falha do instrumento, e não da aplicação; repetida com o vídeo de 330 s das séries oficiais, deu 0,13 s, e o _script_ foi corrigido. A diferença do ponta a ponta trata-se na secção 10.5.
+*Análise das reproduções.* As duas reproduções confirmam a melhoria: na base, o `api_gateway` sobe 1694 a 1961 MiB com 500 MiB, e no código do `main` nenhum serviço do critério passa de 182 MiB; o estado é reposto em menos de 0,5 s, e os cancelamentos foram conseguidos em todas as tentativas. Mas *a margem da M1.1 não se repete noutras máquinas*. O `projects` ficou acima do alvo de 64 MiB nas duas, e na do Miguel acima do mínimo de 128 MiB em duas das três repetições. Na máquina de medição, o mesmo serviço ficou nos 36,0 MiB. Para saber se nessas máquinas o acréscimo volta a depender do tamanho do ficheiro, a M1.1 foi repetida no Mac com os quatro tamanhos (`reproducao/miguel/tamanhos/`, 3 repetições): o `projects` fica em 165 a 197 MiB com 100, 500 e 1000 MiB (26 a 68 MiB com 10 MiB), e os outros serviços do critério ficam dentro do alvo em todos os tamanhos. *O comportamento que o enunciado pede repete-se* (um valor fixo, que não acompanha o ficheiro: na base, o `projects` subia 1193 MiB só com 500 MiB); *o que muda entre máquinas é o patamar*. *H-05*: o patamar depende da plataforma (Linux nativo, macOS com imagens ARM, WSL 2) e vem de memória que o processo não devolve logo; não verificado. Uma experiência no Mac enfraquece a parte do V8: com o mesmo limite do _heap_ antigo que o `img_storage` usa (`--max-old-space-size=96`), o `projects` ficou no mesmo patamar (189 a 194 MiB; `reproducao/miguel/experiencia-old-space/`). Ficam como candidatos a glibc, a cache de páginas e o processo `ffprobe`, que o `docker stats` não separa. Os resultados em bruto e as notas estão em `medicoes/reproducao/pedro/` e `medicoes/reproducao/miguel/`. Na máquina do Pedro, o `projects` ficou entre o alvo e o mínimo em duas repetições; a M2.2 usou o vídeo de 120 s, e o fim em 0 s só diz que o aviso foi visto o mais tardar quando a API deu o resultado (as diferenças negativas contam como zero). Na máquina do Miguel, a M2.2 com o vídeo de 120 s do primeiro _script_ deu "não recupera": a execução acabou antes das recargas, por ser mais rápida do que a calibração. É uma falha do instrumento, e não da aplicação; repetida com o vídeo de 330 s das séries oficiais, deu 0,13 s, e o _script_ foi corrigido. A diferença do ponta a ponta trata-se na secção 10.5.
 
 *Ameaças à validade.*
 - *Uma só máquina para as séries oficiais.* As reproduções mostram que a margem da M1.1 depende da máquina; o resultado "alvo atingido" vale para a máquina de medição.
@@ -133,11 +134,12 @@ Além das medições inicial e final, cada passo das duas decisões teve uma med
 - *Instrumento.* A memória do SeaweedFS (fora do critério) não distingue o processo da cache de páginas. Quatro falhas do instrumento ficaram registadas, e não foram descartadas: um `ECONNRESET` do Docker Desktop, a conversão de caminhos do Git Bash no C2.3, uma barra de progresso que desaparece no fim (A-B-A) e o vídeo curto na reprodução.
 - *O que não se mediu.* Envios em simultâneo (o mínimo da M1.1 assume três, mas por cálculo) e a usabilidade com utilizadores reais (o RNF-F2-02 foi medido por _script_).
 
+#pagebreak(weak: true)
 == Preservação funcional
 
 A suite de regressão (`Docs/fase2/regressao/`) correu na base antes de qualquer alteração, em cada passo das duas decisões e no fim, com os dois integrados. Os testes que o repositório já tinha não passam pelo gateway, pelo armazenamento nem pela interface, que são as partes alteradas; por isso a equipa acrescentou 18 testes ponta a ponta (T01–T18), pelo nginx, pela API e pelo WebSocket, e 3 de interface (U01–U03). Cada teste ponta a ponta guarda uma impressão do resultado (SHA-256 dos ficheiros, durações, resoluções, codec, som, fotogramas e mensagens de recusa); uma versão só preserva a funcionalidade se der as mesmas impressões da base. Duas corridas na base deram impressões iguais.
 
-#pagebreak(weak: true)
+
 #tab([Preservação funcional e testes de regressão],
   tabela(
     colunas: (2.6cm, 3.6cm, 3cm, 3.4cm, 1fr),
@@ -162,4 +164,4 @@ A suite de regressão (`Docs/fase2/regressao/`) correu na base antes de qualquer
   ),
 )
 
-A interface mudou, por ser o objeto da melhoria, mas os testes de interface da base continuaram a passar sem alterações: o U03 procura um botão cujo nome contenha "cancel", que passou do painel para a faixa da página do projeto. Nas reproduções, a máquina do Pedro deu os mesmos resultados. Na do Miguel, o T05 e o T06 deram impressões diferentes da referência só no SHA-256 de imagens, com o mesmo código. *H-06*: a diferença vem da compressão PNG das imagens Docker ARM, e não do código, porque numa máquina Intel o mesmo código dá as impressões da referência; não verificado. Fica como limite da comparação por SHA-256: as impressões só são comparáveis entre máquinas da mesma arquitetura.
+A interface mudou, por ser o objeto da melhoria, mas os testes de interface da base continuaram a passar sem alterações: o U03 procura um botão cujo nome contenha "cancel", que passou do painel para a faixa da página do projeto. Nas reproduções, a máquina do Pedro deu os mesmos resultados; na do Miguel, o T05 e o T06 diferiram só no SHA-256 de imagens, com o mesmo código. *H-06*: a causa é a compressão PNG das imagens Docker ARM, e não o código, que numa máquina Intel dá as impressões da referência; não verificado. As impressões só são comparáveis entre máquinas da mesma arquitetura.
