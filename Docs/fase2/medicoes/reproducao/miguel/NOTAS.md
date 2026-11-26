@@ -58,3 +58,32 @@ tinha acabado (`progressoAntes: null`, não havia progresso para recuperar). O f
 aconteceu antes de o script chegar à outra página. Com o vídeo de 330 s (`main-330/`) as três
 medições ficaram em 0,13 s, 0,13 s e 0 s. Sugestão para o script: confirmar que a execução ainda
 está a correr antes de cada recarga e antes de medir F, ou calibrar o vídeo em cada máquina.
+
+## Complemento de 26 de novembro: M1.1 com os quatro tamanhos e experiência com o V8
+
+Mesma máquina, código `9091f53` (igual ao da `main`), arranque com `docker compose up -d --build`.
+
+**A — M1.1 com 10, 100, 500 e 1000 MiB, 3 repetições** (`tamanhos/`). Acréscimo do `projects`
+(MiB), o pior serviço do critério em todos os tamanhos:
+
+| Ficheiro | Repetições | Outros serviços (máx.) |
+| --- | --- | --- |
+| 10 MiB | 67,7; 40,0; 25,5 | `img_storage` 25,8 |
+| 100 MiB | 171,3; 192,8; 165,5 | `img_storage` 35,9 |
+| 500 MiB | 197,0; 188,4; 190,2 | `img_storage` 46,3 |
+| 1000 MiB | 186,7; 190,9; 178,0 | `img_storage` 48,6 |
+
+Nesta máquina o acréscimo do `projects` **não acompanha o tamanho do ficheiro**: estabiliza em cerca
+de 165–197 MiB a partir de 100 MiB, igual com 1000 MiB (na base, com 500 MiB, subia 1193 MiB). Ou
+seja, o comportamento que o RNF-F2-01 pede (um valor fixo, independente do tamanho) repete-se; o que
+muda entre máquinas é o patamar, aqui acima do alvo (64) e do mínimo (128). `api_gateway`, `nginx` e
+`img_storage` ficam dentro do alvo em todos os tamanhos.
+
+**B — o `projects` com o limite do V8 que o `img_storage` já usa** (`experiencia-old-space/`;
+`NODE_OPTIONS="--max-semi-space-size=1 --max-old-space-size=96"` aplicado com um ficheiro de
+override local, não versionado). Acréscimo do `projects`: 500 MiB → 193,6; 191,1; 191,2 MiB;
+1000 MiB → 7,6; 193,1; 189,1 MiB. O patamar não muda, pelo que **o heap antigo do V8 não explica a
+diferença**: a H-05 fica mais fraca na parte do V8. O valor de 7,6 MiB numa repetição não foi
+investigado (provável falha da amostragem a 1 s). Não se confirmou dentro do contentor que o
+override estava ativo nessa série; ficam por medir a memória por processo dentro do contentor
+(`node` e `ffprobe`) e a cache de páginas, que o `docker stats` não separa.
