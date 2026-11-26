@@ -840,24 +840,25 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
 <!-- ======================================================= 11 · REPRODUÇÕES E LIMITES -->
 <section class="slide" data-part="res" data-title="Reproduções e limites">
   <div class="kicker"><span class="kicker__num">04</span>Resultados<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>4 min</span></div>
-  <h2 class="title">Repetimos as medições noutras duas máquinas:<br>a melhoria repete-se, a margem da M1.1 não.</h2>
+  <h2 class="title">Noutras duas máquinas, a melhoria repete-se;<br>o patamar da M1.1 depende da máquina.</h2>
   <table class="res" style="margin-top:26px">
     <thead><tr><th></th><th>Máquina de medição · Windows, i5-12450H</th><th>Pedro · Linux, i5-11300H</th><th>Miguel · macOS, M1 Pro (ARM)</th></tr></thead>
     <tbody>
       <tr><td>M1.1 na base, 500 MiB</td><td class="bad">2001 MiB</td><td class="bad">~1700 MiB</td><td class="bad">1961 MiB</td></tr>
       <tr><td>M1.1 no main, serviço pior</td><td class="good">55,3 MiB (img_storage)</td><td class="warn">87 MiB (projects)</td><td class="bad">182 MiB (projects)</td></tr>
+      <tr><td>M1.1 no main, 100 → 1000 MiB</td><td class="good">fixo (55–56 MiB)</td><td>—</td><td class="warn">fixo (~190 MiB, projects)</td></tr>
       <tr><td>M2.2 · repor ao recarregar</td><td class="good">0,63 s</td><td class="good">0,43 s</td><td class="good">0,13 s</td></tr>
       <tr><td>M2.3 · cancelar</td><td class="good">12/12</td><td class="good">2/2</td><td class="good">2/2</td></tr>
       <tr><td>Regressão ponta a ponta</td><td class="good">18/18</td><td class="good">18/18</td><td class="warn">16/18 — só o SHA-256 de PNG</td></tr>
     </tbody>
   </table>
   <div class="cols cols--2" style="margin-top:20px">
-    <div class="verdict verdict--warn" style="margin-top:0"><svg class="icon"><use href="#i-alert"/></svg><div><b>O alvo da M1.1 vale para a máquina de medição.</b> Noutras, o <span class="id">projects</span> ficou entre o alvo e o mínimo, ou acima. Hipótese <span class="id">H-05</span>: memória que o V8 e a glibc demoram a devolver, dependente da plataforma.</div></div>
+    <div class="verdict verdict--warn" style="margin-top:0"><svg class="icon"><use href="#i-alert"/></svg><div><b>O alvo da M1.1 vale para a máquina de medição.</b> Noutras, o <span class="id">projects</span> ficou entre o alvo e o mínimo, ou acima, mas <b>fixo</b>: no Mac, ~190 MiB com 100, 500 e 1000 MiB (na base, +1193 MiB com 500). <span class="id">H-05</span>: o patamar depende da plataforma; limitar o <i>heap</i> do V8 não o baixa.</div></div>
     <div class="card card--muted" style="padding:16px 20px"><div class="label">Outras ameaças à validade</div><ul class="bul" style="margin-top:8px"><li>Tempos só comparáveis na mesma sessão (A-B-A)</li><li>Quatro falhas do instrumento registadas, não descartadas</li><li>Sem envios em simultâneo nem utilizadores reais</li></ul></div>
   </div>
   <aside class="notes">
     <p><b>~50 s.</b> As diretrizes pedem medições que outra pessoa consiga repetir. O Pedro e o Miguel correram uma reprodução curta nas suas máquinas.</p>
-    <p>A melhoria repete-se: na base o gateway sobe quase 2 GB, no main nenhum serviço passa de 182 MiB, e o estado e o cancelamento funcionam. Mas a margem da M1.1 não: o projects ficou acima do alvo nas duas máquinas, e no Mac acima do mínimo. Não escondemos isto: o relatório diz que o alvo foi atingido na máquina de medição, e a causa provável — a memória que o V8 e a glibc demoram a devolver — fica como hipótese, porque só medimos 500 MiB nessas máquinas.</p>
+    <p>A melhoria repete-se: na base o gateway sobe quase 2 GB, no main nenhum serviço passa de 182 MiB, e o estado e o cancelamento funcionam. Mas a margem da M1.1 não: o projects ficou acima do alvo nas duas máquinas, e no Mac acima do mínimo. Não escondemos isto: o relatório diz que o alvo foi atingido na máquina de medição. Mas o comportamento que o requisito pede repete-se: no Mac medimos os quatro tamanhos, e o projects fica nos ~190 MiB de 100 a 1000 MiB, quando na base subia 1193 MiB só com 500. O que muda entre máquinas é o patamar. Testámos dar ao projects o limite do V8 que o img_storage já tem, e não mudou nada: a causa não é o heap do V8 e fica como hipótese (glibc, cache de páginas ou ffprobe, que o docker stats não separa).</p>
     <p>As diferenças de SHA-256 no Mac são só em imagens PNG, provavelmente pela compressão em ARM; no Linux do Pedro, o mesmo código deu 18 em 18.</p>
   </aside>
 </section>
@@ -943,14 +944,14 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
   <div class="kicker"><span class="kicker__num">06</span>Fim<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>1 min</span></div>
   <h2 class="title">Os dois requisitos cumpridos, com o alvo atingido,<br>sem funcionalidades novas e sem regressões.</h2>
   <div class="stats">
-    <div class="stat stat--accent"><strong>36<small>×</small></strong><span>menos memória com 500 MiB (2001 → 55 MiB)</span></div>
+    <div class="stat stat--accent"><strong>36<small>×</small></strong><span>menos memória com 500 MiB, na máquina de medição (2001 → 55 MiB)</span></div>
     <div class="stat"><strong>1000<small>MiB</small></strong><span>maior ficheiro com 512 MiB por contentor (era 100)</span></div>
     <div class="stat"><strong>100<small>%</small></strong><span>das ações possíveis durante uma execução (era 0%)</span></div>
     <div class="stat"><strong>18/18</strong><span>testes ponta a ponta com as impressões da base</span></div>
   </div>
   <div class="next">
     <div class="next__title"><h3>O que fica</h3><p>Limitações e passos seguintes</p></div>
-    <div class="next__item"><b>Margem da M1.1 por plataforma</b><span>Medir os quatro tamanhos nas outras máquinas (H-05) antes de afinar por plataforma.</span></div>
+    <div class="next__item"><b>Margem da M1.1 por plataforma</b><span>Noutras máquinas o valor é fixo, mas mais alto; medir a memória por processo no contentor (H-05) antes de afinar.</span></div>
     <div class="next__item"><b>Capacidade do vídeo</b><span>Réplicas do worker e fila própria para a legendagem (QS-03, ALT-1).</span></div>
     <div class="next__item"><b>Segurança</b><span>Verificar o acesso na sala <span class="id">project:&lt;id&gt;</span> (EV-15), que a DA-2 contornou.</span></div>
   </div>
