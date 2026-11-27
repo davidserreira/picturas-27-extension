@@ -126,13 +126,13 @@ q{quotes:"“" "”"}
 .motif__prog i{display:block;height:100%;width:62%;background:linear-gradient(90deg,#2B6CEB,#5B9BFF)}
 .motif__btn{padding:6px 12px;border-radius:8px;border:1px solid #3A3F4A;font-size:13px;color:#E7EAF0}
 .motif__note{margin-top:10px;font-size:13.5px;color:#8D96A6}
-.agenda__item:nth-child(1){flex:2;border-color:var(--accent)}
+.agenda__item:nth-child(1){flex:3;border-color:var(--accent)}
 .agenda__item:nth-child(2){flex:2;border-color:#D87F3B}
-.agenda__item:nth-child(3){flex:3;border-color:#E39A5E}
-.agenda__item:nth-child(4){flex:4;border-color:#EBB283}
-.agenda__item:nth-child(5){flex:3;border-color:#F1C9A6}
-.agenda__item:nth-child(6){flex:1;border-color:#F6DCC4}
+.agenda__item:nth-child(3){flex:2;border-color:#E39A5E}
+.agenda__item:nth-child(4){flex:3;border-color:#EBB283}
+.agenda__item:nth-child(5){flex:5;border-color:#F1C9A6}
 .agenda__item span{font-size:19px}
+.agenda__who{display:block;margin-top:6px;font-style:normal;font-size:15px;color:var(--muted)}
 
 /* grelhas genéricas */
 .cols{display:grid;gap:24px;margin-top:30px}
@@ -333,6 +333,50 @@ table.res td.warn{color:#8A5A07;font-weight:650}
 .foot__track{max-width:1000px}
 .foot__seg span{font-size:12px}
 
+/* ---------- os dois RNF ---------- */
+.rnf{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:28px}
+.rnf .card{display:flex;flex-direction:column;gap:14px;padding:24px 26px}
+.rnf .card__top{margin-bottom:0}
+.rnf h3{font-size:27px}
+.rnf__base{padding:14px 16px;border-radius:14px;background:var(--fail-soft);border:1px solid var(--fail-line)}
+.rnf__base .label{color:var(--fail-ink);display:flex;gap:10px;align-items:center}
+.rnf__base .label .id{letter-spacing:0;font-size:13px}
+.rnf .rnf__base p{margin:6px 0 0;font-size:18px;line-height:1.42;color:#5A1712}
+.rnf__qs{display:grid;grid-template-columns:1fr 26px 1fr;gap:10px;align-items:stretch}
+.rnf__qs > div{padding:12px 14px;border-radius:12px;background:#F6F5F1;font-size:17px;line-height:1.4;color:var(--ink-2)}
+.rnf__qs > div .label{margin-bottom:5px}
+.rnf__qs > .icon{align-self:center;width:24px;height:24px;color:var(--muted)}
+.rnf__foot{display:flex;align-items:center;gap:10px;margin:22px 0 0;font-size:17px;color:var(--muted)}
+.rnf__foot .icon{color:var(--sys);width:22px;height:22px}
+.rnf__foot b{color:var(--ink-2)}
+
+/* ---------- medições face ao alvo ---------- */
+.score-wrap{display:grid;grid-template-columns:1.55fr 1fr;gap:24px;margin-top:26px;align-items:start}
+table.score{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;font-size:17px;line-height:1.3}
+table.score th{text-align:left;font:700 12.5px/1.2 var(--text);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:10px 12px;background:var(--idle-soft)}
+table.score td{padding:8px 12px;border-top:1px solid var(--line-2);color:var(--ink-2);vertical-align:middle}
+table.score td:first-child{font-size:16px}
+table.score td:first-child b{font-family:var(--mono);color:var(--ink);margin-right:8px}
+table.score td.base{color:var(--fail-ink);font-weight:600;white-space:nowrap}
+table.score td.base small{display:block;font-size:12.5px;font-weight:500;color:var(--muted)}
+table.score td.tgt{color:var(--ok-ink);font-weight:650;white-space:nowrap}
+table.score td.min{white-space:nowrap;color:var(--muted)}
+table.score td.now{font:700 24px/1.1 var(--display);letter-spacing:-.01em;color:var(--ink);white-space:nowrap}
+table.score td.now small{font-size:14px;color:var(--muted);margin-left:2px;letter-spacing:0}
+table.score tr.grp td{background:#F6F5F1;font-weight:650;color:var(--ink);font-size:15.5px;padding:7px 12px}
+table.score tr.grp td .id{margin-right:8px}
+table.score tr.grp--a .id{color:var(--accent-ink)}
+table.score tr.grp--b .id{color:var(--sys-ink)}
+.ok-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:var(--ok-soft);color:var(--ok-ink);font:700 13.5px/1.3 var(--text);white-space:nowrap}
+.ok-chip .icon{color:var(--ok)}
+.score-side{display:flex;flex-direction:column;gap:14px}
+.score-side .bars__row{grid-template-columns:118px 1fr}
+.score-warn{margin-top:0;font-size:15.5px;line-height:1.42;align-items:flex-start;padding:12px 16px}
+.score-warn .icon{width:24px;height:24px;margin-top:1px}
+.ctlstrip{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px}
+.ctlstrip > div{display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:14px;background:var(--ok-soft);border:1px solid var(--ok-line);font-size:15.5px;line-height:1.38;color:#0D3F1F}
+.ctlstrip .icon{width:22px;height:22px;color:var(--ok);margin-top:1px}
+
 /* ---------- 8: demonstração ---------- */
 .demo{display:grid;grid-template-columns:780px 1fr;gap:36px;margin-top:22px}
 .script{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
@@ -454,6 +498,7 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
 .pv__nexttitle{margin-top:8px;font-size:14px;color:#AEB6C4}
 .pv__notes{flex:1;min-height:0;overflow:auto;font-size:19px;line-height:1.55;color:#E7EAF0}
 .pv__notes p{margin:0 0 10px}
+.pv__notes p.who,.notes-panel p.who{color:#FFB070;font-size:15px;letter-spacing:.04em;text-transform:uppercase}
 .pv__count{font-family:var(--mono);color:#AEB6C4;align-self:center;margin:0 auto}
 
 /* ---------- impressão: um diapositivo por página ---------- */
@@ -521,90 +566,51 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
       </div>
     </div>
     <div class="agenda">
-      <div class="agenda__item"><b>01</b><span>Diagnóstico <i>· 2′</i></span></div>
-      <div class="agenda__item"><b>02</b><span>Requisitos <i>· 2′</i></span></div>
-      <div class="agenda__item"><b>03</b><span>Decisões <i>· 3′</i></span></div>
-      <div class="agenda__item"><b>04</b><span>Resultados <i>· 4′</i></span></div>
-      <div class="agenda__item"><b>05</b><span>Demonstração <i>· 3′</i></span></div>
-      <div class="agenda__item"><b>06</b><span>Fim <i>· 1′</i></span></div>
+      <div class="agenda__item"><b>01</b><span>Requisitos e quantificação <i>· 3′</i></span><em class="agenda__who">David Cruz</em></div>
+      <div class="agenda__item"><b>02</b><span>Arquitetura e <i>refactoring</i> <i>· 2′</i></span><em class="agenda__who">Miguel Páscoa</em></div>
+      <div class="agenda__item"><b>03</b><span>Medições face ao alvo <i>· 2′</i></span><em class="agenda__who">Tiago Barros</em></div>
+      <div class="agenda__item"><b>04</b><span>Demonstração <i>· 3′</i></span><em class="agenda__who">Pedro Rebelo</em></div>
+      <div class="agenda__item"><b>05</b><span>Perguntas <i>· 5′</i></span><em class="agenda__who">Todos</em></div>
     </div>
   </div>
   <aside class="notes">
+    <p class="who">Apresenta: <b>David Cruz</b></p>
     <p><b>~10 s.</b> Boa tarde. Somos o Grupo 5 do PL5.</p>
-    <p>Na Fase 2 escolhemos dois requisitos não funcionais do PictuRAS e melhorámo-los por refactoring. Vamos mostrar porque os escolhemos, como os quantificámos, as decisões que tomámos, o que medimos antes e depois, e uma demonstração. Cerca de 15 minutos.</p>
+    <p>Na Fase 2 escolhemos dois requisitos não funcionais do PictuRAS e melhorámo-los por refactoring. Em dez minutos: os dois requisitos e a sua quantificação, as alterações arquiteturais, as medições face ao alvo e uma demonstração. Depois, perguntas — o detalhe está no apêndice.</p>
   </aside>
 </section>
 
-<!-- ======================================================= 2 · BASE -->
-<section class="slide" data-part="diag" data-title="A solução de base">
-  <div class="kicker"><span class="kicker__num">01</span>Diagnóstico<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>2 min</span></div>
-  <h2 class="title">Microsserviços com orquestração central.<br>O vídeo segue o padrão global, mas tem duas fragilidades.</h2>
-  <div class="cols cols--2-1">
-    <div class="flow">
-      <div class="flow__lab">Carregamento de um vídeo</div>
-      <div class="flow__row">
-        <div class="node">browser</div><div class="arr arr--hot"></div>
-        <div class="node">nginx<small>guarda o corpo</small></div><div class="arr arr--hot"></div>
-        <div class="node node--hot">api_gateway<small>ficheiro em memória</small></div><div class="arr arr--hot"></div>
-        <div class="node node--hot">projects<small>ficheiro em memória</small></div><div class="arr arr--hot"></div>
-        <div class="node node--hot">img_storage<small>ficheiro em memória</small></div>
-      </div>
-      <div class="flow__lab" style="margin-top:26px">Processamento de um vídeo (Apply)</div>
-      <div class="flow__row">
-        <div class="node">projects<small>orquestrador</small></div><div class="arr"></div>
-        <div class="node node--q">video_queue<small>1 mensagem</small></div><div class="arr"></div>
-        <div class="node">video_tool<small>único worker</small></div><div class="arr arr--hot"></div>
-        <div class="node node--q">ws_queue</div><div class="arr arr--hot"></div>
-        <div class="node node--hot">browser<small>estado só aqui</small></div>
-      </div>
-      <div class="patterns">
-        <span class="tag">Microsserviços + API Gateway</span><span class="tag">Filas (RabbitMQ)</span><span class="tag">Orquestração central</span><span class="tag tag--sys">Vídeo: worker único com o pipeline inteiro</span>
-      </div>
+<!-- ======================================================= 2 · OS DOIS RNF -->
+<section class="slide" data-part="req" data-title="Os dois requisitos escolhidos">
+  <div class="kicker"><span class="kicker__num">01</span>Requisitos e quantificação<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>3 min</span></div>
+  <h2 class="title">Dois requisitos não funcionais, cada um com<br>uma fragilidade concreta no código da base.</h2>
+  <div class="rnf">
+    <div class="card card--accent">
+      <div class="card__top"><span class="id">RNF-F2-01</span><span class="tag">ISO 25010 · Eficiência — utilização de recursos</span></div>
+      <h3>Carregar ficheiros grandes com memória limitada</h3>
+      <div class="rnf__base"><div class="label">Na base <span class="id">EV-13</span></div><p>O ficheiro inteiro fica em memória em <b>três serviços seguidos</b> (<span class="id">api_gateway</span>, <span class="id">projects</span>, <span class="id">img_storage</span>). Com 500 MiB o gateway sobe <b>2001 MiB</b>; com 1000 MiB a instalação deixa de responder.</p></div>
+      <div class="rnf__qs"><div><div class="label">Estímulo · QS-01</div>Um utilizador premium carrega um vídeo de 1000 MiB</div><svg class="icon"><use href="#i-arrow"/></svg><div><div class="label">Resposta</div>Aceite e guardado sem alteração; a memória <b>não acompanha</b> o tamanho do ficheiro</div></div>
     </div>
-    <div>
-      <div class="issue"><span class="issue__n">1</span><div><h3>O ficheiro inteiro em memória em três serviços seguidos</h3><p>Com 500 MiB, o <span class="id">api_gateway</span> sobe <b>2001 MiB</b>; com 1000 MiB, a instalação inteira deixa de responder. <span class="id">EV-13</span></p></div></div>
-      <div class="issue"><span class="issue__n">2</span><div><h3>O progresso do vídeo não passa pelo orquestrador</h3><p>O estado da execução só existe no browser e um painel bloqueia a página: recarregar perde o progresso e o cancelamento. <span class="id">EV-03</span> <span class="id">EV-04</span></p></div></div>
+    <div class="card card--sys">
+      <div class="card__top"><span class="id" style="color:var(--sys-ink)">RNF-F2-02</span><span class="tag">ISO 25010 · Usabilidade — operabilidade</span></div>
+      <h3>Continuar a usar a aplicação durante o processamento</h3>
+      <div class="rnf__base"><div class="label">Na base <span class="id">EV-03</span> <span class="id">EV-04</span></div><p>O estado da execução de vídeo <b>só existe no browser</b> e um painel bloqueia a página. Recarregar perde o progresso e o <b>Cancelar</b>.</p></div>
+      <div class="rnf__qs"><div><div class="label">Estímulo · QS-02</div>A meio de uma execução, recarrega, muda de página ou abre outra sessão</div><svg class="icon"><use href="#i-arrow"/></svg><div><div class="label">Resposta</div>Continua a trabalhar, vê o progresso, <b>cancela</b> e é avisado do fim</div></div>
     </div>
   </div>
+  <p class="rnf__foot"><svg class="icon"><use href="#i-info"/></svg><span>Os dois cenários de qualidade mais prioritários entre <b>8 candidatos</b>, comparados por pertinência, facilidade de medir e risco (apêndice A2). Melhorados só por <i>refactoring</i>, sem funcionalidades novas.</span></p>
   <aside class="notes">
-    <p><b>~50 s.</b> A base é a solução do PL1-G4, commit 0523102: microsserviços atrás de um nginx e de um API Gateway, processamento assíncrono por filas e um orquestrador central, o projects.</p>
-    <p>O vídeo segue o padrão global (filas, resultado na project_queue), mas com um único worker que aplica o pipeline inteiro. Duas fragilidades. Primeira: no carregamento, três serviços guardam o ficheiro inteiro em memória antes de o passar — vem do padrão global mal aplicado. Segunda: o worker manda o progresso diretamente para o browser, e o orquestrador não o guarda — vem do desvio do vídeo face à orquestração central.</p>
+    <p class="who">Apresenta: <b>David Cruz</b></p>
+    <p><b>~70 s.</b> A base é a solução do PL1-G4: microsserviços atrás de um nginx e de um API Gateway, filas RabbitMQ e um orquestrador central, o projects.</p>
+    <p>Primeiro requisito, eficiência na utilização de recursos: no carregamento, três serviços seguidos guardam o ficheiro inteiro em memória. Com 500 MiB o gateway sobe 2 GB; com 1 GB a instalação cai. Queremos que um premium carregue 1 GB e que a memória não acompanhe o tamanho do ficheiro.</p>
+    <p>Segundo, operabilidade: o progresso do vídeo vai do worker diretamente para o browser e só existe lá. Recarregar a página perde o progresso e o botão de cancelar. Queremos que o utilizador continue a trabalhar e possa sempre cancelar.</p>
+    <p>Escolhemo-los entre oito candidatos por serem os cenários mais prioritários e medíveis por script.</p>
   </aside>
 </section>
 
-<!-- ======================================================= 3 · ESCOLHA -->
-<section class="slide" data-part="diag" data-title="Escolha dos dois requisitos">
-  <div class="kicker"><span class="kicker__num">01</span>Diagnóstico<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>2 min</span></div>
-  <h2 class="title">Oito candidatos estudados; escolhemos os dois<br>cenários de qualidade mais prioritários.</h2>
-  <div class="cols cols--2-1" style="grid-template-columns:1.35fr 1fr">
-    <table class="cand">
-      <thead><tr><th>#</th><th>Candidato</th><th>Pertinência</th><th>Medir</th><th>Risco</th></tr></thead>
-      <tbody>
-        <tr><td>C1</td><td>Usabilidade — criação de pipelines</td><td><span class="lvl lvl--m">Média</span></td><td><span class="lvl lvl--l">Difícil</span></td><td><span class="lvl lvl--m">Médio</span></td></tr>
-        <tr><td>C2</td><td>Manutenibilidade — modularidade do vídeo</td><td><span class="lvl lvl--m">Média</span></td><td><span class="lvl lvl--m">Média</span></td><td><span class="lvl lvl--l">Alto</span></td></tr>
-        <tr><td>C3</td><td>Eficiência — elasticidade</td><td><span class="lvl lvl--h">Alta</span></td><td><span class="lvl lvl--m">Dep. máquina</span></td><td><span class="lvl lvl--l">Alto</span></td></tr>
-        <tr class="is-pick"><td>C4</td><td><b>Usabilidade — trabalho em segundo plano</b></td><td><span class="lvl lvl--h">Alta</span></td><td><span class="lvl lvl--h">Fácil</span></td><td><span class="lvl lvl--m">Médio</span></td></tr>
-        <tr class="is-pick"><td>C5</td><td><b>Eficiência — ficheiros grandes</b></td><td><span class="lvl lvl--h">Alta</span></td><td><span class="lvl lvl--h">Fácil</span></td><td><span class="lvl lvl--h">Baixo</span></td></tr>
-        <tr><td>C6</td><td>Segurança</td><td><span class="lvl lvl--m">Média</span></td><td><span class="lvl lvl--m">Média</span></td><td><span class="lvl lvl--m">Médio</span></td></tr>
-        <tr><td>C7</td><td>Fiabilidade — tolerância a falhas</td><td><span class="lvl lvl--h">Alta</span></td><td><span class="lvl lvl--h">Fácil</span></td><td><span class="lvl lvl--m">Médio</span></td></tr>
-        <tr><td>C8</td><td>Eficiência — tempo de processamento</td><td><span class="lvl lvl--l">Baixa</span></td><td><span class="lvl lvl--h">Fácil</span></td><td><span class="lvl lvl--l">Alto</span></td></tr>
-      </tbody>
-    </table>
-    <div class="prio">
-      <div class="prio__item"><span class="prio__n">1</span><div><h3><span class="id">QS-02</span> → <span class="id">RNF-F2-02</span></h3><p>Usabilidade — operabilidade. Atinge <b>todos os utilizadores em todas as execuções</b>; base: 0% das ações durante uma execução.</p></div></div>
-      <div class="prio__item"><span class="prio__n">2</span><div><h3><span class="id">QS-01</span> → <span class="id">RNF-F2-01</span></h3><p>Eficiência — utilização de recursos. O premium paga pelos ficheiros grandes, e é com eles que a <b>entrada única cai</b>.</p></div></div>
-      <div class="card card--muted" style="padding:16px 18px"><p style="margin:0;font-size:16.5px">Ambos têm evidência no código, escala objetiva medível por <i>script</i> e alternativas reais — sem reescrever o processamento de vídeo.</p></div>
-    </div>
-  </div>
-  <aside class="notes">
-    <p><b>~60 s.</b> Comparámos as seis ideias das diretrizes e duas fragilidades que encontrámos no código, por pertinência, facilidade de medir e risco para o prazo.</p>
-    <p>Os dois escolhidos são os dois cenários de qualidade mais prioritários: o QS-02, trabalho em segundo plano, que atinge todos os utilizadores, e o QS-01, carregamento de ficheiros grandes, que derruba a entrada única. A alternativa mais ambiciosa, separar as legendas e escalar o vídeo (C2 + C3), juntava os dois riscos mais altos.</p>
-  </aside>
-</section>
-
-<!-- ======================================================= 4 · QUANTIFICAÇÃO -->
+<!-- ======================================================= 3 · QUANTIFICAÇÃO -->
 <section class="slide" data-part="req" data-title="Quantificação">
-  <div class="kicker"><span class="kicker__num">02</span>Requisitos<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>2 min</span></div>
+  <div class="kicker"><span class="kicker__num">01</span>Requisitos e quantificação<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>3 min</span></div>
   <h2 class="title">Cada requisito com escala, base, alvo e mínimo —<br>os valores fixados depois de medir a base.</h2>
   <div class="cols cols--2">
     <div class="card card--accent">
@@ -635,49 +641,17 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
   </div>
   <div class="ctl"><b>12 controlos dos efeitos colaterais</b><p>Tempo de envio e de processamento, envio sem JWT, SHA-256, decisões de validação, temporários, órfãos, confidencialidade do estado e resultados (<span class="id">C1.1–C1.7</span>, <span class="id">C2.1–C2.5</span>). Medidos em todas as séries.</p></div>
   <aside class="notes">
-    <p><b>~2 min.</b> Para cada requisito: classificação ISO 25010, escala, método por script e três valores — base, alvo e mínimo — com origem identificável.</p>
+    <p class="who">Apresenta: <b>David Cruz</b></p>
+    <p><b>~100 s.</b> Para cada requisito: classificação ISO 25010, escala, método por script e três valores — base, alvo e mínimo — com origem identificável.</p>
     <p>RNF-F2-01: a medida principal é o acréscimo de memória do serviço que mais cresce durante um envio. Na base, com 1000 MiB, nem se mede: o Docker cai. O alvo de 64 MiB vem das partes S3 que a base já usava, com folga.</p>
     <p>RNF-F2-02: três medidas feitas com Playwright, como um utilizador. Os 2 s e 5 s vêm do REQ-VID-STATUS-003 do PL1-G4.</p>
     <p>E doze controlos, para ver se a melhoria de um atributo degrada outro.</p>
   </aside>
 </section>
 
-<!-- ======================================================= 5 · TÁTICAS -->
-<section class="slide" data-part="dec" data-title="Táticas candidatas">
-  <div class="kicker"><span class="kicker__num">03</span>Decisões<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>3 min</span></div>
-  <h2 class="title">Dez táticas candidatas: cinco escolhidas,<br>uma rejeitada por ser uma funcionalidade nova.</h2>
-  <div class="tat">
-    <div class="tat__col">
-      <h3><span class="id">QS-01</span> Carregamento</h3>
-      <div class="tat__list">
-        <div class="tat__item is-pick"><span class="id">TAT-01</span><span>Processar em fluxo, de ponta a ponta</span><span class="cls">A</span></div>
-        <div class="tat__item is-pick"><span class="id">TAT-02</span><span>Limitar o que fica em memória (partes S3, <i>buffers</i>)</span><span class="cls">A</span></div>
-        <div class="tat__item"><span class="id">TAT-03</span><span>Envio direto ao S3 com URL assinado — muda a API e expõe o armazenamento</span><span class="cls">B</span></div>
-        <div class="tat__item"><span class="id">TAT-04</span><span>Aumentar ou limitar a memória dos contentores — não muda a escala</span><span class="cls">A</span></div>
-      </div>
-    </div>
-    <div class="tat__col">
-      <h3><span class="id">QS-02</span> Trabalho em segundo plano</h3>
-      <div class="tat__list">
-        <div class="tat__item is-pick"><span class="id">TAT-05</span><span>Modelo da tarefa no servidor (estado no orquestrador)</span><span class="cls">A</span></div>
-        <div class="tat__item is-pick"><span class="id">TAT-06</span><span>Estado em qualquer página, sem bloquear</span><span class="cls">B</span></div>
-        <div class="tat__item is-pick"><span class="id">TAT-07</span><span>Cancelar depois de perder a página</span><span class="cls">A/B</span></div>
-        <div class="tat__item"><span class="id">TAT-08</span><span>Estado só no browser — falha noutra sessão</span><span class="cls">A</span></div>
-        <div class="tat__item"><span class="id">TAT-09</span><span>Consulta periódica — atraso e carga</span><span class="cls">A</span></div>
-        <div class="tat__item is-c"><span class="id">TAT-10</span><span>Pausar e retomar — funcionalidade nova</span><span class="cls">C</span></div>
-      </div>
-    </div>
-  </div>
-  <div class="legend"><span><i style="background:var(--ok)"></i>Escolhida</span><span><i style="background:var(--fail)"></i>Rejeitada (classe C)</span><span>A: <em>refactoring</em> puro · B: alteração visível que é o objeto da melhoria · C: funcionalidade nova</span><span class="muted">Catálogo: Bass, Clements e Kazman</span></div>
-  <aside class="notes">
-    <p><b>~40 s.</b> Para cada cenário, táticas do catálogo de Bass, Clements e Kazman, classificadas: A é refactoring puro, B uma alteração visível que é o próprio objeto da melhoria, C uma funcionalidade nova — rejeitada nesta fase.</p>
-    <p>Para o carregamento: processar em fluxo e limitar o que fica em memória. Para o segundo plano: guardar o modelo da tarefa no servidor, mostrar o estado em qualquer página e manter o cancelamento disponível. Pausar e retomar seria uma funcionalidade nova.</p>
-  </aside>
-</section>
-
-<!-- ======================================================= 6 · DA-1 -->
-<section class="slide" data-part="dec" data-title="DA-1 · Carregamento em fluxo">
-  <div class="kicker"><span class="kicker__num">03</span>Decisões<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>3 min</span></div>
+<!-- ======================================================= 4 · DA-1 -->
+<section class="slide" data-part="arq" data-title="DA-1 · Carregamento em fluxo">
+  <div class="kicker"><span class="kicker__num">02</span>Arquitetura e <i>refactoring</i><span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>2 min</span></div>
   <h2 class="title"><span class="id" style="font-size:.84em">DA-1</span> · Os mesmos serviços, pela mesma ordem —<br>muda a forma como os bytes passam.</h2>
   <div class="ba">
     <div class="ba__lab ba__lab--b">Antes</div>
@@ -712,15 +686,16 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
   </div>
   <p class="src">Acréscimo de memória com 500 MiB (MiB): medição inicial e medição final do RNF-F2-01. ADR-01 · ramo fase2/rnf-f2-01-carregamento · main 126c319</p>
   <aside class="notes">
-    <p><b>~60 s.</b> A DA-1 não muda a arquitetura: os mesmos serviços, pela mesma ordem, e o img_storage continua a ser a única porta para o S3. Muda a forma como os bytes passam — em blocos, de ponta a ponta.</p>
+    <p class="who">Apresenta: <b>Miguel Páscoa</b></p>
+    <p><b>~55 s.</b> A DA-1 não muda a arquitetura: os mesmos serviços, pela mesma ordem, e o img_storage continua a ser a única porta para o S3. Muda a forma como os bytes passam — em blocos, de ponta a ponta.</p>
     <p>Fizemo-lo serviço a serviço, com uma medição em cada passo: primeiro o img_storage, depois o projects, o gateway — que passou a verificar o JWT antes de ler o corpo — e o nginx. No fim, uma afinação do V8 e da glibc, porque os serviços Node ainda subiam 80 a 100 MiB.</p>
     <p>O custo: um ficheiro recusado é guardado e logo apagado. Controlámo-lo com o C1.7, que até corrigiu um órfão que a base já deixava com o 409.</p>
   </aside>
 </section>
 
-<!-- ======================================================= 7 · DA-2 -->
-<section class="slide" data-part="dec" data-title="DA-2 · Estado da execução no servidor">
-  <div class="kicker"><span class="kicker__num">03</span>Decisões<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>3 min</span></div>
+<!-- ======================================================= 5 · DA-2 -->
+<section class="slide" data-part="arq" data-title="DA-2 · Estado da execução no servidor">
+  <div class="kicker"><span class="kicker__num">02</span>Arquitetura e <i>refactoring</i><span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>2 min</span></div>
   <h2 class="title"><span class="id" style="font-size:.84em">DA-2</span> · O orquestrador passa a ser dono do estado;<br>o browser reconstrói-o em qualquer página.</h2>
   <div class="state">
     <div class="state__panel state__panel--b">
@@ -740,15 +715,241 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
     <div class="card"><div class="label">Desvio encontrado ao implementar</div><ul class="bul"><li>A sala <span class="id">project:&lt;id&gt;</span> aceita qualquer socket (<span class="id">EV-15</span>): o estado vai só para o dono e para quem iniciou</li></ul></div>
   </div>
   <aside class="notes">
-    <p><b>~70 s.</b> Na base, o progresso do vídeo ia do worker para o browser sem passar pelo orquestrador, e o estado vivia num useState da página. Por isso recarregar perdia tudo.</p>
+    <p class="who">Apresenta: <b>Miguel Páscoa</b></p>
+    <p><b>~65 s.</b> Na base, o progresso do vídeo ia do worker para o browser sem passar pelo orquestrador, e o estado vivia num useState da página. Por isso recarregar perdia tudo.</p>
     <p>A DA-2 põe o estado onde já estava o ciclo de vida da execução: no orquestrador, numa coleção runs. O worker reporta-lhe o progresso, o orquestrador publica run-status, e o browser pede o estado ao carregar e ouve os eventos.</p>
     <p>Um desvio importante: o plano mandava o evento para a sala do projeto, mas ao implementar vimos que essa sala não verifica o acesso. O estado vai só para o dono e para quem iniciou. Também tivemos de impedir que um relatório atrasado reabrisse uma execução.</p>
   </aside>
 </section>
 
-<!-- ======================================================= 8 · RESULTADOS RNF-F2-01 -->
-<section class="slide" data-part="res" data-title="Resultados · RNF-F2-01">
-  <div class="kicker"><span class="kicker__num">04</span>Resultados<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>4 min</span></div>
+<!-- ======================================================= 6 · MEDIÇÕES -->
+<section class="slide" data-part="med" data-title="Antes, depois e alvo">
+  <div class="kicker"><span class="kicker__num">03</span>Medições face ao alvo<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>2 min</span></div>
+  <h2 class="title">Na versão entregue, as seis medidas atingem o alvo<br>e nenhum controlo de efeitos colaterais piora.</h2>
+  <div class="score-wrap">
+    <table class="score">
+      <thead><tr><th>Medida</th><th>Base</th><th>Alvo</th><th>Mínimo</th><th>Depois</th><th></th></tr></thead>
+      <tbody>
+        <tr class="grp grp--a"><td colspan="6"><span class="id">RNF-F2-01</span> Carregar ficheiros grandes com memória limitada</td></tr>
+        <tr><td><b>M1.1</b>Memória a mais no serviço pior, 1000 MiB</td><td class="base">Docker cai<small>2001 MiB com 500</small></td><td class="tgt">≤ 64 MiB</td><td class="min">≤ 128 MiB</td><td class="now">62,4<small>MiB</small></td><td><span class="ok-chip"><svg class="icon"><use href="#i-check"/></svg>Alvo</span></td></tr>
+        <tr><td><b>M1.2</b>Maior ficheiro com 512 MiB por contentor</td><td class="base">100 MiB</td><td class="tgt">1000 MiB</td><td class="min">500 MiB</td><td class="now">1000<small>MiB</small></td><td><span class="ok-chip"><svg class="icon"><use href="#i-check"/></svg>Alvo</span></td></tr>
+        <tr class="grp grp--b"><td colspan="6"><span class="id">RNF-F2-02</span> Continuar a usar a aplicação durante o processamento</td></tr>
+        <tr><td><b>M2.1</b>Ações possíveis durante uma execução</td><td class="base">0%</td><td class="tgt">100%</td><td class="min">80%</td><td class="now">100<small>%</small></td><td><span class="ok-chip"><svg class="icon"><use href="#i-check"/></svg>Alvo</span></td></tr>
+        <tr><td><b>M2.2</b>Repor o estado ao recarregar</td><td class="base">não recupera</td><td class="tgt">≤ 2 s</td><td class="min">≤ 5 s</td><td class="now">0,43<small>s</small></td><td><span class="ok-chip"><svg class="icon"><use href="#i-check"/></svg>Alvo</span></td></tr>
+        <tr><td><b>M2.2</b>Avisar o fim noutra página</td><td class="base">não avisa</td><td class="tgt">≤ 2 s</td><td class="min">≤ 5 s</td><td class="now">0,12<small>s</small></td><td><span class="ok-chip"><svg class="icon"><use href="#i-check"/></svg>Alvo</span></td></tr>
+        <tr><td><b>M2.3</b>Cancelar depois de perder a página</td><td class="base">0/10</td><td class="tgt">10/10</td><td class="min">5/5</td><td class="now">10/10</td><td><span class="ok-chip"><svg class="icon"><use href="#i-check"/></svg>Alvo</span></td></tr>
+      </tbody>
+    </table>
+    <div class="score-side">
+      <div class="card" style="padding:18px 20px">
+        <div class="label">Memória a mais com 500 MiB (MiB)</div>
+        <div class="bars">
+          <div class="bars__row"><span class="bars__name">api_gateway</span><div class="bars__pair"><div class="bar bar--b" style="--w:100%"><i style="width:100%"></i><b>2001</b></div><div class="bar bar--a" style="--w:2.1%"><i style="width:2.1%"></i><b>42,6</b></div></div></div>
+          <div class="bars__row"><span class="bars__name">projects</span><div class="bars__pair"><div class="bar bar--b" style="--w:52.2%"><i style="width:52.2%"></i><b style="right:auto;left:calc(52.2% - 58px)">1044</b></div><div class="bar bar--a" style="--w:2.1%"><i style="width:2.1%"></i><b>42,7</b></div></div></div>
+          <div class="bars__row"><span class="bars__name">img_storage</span><div class="bars__pair"><div class="bar bar--b" style="--w:50.8%"><i style="width:50.8%"></i><b style="right:auto;left:calc(50.8% - 58px)">1016</b></div><div class="bar bar--a" style="--w:2.8%"><i style="width:2.8%"></i><b>55,3</b></div></div></div>
+        </div>
+        <div class="bars__axis"><span><i style="background:#E0664F"></i>Base</span><span><i style="background:var(--ok)"></i>Depois</span><span>36× menos no gateway</span></div>
+      </div>
+      <div class="verdict verdict--warn score-warn"><svg class="icon"><use href="#i-alert"/></svg><div><b>M1.1 depende da máquina.</b> O alvo vale na máquina de medição; em Linux e macOS o valor também fica fixo com o tamanho, mas mais alto (87 e ~190 MiB). Apêndice A8.</div></div>
+    </div>
+  </div>
+  <div class="ctlstrip">
+    <div><svg class="icon"><use href="#i-check-circle"/></svg><span><b>12 controlos cumprem</b>; vários melhoram: aceitar 500 MiB 8,96 → 0,97 s; envio sem JWT +1006 → +20 MiB</span></div>
+    <div><svg class="icon"><use href="#i-check-circle"/></svg><span><b>Tempo de processamento igual à base</b>, em blocos <span class="nw">A-B-A</span> na mesma sessão (282,5 s vs 284,5 e 287,6 s)</span></div>
+    <div><svg class="icon"><use href="#i-check-circle"/></svg><span><b>Regressão 18/18</b> ponta a ponta com as mesmas impressões (SHA-256, metadados) da base</span></div>
+  </div>
+  <aside class="notes">
+    <p class="who">Apresenta: <b>Tiago Barros</b></p>
+    <p><b>~2 min.</b> Os valores são da versão entregue, com os dois requisitos integrados, medidos com os mesmos scripts da base.</p>
+    <p>RNF-F2-01: com 1000 MiB, que na base deitava abaixo o Docker, o serviço pior sobe 62 MiB, dentro do alvo de 64. Com 500 MiB, o gateway passou de 2001 para 43 MiB, 36 vezes menos. E com 512 MiB por contentor o maior ficheiro aceite passou de 100 MiB para 1000.</p>
+    <p>RNF-F2-02: as dez ações passaram de 0 a 100%; recarregar repõe o estado em menos de meio segundo; o fim é avisado noutra página em 0,1 s; e o cancelamento funcionou em todas as tentativas.</p>
+    <p>Sem efeitos colaterais: os doze controlos cumprem, e alguns melhoraram. O tempo de processamento, que varia muito entre sessões, comparámo-lo com a base na mesma sessão. A regressão dá as mesmas impressões da base.</p>
+    <p>Uma ressalva honesta: noutras duas máquinas a memória também fica fixa com o tamanho do ficheiro, mas num patamar mais alto. O comportamento repete-se; o patamar depende da plataforma.</p>
+  </aside>
+</section>
+
+<!-- ======================================================= 7 · DEMONSTRAÇÃO -->
+<section class="slide" data-part="demo" data-title="Demonstração">
+  <div class="kicker"><span class="kicker__num">04</span>Demonstração<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>3 min</span></div>
+  <h2 class="title">Demonstração na versão entregue (<span class="id" style="font-size:.84em">main</span>)</h2>
+  <div class="demo" style="grid-template-columns:860px 1fr">
+    <ol class="script">
+      <li><time>0:00</time><div><b>Aplicar o pipeline ao projeto P</b> (vídeo de 330 s e duas imagens): aparece a faixa com o progresso e o <b>Cancel</b>; o resto da página funciona.<span class="ref"><span>TAT-06</span><span>M2.1</span></span></div></li>
+      <li><time>0:30</time><div><b>Ir para outra página</b> (lista de projetos, conta): o painel no canto mostra a execução.<span class="ref"><span>M2.1</span></span></div></li>
+      <li><time>1:00</time><div><b>Voltar a P e recarregar a página</b>: o progresso volta, no mesmo ponto.<span class="ref"><span>TAT-05</span><span>M2.2 R</span></span></div></li>
+      <li><time>1:30</time><div><b>Cancelar</b> a partir do estado reposto: o projeto volta a ficar editável.<span class="ref"><span>TAT-07</span><span>M2.3</span></span></div></li>
+      <li><time>2:00</time><div><b>Carregar um vídeo de 500 MiB</b> com o <span class="id">docker stats</span> ao lado: a memória do gateway, do projects e do img_storage fica estável.<span class="ref"><span>DA-1</span><span>M1.1</span></span></div></li>
+      <li class="opt"><time>2:40</time><div>Se houver tempo: deixar uma execução acabar noutra página e ver o aviso de fim.<span class="ref"><span>M2.2 F</span></span></div></li>
+    </ol>
+    <div>
+      <div class="prep"><div class="label">Preparação, antes da defesa</div>
+        <ul>
+          <li><svg class="icon"><use href="#i-check"/></svg><span>main com <span class="id">docker compose up -d</span> e serviços prontos</span></li>
+          <li><svg class="icon"><use href="#i-check"/></svg><span>Conta premium com sessão iniciada</span></li>
+          <li><svg class="icon"><use href="#i-check"/></svg><span>Projeto P já criado, com o pipeline</span></li>
+          <li><svg class="icon"><use href="#i-check"/></svg><span>Ficheiro de 500 MiB gerado (<span class="id">gerar-dados.mjs</span>)</span></li>
+          <li><svg class="icon"><use href="#i-check"/></svg><span>Terminal com <span class="id">docker stats</span> aberto</span></li>
+          <li><svg class="icon"><use href="#i-check"/></svg><span>Portátil ligado à corrente</span></li>
+        </ul>
+      </div>
+      <div class="card card--muted" style="margin-top:16px;padding:16px 20px"><div class="label">Plano B</div><p style="font-size:16.5px">Os <i>scripts</i> de medição gravam um vídeo de cada execução no browser (<span class="id">medicoes/final/*/videos/</span>, só na máquina de medição). Mostrar a gravação de uma M2.2 e de uma M2.3 se a demonstração ao vivo falhar.</p></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="who">Apresenta: <b>Pedro Rebelo</b></p>
+    <p><b>~3 min.</b> Carregar em B (ecrã preto) para mudar para o browser.</p>
+    <p>Mostrar primeiro o RNF-F2-02, porque é visível: aplicar, sair, recarregar, cancelar. Depois o RNF-F2-01 com o docker stats ao lado: carregar 500 MiB e ver que a memória não sobe com o ficheiro.</p>
+    <p>Se algo falhar, não insistir: mostrar a gravação do Playwright.</p>
+  </aside>
+</section>
+
+<!-- ======================================================= 8 · FECHO -->
+<section class="slide s-end" data-part="fecho" data-title="Fecho e perguntas">
+  <div class="kicker"><span class="kicker__num">05</span>Perguntas<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>5 min</span></div>
+  <h2 class="title">Os dois requisitos cumpridos, com o alvo atingido,<br>sem funcionalidades novas e sem regressões.</h2>
+  <div class="stats">
+    <div class="stat stat--accent"><strong>36<small>×</small></strong><span>menos memória com 500 MiB, na máquina de medição (2001 → 55 MiB)</span></div>
+    <div class="stat"><strong>1000<small>MiB</small></strong><span>maior ficheiro com 512 MiB por contentor (era 100)</span></div>
+    <div class="stat"><strong>100<small>%</small></strong><span>das ações possíveis durante uma execução (era 0%)</span></div>
+    <div class="stat"><strong>18/18</strong><span>testes ponta a ponta com as impressões da base</span></div>
+  </div>
+  <div class="next">
+    <div class="next__title"><h3>O que fica</h3><p>Limitações e passos seguintes</p></div>
+    <div class="next__item"><b>Margem da M1.1 por plataforma</b><span>Noutras máquinas o valor é fixo, mas mais alto; medir a memória por processo no contentor (H-05) antes de afinar.</span></div>
+    <div class="next__item"><b>Capacidade do vídeo</b><span>Réplicas do worker e fila própria para a legendagem (QS-03, ALT-1).</span></div>
+    <div class="next__item"><b>Segurança</b><span>Verificar o acesso na sala <span class="id">project:&lt;id&gt;</span> (EV-15), que a DA-2 contornou.</span></div>
+  </div>
+  <div class="thanks"><h3>Obrigado<span>.</span> Perguntas?</h3><p>Relatório, ADR, medições e código<br>github.com/davidserreira/picturas-27-extension · main e fase2/integracao</p></div>
+  <aside class="notes">
+    <p class="who">Apresenta: <b>Tiago Barros (fecho) · todos (perguntas)</b></p>
+    <p><b>~20 s, depois perguntas.</b> Resumindo: os dois requisitos cumpridos com o alvo atingido, medidos com o mesmo método antes e depois, sem funcionalidades novas e com a regressão igual à base.</p>
+    <p>Fica a margem da M1.1 noutras máquinas, a capacidade do vídeo e a sala sem verificação de acesso. Obrigado — estamos disponíveis para perguntas. O apêndice tem o detalhe: arquitetura de base, escolha, táticas, cada medição, reproduções, controlos e uso de IA.</p>
+  </aside>
+</section>
+
+<!-- ======================================================= APÊNDICE -->
+<!-- ------------------------------------------------------- A1 -->
+<section class="slide s-appx" data-part="apendice" data-title="A1 · A solução de base">
+  <div class="kicker"><span class="kicker__num">A1</span>Apêndice</div>
+  <h2 class="title">Microsserviços com orquestração central.<br>O vídeo segue o padrão global, mas tem duas fragilidades.</h2>
+  <div class="cols cols--2-1">
+    <div class="flow">
+      <div class="flow__lab">Carregamento de um vídeo</div>
+      <div class="flow__row">
+        <div class="node">browser</div><div class="arr arr--hot"></div>
+        <div class="node">nginx<small>guarda o corpo</small></div><div class="arr arr--hot"></div>
+        <div class="node node--hot">api_gateway<small>ficheiro em memória</small></div><div class="arr arr--hot"></div>
+        <div class="node node--hot">projects<small>ficheiro em memória</small></div><div class="arr arr--hot"></div>
+        <div class="node node--hot">img_storage<small>ficheiro em memória</small></div>
+      </div>
+      <div class="flow__lab" style="margin-top:26px">Processamento de um vídeo (Apply)</div>
+      <div class="flow__row">
+        <div class="node">projects<small>orquestrador</small></div><div class="arr"></div>
+        <div class="node node--q">video_queue<small>1 mensagem</small></div><div class="arr"></div>
+        <div class="node">video_tool<small>único worker</small></div><div class="arr arr--hot"></div>
+        <div class="node node--q">ws_queue</div><div class="arr arr--hot"></div>
+        <div class="node node--hot">browser<small>estado só aqui</small></div>
+      </div>
+      <div class="patterns">
+        <span class="tag">Microsserviços + API Gateway</span><span class="tag">Filas (RabbitMQ)</span><span class="tag">Orquestração central</span><span class="tag tag--sys">Vídeo: worker único com o pipeline inteiro</span>
+      </div>
+    </div>
+    <div>
+      <div class="issue"><span class="issue__n">1</span><div><h3>O ficheiro inteiro em memória em três serviços seguidos</h3><p>Com 500 MiB, o <span class="id">api_gateway</span> sobe <b>2001 MiB</b>; com 1000 MiB, a instalação inteira deixa de responder. <span class="id">EV-13</span></p></div></div>
+      <div class="issue"><span class="issue__n">2</span><div><h3>O progresso do vídeo não passa pelo orquestrador</h3><p>O estado da execução só existe no browser e um painel bloqueia a página: recarregar perde o progresso e o cancelamento. <span class="id">EV-03</span> <span class="id">EV-04</span></p></div></div>
+    </div>
+  </div>
+  <aside class="notes"><p class="who">Responde: <b>David</b></p>
+    <p>A base é a solução do PL1-G4, commit 0523102: microsserviços atrás de um nginx e de um API Gateway, processamento assíncrono por filas e um orquestrador central, o projects.</p>
+    <p>O vídeo segue o padrão global (filas, resultado na project_queue), mas com um único worker que aplica o pipeline inteiro. Duas fragilidades. Primeira: no carregamento, três serviços guardam o ficheiro inteiro em memória antes de o passar — vem do padrão global mal aplicado. Segunda: o worker manda o progresso diretamente para o browser, e o orquestrador não o guarda — vem do desvio do vídeo face à orquestração central.</p>
+  </aside>
+</section>
+
+<!-- ------------------------------------------------------- A2 -->
+<section class="slide s-appx" data-part="apendice" data-title="A2 · Escolha dos dois requisitos">
+  <div class="kicker"><span class="kicker__num">A2</span>Apêndice</div>
+  <h2 class="title">Oito candidatos estudados; escolhemos os dois<br>cenários de qualidade mais prioritários.</h2>
+  <div class="cols cols--2-1" style="grid-template-columns:1.35fr 1fr">
+    <table class="cand">
+      <thead><tr><th>#</th><th>Candidato</th><th>Pertinência</th><th>Medir</th><th>Risco</th></tr></thead>
+      <tbody>
+        <tr><td>C1</td><td>Usabilidade — criação de pipelines</td><td><span class="lvl lvl--m">Média</span></td><td><span class="lvl lvl--l">Difícil</span></td><td><span class="lvl lvl--m">Médio</span></td></tr>
+        <tr><td>C2</td><td>Manutenibilidade — modularidade do vídeo</td><td><span class="lvl lvl--m">Média</span></td><td><span class="lvl lvl--m">Média</span></td><td><span class="lvl lvl--l">Alto</span></td></tr>
+        <tr><td>C3</td><td>Eficiência — elasticidade</td><td><span class="lvl lvl--h">Alta</span></td><td><span class="lvl lvl--m">Dep. máquina</span></td><td><span class="lvl lvl--l">Alto</span></td></tr>
+        <tr class="is-pick"><td>C4</td><td><b>Usabilidade — trabalho em segundo plano</b></td><td><span class="lvl lvl--h">Alta</span></td><td><span class="lvl lvl--h">Fácil</span></td><td><span class="lvl lvl--m">Médio</span></td></tr>
+        <tr class="is-pick"><td>C5</td><td><b>Eficiência — ficheiros grandes</b></td><td><span class="lvl lvl--h">Alta</span></td><td><span class="lvl lvl--h">Fácil</span></td><td><span class="lvl lvl--h">Baixo</span></td></tr>
+        <tr><td>C6</td><td>Segurança</td><td><span class="lvl lvl--m">Média</span></td><td><span class="lvl lvl--m">Média</span></td><td><span class="lvl lvl--m">Médio</span></td></tr>
+        <tr><td>C7</td><td>Fiabilidade — tolerância a falhas</td><td><span class="lvl lvl--h">Alta</span></td><td><span class="lvl lvl--h">Fácil</span></td><td><span class="lvl lvl--m">Médio</span></td></tr>
+        <tr><td>C8</td><td>Eficiência — tempo de processamento</td><td><span class="lvl lvl--l">Baixa</span></td><td><span class="lvl lvl--h">Fácil</span></td><td><span class="lvl lvl--l">Alto</span></td></tr>
+      </tbody>
+    </table>
+    <div class="prio">
+      <div class="prio__item"><span class="prio__n">1</span><div><h3><span class="id">QS-02</span> → <span class="id">RNF-F2-02</span></h3><p>Usabilidade — operabilidade. Atinge <b>todos os utilizadores em todas as execuções</b>; base: 0% das ações durante uma execução.</p></div></div>
+      <div class="prio__item"><span class="prio__n">2</span><div><h3><span class="id">QS-01</span> → <span class="id">RNF-F2-01</span></h3><p>Eficiência — utilização de recursos. O premium paga pelos ficheiros grandes, e é com eles que a <b>entrada única cai</b>.</p></div></div>
+      <div class="card card--muted" style="padding:16px 18px"><p style="margin:0;font-size:16.5px">Ambos têm evidência no código, escala objetiva medível por <i>script</i> e alternativas reais — sem reescrever o processamento de vídeo.</p></div>
+    </div>
+  </div>
+  <aside class="notes"><p class="who">Responde: <b>David</b></p>
+    <p>Comparámos as seis ideias das diretrizes e duas fragilidades que encontrámos no código, por pertinência, facilidade de medir e risco para o prazo.</p>
+    <p>Os dois escolhidos são os dois cenários de qualidade mais prioritários: o QS-02, trabalho em segundo plano, que atinge todos os utilizadores, e o QS-01, carregamento de ficheiros grandes, que derruba a entrada única. A alternativa mais ambiciosa, separar as legendas e escalar o vídeo (C2 + C3), juntava os dois riscos mais altos.</p>
+  </aside>
+</section>
+
+<!-- ------------------------------------------------------- A3 -->
+<section class="slide s-appx" data-part="apendice" data-title="A3 · Cenários de qualidade">
+  <div class="kicker"><span class="kicker__num">A3</span>Apêndice</div>
+  <h2 class="title">Os dois cenários de qualidade (seis elementos)</h2>
+  <table class="trace-table">
+    <thead><tr><th>Elemento</th><th>QS-01 · utilização de recursos</th><th>QS-02 · operabilidade</th></tr></thead>
+    <tbody>
+      <tr><td>Fragilidade</td><td>Ficheiro inteiro em memória em cada serviço (EV-13)</td><td>Estado só no browser; painel que bloqueia (EV-03, EV-04, EV-14)</td></tr>
+      <tr><td>Fonte</td><td>Utilizador premium</td><td>Utilizador registado ou premium</td></tr>
+      <tr><td>Estímulo</td><td>Carrega um vídeo de 1000 MiB</td><td>Recarrega, muda de página ou abre outra sessão a meio de uma execução</td></tr>
+      <tr><td>Artefacto</td><td>nginx, api_gateway, projects, img_storage</td><td>Frontend, projects, ws_gateway, video_tool</td></tr>
+      <tr><td>Ambiente</td><td>Operação normal, um envio de cada vez</td><td>Execução de um vídeo e duas imagens em curso</td></tr>
+      <tr><td>Resposta</td><td>Aceite e guardado sem alteração; memória sem acompanhar o ficheiro</td><td>Continua a usar, vê o progresso, cancela, é avisado do fim</td></tr>
+      <tr><td>Medida</td><td>MiB por serviço (M1.1); maior ficheiro com 512 MiB (M1.2)</td><td>% de ações (M2.1); segundos (M2.2); cancelamentos (M2.3)</td></tr>
+    </tbody>
+  </table>
+  <aside class="notes"><p class="who">Responde: <b>David</b></p><p>Capítulo 5 do relatório. Os outros três cenários (capacidade, recuperabilidade, autenticidade) ficaram com prioridade 3 a 5.</p></aside>
+</section>
+
+<!-- ------------------------------------------------------- A4 -->
+<section class="slide s-appx" data-part="apendice" data-title="A4 · Táticas candidatas">
+  <div class="kicker"><span class="kicker__num">A4</span>Apêndice</div>
+  <h2 class="title">Dez táticas candidatas: cinco escolhidas,<br>uma rejeitada por ser uma funcionalidade nova.</h2>
+  <div class="tat">
+    <div class="tat__col">
+      <h3><span class="id">QS-01</span> Carregamento</h3>
+      <div class="tat__list">
+        <div class="tat__item is-pick"><span class="id">TAT-01</span><span>Processar em fluxo, de ponta a ponta</span><span class="cls">A</span></div>
+        <div class="tat__item is-pick"><span class="id">TAT-02</span><span>Limitar o que fica em memória (partes S3, <i>buffers</i>)</span><span class="cls">A</span></div>
+        <div class="tat__item"><span class="id">TAT-03</span><span>Envio direto ao S3 com URL assinado — muda a API e expõe o armazenamento</span><span class="cls">B</span></div>
+        <div class="tat__item"><span class="id">TAT-04</span><span>Aumentar ou limitar a memória dos contentores — não muda a escala</span><span class="cls">A</span></div>
+      </div>
+    </div>
+    <div class="tat__col">
+      <h3><span class="id">QS-02</span> Trabalho em segundo plano</h3>
+      <div class="tat__list">
+        <div class="tat__item is-pick"><span class="id">TAT-05</span><span>Modelo da tarefa no servidor (estado no orquestrador)</span><span class="cls">A</span></div>
+        <div class="tat__item is-pick"><span class="id">TAT-06</span><span>Estado em qualquer página, sem bloquear</span><span class="cls">B</span></div>
+        <div class="tat__item is-pick"><span class="id">TAT-07</span><span>Cancelar depois de perder a página</span><span class="cls">A/B</span></div>
+        <div class="tat__item"><span class="id">TAT-08</span><span>Estado só no browser — falha noutra sessão</span><span class="cls">A</span></div>
+        <div class="tat__item"><span class="id">TAT-09</span><span>Consulta periódica — atraso e carga</span><span class="cls">A</span></div>
+        <div class="tat__item is-c"><span class="id">TAT-10</span><span>Pausar e retomar — funcionalidade nova</span><span class="cls">C</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="legend"><span><i style="background:var(--ok)"></i>Escolhida</span><span><i style="background:var(--fail)"></i>Rejeitada (classe C)</span><span>A: <em>refactoring</em> puro · B: alteração visível que é o objeto da melhoria · C: funcionalidade nova</span><span class="muted">Catálogo: Bass, Clements e Kazman</span></div>
+  <aside class="notes"><p class="who">Responde: <b>Miguel</b></p>
+    <p>Para cada cenário, táticas do catálogo de Bass, Clements e Kazman, classificadas: A é refactoring puro, B uma alteração visível que é o próprio objeto da melhoria, C uma funcionalidade nova — rejeitada nesta fase.</p>
+    <p>Para o carregamento: processar em fluxo e limitar o que fica em memória. Para o segundo plano: guardar o modelo da tarefa no servidor, mostrar o estado em qualquer página e manter o cancelamento disponível. Pausar e retomar seria uma funcionalidade nova.</p>
+  </aside>
+</section>
+
+<!-- ------------------------------------------------------- A5 -->
+<section class="slide s-appx" data-part="apendice" data-title="A5 · Resultados · RNF-F2-01">
+  <div class="kicker"><span class="kicker__num">A5</span>Apêndice</div>
   <h2 class="title"><span class="id" style="font-size:.84em">RNF-F2-01</span> · A memória deixa de acompanhar<br>o tamanho do ficheiro: alvo atingido.</h2>
   <div class="cols cols--2-1" style="grid-template-columns:1.3fr 1fr;margin-top:26px">
     <div class="card">
@@ -768,15 +969,15 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
       <div class="kpi" style="grid-column:1 / -1"><div class="kpi__lab">C1.3 · 500 MiB sem JWT</div><div class="kpi__ba"><span class="kpi__from">+1006 MiB</span><span class="kpi__to">+24<small>MiB</small></span></div><div class="kpi__note">O JWT passou a ser verificado antes de ler o corpo · C1.4 a C1.7 cumprem</div></div>
     </div>
   </div>
-  <aside class="notes">
-    <p><b>~60 s.</b> Com 500 MiB, o api_gateway passou de 2001 MiB para 43 — 36 vezes menos. Com 1000 MiB, que na base deitava abaixo o Docker, o serviço pior fica nos 56 MiB, abaixo do alvo de 64. A partir de 100 MiB o valor praticamente não muda com o tamanho do ficheiro, que é o que o requisito pede.</p>
+  <aside class="notes"><p class="who">Responde: <b>Tiago</b></p>
+    <p>Com 500 MiB, o api_gateway passou de 2001 MiB para 43 — 36 vezes menos. Com 1000 MiB, que na base deitava abaixo o Docker, o serviço pior fica nos 56 MiB, abaixo do alvo de 64. A partir de 100 MiB o valor praticamente não muda com o tamanho do ficheiro, que é o que o requisito pede.</p>
     <p>Com cada contentor limitado a 512 MiB, o maior ficheiro aceite passou de 100 MiB para 1000. E os controlos melhoraram em vez de piorar: aceitar 500 MiB passou de 9 s para menos de 1 s, porque os serviços trabalham em paralelo, e o envio sem JWT deixou de ocupar memória.</p>
   </aside>
 </section>
 
-<!-- ======================================================= 9 · RESULTADOS RNF-F2-02 -->
-<section class="slide" data-part="res" data-title="Resultados · RNF-F2-02">
-  <div class="kicker"><span class="kicker__num">04</span>Resultados<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>4 min</span></div>
+<!-- ------------------------------------------------------- A6 -->
+<section class="slide s-appx" data-part="apendice" data-title="A6 · Resultados · RNF-F2-02">
+  <div class="kicker"><span class="kicker__num">A6</span>Apêndice</div>
   <h2 class="title"><span class="id" style="font-size:.84em">RNF-F2-02</span> · O utilizador continua a trabalhar<br>e não perde a execução: alvo atingido nas três medidas.</h2>
   <div class="kpis kpis--4" style="margin-top:34px">
     <div class="kpi"><div class="kpi__lab">M2.1 · ações durante uma execução</div><div class="kpi__ba"><span class="kpi__from">0%</span><span class="kpi__to">100<small>%</small></span></div><div class="kpi__tgt"><svg class="icon"><use href="#i-check"/></svg>Alvo 100%</div><div class="kpi__note">10 ações em 3 execuções; 0,1 a 0,3 s dentro de P</div></div>
@@ -788,15 +989,15 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
     <div class="card"><div class="card__top"><span class="id">C2.2</span><span class="tag tag--ok">Passa a cumprir</span></div><h3>Maior intervalo sem o progresso mudar: 16,9 s → 2,2 s</h3><p>O progresso mudou 356 a 375 vezes por execução, contra 25 na base. A base nem cumpria o limite de 5 s do REQ-VID-STATUS-003.</p></div>
     <div class="card"><div class="card__top"><span class="id">C2.3</span><span class="tag tag--ok">Cumpre</span></div><h3>O estado não chega a terceiros</h3><p>Outro utilizador e um pedido sem JWT recebem 401; o dono recebe 200. Os resultados ficam iguais com execuções sobrepostas e com uma ferramenta acrescentada a meio (C2.4, C2.5).</p></div>
   </div>
-  <aside class="notes">
-    <p><b>~50 s.</b> Na base nenhuma das dez ações era possível sem perder a execução; agora são todas, nas três execuções. Recarregar repõe o estado em menos de 0,7 s, e o fim é avisado noutra página em 0,1 s. O cancelamento funcionou em todas as tentativas, a recarregar e noutra sessão.</p>
+  <aside class="notes"><p class="who">Responde: <b>Tiago</b></p>
+    <p>Na base nenhuma das dez ações era possível sem perder a execução; agora são todas, nas três execuções. Recarregar repõe o estado em menos de 0,7 s, e o fim é avisado noutra página em 0,1 s. O cancelamento funcionou em todas as tentativas, a recarregar e noutra sessão.</p>
     <p>Um efeito colateral positivo: o progresso, que na base ficava até 17 s parado, muda agora a cada 2 s.</p>
   </aside>
 </section>
 
-<!-- ======================================================= 10 · OS DOIS JUNTOS -->
-<section class="slide" data-part="res" data-title="Os dois juntos · A-B-A">
-  <div class="kicker"><span class="kicker__num">04</span>Resultados<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>4 min</span></div>
+<!-- ------------------------------------------------------- A7 -->
+<section class="slide s-appx" data-part="apendice" data-title="A7 · Os dois juntos · A-B-A">
+  <div class="kicker"><span class="kicker__num">A7</span>Apêndice</div>
   <h2 class="title">Integrados, nenhum piora o outro — e o tempo de<br>processamento é igual ao da base na mesma sessão.</h2>
   <div class="cols cols--1-2" style="grid-template-columns:1fr 1.25fr;margin-top:24px">
     <table class="res">
@@ -831,15 +1032,15 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
       </svg>
     </div>
   </div>
-  <aside class="notes">
-    <p><b>~60 s.</b> Medimos cada requisito no seu ramo e depois os dois integrados: as medidas principais mantêm o alvo, os controlos cumprem e a regressão dá os mesmos resultados.</p>
+  <aside class="notes"><p class="who">Responde: <b>Tiago</b></p>
+    <p>Medimos cada requisito no seu ramo e depois os dois integrados: as medidas principais mantêm o alvo, os controlos cumprem e a regressão dá os mesmos resultados.</p>
     <p>O tempo de processamento era o único controlo perto do limite, e a máquina variou até 40% entre sessões. Por isso comparámos com a base na mesma sessão, em três blocos: base, integrado, base. A mediana do integrado ficou entre as duas da base. Houve uma execução lenta, mas o tempo a mais estava todo no worker, e fora dele foram 2,2 s, como nas outras.</p>
   </aside>
 </section>
 
-<!-- ======================================================= 11 · REPRODUÇÕES E LIMITES -->
-<section class="slide" data-part="res" data-title="Reproduções e limites">
-  <div class="kicker"><span class="kicker__num">04</span>Resultados<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>4 min</span></div>
+<!-- ------------------------------------------------------- A8 -->
+<section class="slide s-appx" data-part="apendice" data-title="A8 · Reproduções e limites">
+  <div class="kicker"><span class="kicker__num">A8</span>Apêndice</div>
   <h2 class="title">Noutras duas máquinas, a melhoria repete-se;<br>o patamar da M1.1 depende da máquina.</h2>
   <table class="res" style="margin-top:26px">
     <thead><tr><th></th><th>Máquina de medição · Windows, i5-12450H</th><th>Pedro · Linux, i5-11300H</th><th>Miguel · macOS, M1 Pro (ARM)</th></tr></thead>
@@ -856,16 +1057,16 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
     <div class="verdict verdict--warn" style="margin-top:0"><svg class="icon"><use href="#i-alert"/></svg><div><b>O alvo da M1.1 vale para a máquina de medição.</b> Noutras, o <span class="id">projects</span> ficou entre o alvo e o mínimo, ou acima, mas <b>fixo</b>: no Mac, ~190 MiB com 100, 500 e 1000 MiB (na base, +1193 MiB com 500). <span class="id">H-05</span>: o patamar depende da plataforma; limitar o <i>heap</i> do V8 não o baixa.</div></div>
     <div class="card card--muted" style="padding:16px 20px"><div class="label">Outras ameaças à validade</div><ul class="bul" style="margin-top:8px"><li>Tempos só comparáveis na mesma sessão (A-B-A)</li><li>Quatro falhas do instrumento registadas, não descartadas</li><li>Sem envios em simultâneo nem utilizadores reais</li></ul></div>
   </div>
-  <aside class="notes">
-    <p><b>~50 s.</b> As diretrizes pedem medições que outra pessoa consiga repetir. O Pedro e o Miguel correram uma reprodução curta nas suas máquinas.</p>
+  <aside class="notes"><p class="who">Responde: <b>Pedro</b></p>
+    <p>As diretrizes pedem medições que outra pessoa consiga repetir. O Pedro e o Miguel correram uma reprodução curta nas suas máquinas.</p>
     <p>A melhoria repete-se: na base o gateway sobe quase 2 GB, no main nenhum serviço passa de 182 MiB, e o estado e o cancelamento funcionam. Mas a margem da M1.1 não: o projects ficou acima do alvo nas duas máquinas, e no Mac acima do mínimo. Não escondemos isto: o relatório diz que o alvo foi atingido na máquina de medição. Mas o comportamento que o requisito pede repete-se: no Mac medimos os quatro tamanhos, e o projects fica nos ~190 MiB de 100 a 1000 MiB, quando na base subia 1193 MiB só com 500. O que muda entre máquinas é o patamar. Testámos dar ao projects o limite do V8 que o img_storage já tem, e não mudou nada: a causa não é o heap do V8 e fica como hipótese (glibc, cache de páginas ou ffprobe, que o docker stats não separa).</p>
     <p>As diferenças de SHA-256 no Mac são só em imagens PNG, provavelmente pela compressão em ARM; no Linux do Pedro, o mesmo código deu 18 em 18.</p>
   </aside>
 </section>
 
-<!-- ======================================================= 12 · PRESERVAÇÃO FUNCIONAL -->
-<section class="slide" data-part="res" data-title="Preservação funcional">
-  <div class="kicker"><span class="kicker__num">04</span>Resultados<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>4 min</span></div>
+<!-- ------------------------------------------------------- A9 -->
+<section class="slide s-appx" data-part="apendice" data-title="A9 · Preservação funcional">
+  <div class="kicker"><span class="kicker__num">A9</span>Apêndice</div>
   <h2 class="title">A funcionalidade existente mantém-se: mesmos testes,<br>mesmas impressões da base, em cada passo e no fim.</h2>
   <div class="suites">
     <div class="suite"><h3>Worker de vídeo</h3><p>pytest, já existente</p><div class="suite__n"><b>75/75</b><span>base 74/74</span></div><div class="suite__tag"><span class="tag">+1 cadência do progresso</span></div></div>
@@ -877,110 +1078,15 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
     <div class="card"><div class="label">Porquê suites novas</div><p>Os testes da base eram unitários e não passavam pelo gateway, pelo armazenamento nem pela interface — precisamente o que foi alterado. As novas cobrem carregamento, 9 ferramentas de imagem, efeitos de vídeo, corte e velocidade, legendagem real, extração de fotogramas, projetos mistos, cancelamento, quotas e acesso.</p></div>
     <div class="card"><div class="label">Impressão de cada resultado</div><p>SHA-256 dos ficheiros, duração, resolução, codec, som, fotogramas e mensagens de recusa. Uma versão só preserva a funcionalidade se der <b>as mesmas impressões da base</b>, e não só os mesmos testes passados. Duas corridas na base deram impressões iguais.</p></div>
   </div>
-  <aside class="notes">
-    <p><b>~40 s.</b> A preservação funcional verificou-se com uma suite que correu na base antes de qualquer alteração, em cada passo dos dois ADR e no fim. Os testes que o repositório tinha não cobriam as partes alteradas, por isso escrevemos 18 testes ponta a ponta e 3 de interface.</p>
+  <aside class="notes"><p class="who">Responde: <b>Pedro</b></p>
+    <p>A preservação funcional verificou-se com uma suite que correu na base antes de qualquer alteração, em cada passo dos dois ADR e no fim. Os testes que o repositório tinha não cobriam as partes alteradas, por isso escrevemos 18 testes ponta a ponta e 3 de interface.</p>
     <p>O mais importante é a impressão: comparamos o SHA-256 e os metadados de cada resultado com os da base, não só se o teste passa.</p>
   </aside>
 </section>
 
-<!-- ======================================================= 13 · DEMONSTRAÇÃO -->
-<section class="slide" data-part="demo" data-title="Demonstração">
-  <div class="kicker"><span class="kicker__num">05</span>Demonstração<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>3 min</span></div>
-  <h2 class="title">Demonstração na versão entregue (<span class="id" style="font-size:.84em">main</span>)</h2>
-  <div class="demo" style="grid-template-columns:860px 1fr">
-    <ol class="script">
-      <li><time>0:00</time><div><b>Aplicar o pipeline ao projeto P</b> (vídeo de 330 s e duas imagens): aparece a faixa com o progresso e o <b>Cancel</b>; o resto da página funciona.<span class="ref"><span>TAT-06</span><span>M2.1</span></span></div></li>
-      <li><time>0:30</time><div><b>Ir para outra página</b> (lista de projetos, conta): o painel no canto mostra a execução.<span class="ref"><span>M2.1</span></span></div></li>
-      <li><time>1:00</time><div><b>Voltar a P e recarregar a página</b>: o progresso volta, no mesmo ponto.<span class="ref"><span>TAT-05</span><span>M2.2 R</span></span></div></li>
-      <li><time>1:30</time><div><b>Cancelar</b> a partir do estado reposto: o projeto volta a ficar editável.<span class="ref"><span>TAT-07</span><span>M2.3</span></span></div></li>
-      <li><time>2:00</time><div><b>Carregar um vídeo de 500 MiB</b> com o <span class="id">docker stats</span> ao lado: a memória do gateway, do projects e do img_storage fica estável.<span class="ref"><span>DA-1</span><span>M1.1</span></span></div></li>
-      <li class="opt"><time>2:40</time><div>Se houver tempo: deixar uma execução acabar noutra página e ver o aviso de fim.<span class="ref"><span>M2.2 F</span></span></div></li>
-    </ol>
-    <div>
-      <div class="prep"><div class="label">Preparação, antes da defesa</div>
-        <ul>
-          <li><svg class="icon"><use href="#i-check"/></svg><span>main com <span class="id">docker compose up -d</span> e serviços prontos</span></li>
-          <li><svg class="icon"><use href="#i-check"/></svg><span>Conta premium com sessão iniciada</span></li>
-          <li><svg class="icon"><use href="#i-check"/></svg><span>Projeto P já criado, com o pipeline</span></li>
-          <li><svg class="icon"><use href="#i-check"/></svg><span>Ficheiro de 500 MiB gerado (<span class="id">gerar-dados.mjs</span>)</span></li>
-          <li><svg class="icon"><use href="#i-check"/></svg><span>Terminal com <span class="id">docker stats</span> aberto</span></li>
-          <li><svg class="icon"><use href="#i-check"/></svg><span>Portátil ligado à corrente</span></li>
-        </ul>
-      </div>
-      <div class="card card--muted" style="margin-top:16px;padding:16px 20px"><div class="label">Plano B</div><p style="font-size:16.5px">Os <i>scripts</i> de medição gravam um vídeo de cada execução no browser (<span class="id">medicoes/final/*/videos/</span>, só na máquina de medição). Mostrar a gravação de uma M2.2 e de uma M2.3 se a demonstração ao vivo falhar.</p></div>
-    </div>
-  </div>
-  <aside class="notes">
-    <p><b>~3 min.</b> Carregar em B (ecrã preto) para mudar para o browser.</p>
-    <p>Mostrar primeiro o RNF-F2-02, porque é visível: aplicar, sair, recarregar, cancelar. Depois o RNF-F2-01 com o docker stats ao lado: carregar 500 MiB e ver que a memória não sobe com o ficheiro.</p>
-    <p>Se algo falhar, não insistir: mostrar a gravação do Playwright.</p>
-  </aside>
-</section>
-
-<!-- ======================================================= 14 · IA -->
-<section class="slide" data-part="fim" data-title="Uso de IA">
-  <div class="kicker"><span class="kicker__num">06</span>Fim<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>1 min</span></div>
-  <h2 class="title">Claude Code em todas as etapas —<br>e tudo verificado por algo independente da IA.</h2>
-  <div class="ai">
-    <div class="ai__step"><div class="label">Método</div><h3>Um pedido por etapa, um ficheiro por resultado</h3><p>Diagnóstico e especificação com o Fable 5.2; o resto com o Opus 5.5. A equipa reviu cada etapa e cada passo dos ADR.</p></div>
-    <div class="ai__step"><div class="label">No código</div><h3>Um commit por passo, com testes</h3><p>Comentários que remetem para o ADR, <span class="id">AGENTS.md</span> atualizado e <span class="id">ia.md</span> com o que foi aceite e rejeitado.</p></div>
-    <div class="ai__step"><div class="label">Nas medições</div><h3>Nada conta sem dados em bruto</h3><p>Cada resultado guarda o commit; as ocorrências ficaram registadas com os registos que as explicam.</p></div>
-  </div>
-  <div class="caught">
-    <div class="caught__row caught__head"><div>Erro da IA</div><div>Apanhado por</div></div>
-    <div class="caught__row"><div>Previsão errada do passo 2 do ADR-01</div><div>A medição desse passo</div></div>
-    <div class="caught__row"><div>Mandar o estado para uma sala sem controlo de acesso</div><div>A leitura do código do <span class="id">ws_gateway</span></div></div>
-    <div class="caught__row"><div>Atribuir ao refactoring o aumento do C2.1</div><div>A comparação A-B-A na mesma sessão</div></div>
-    <div class="caught__row"><div>Generalizar a partir de um só tamanho de ficheiro</div><div>A revisão dos dados em bruto da reprodução</div></div>
-  </div>
-  <aside class="notes">
-    <p><b>~30 s.</b> Usámos o Claude Code em todas as etapas, com um pedido escrito por etapa e o resultado em ficheiros que a equipa reviu.</p>
-    <p>A IA foi útil no que é extenso e verificável, e menos fiável nas previsões. Cada erro foi apanhado por algo independente dela: uma medição, a leitura do código, uma comparação na mesma sessão.</p>
-  </aside>
-</section>
-
-<!-- ======================================================= 15 · FECHO -->
-<section class="slide s-end" data-part="fecho" data-title="Fecho">
-  <div class="kicker"><span class="kicker__num">06</span>Fim<span class="kicker__time"><svg class="icon"><use href="#i-clock"/></svg>1 min</span></div>
-  <h2 class="title">Os dois requisitos cumpridos, com o alvo atingido,<br>sem funcionalidades novas e sem regressões.</h2>
-  <div class="stats">
-    <div class="stat stat--accent"><strong>36<small>×</small></strong><span>menos memória com 500 MiB, na máquina de medição (2001 → 55 MiB)</span></div>
-    <div class="stat"><strong>1000<small>MiB</small></strong><span>maior ficheiro com 512 MiB por contentor (era 100)</span></div>
-    <div class="stat"><strong>100<small>%</small></strong><span>das ações possíveis durante uma execução (era 0%)</span></div>
-    <div class="stat"><strong>18/18</strong><span>testes ponta a ponta com as impressões da base</span></div>
-  </div>
-  <div class="next">
-    <div class="next__title"><h3>O que fica</h3><p>Limitações e passos seguintes</p></div>
-    <div class="next__item"><b>Margem da M1.1 por plataforma</b><span>Noutras máquinas o valor é fixo, mas mais alto; medir a memória por processo no contentor (H-05) antes de afinar.</span></div>
-    <div class="next__item"><b>Capacidade do vídeo</b><span>Réplicas do worker e fila própria para a legendagem (QS-03, ALT-1).</span></div>
-    <div class="next__item"><b>Segurança</b><span>Verificar o acesso na sala <span class="id">project:&lt;id&gt;</span> (EV-15), que a DA-2 contornou.</span></div>
-  </div>
-  <div class="thanks"><h3>Obrigado<span>.</span></h3><p>Relatório, ADR, medições e código<br>github.com/davidserreira/picturas-27-extension · main e fase2/integracao</p></div>
-  <aside class="notes">
-    <p><b>~30 s.</b> Resumindo: os dois requisitos cumpridos com o alvo atingido, medidos com o mesmo método antes e depois, sem funcionalidades novas e com a regressão igual à base.</p>
-    <p>Fica a margem da M1.1 noutras máquinas, a capacidade do vídeo e a sala sem verificação de acesso. Obrigado — estamos disponíveis para perguntas.</p>
-  </aside>
-</section>
-
-<!-- ======================================================= APÊNDICE -->
-<section class="slide s-appx" data-part="apendice" data-title="A1 · Ramos e commits">
-  <div class="kicker"><span class="kicker__num">A1</span>Apêndice</div>
-  <h2 class="title">Ramos e commits</h2>
-  <table class="trace-table">
-    <thead><tr><th>Ramo</th><th>Conteúdo</th><th>Commits</th></tr></thead>
-    <tbody>
-      <tr><td>main</td><td>A entrega: a base com o código final de cada requisito, os ADR, o ia.md e o relatório</td><td class="ids">43a2e08 · 126c319 · d959150</td></tr>
-      <tr><td>fase2/rnf-f2-01-carregamento</td><td>DA-1 sozinha: passos 0 a 5, afinação 5b, documentação e medição final</td><td class="ids">47c303b · 93dd800 · d3546b2 · 847e0dc · 0130073 · a394a9a · 78a035a · 8529695</td></tr>
-      <tr><td>fase2/rnf-f2-02-segundo-plano-medido</td><td>DA-2 sozinha: passos 0 a 5 e medição final</td><td class="ids">f1714dc · 2982528 · df7e1dc · 54386cc · 2abf795 · 77c9bf7</td></tr>
-      <tr><td>fase2/integracao</td><td>Os dois juntos, com o histórico completo: medições, regressão, análise, reproduções e relatório</td><td class="ids">5c219ae · eb8a37d · 8acb075</td></tr>
-    </tbody>
-  </table>
-  <p class="appx-note"><svg class="icon"><use href="#i-check"/></svg>O código do main é igual, byte a byte, ao medido: 7740230 (RNF-F2-01 isolado) e eb8a37d (os dois integrados).</p>
-  <aside class="notes"><p>Commits sem linhas de coautoria da ferramenta, por decisão da equipa; o uso de IA está no ia.md, nos comentários e no AGENTS.md.</p></aside>
-</section>
-
-<section class="slide s-appx" data-part="apendice" data-title="A2 · Controlos">
-  <div class="kicker"><span class="kicker__num">A2</span>Apêndice</div>
+<!-- ------------------------------------------------------- A10 -->
+<section class="slide s-appx" data-part="apendice" data-title="A10 · Controlos">
+  <div class="kicker"><span class="kicker__num">A10</span>Apêndice</div>
   <h2 class="title">Controlos dos efeitos colaterais: base → integrado</h2>
   <table class="trace-table">
     <thead><tr><th>Controlo</th><th>Base</th><th>Integrado</th><th>Limite</th></tr></thead>
@@ -996,29 +1102,12 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
       <tr><td>C2.4, C2.5 · sobreposição; ferramenta a meio</td><td>Iguais; 201</td><td>Iguais; 201</td><td>Iguais; sem erro</td></tr>
     </tbody>
   </table>
-  <aside class="notes"><p>Todos os controlos cumprem o limite; vários melhoraram (C1.1, C1.3, C1.7, C2.2).</p></aside>
+  <aside class="notes"><p class="who">Responde: <b>Tiago</b></p><p>Todos os controlos cumprem o limite; vários melhoraram (C1.1, C1.3, C1.7, C2.2).</p></aside>
 </section>
 
-<section class="slide s-appx" data-part="apendice" data-title="A3 · Cenários de qualidade">
-  <div class="kicker"><span class="kicker__num">A3</span>Apêndice</div>
-  <h2 class="title">Os dois cenários de qualidade (seis elementos)</h2>
-  <table class="trace-table">
-    <thead><tr><th>Elemento</th><th>QS-01 · utilização de recursos</th><th>QS-02 · operabilidade</th></tr></thead>
-    <tbody>
-      <tr><td>Fragilidade</td><td>Ficheiro inteiro em memória em cada serviço (EV-13)</td><td>Estado só no browser; painel que bloqueia (EV-03, EV-04, EV-14)</td></tr>
-      <tr><td>Fonte</td><td>Utilizador premium</td><td>Utilizador registado ou premium</td></tr>
-      <tr><td>Estímulo</td><td>Carrega um vídeo de 1000 MiB</td><td>Recarrega, muda de página ou abre outra sessão a meio de uma execução</td></tr>
-      <tr><td>Artefacto</td><td>nginx, api_gateway, projects, img_storage</td><td>Frontend, projects, ws_gateway, video_tool</td></tr>
-      <tr><td>Ambiente</td><td>Operação normal, um envio de cada vez</td><td>Execução de um vídeo e duas imagens em curso</td></tr>
-      <tr><td>Resposta</td><td>Aceite e guardado sem alteração; memória sem acompanhar o ficheiro</td><td>Continua a usar, vê o progresso, cancela, é avisado do fim</td></tr>
-      <tr><td>Medida</td><td>MiB por serviço (M1.1); maior ficheiro com 512 MiB (M1.2)</td><td>% de ações (M2.1); segundos (M2.2); cancelamentos (M2.3)</td></tr>
-    </tbody>
-  </table>
-  <aside class="notes"><p>Capítulo 5 do relatório. Os outros três cenários (capacidade, recuperabilidade, autenticidade) ficaram com prioridade 3 a 5.</p></aside>
-</section>
-
-<section class="slide s-appx" data-part="apendice" data-title="A4 · Matriz de efeitos">
-  <div class="kicker"><span class="kicker__num">A4</span>Apêndice</div>
+<!-- ------------------------------------------------------- A11 -->
+<section class="slide s-appx" data-part="apendice" data-title="A11 · Matriz de efeitos">
+  <div class="kicker"><span class="kicker__num">A11</span>Apêndice</div>
   <h2 class="title">Matriz de efeitos das decisões, prevista e medida</h2>
   <table class="trace-table">
     <thead><tr><th>Atributo</th><th>DA-1 · carregamento em fluxo</th><th>DA-2 · estado no servidor</th></tr></thead>
@@ -1031,21 +1120,23 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
       <tr><td>Interação</td><td colspan="2">Independentes: só se tocam na ação 7 da M2.1 e em zonas diferentes de projects/routes/projects.js; integradas sem conflitos de código</td></tr>
     </tbody>
   </table>
-  <aside class="notes"><p>Capítulo 10.1 do relatório.</p></aside>
+  <aside class="notes"><p class="who">Responde: <b>Miguel</b></p><p>Capítulo 10.1 do relatório.</p></aside>
 </section>
 
-<section class="slide s-appx" data-part="apendice" data-title="A5 · Método de medição">
-  <div class="kicker"><span class="kicker__num">A5</span>Apêndice</div>
+<!-- ------------------------------------------------------- A12 -->
+<section class="slide s-appx" data-part="apendice" data-title="A12 · Método de medição">
+  <div class="kicker"><span class="kicker__num">A12</span>Apêndice</div>
   <h2 class="title">Método de medição</h2>
   <div class="cols cols--2">
     <div class="card"><div class="label">Regras</div><ul class="bul"><li>A mesma máquina, o mesmo Docker, ligada à corrente, sem outras cargas</li><li>Arranque limpo antes de cada série (<span class="id">down -v</span>, <span class="id">up --build</span>)</li><li>Só se mede por fora: API pública e <span class="id">docker stats</span></li><li>Cada resultado guarda o commit; dados gerados por <i>script</i></li><li>Medição curta em cada passo; série final em cada ramo, depois integrada; A-B-A para os tempos</li></ul></div>
     <div class="card"><div class="label">Ambiente e instrumentos</div><ul class="bul bul--sys"><li>HP Victus 15, i5-12450H, 15,7 GiB; Windows 11; Docker Desktop 29.9.3 (12 CPU, 7,59 GiB)</li><li><span class="id">rnf1/medir-memoria.mjs</span>: M1.1 e C1.x, <span class="id">docker stats</span> a cada segundo</li><li><span class="id">rnf1/medir-limite.mjs</span>: M1.2, override de 512 MiB</li><li><span class="id">rnf2/medir.mjs</span>: M2.x e C2.x com Playwright, gravação de cada execução</li><li><span class="id">regressao/correr.sh</span>: pytest, node, ponta a ponta e interface</li></ul></div>
   </div>
-  <aside class="notes"><p>Tudo em Docs/fase2/medicoes e Docs/fase2/regressao, no ramo fase2/integracao; reprodução curta em medicoes/reproducao/reproducao.sh.</p></aside>
+  <aside class="notes"><p class="who">Responde: <b>Tiago</b></p><p>Tudo em Docs/fase2/medicoes e Docs/fase2/regressao, no ramo fase2/integracao; reprodução curta em medicoes/reproducao/reproducao.sh.</p></aside>
 </section>
 
-<section class="slide s-appx" data-part="apendice" data-title="A6 · Alternativas de padrão">
-  <div class="kicker"><span class="kicker__num">A6</span>Apêndice</div>
+<!-- ------------------------------------------------------- A13 -->
+<section class="slide s-appx" data-part="apendice" data-title="A13 · Alternativas de padrão">
+  <div class="kicker"><span class="kicker__num">A13</span>Apêndice</div>
   <h2 class="title">Alternativas ao padrão do vídeo (Exercício 6)</h2>
   <table class="trace-table">
     <thead><tr><th>ID</th><th>Padrão</th><th>Ganha</th><th>Perde</th><th>Padrão global</th></tr></thead>
@@ -1057,9 +1148,47 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
     </tbody>
   </table>
   <p class="appx-note"><svg class="icon"><use href="#i-info"/></svg>Conclusão: manter os dois padrões e corrigir as duas fragilidades dentro deles; a ALT-1 fica como melhoria seguinte.</p>
-  <aside class="notes"><p>Capítulo 4 do relatório. As avaliações das alternativas são hipóteses, porque nenhuma foi implementada nem medida.</p></aside>
+  <aside class="notes"><p class="who">Responde: <b>Miguel</b></p><p>Capítulo 4 do relatório. As avaliações das alternativas são hipóteses, porque nenhuma foi implementada nem medida.</p></aside>
 </section>
 
+<!-- ------------------------------------------------------- A14 -->
+<section class="slide s-appx" data-part="apendice" data-title="A14 · Uso de IA">
+  <div class="kicker"><span class="kicker__num">A14</span>Apêndice</div>
+  <h2 class="title">Claude Code em todas as etapas —<br>e tudo verificado por algo independente da IA.</h2>
+  <div class="ai">
+    <div class="ai__step"><div class="label">Método</div><h3>Um pedido por etapa, um ficheiro por resultado</h3><p>Diagnóstico e especificação com o Fable 5.2; o resto com o Opus 5.5. A equipa reviu cada etapa e cada passo dos ADR.</p></div>
+    <div class="ai__step"><div class="label">No código</div><h3>Um commit por passo, com testes</h3><p>Comentários que remetem para o ADR, <span class="id">AGENTS.md</span> atualizado e <span class="id">ia.md</span> com o que foi aceite e rejeitado.</p></div>
+    <div class="ai__step"><div class="label">Nas medições</div><h3>Nada conta sem dados em bruto</h3><p>Cada resultado guarda o commit; as ocorrências ficaram registadas com os registos que as explicam.</p></div>
+  </div>
+  <div class="caught">
+    <div class="caught__row caught__head"><div>Erro da IA</div><div>Apanhado por</div></div>
+    <div class="caught__row"><div>Previsão errada do passo 2 do ADR-01</div><div>A medição desse passo</div></div>
+    <div class="caught__row"><div>Mandar o estado para uma sala sem controlo de acesso</div><div>A leitura do código do <span class="id">ws_gateway</span></div></div>
+    <div class="caught__row"><div>Atribuir ao refactoring o aumento do C2.1</div><div>A comparação A-B-A na mesma sessão</div></div>
+    <div class="caught__row"><div>Generalizar a partir de um só tamanho de ficheiro</div><div>A revisão dos dados em bruto da reprodução</div></div>
+  </div>
+  <aside class="notes"><p class="who">Responde: <b>Tiago</b></p>
+    <p>Usámos o Claude Code em todas as etapas, com um pedido escrito por etapa e o resultado em ficheiros que a equipa reviu.</p>
+    <p>A IA foi útil no que é extenso e verificável, e menos fiável nas previsões. Cada erro foi apanhado por algo independente dela: uma medição, a leitura do código, uma comparação na mesma sessão.</p>
+  </aside>
+</section>
+
+<!-- ------------------------------------------------------- A15 -->
+<section class="slide s-appx" data-part="apendice" data-title="A15 · Ramos e commits">
+  <div class="kicker"><span class="kicker__num">A15</span>Apêndice</div>
+  <h2 class="title">Ramos e commits</h2>
+  <table class="trace-table">
+    <thead><tr><th>Ramo</th><th>Conteúdo</th><th>Commits</th></tr></thead>
+    <tbody>
+      <tr><td>main</td><td>A entrega: a base com o código final de cada requisito, os ADR, o ia.md e o relatório</td><td class="ids">43a2e08 · 126c319 · d959150</td></tr>
+      <tr><td>fase2/rnf-f2-01-carregamento</td><td>DA-1 sozinha: passos 0 a 5, afinação 5b, documentação e medição final</td><td class="ids">47c303b · 93dd800 · d3546b2 · 847e0dc · 0130073 · a394a9a · 78a035a · 8529695</td></tr>
+      <tr><td>fase2/rnf-f2-02-segundo-plano-medido</td><td>DA-2 sozinha: passos 0 a 5 e medição final</td><td class="ids">f1714dc · 2982528 · df7e1dc · 54386cc · 2abf795 · 77c9bf7</td></tr>
+      <tr><td>fase2/integracao</td><td>Os dois juntos, com o histórico completo: medições, regressão, análise, reproduções e relatório</td><td class="ids">5c219ae · eb8a37d · 8acb075</td></tr>
+    </tbody>
+  </table>
+  <p class="appx-note"><svg class="icon"><use href="#i-check"/></svg>O código do main é igual, byte a byte, ao medido: 7740230 (RNF-F2-01 isolado) e eb8a37d (os dois integrados).</p>
+  <aside class="notes"><p class="who">Responde: <b>Pedro</b></p><p>Commits sem linhas de coautoria da ferramenta, por decisão da equipa; o uso de IA está no ia.md, nos comentários e no AGENTS.md.</p></aside>
+</section>
 
 </div>
 </div>
@@ -1088,7 +1217,7 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
       <dt>P</dt><dd>Vista do apresentador numa janela à parte (notas, cronómetro e diapositivo seguinte)</dd>
       <dt>N</dt><dd>Mostrar ou esconder as notas</dd>
       <dt>O</dt><dd>Visão geral de todos os diapositivos</dd>
-      <dt>S · R</dt><dd>Iniciar ou pausar · repor o cronómetro (alvo: 15 min)</dd>
+      <dt>S · R</dt><dd>Iniciar ou pausar · repor o cronómetro (10 min de apresentação + 5 de perguntas)</dd>
       <dt>B · .</dt><dd>Ecrã preto (útil ao mudar para a demonstração)</dd>
       <dt>F</dt><dd>Ecrã inteiro</dd>
       <dt>Ctrl + P</dt><dd>Imprimir ou guardar em PDF, um diapositivo por página</dd>
@@ -1108,16 +1237,15 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
   const slides = Array.from(stage.querySelectorAll(".slide"));
   const isPresenter = new URLSearchParams(location.search).has("presenter");
   const PARTS = [
-    { key: "diag", label: "Diagnóstico", min: 2, end: 120 },
-    { key: "req", label: "Requisitos", min: 2, end: 240 },
-    { key: "dec", label: "Decisões", min: 3, end: 420 },
-    { key: "res", label: "Resultados", min: 4, end: 660 },
-    { key: "demo", label: "Demonstração", min: 3, end: 840 },
-    { key: "fim", label: "Fim", min: 1, end: 900 },
+    { key: "req", label: "Requisitos", min: 3, end: 180 },
+    { key: "arq", label: "Arquitetura", min: 2, end: 300 },
+    { key: "med", label: "Medições", min: 2, end: 420 },
+    { key: "demo", label: "Demonstração", min: 3, end: 600 },
+    { key: "fecho", label: "Perguntas", min: 5, end: 900 },
   ];
   const mainCount = slides.filter((s) => s.dataset.part !== "apendice").length;
   const pad = (n) => String(n).padStart(2, "0");
-  const partIndex = (s) => ({ capa: 0, diag: 0, req: 1, dec: 2, res: 3, demo: 4, fim: 5, fecho: 5 })[s.dataset.part] ?? -1;
+  const partIndex = (s) => ({ capa: 0, req: 0, arq: 1, med: 2, demo: 3, fecho: 4 })[s.dataset.part] ?? -1;
 
   /* rodapé de cada diapositivo (também aparece na impressão) */
   slides.forEach((s, k) => {
