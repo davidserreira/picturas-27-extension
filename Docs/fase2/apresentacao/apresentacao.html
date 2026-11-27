@@ -566,15 +566,15 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
       </div>
     </div>
     <div class="agenda">
-      <div class="agenda__item"><b>01</b><span>Requisitos e quantificação <i>· 3′</i></span><em class="agenda__who">David Cruz</em></div>
+      <div class="agenda__item"><b>01</b><span>Requisitos e quantificação <i>· 3′</i></span><em class="agenda__who">Pedro Rebelo</em></div>
       <div class="agenda__item"><b>02</b><span>Arquitetura e <i>refactoring</i> <i>· 2′</i></span><em class="agenda__who">Miguel Páscoa</em></div>
       <div class="agenda__item"><b>03</b><span>Medições face ao alvo <i>· 2′</i></span><em class="agenda__who">Tiago Barros</em></div>
-      <div class="agenda__item"><b>04</b><span>Demonstração <i>· 3′</i></span><em class="agenda__who">Pedro Rebelo</em></div>
+      <div class="agenda__item"><b>04</b><span>Demonstração <i>· 3′</i></span><em class="agenda__who">David Cruz</em></div>
       <div class="agenda__item"><b>05</b><span>Perguntas <i>· 5′</i></span><em class="agenda__who">Todos</em></div>
     </div>
   </div>
   <aside class="notes">
-    <p class="who">Apresenta: <b>David Cruz</b></p>
+    <p class="who">Apresenta: <b>Pedro Rebelo</b></p>
     <p><b>~10 s.</b> Boa tarde. Somos o Grupo 5 do PL5.</p>
     <p>Na Fase 2 escolhemos dois requisitos não funcionais do PictuRAS e melhorámo-los por refactoring. Em dez minutos: os dois requisitos e a sua quantificação, as alterações arquiteturais, as medições face ao alvo e uma demonstração. Depois, perguntas — o detalhe está no apêndice.</p>
   </aside>
@@ -600,7 +600,7 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
   </div>
   <p class="rnf__foot"><svg class="icon"><use href="#i-info"/></svg><span>Os dois cenários de qualidade mais prioritários entre <b>8 candidatos</b>, comparados por pertinência, facilidade de medir e risco (apêndice A2). Melhorados só por <i>refactoring</i>, sem funcionalidades novas.</span></p>
   <aside class="notes">
-    <p class="who">Apresenta: <b>David Cruz</b></p>
+    <p class="who">Apresenta: <b>Pedro Rebelo</b></p>
     <p><b>~70 s.</b> A base é a solução do PL1-G4: microsserviços atrás de um nginx e de um API Gateway, filas RabbitMQ e um orquestrador central, o projects.</p>
     <p>Primeiro requisito, eficiência na utilização de recursos: no carregamento, três serviços seguidos guardam o ficheiro inteiro em memória. Com 500 MiB o gateway sobe 2 GB; com 1 GB a instalação cai. Queremos que um premium carregue 1 GB e que a memória não acompanhe o tamanho do ficheiro.</p>
     <p>Segundo, operabilidade: o progresso do vídeo vai do worker diretamente para o browser e só existe lá. Recarregar a página perde o progresso e o botão de cancelar. Queremos que o utilizador continue a trabalhar e possa sempre cancelar.</p>
@@ -641,7 +641,7 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
   </div>
   <div class="ctl"><b>12 controlos dos efeitos colaterais</b><p>Tempo de envio e de processamento, envio sem JWT, SHA-256, decisões de validação, temporários, órfãos, confidencialidade do estado e resultados (<span class="id">C1.1–C1.7</span>, <span class="id">C2.1–C2.5</span>). Medidos em todas as séries.</p></div>
   <aside class="notes">
-    <p class="who">Apresenta: <b>David Cruz</b></p>
+    <p class="who">Apresenta: <b>Pedro Rebelo</b></p>
     <p><b>~100 s.</b> Para cada requisito: classificação ISO 25010, escala, método por script e três valores — base, alvo e mínimo — com origem identificável.</p>
     <p>RNF-F2-01: a medida principal é o acréscimo de memória do serviço que mais cresce durante um envio. Na base, com 1000 MiB, nem se mede: o Docker cai. O alvo de 64 MiB vem das partes S3 que a base já usava, com folga.</p>
     <p>RNF-F2-02: três medidas feitas com Playwright, como um utilizador. Os 2 s e 5 s vêm do REQ-VID-STATUS-003 do PL1-G4.</p>
@@ -796,7 +796,7 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
     </div>
   </div>
   <aside class="notes">
-    <p class="who">Apresenta: <b>Pedro Rebelo</b></p>
+    <p class="who">Apresenta: <b>David Cruz</b></p>
     <p><b>~3 min.</b> Carregar em B (ecrã preto) para mudar para o browser.</p>
     <p>Mostrar primeiro o RNF-F2-02, porque é visível: aplicar, sair, recarregar, cancelar. Depois o RNF-F2-01 com o docker stats ao lado: carregar 500 MiB e ver que a memória não sobe com o ficheiro.</p>
     <p>Se algo falhar, não insistir: mostrar a gravação do Playwright.</p>
@@ -859,7 +859,7 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
       <div class="issue"><span class="issue__n">2</span><div><h3>O progresso do vídeo não passa pelo orquestrador</h3><p>O estado da execução só existe no browser e um painel bloqueia a página: recarregar perde o progresso e o cancelamento. <span class="id">EV-03</span> <span class="id">EV-04</span></p></div></div>
     </div>
   </div>
-  <aside class="notes"><p class="who">Responde: <b>David</b></p>
+  <aside class="notes"><p class="who">Responde: <b>Pedro</b></p>
     <p>A base é a solução do PL1-G4, commit 0523102: microsserviços atrás de um nginx e de um API Gateway, processamento assíncrono por filas e um orquestrador central, o projects.</p>
     <p>O vídeo segue o padrão global (filas, resultado na project_queue), mas com um único worker que aplica o pipeline inteiro. Duas fragilidades. Primeira: no carregamento, três serviços guardam o ficheiro inteiro em memória antes de o passar — vem do padrão global mal aplicado. Segunda: o worker manda o progresso diretamente para o browser, e o orquestrador não o guarda — vem do desvio do vídeo face à orquestração central.</p>
   </aside>
@@ -889,7 +889,7 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
       <div class="card card--muted" style="padding:16px 18px"><p style="margin:0;font-size:16.5px">Ambos têm evidência no código, escala objetiva medível por <i>script</i> e alternativas reais — sem reescrever o processamento de vídeo.</p></div>
     </div>
   </div>
-  <aside class="notes"><p class="who">Responde: <b>David</b></p>
+  <aside class="notes"><p class="who">Responde: <b>Pedro</b></p>
     <p>Comparámos as seis ideias das diretrizes e duas fragilidades que encontrámos no código, por pertinência, facilidade de medir e risco para o prazo.</p>
     <p>Os dois escolhidos são os dois cenários de qualidade mais prioritários: o QS-02, trabalho em segundo plano, que atinge todos os utilizadores, e o QS-01, carregamento de ficheiros grandes, que derruba a entrada única. A alternativa mais ambiciosa, separar as legendas e escalar o vídeo (C2 + C3), juntava os dois riscos mais altos.</p>
   </aside>
@@ -911,7 +911,7 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
       <tr><td>Medida</td><td>MiB por serviço (M1.1); maior ficheiro com 512 MiB (M1.2)</td><td>% de ações (M2.1); segundos (M2.2); cancelamentos (M2.3)</td></tr>
     </tbody>
   </table>
-  <aside class="notes"><p class="who">Responde: <b>David</b></p><p>Capítulo 5 do relatório. Os outros três cenários (capacidade, recuperabilidade, autenticidade) ficaram com prioridade 3 a 5.</p></aside>
+  <aside class="notes"><p class="who">Responde: <b>Pedro</b></p><p>Capítulo 5 do relatório. Os outros três cenários (capacidade, recuperabilidade, autenticidade) ficaram com prioridade 3 a 5.</p></aside>
 </section>
 
 <!-- ------------------------------------------------------- A4 -->
@@ -1057,7 +1057,7 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
     <div class="verdict verdict--warn" style="margin-top:0"><svg class="icon"><use href="#i-alert"/></svg><div><b>O alvo da M1.1 vale para a máquina de medição.</b> Noutras, o <span class="id">projects</span> ficou entre o alvo e o mínimo, ou acima, mas <b>fixo</b>: no Mac, ~190 MiB com 100, 500 e 1000 MiB (na base, +1193 MiB com 500). <span class="id">H-05</span>: o patamar depende da plataforma; limitar o <i>heap</i> do V8 não o baixa.</div></div>
     <div class="card card--muted" style="padding:16px 20px"><div class="label">Outras ameaças à validade</div><ul class="bul" style="margin-top:8px"><li>Tempos só comparáveis na mesma sessão (A-B-A)</li><li>Quatro falhas do instrumento registadas, não descartadas</li><li>Sem envios em simultâneo nem utilizadores reais</li></ul></div>
   </div>
-  <aside class="notes"><p class="who">Responde: <b>Pedro</b></p>
+  <aside class="notes"><p class="who">Responde: <b>David</b></p>
     <p>As diretrizes pedem medições que outra pessoa consiga repetir. O Pedro e o Miguel correram uma reprodução curta nas suas máquinas.</p>
     <p>A melhoria repete-se: na base o gateway sobe quase 2 GB, no main nenhum serviço passa de 182 MiB, e o estado e o cancelamento funcionam. Mas a margem da M1.1 não: o projects ficou acima do alvo nas duas máquinas, e no Mac acima do mínimo. Não escondemos isto: o relatório diz que o alvo foi atingido na máquina de medição. Mas o comportamento que o requisito pede repete-se: no Mac medimos os quatro tamanhos, e o projects fica nos ~190 MiB de 100 a 1000 MiB, quando na base subia 1193 MiB só com 500. O que muda entre máquinas é o patamar. Testámos dar ao projects o limite do V8 que o img_storage já tem, e não mudou nada: a causa não é o heap do V8 e fica como hipótese (glibc, cache de páginas ou ffprobe, que o docker stats não separa).</p>
     <p>As diferenças de SHA-256 no Mac são só em imagens PNG, provavelmente pela compressão em ARM; no Linux do Pedro, o mesmo código deu 18 em 18.</p>
@@ -1078,7 +1078,7 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
     <div class="card"><div class="label">Porquê suites novas</div><p>Os testes da base eram unitários e não passavam pelo gateway, pelo armazenamento nem pela interface — precisamente o que foi alterado. As novas cobrem carregamento, 9 ferramentas de imagem, efeitos de vídeo, corte e velocidade, legendagem real, extração de fotogramas, projetos mistos, cancelamento, quotas e acesso.</p></div>
     <div class="card"><div class="label">Impressão de cada resultado</div><p>SHA-256 dos ficheiros, duração, resolução, codec, som, fotogramas e mensagens de recusa. Uma versão só preserva a funcionalidade se der <b>as mesmas impressões da base</b>, e não só os mesmos testes passados. Duas corridas na base deram impressões iguais.</p></div>
   </div>
-  <aside class="notes"><p class="who">Responde: <b>Pedro</b></p>
+  <aside class="notes"><p class="who">Responde: <b>David</b></p>
     <p>A preservação funcional verificou-se com uma suite que correu na base antes de qualquer alteração, em cada passo dos dois ADR e no fim. Os testes que o repositório tinha não cobriam as partes alteradas, por isso escrevemos 18 testes ponta a ponta e 3 de interface.</p>
     <p>O mais importante é a impressão: comparamos o SHA-256 e os metadados de cada resultado com os da base, não só se o teste passa.</p>
   </aside>
@@ -1187,7 +1187,7 @@ body.is-presenter{background:#0E1014;color:#E7EAF0}
     </tbody>
   </table>
   <p class="appx-note"><svg class="icon"><use href="#i-check"/></svg>O código do main é igual, byte a byte, ao medido: 7740230 (RNF-F2-01 isolado) e eb8a37d (os dois integrados).</p>
-  <aside class="notes"><p class="who">Responde: <b>Pedro</b></p><p>Commits sem linhas de coautoria da ferramenta, por decisão da equipa; o uso de IA está no ia.md, nos comentários e no AGENTS.md.</p></aside>
+  <aside class="notes"><p class="who">Responde: <b>David</b></p><p>Commits sem linhas de coautoria da ferramenta, por decisão da equipa; o uso de IA está no ia.md, nos comentários e no AGENTS.md.</p></aside>
 </section>
 
 </div>
